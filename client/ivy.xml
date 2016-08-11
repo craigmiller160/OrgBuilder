@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ivy-module version="2.0">
+    <info organisation="io.craigmiller160" module="client" />
+    <configurations defaultconfmapping="default">
+        <conf name="default" />
+    </configurations>
+    <dependencies>
+
+    </dependencies>
+</ivy-module>
