@@ -6,7 +6,7 @@ package io.craigmiller160.orgbuilder.server.data;
 public class DaoFactoryProvider {
 
     //TODO move this to a properties file
-    private static final String DEFAULT_FACTORY = "io.craigmiller160.orgbuilder.server.data.DbUtilsDaoFactory";
+    private static final String DEFAULT_FACTORY = "io.craigmiller160.orgbuilder.server.data.dbutils.DbUtilsDaoFactory";
 
     public static DaoFactory newDefaultFactory(){
         return newFactory(DEFAULT_FACTORY);

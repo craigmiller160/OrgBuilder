@@ -1,4 +1,7 @@
-package io.craigmiller160.orgbuilder.server.data;
+package io.craigmiller160.orgbuilder.server.data.dbutils;
+
+import io.craigmiller160.orgbuilder.server.data.Dao;
+import io.craigmiller160.orgbuilder.server.data.DaoFactory;
 
 import java.util.HashMap;
 import java.util.Map;
