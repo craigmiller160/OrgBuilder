@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OrgBuilder" xmlns:ivy="antlib:org.apache.ivy.ant">
-    <target name="resolve">
+    <target name="project.resolve">
         <ivy:retrieve />
+    </target>
+    <target name="server.resolve">
+    	<ant antfile="server/build.xml" dir="server" target="resolve" />
+    </target>
+    <target name="client.resolve">
+    	<ant antfile="client/build.xml" dir="client" target="resolve" />
+    </target>
+    <target name="all.resolve">
+    	<antcall target="project.resolve" />
+    	<antcall target="server.resolve" />
+    	<antcall target="client.resolve" />
     </target>
 </project>
