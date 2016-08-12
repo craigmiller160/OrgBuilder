@@ -4,10 +4,10 @@
         <ivy:retrieve />
     </target>
     <target name="server.resolve">
-    	<ant antfile="server/build.xml" dir="server" target="resolve" />
+    	<ant antfile="build.xml" dir="server" target="resolve" />
     </target>
     <target name="client.resolve">
-    	<ant antfile="client/build.xml" dir="client" target="resolve" />
+    	<ant antfile="build.xml" dir="client" target="resolve" />
     </target>
     <target name="all.resolve">
     	<antcall target="project.resolve" />
