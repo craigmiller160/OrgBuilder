@@ -7,7 +7,7 @@
     </Appenders>
     <Loggers>
         <Root level="ERROR" />
-        <Logger name="resource" level="DEBUG">
+        <Logger name="io.craigmiller160.orgbuilder.server" level="DEBUG">
             <AppenderRef ref="OrgBuilderConsole" />
         </Logger>
     </Loggers>

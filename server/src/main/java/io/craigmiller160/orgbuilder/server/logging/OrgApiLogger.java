@@ -15,10 +15,10 @@ public class OrgApiLogger {
     /*
      * The logger category names
      */
-    private static final String RESOURCE_LOGGER = "resource";
-    private static final String SERVICE_LOGGER = "service";
-    private static final String DATA_LOGGER = "data";
-    private static final String UTIL_LOGGER = "util";
+    private static final String RESOURCE_LOGGER = "io.craigmiller160.orgbuilder.server.resource";
+    private static final String SERVICE_LOGGER = "io.craigmiller160.orgbuilder.server.service";
+    private static final String DATA_LOGGER = "io.craigmiller160.orgbuilder.server.data";
+    private static final String UTIL_LOGGER = "io.craigmiller160.orgbuilder.server.util";
 
     /*
      * The loggers
