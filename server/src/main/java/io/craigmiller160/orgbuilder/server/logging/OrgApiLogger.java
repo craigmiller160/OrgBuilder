@@ -19,6 +19,7 @@ public class OrgApiLogger {
     private static final String SERVICE_LOGGER = "io.craigmiller160.orgbuilder.server.service";
     private static final String DATA_LOGGER = "io.craigmiller160.orgbuilder.server.data";
     private static final String UTIL_LOGGER = "io.craigmiller160.orgbuilder.server.util";
+    private static final String SERVER_LOGGER = "io.craigmiller160.orgbuilder.server";
 
     /*
      * The loggers
@@ -27,6 +28,7 @@ public class OrgApiLogger {
     private static final Logger serviceLogger;
     private static final Logger dataLogger;
     private static final Logger utilLogger;
+    private static final Logger serverLogger;
 
     //Initialize the loggers
     static {
@@ -34,6 +36,7 @@ public class OrgApiLogger {
         serviceLogger = LoggerFactory.getLogger(SERVICE_LOGGER);
         dataLogger = LoggerFactory.getLogger(DATA_LOGGER);
         utilLogger = LoggerFactory.getLogger(UTIL_LOGGER);
+        serverLogger = LoggerFactory.getLogger(SERVER_LOGGER);
     }
 
     /**
@@ -70,6 +73,15 @@ public class OrgApiLogger {
      */
     public static Logger getUtilLogger(){
         return utilLogger;
+    }
+
+    /**
+     * Get the logger for server classes.
+     *
+     * @return the logger.
+     */
+    public static Logger getServerLogger(){
+        return serverLogger;
     }
 
 }
