@@ -1,7 +1,5 @@
 -- Creates the table layout for each organization's schema in the database of this application
 
-SET AUTOCOMMIT = 0;
-
 CREATE TABLE members (
   member_id BIGINT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(255),
@@ -47,5 +45,3 @@ CREATE TABLE emails (
   PRIMARY KEY (email_id),
   FOREIGN KEY (member_id) REFERENCES members (member_id)
 );
-
-COMMIT;
