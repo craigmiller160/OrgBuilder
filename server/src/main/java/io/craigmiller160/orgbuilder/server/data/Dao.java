@@ -89,6 +89,18 @@ public interface Dao<E,I> {
 
     /**
      * Get all of the elements of the type
+     * managed by this DAO in the database.
+     * If other elements are joined
+     * with it, they will be retrieved along with it.
+     *
+     * @return all of the elements of this type in
+     *          the database, with all elements
+     *          joined with them.
+     */
+    List<E> getAllWithJoins();
+
+    /**
+     * Get all of the elements of the type
      * managed by this DAO in the database,
      * limited by the offset and limit parameters.
      *
@@ -98,6 +110,21 @@ public interface Dao<E,I> {
      *          offset and limit in the database.
      */
     List<E> getAll(int offset, int limit);
+
+    /**
+     * Get all of the elements of the type
+     * managed by this DAO in the database,
+     * limited by the offset and limit parameters.
+     * If other elements are joined
+     * with it, they will be retrieved along with it.
+     *
+     * @param offset the offset to start getting elements at.
+     * @param limit the limit of how many elements to retrieve.
+     * @return all of the elements of this type between the
+     *          offset and limit in the database, with all
+     *          elements joined with them.
+     */
+    List<E> getAllWithJoins(int offset, int limit);
 
     /**
      * Invoke an additional query method in the
