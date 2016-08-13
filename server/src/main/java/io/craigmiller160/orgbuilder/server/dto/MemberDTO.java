@@ -6,18 +6,18 @@ import java.time.Period;
 /**
  * Created by craigmiller on 8/12/16.
  */
-public class PersonDTO implements Comparable<PersonDTO>{
+public class MemberDTO implements Comparable<MemberDTO>{
 
-    private long personId;
+    private long memberId;
     private String firstName;
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
     private Gender gender;
 
-    public PersonDTO(){}
+    public MemberDTO(){}
 
-    public PersonDTO(String firstName, String middleName, String lastName, LocalDate dateOfBirth, Gender gender){
+    public MemberDTO(String firstName, String middleName, String lastName, LocalDate dateOfBirth, Gender gender){
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -25,12 +25,12 @@ public class PersonDTO implements Comparable<PersonDTO>{
         this.gender = gender;
     }
 
-    public long getPersonId() {
-        return personId;
+    public long getMemberId() {
+        return memberId;
     }
 
-    public void setPersonId(long personId) {
-        this.personId = personId;
+    public void setMemberId(long memberId) {
+        this.memberId = memberId;
     }
 
     public String getFirstName() {
@@ -85,21 +85,21 @@ public class PersonDTO implements Comparable<PersonDTO>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PersonDTO personDTO = (PersonDTO) o;
+        MemberDTO memberDTO = (MemberDTO) o;
 
-        if (personId != personDTO.personId) return false;
-        if (firstName != null ? !firstName.equals(personDTO.firstName) : personDTO.firstName != null) return false;
-        if (middleName != null ? !middleName.equals(personDTO.middleName) : personDTO.middleName != null) return false;
-        if (lastName != null ? !lastName.equals(personDTO.lastName) : personDTO.lastName != null) return false;
-        if (dateOfBirth != null ? !dateOfBirth.equals(personDTO.dateOfBirth) : personDTO.dateOfBirth != null)
+        if (memberId != memberDTO.memberId) return false;
+        if (firstName != null ? !firstName.equals(memberDTO.firstName) : memberDTO.firstName != null) return false;
+        if (middleName != null ? !middleName.equals(memberDTO.middleName) : memberDTO.middleName != null) return false;
+        if (lastName != null ? !lastName.equals(memberDTO.lastName) : memberDTO.lastName != null) return false;
+        if (dateOfBirth != null ? !dateOfBirth.equals(memberDTO.dateOfBirth) : memberDTO.dateOfBirth != null)
             return false;
-        return gender == personDTO.gender;
+        return gender == memberDTO.gender;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (personId ^ (personId >>> 32));
+        int result = (int) (memberId ^ (memberId >>> 32));
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
@@ -110,11 +110,11 @@ public class PersonDTO implements Comparable<PersonDTO>{
 
     @Override
     public String toString(){
-        return personId + " - " + firstName + " " + (middleName != null ? middleName + " " : "") + lastName;
+        return memberId + " - " + firstName + " " + (middleName != null ? middleName + " " : "") + lastName;
     }
 
     @Override
-    public int compareTo(PersonDTO o) {
-        return new Long(this.personId).compareTo(o.personId);
+    public int compareTo(MemberDTO o) {
+        return new Long(this.memberId).compareTo(o.memberId);
     }
 }

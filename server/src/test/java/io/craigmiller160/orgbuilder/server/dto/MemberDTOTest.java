@@ -10,14 +10,14 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by craig on 8/12/16.
  */
-public class PersonDTOTest {
+public class MemberDTOTest {
 
     /**
      * Test that the getAge() method calculates the correct age.
      */
     @Test
     public void testGetAge(){
-        PersonDTO person = new PersonDTO();
+        MemberDTO person = new MemberDTO();
         LocalDate birthDate = LocalDate.of(1988, 10, 26);
         person.setDateOfBirth(birthDate);
         LocalDate now = LocalDate.of(2016, 8, 11);
