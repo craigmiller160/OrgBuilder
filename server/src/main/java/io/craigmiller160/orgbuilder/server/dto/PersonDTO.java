@@ -15,6 +15,16 @@ public class PersonDTO implements Comparable<PersonDTO>{
     private LocalDate dateOfBirth;
     private Gender gender;
 
+    public PersonDTO(){}
+
+    public PersonDTO(String firstName, String middleName, String lastName, LocalDate dateOfBirth, Gender gender){
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+    }
+
     public long getPersonId() {
         return personId;
     }
