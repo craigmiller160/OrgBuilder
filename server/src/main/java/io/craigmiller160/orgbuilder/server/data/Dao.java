@@ -25,6 +25,14 @@ import java.util.List;
 public interface Dao<E,I> {
 
     /**
+     * Get the class type of the entity managed
+     * in the database by this DAO.
+     *
+     * @return the class type of the entity.
+     */
+    Class<E> getEntityType();
+
+    /**
      * Insert the provided element into the database.
      *
      * @param element the element to be inserted.
