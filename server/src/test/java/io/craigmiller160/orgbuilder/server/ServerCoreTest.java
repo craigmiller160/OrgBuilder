@@ -23,7 +23,7 @@ public class ServerCoreTest {
         String dbUrl = ServerCore.properties.getProperty(ServerProps.DB_URL_PROP);
         String defaultDao = ServerCore.properties.getProperty(ServerProps.DEFAULT_DAO_PROP);
         assertEquals("DB URL is the wrong value", "urlTest", dbUrl);
-        assertEquals("Default DAO is the wrong value", "daoTest", defaultDao);
+        assertEquals("Default DAO is the wrong value", "daoFactoryTest", defaultDao);
     }
 
 }
