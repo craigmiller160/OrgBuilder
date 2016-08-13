@@ -13,5 +13,9 @@
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.21"/>
         <dependency org="io.github.lukehutch" name="fast-classpath-scanner" rev="1.99.0"/>
         <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0"/>
+        <dependency org="org.glassfish.jersey.core" name="jersey-common" rev="2.23.1"/>
+        <dependency org="org.glassfish.jersey.core" name="jersey-server" rev="2.23.1"/>
+        <dependency org="org.glassfish.jersey.containers" name="jersey-container-servlet" rev="2.23.1"/>
+        <dependency org="org.glassfish.jersey.media" name="jersey-media-moxy" rev="2.23.1"/>
     </dependencies>
 </ivy-module>
