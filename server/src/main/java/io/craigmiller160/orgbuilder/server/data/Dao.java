@@ -40,6 +40,9 @@ public interface Dao<E,I> {
      */
     E insert(E element);
 
+    //TODO document
+    List<E> insertAll(List<E> elements);
+
     /**
      * Update the provided element in the database.
      *
@@ -47,6 +50,9 @@ public interface Dao<E,I> {
      * @return the element, after being updated.
      */
     E update(E element);
+
+    //TODO document
+    List<E> updateAll(List<E> elements);
 
     /**
      * Delete the element with the provided ID from
@@ -56,6 +62,9 @@ public interface Dao<E,I> {
      * @return the element that was deleted.
      */
     E delete(I id);
+
+    //TODO document
+    List<E> deleteAll(List<I> ids);
 
     /**
      * Get the element with the provided ID from
