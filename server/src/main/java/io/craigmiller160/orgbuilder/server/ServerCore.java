@@ -13,7 +13,7 @@ import java.util.Properties;
 public class ServerCore implements ServletContextListener{
 
     private static final String PROPS_PATH = "io/craigmiller160/orgbuilder/server/orgapi.properties";
-    public static final Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -24,6 +24,10 @@ public class ServerCore implements ServletContextListener{
         catch(IOException ex){
             OrgApiLogger.getServerLogger().error("Unable to load API application properties", ex);
         }
+    }
+
+    public static String getProperty(String key){
+        return properties.getProperty(key);
     }
 
     @Override

@@ -37,12 +37,12 @@ public class DbUtilsDaoFactory implements DaoFactory {
 
         public OrgDataSource(){
             dataSource = new BasicDataSource();
-            String clazz = ServerCore.properties.getProperty(ServerProps.DB_CLASS_PROP);
-            String url = ServerCore.properties.getProperty(ServerProps.DB_URL_PROP);
-            String user = ServerCore.properties.getProperty(ServerProps.DB_USER_PROP);
-            String pass = ServerCore.properties.getProperty(ServerProps.DB_PASS_PROP);
-            String initString = ServerCore.properties.getProperty(ServerProps.POOL_INIT_SIZE_PROP);
-            String maxString = ServerCore.properties.getProperty(ServerProps.POOL_MAX_SIZE_PROP);
+            String clazz = ServerCore.getProperty(ServerProps.DB_CLASS_PROP);
+            String url = ServerCore.getProperty(ServerProps.DB_URL_PROP);
+            String user = ServerCore.getProperty(ServerProps.DB_USER_PROP);
+            String pass = ServerCore.getProperty(ServerProps.DB_PASS_PROP);
+            String initString = ServerCore.getProperty(ServerProps.POOL_INIT_SIZE_PROP);
+            String maxString = ServerCore.getProperty(ServerProps.POOL_MAX_SIZE_PROP);
             int init = StringUtils.isNumeric(initString) ? Integer.parseInt(initString) : -1;
             int max = StringUtils.isNumeric(maxString) ? Integer.parseInt(maxString) : -1;
 

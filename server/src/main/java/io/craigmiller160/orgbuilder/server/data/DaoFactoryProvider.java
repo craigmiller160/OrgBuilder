@@ -9,7 +9,7 @@ import io.craigmiller160.orgbuilder.server.ServerProps;
 public class DaoFactoryProvider {
 
     public static DaoFactory newDefaultFactory(){
-        String defaultFactory = ServerCore.properties.getProperty(ServerProps.DEFAULT_DAO_PROP);
+        String defaultFactory = ServerCore.getProperty(ServerProps.DEFAULT_DAO_PROP);
         return newFactory(defaultFactory);
     }
 
