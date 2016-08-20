@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server;
 
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
+import io.craigmiller160.orgbuilder.server.util.ApiUncaughtExceptionHandler;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -20,6 +21,7 @@ public class ServerCore implements ServletContextListener{
         try{
             OrgApiLogger.getServerLogger().debug("Loading API application properties");
             properties.load(getClass().getClassLoader().getResourceAsStream(PROPS_PATH));
+            Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
         }
         catch(IOException ex){
             OrgApiLogger.getServerLogger().error("Unable to load API application properties", ex);
