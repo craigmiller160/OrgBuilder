@@ -11,7 +11,6 @@
         <dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.6.2" />
         <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.6.2" />
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.21"/>
-        <dependency org="io.github.lukehutch" name="fast-classpath-scanner" rev="1.99.0"/>
         <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0"/>
         <dependency org="org.glassfish.jersey.core" name="jersey-common" rev="2.23.1"/>
         <dependency org="org.glassfish.jersey.core" name="jersey-server" rev="2.23.1"/>
