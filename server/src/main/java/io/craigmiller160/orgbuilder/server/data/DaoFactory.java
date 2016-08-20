@@ -5,6 +5,6 @@ package io.craigmiller160.orgbuilder.server.data;
  */
 public interface DaoFactory {
 
-    <E,I> Dao<E,I> newDao(Class<Dao<E,I>> clazz);
+    <E> Dao<E,?> newDao(Class<E> entityType);
 
 }

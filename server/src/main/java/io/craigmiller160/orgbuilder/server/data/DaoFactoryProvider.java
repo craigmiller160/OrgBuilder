@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.data;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 /**
  * Created by craig on 8/10/16.
@@ -21,7 +22,7 @@ public class DaoFactoryProvider {
                 daoFactory = (DaoFactory) clazz.newInstance();
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
-            //TODO handle this
+            OrgApiLogger.getDataLogger().error("Unable to instantiate DaoFactory. Class: " + className, ex);
         }
 
         return daoFactory;
