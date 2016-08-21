@@ -38,11 +38,14 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
             "SELECT COUNT(*) AS member_count FROM members;";
 
     private static final String GET_ALL_QUERY =
-            "SELECT * FROM members;";
+            "SELECT * " +
+            "FROM members " +
+            "ORDER BY member_id ASC;";
 
     private static final String GET_ALL_LIMIT_QUERY =
             "SELECT * " +
             "FROM members " +
+            "ORDER BY member_id ASC " +
             "LIMIT ?,?;";
 
     public MemberDao(Connection connection) {
@@ -111,7 +114,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
             stmt.executeUpdate();
             try(ResultSet resultSet = stmt.getGeneratedKeys()){
                 if(!resultSet.next()){
-                    throw new OrgApiDataException("Unable to retrieve ID from inserted Member. Member: " + element.toString());
+                    throw new SQLException("Unable to retrieve ID from inserted Member. Member: " + element.toString());
                 }
                 element.setMemberId(resultSet.getLong(1));
             }

@@ -20,3 +20,13 @@ CREATE TABLE IF NOT EXISTS org_app.users (
   PRIMARY KEY (user_id),
   FOREIGN KEY (org_id) REFERENCES org_app.orgs (org_id)
 );
+
+DROP TRIGGER IF EXISTS org_app.orgs_before_schema_name_trigger;
+
+DELIMITER ;;
+
+CREATE TRIGGER org_app.orgs_before_schema_name_trigger
+BEFORE INSERT ON org_app.orgs FOR EACH ROW
+  BEGIN
+    SET NEW.schema_name = CONCAT((LAST_INSERT_ID() + 1),SUBSTRING(NEW.org_name,1,3));
+  END ;;
