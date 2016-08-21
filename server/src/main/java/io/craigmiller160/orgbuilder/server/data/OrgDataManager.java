@@ -3,6 +3,10 @@ package io.craigmiller160.orgbuilder.server.data;
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  * Created by craig on 8/10/16.
  */
@@ -14,6 +18,19 @@ public class OrgDataManager {
     public OrgDataManager(OrgDataSource dataSource){
         this.dataSource = dataSource;
         this.schemaManager = new SchemaManager(dataSource);
+    }
+
+    public void createAppSchema(String[] queries) throws OrgApiDataException{
+        try(Connection conn = dataSource.getConnection()){
+            try(Statement stmt = conn.createStatement()){
+                for(String query : queries){
+                    stmt.executeUpdate(query);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to create application schema", ex);
+        }
     }
 
     OrgDataSource getDataSource(){

@@ -1,10 +1,10 @@
 package io.craigmiller160.orgbuilder.server;
 
+import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataManager;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.util.ApiUncaughtExceptionHandler;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -25,7 +24,8 @@ import java.util.Properties;
 public class ServerCore implements ServletContextListener{
 
     private static final String PROPS_PATH = "io/craigmiller160/orgbuilder/server/orgapi.properties";
-    private static final String DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/org_schema_ddl.sql";
+    private static final String ORG_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/org_schema_ddl.sql";
+    private static final String APP_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/app_schema_ddl.sql";
 
     private static final Properties properties = new Properties();
     private static OrgDataManager orgDataManager;
@@ -34,29 +34,36 @@ public class ServerCore implements ServletContextListener{
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try{
-            OrgApiLogger.getServerLogger().info("Initializing API ServerCore");
+            try{
+                OrgApiLogger.getServerLogger().info("Initializing API ServerCore");
 
-            Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
-            OrgApiLogger.getServerLogger().debug("Loading API application properties");
-            properties.load(getClass().getClassLoader().getResourceAsStream(PROPS_PATH));
-        }
-        catch(IOException ex){
-            OrgApiLogger.getServerLogger().error("Unable to load API application properties", ex);
-        }
+                Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
+                OrgApiLogger.getServerLogger().debug("Loading API application properties");
+                properties.load(getClass().getClassLoader().getResourceAsStream(PROPS_PATH));
+            }
+            catch(IOException ex){
+                throw new OrgApiException("Unable to load API application properties", ex);
+            }
 
-        try{
-            OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
-            InputStream ddlStream = getClass().getClassLoader().getResourceAsStream(DDL_PATH);
-            ddlScript = parseDDLScript(ddlStream);
-            //TODO parse the app_schema_ddl.sql script here as well
-        }
-        catch(IOException ex){
-            OrgApiLogger.getServerLogger().error("Unable to load and parse DDL script", ex);
-        }
+            try{
+                OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
+                InputStream ddlStream = getClass().getClassLoader().getResourceAsStream(ORG_DDL_PATH);
+                ddlScript = parseDDLScript(ddlStream);
+                ddlStream = getClass().getClassLoader().getResourceAsStream(APP_DDL_PATH);
+                String[] appScript = parseDDLScript(ddlStream);
 
-        OrgApiLogger.getServerLogger().debug("Configuration database utilities");
-        OrgDataSource dataSource = new OrgDataSource();
-        orgDataManager = new OrgDataManager(dataSource);
+                OrgApiLogger.getServerLogger().debug("Configuration database utilities");
+                OrgDataSource dataSource = new OrgDataSource();
+                orgDataManager = new OrgDataManager(dataSource);
+                orgDataManager.createAppSchema(appScript); //TODO this method needs to be tested
+            }
+            catch(IOException | OrgApiDataException ex){
+                throw new OrgApiException("Unable to load and execute DDL scripts", ex);
+            }
+        }
+        catch(OrgApiException ex){
+            OrgApiLogger.getServerLogger().error("CRITICAL ERROR!!! Unable to properly initialize ServerCore", ex);
+        }
     }
 
     private String[] parseDDLScript(InputStream ddlStream) throws IOException{
