@@ -5,12 +5,18 @@ import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.util.ApiUncaughtExceptionHandler;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -23,7 +29,7 @@ public class ServerCore implements ServletContextListener{
 
     private static final Properties properties = new Properties();
     private static OrgDataManager orgDataManager;
-    private static String ddlScript;
+    private static String[] ddlScript;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -33,18 +39,47 @@ public class ServerCore implements ServletContextListener{
             Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
             OrgApiLogger.getServerLogger().debug("Loading API application properties");
             properties.load(getClass().getClassLoader().getResourceAsStream(PROPS_PATH));
-
-            OrgApiLogger.getServerLogger().debug("Configuration database utilities");
-            OrgDataSource dataSource = new OrgDataSource();
-            orgDataManager = new OrgDataManager(dataSource);
-
-            OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
-            ddlScript = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(DDL_PATH), Charset.defaultCharset());
-
         }
         catch(IOException ex){
             OrgApiLogger.getServerLogger().error("Unable to load API application properties", ex);
         }
+
+        OrgApiLogger.getServerLogger().debug("Configuration database utilities");
+        OrgDataSource dataSource = new OrgDataSource();
+        orgDataManager = new OrgDataManager(dataSource);
+
+        try{
+            OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
+            InputStream ddlStream = getClass().getClassLoader().getResourceAsStream(DDL_PATH);
+            ddlScript = parseDDLScript(ddlStream);
+        }
+        catch(IOException ex){
+            OrgApiLogger.getServerLogger().error("Unable to load and parse DDL script", ex);
+        }
+
+    }
+
+    private String[] parseDDLScript(InputStream ddlStream) throws IOException{
+        List<String> queries = new ArrayList<>();
+        String delimiter = ";";
+        StrBuilder queryBuilder = new StrBuilder();
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream))){
+            String line = null;
+            while((line = reader.readLine()) != null){
+                if(line.startsWith("delimiter")){
+                    String[] lineSplit = StringUtils.split(line);
+                    delimiter = lineSplit[lineSplit.length - 1];
+                    continue;
+                }
+
+                queryBuilder.appendln(line);
+                if(line.endsWith(delimiter)){
+                    queries.add(queryBuilder.toString());
+                    queryBuilder.clear();
+                }
+            }
+        }
+        return queries.toArray(new String[queries.size()]);
     }
 
     public static String getProperty(String key){
@@ -55,7 +90,7 @@ public class ServerCore implements ServletContextListener{
         return orgDataManager;
     }
 
-    public static String getDDLScript(){
+    public static String[] getDDLScript(){
         return ddlScript;
     }
 

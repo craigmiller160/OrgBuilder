@@ -11,6 +11,8 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Statement;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -55,6 +57,9 @@ public class SchemaManagerTest {
     @Test
     public void testCreateSchema() throws Exception{
         schemaManager.createSchema(SCHEMA_NAME);
+        String[] tableNames = schemaManager.getTableNames(SCHEMA_NAME);
+        assertNotNull("Table Names is null", tableNames);
+        assertEquals("Table names is the wrong size", 4, tableNames.length);
     }
 
 }
