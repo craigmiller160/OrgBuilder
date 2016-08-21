@@ -20,12 +20,25 @@ public class OrgDataManager {
         return dataSource;
     }
 
+    SchemaManager getSchemaManager(){
+        return schemaManager;
+    }
+
     public DataConnection connectToSchema(String schemaName) throws OrgApiDataException{
+        if(!schemaManager.schemaExists(schemaName)){
+            throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
+        }
+
         return new JdbcDataConnection(dataSource);
     }
 
-    public SchemaManager getSchemaManager(){
-        return schemaManager;
+    public void createNewSchema(String schemaName) throws OrgApiDataException{
+        if(schemaManager.schemaExists(schemaName)){
+            throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
+        }
+        schemaManager.createSchema(schemaName);
     }
+
+
 
 }

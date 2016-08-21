@@ -24,10 +24,13 @@ public class SchemaManagerTest {
     private static SchemaManager schemaManager;
 
     @BeforeClass
-    public static void beforeClass(){
+    public static void beforeClass() throws Exception{
         ServerCore serverCore = new ServerCore();
         serverCore.contextInitialized(null);
-        schemaManager = ServerCore.getOrgDataManager().getSchemaManager();
+        Class<?> clazz = ServerCore.getOrgDataManager().getClass();
+        Method m = clazz.getDeclaredMethod("getSchemaManager");
+        m.setAccessible(true);
+        schemaManager = (SchemaManager) m.invoke(ServerCore.getOrgDataManager());
     }
 
     @AfterClass
