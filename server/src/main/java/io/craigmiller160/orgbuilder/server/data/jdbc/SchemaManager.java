@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class SchemaManager {
     public boolean schemaExists(String schemaName) throws OrgApiDataException{
         try(Connection conn = dataSource.getConnection()){
             try(PreparedStatement stmt = conn.prepareStatement(SCHEMA_EXISTS_SQL)){
+                OrgApiLogger.getDataLogger().trace("Schema Exists Query:\n" + SCHEMA_EXISTS_SQL);
                 stmt.setString(1, schemaName);
                 try(ResultSet resultSet = stmt.executeQuery()){
                     return resultSet.next();
@@ -55,6 +57,8 @@ public class SchemaManager {
             try(Statement stmt = conn.createStatement()){
                 String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
                 String useSchemaQuery = String.format(USE_SCHEMA_SQL, schemaName);
+                OrgApiLogger.getDataLogger().trace("Create Schema Query:\n" + CREATE_SCHEMA_SQL);
+                OrgApiLogger.getDataLogger().trace("Use Schema Query:\n" + USE_SCHEMA_SQL);
 
                 stmt.executeUpdate(createSchemaQuery);
                 stmt.executeUpdate(useSchemaQuery);
@@ -73,6 +77,7 @@ public class SchemaManager {
     public void deleteSchema(String schemaName) throws OrgApiDataException{
         try(Connection conn = dataSource.getConnection()){
             String query = String.format(DELETE_SCHEMA_SQL, schemaName);
+            OrgApiLogger.getDataLogger().trace("Delete Schema Query:\n" + DELETE_SCHEMA_SQL);
             try(Statement stmt = conn.createStatement()){
                 stmt.executeUpdate(query);
             }
@@ -87,6 +92,7 @@ public class SchemaManager {
         try(Connection conn = dataSource.getConnection()){
             try(Statement stmt = conn.createStatement()){
                 String query = String.format(SHOW_TABLES_SQL, schemaName);
+                OrgApiLogger.getDataLogger().trace("Show Schema Tables Query:\n" + DELETE_SCHEMA_SQL);
                 try(ResultSet resultSet = stmt.executeQuery(query)){
                     while(resultSet.next()){
                         tableNames.add(resultSet.getString(1));

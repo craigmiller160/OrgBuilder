@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.data;
 
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,6 +25,7 @@ public class OrgDataManager {
         try(Connection conn = dataSource.getConnection()){
             try(Statement stmt = conn.createStatement()){
                 for(String query : queries){
+                    OrgApiLogger.getDataLogger().trace("Create App Schema Query:\n" + query);
                     stmt.executeUpdate(query);
                 }
             }
