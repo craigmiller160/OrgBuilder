@@ -1,21 +1,21 @@
 package io.craigmiller160.orgbuilder.server;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by craig on 8/13/16.
  */
 public class ServerCoreTest {
 
-    private ServerCore serverCore;
-
-    @Before
-    public void init(){
-        this.serverCore = new ServerCore();
-        this.serverCore.contextInitialized(null);
+    @BeforeClass
+    public static void init(){
+        ServerCore serverCore = new ServerCore();
+        serverCore.contextInitialized(null);
     }
 
     @Test
@@ -26,15 +26,13 @@ public class ServerCoreTest {
         String dbPass = ServerCore.getProperty(ServerProps.DB_PASS_PROP);
         String initSize = ServerCore.getProperty(ServerProps.POOL_INIT_SIZE_PROP);
         String maxSize = ServerCore.getProperty(ServerProps.POOL_MAX_SIZE_PROP);
-        String defaultDao = ServerCore.getProperty(ServerProps.DEFAULT_DAO_PROP);
 
-        assertEquals("Invalid! " + ServerProps.DB_URL_PROP, "url", dbUrl);
-        assertEquals("Invalid! " + ServerProps.DB_CLASS_PROP, "class", dbClass);
-        assertEquals("Invalid! " + ServerProps.DB_USER_PROP, "user", dbUser);
-        assertEquals("Invalid! " + ServerProps.DB_PASS_PROP, "password", dbPass);
-        assertEquals("Invalid! " + ServerProps.POOL_INIT_SIZE_PROP, "initSize", initSize);
-        assertEquals("Invalid! " + ServerProps.POOL_MAX_SIZE_PROP, "maxSize", maxSize);
-        assertEquals("Invalid! " + ServerProps.DEFAULT_DAO_PROP, "daoFactory", defaultDao);
+        assertNotNull("Missing! " + ServerProps.DB_URL_PROP, dbUrl);
+        assertNotNull("Missing! " + ServerProps.DB_CLASS_PROP, dbClass);
+        assertNotNull("Missing! " + ServerProps.DB_USER_PROP, dbUser);
+        assertNotNull("Missing! " + ServerProps.DB_PASS_PROP, dbPass);
+        assertNotNull("Missing! " + ServerProps.POOL_INIT_SIZE_PROP, initSize);
+        assertNotNull("Missing! " + ServerProps.POOL_MAX_SIZE_PROP, maxSize);
     }
 
 }

@@ -13,6 +13,4 @@ public class ServerProps {
     public static final String POOL_INIT_SIZE_PROP = "io.craigmiller160.orgbuilder.server.data.poolInitSize";
     public static final String POOL_MAX_SIZE_PROP = "io.craigmiller160.orgbuilder.server.data.poolMaxSize";
 
-    public static final String DEFAULT_DAO_PROP = "io.craigmiller160.orgbuilder.server.data.defaultDaoFactory";
-
 }

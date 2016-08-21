@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.dbutils;
+package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 
@@ -7,12 +7,7 @@ import java.util.List;
 /**
  * Created by craig on 8/18/16.
  */
-public class MemberDao extends AbstractDbUtilsDao<MemberDTO,Long> {
-
-    @Override
-    public Class<MemberDTO> getEntityType() {
-        return null;
-    }
+public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
     @Override
     public MemberDTO insert(MemberDTO element) {

@@ -10,5 +10,6 @@
         <Logger name="io.craigmiller160.orgbuilder.server" level="DEBUG">
             <AppenderRef ref="OrgBuilderConsole" />
         </Logger>
+        <Logger name="com.mysql" level="ERROR" />
     </Loggers>
 </Configuration>
