@@ -11,40 +11,14 @@ import java.sql.Connection;
  */
 public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I> {
 
-//    private final OrgDataSource dataSource;
+    private final Connection connection;
 
-    //TODO if this field is accessed concurrently, it will need synchronization
-    private Connection sharedConnection;
-
-    protected AbstractJdbcDao(){
-//        this.dataSource = ServerCore.getDataSource();
+    protected AbstractJdbcDao(Connection connection){
+        this.connection = connection;
     }
 
-//    public OrgDataSource getDataSource(){
-//        return dataSource;
-//    }
-//
-//    public void setSharedConnection(Connection sharedConnection){
-//        this.sharedConnection = sharedConnection;
-//    }
-//
-//    public boolean isUsingSharedConnection(){
-//        return this.sharedConnection != null;
-//    }
-
-    protected E executeUpdate(){
-        //TODO finish this
-        return null;
-    }
-
-    protected E executeQuery(){
-        //TODO finish this
-        return null;
-    }
-
-    protected E executeBatch(){
-        //TODO finish this
-        return null;
+    protected Connection getConnection(){
+        return connection;
     }
 
 }

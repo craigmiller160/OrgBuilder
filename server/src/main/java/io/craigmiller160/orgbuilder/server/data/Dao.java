@@ -24,16 +24,15 @@ import java.util.List;
  */
 public interface Dao<E,I> {
 
+    //TODO add documentation for all exceptions
+
     /**
      * Insert the provided element into the database.
      *
      * @param element the element to be inserted.
      * @return the element, after being inserted.
      */
-    E insert(E element);
-
-    //TODO document
-    List<E> insertAll(List<E> elements);
+    E insert(E element) throws OrgApiDataException;
 
     /**
      * Update the provided element in the database.
@@ -41,10 +40,7 @@ public interface Dao<E,I> {
      * @param element the element to update.
      * @return the element, after being updated.
      */
-    E update(E element);
-
-    //TODO document
-    List<E> updateAll(List<E> elements);
+    E update(E element) throws OrgApiDataException;
 
     /**
      * Delete the element with the provided ID from
@@ -53,10 +49,7 @@ public interface Dao<E,I> {
      * @param id the ID of the element.
      * @return the element that was deleted.
      */
-    E delete(I id);
-
-    //TODO document
-    List<E> deleteAll(List<I> ids);
+    E delete(I id) throws OrgApiDataException;
 
     /**
      * Get the element with the provided ID from
@@ -65,17 +58,7 @@ public interface Dao<E,I> {
      * @param id the ID of the element.
      * @return the element that was retrieved.
      */
-    E get(I id);
-
-    /**
-     * Get the element with the provided ID
-     * from the database. If other elements are joined
-     * with it, they will be retrieved along with it.
-     *
-     * @param id the ID of the element.
-     * @return the element that was retrieved.
-     */
-    E getWithJoins(I id);
+    E get(I id) throws OrgApiDataException;
 
     /**
      * Get the count of the total number of
@@ -85,7 +68,7 @@ public interface Dao<E,I> {
      * @return the count of the elements of
      *          this type in the database.
      */
-    int getCount();
+    int getCount() throws OrgApiDataException;
 
     /**
      * Get all of the elements of the type
@@ -94,19 +77,7 @@ public interface Dao<E,I> {
      * @return all of the elements of this type in
      *          the database.
      */
-    List<E> getAll();
-
-    /**
-     * Get all of the elements of the type
-     * managed by this DAO in the database.
-     * If other elements are joined
-     * with it, they will be retrieved along with it.
-     *
-     * @return all of the elements of this type in
-     *          the database, with all elements
-     *          joined with them.
-     */
-    List<E> getAllWithJoins();
+    List<E> getAll() throws OrgApiDataException;
 
     /**
      * Get all of the elements of the type
@@ -118,22 +89,7 @@ public interface Dao<E,I> {
      * @return all of the elements of this type between the
      *          offset and limit in the database.
      */
-    List<E> getAll(int offset, int limit);
-
-    /**
-     * Get all of the elements of the type
-     * managed by this DAO in the database,
-     * limited by the offset and limit parameters.
-     * If other elements are joined
-     * with it, they will be retrieved along with it.
-     *
-     * @param offset the offset to start getting elements at.
-     * @param limit the limit of how many elements to retrieve.
-     * @return all of the elements of this type between the
-     *          offset and limit in the database, with all
-     *          elements joined with them.
-     */
-    List<E> getAllWithJoins(int offset, int limit);
+    List<E> getAll(long offset, long size) throws OrgApiDataException;
 
     /**
      * Invoke an additional query method in the
@@ -144,6 +100,6 @@ public interface Dao<E,I> {
      * @param params the parameters for the query method.
      * @return a list of the element results.
      */
-    List<E> query(String queryName, Object...params);
+    List<E> query(String queryName, Object...params) throws OrgApiDataException;
 
 }

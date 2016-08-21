@@ -9,4 +9,6 @@ public interface DataConnection {
 
     void commit() throws OrgApiDataException;
 
+    void rollback() throws OrgApiDataException;
+
 }

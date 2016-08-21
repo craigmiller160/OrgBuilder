@@ -29,7 +29,7 @@ public class OrgDataManager {
             throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
         }
 
-        return new JdbcDataConnection(dataSource);
+        return new JdbcDataConnection(dataSource, schemaName);
     }
 
     public void createNewSchema(String schemaName) throws OrgApiDataException{

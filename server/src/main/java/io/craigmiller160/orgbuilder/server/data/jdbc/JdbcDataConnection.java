@@ -6,8 +6,11 @@ import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +32,13 @@ public class JdbcDataConnection implements DataConnection {
 
     private final Connection connection;
 
-    public JdbcDataConnection(OrgDataSource dataSource) throws OrgApiDataException{
+    public JdbcDataConnection(OrgDataSource dataSource, String schemaName) throws OrgApiDataException{
         try{
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
+            try(Statement stmt = connection.createStatement()){
+                stmt.executeUpdate("use " + schemaName);
+            }
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to create new JDBC Data Transaction", ex);
@@ -44,9 +50,10 @@ public class JdbcDataConnection implements DataConnection {
         Class<Dao<E,?>> daoClazz = entityDaoMap.get(entityType);
         if(daoClazz != null){
             try {
-                return daoClazz.newInstance();
+                Constructor<Dao<E,?>> constructor = daoClazz.getConstructor(Connection.class);
+                return constructor.newInstance(connection);
             }
-            catch (InstantiationException | IllegalAccessException ex) {
+            catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
                 throw new OrgApiDataException("Unable to instantiate Dao. Class: " + daoClazz.getName(), ex);
             }
         }
@@ -56,6 +63,11 @@ public class JdbcDataConnection implements DataConnection {
 
     @Override
     public void commit() throws OrgApiDataException {
+        //TODO finish this
+    }
+
+    @Override
+    public void rollback() throws OrgApiDataException {
         //TODO finish this
     }
 }
