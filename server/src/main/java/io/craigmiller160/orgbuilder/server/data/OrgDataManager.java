@@ -56,4 +56,8 @@ public class OrgDataManager {
         schemaManager.createSchema(schemaName);
     }
 
+    public void deleteSchema(String schemaName) throws OrgApiDataException{
+        schemaManager.deleteSchema(schemaName);
+    }
+
 }

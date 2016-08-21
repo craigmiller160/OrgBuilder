@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 public class SchemaManagerTest {
 
     private static final String SCHEMA_NAME = "test_schema";
-    private static final String CLEANUP_SQL = "drop schema if exists " + SCHEMA_NAME;
 
     private static SchemaManager schemaManager;
 
@@ -35,17 +34,10 @@ public class SchemaManagerTest {
         schemaManager = (SchemaManager) m.invoke(ServerCore.getOrgDataManager());
     }
 
+    //This also tests the deleteSchema() method
     @AfterClass
     public static void tearDown() throws Exception{
-        Class<?> clazz = ServerCore.getOrgDataManager().getClass();
-        Method m = clazz.getDeclaredMethod("getDataSource");
-        m.setAccessible(true);
-        OrgDataSource dataSource = (OrgDataSource) m.invoke(ServerCore.getOrgDataManager());
-        try(Connection conn = dataSource.getConnection()){
-            try(Statement stmt = conn.createStatement()){
-                stmt.executeUpdate(CLEANUP_SQL);
-            }
-        }
+        schemaManager.deleteSchema(SCHEMA_NAME);
     }
 
     @Test

@@ -27,6 +27,9 @@ public class SchemaManager {
     private static final String SHOW_TABLES_SQL =
             "show tables from %1$s;";
 
+    private static final String DELETE_SCHEMA_SQL =
+            "drop schema if exists %1$s;";
+
     private final OrgDataSource dataSource;
 
     public SchemaManager(OrgDataSource dataSource){
@@ -64,6 +67,18 @@ public class SchemaManager {
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to create schema. Schema Name: " + schemaName, ex);
+        }
+    }
+
+    public void deleteSchema(String schemaName) throws OrgApiDataException{
+        try(Connection conn = dataSource.getConnection()){
+            String query = String.format(DELETE_SCHEMA_SQL, schemaName);
+            try(Statement stmt = conn.createStatement()){
+                stmt.executeUpdate(query);
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to delete schema. Schema Name: " + schemaName, ex);
         }
     }
 
