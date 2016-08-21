@@ -44,19 +44,19 @@ public class ServerCore implements ServletContextListener{
             OrgApiLogger.getServerLogger().error("Unable to load API application properties", ex);
         }
 
-        OrgApiLogger.getServerLogger().debug("Configuration database utilities");
-        OrgDataSource dataSource = new OrgDataSource();
-        orgDataManager = new OrgDataManager(dataSource);
-
         try{
             OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
             InputStream ddlStream = getClass().getClassLoader().getResourceAsStream(DDL_PATH);
             ddlScript = parseDDLScript(ddlStream);
+            //TODO parse the app_schema_ddl.sql script here as well
         }
         catch(IOException ex){
             OrgApiLogger.getServerLogger().error("Unable to load and parse DDL script", ex);
         }
 
+        OrgApiLogger.getServerLogger().debug("Configuration database utilities");
+        OrgDataSource dataSource = new OrgDataSource();
+        orgDataManager = new OrgDataManager(dataSource);
     }
 
     private String[] parseDDLScript(InputStream ddlStream) throws IOException{
@@ -66,14 +66,23 @@ public class ServerCore implements ServletContextListener{
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(ddlStream))){
             String line = null;
             while((line = reader.readLine()) != null){
-                if(line.startsWith("delimiter")){
+                //If the line is blank, and nothing has been added to the queryBuilder yet, skip it
+                if(StringUtils.isEmpty(line) && queryBuilder.length() == 0) {
+                    continue;
+                }
+                //If the line is a comment, skip it
+                else if(line.trim().startsWith("--")){
+                    continue;
+                }
+                //If the line starts with "delimiter", change the current delimiter value
+                else if(line.trim().startsWith("delimiter")){
                     String[] lineSplit = StringUtils.split(line);
                     delimiter = lineSplit[lineSplit.length - 1];
                     continue;
                 }
 
                 queryBuilder.appendln(line);
-                if(line.endsWith(delimiter)){
+                if(line.trim().endsWith(delimiter)){
                     queries.add(queryBuilder.toString());
                     queryBuilder.clear();
                 }

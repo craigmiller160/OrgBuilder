@@ -1,13 +1,5 @@
 -- Creates the table layout for each organization's schema in the database of this application
 
-CREATE TABLE org (
-  org_id BIGINT NOT NULL AUTO_INCREMENT,
-  org_name VARCHAR(255) NOT NULL,
-  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  schema_name VARCHAR(50) NOT NULL,
-  PRIMARY KEY (org_id)
-);
-
 CREATE TABLE members (
   member_id BIGINT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(255),
