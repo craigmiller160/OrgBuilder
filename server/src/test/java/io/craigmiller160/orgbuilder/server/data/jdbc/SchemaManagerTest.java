@@ -26,7 +26,7 @@ public class SchemaManagerTest {
     private static SchemaManager schemaManager;
 
     @BeforeClass
-    public static void beforeClass() throws Exception{
+    public static void init() throws Exception{
         ServerCore serverCore = new ServerCore();
         serverCore.contextInitialized(null);
         Class<?> clazz = ServerCore.getOrgDataManager().getClass();
@@ -36,7 +36,7 @@ public class SchemaManagerTest {
     }
 
     @AfterClass
-    public static void afterClass() throws Exception{
+    public static void tearDown() throws Exception{
         Class<?> clazz = ServerCore.getOrgDataManager().getClass();
         Method m = clazz.getDeclaredMethod("getDataSource");
         m.setAccessible(true);

@@ -25,6 +25,9 @@ public class ServerCoreTest {
             "from information_schema.schemata " +
             "where schema_name = 'org_app';";
 
+    private static final String CHECK_TABLES_SQL =
+            "show tables from org_app;";
+
     @BeforeClass
     public static void init(){
         ServerCore serverCore = new ServerCore();
@@ -64,6 +67,14 @@ public class ServerCoreTest {
             try(Statement stmt = conn.createStatement()){
                 try(ResultSet resultSet = stmt.executeQuery(APP_SCHEMA_CHECK_SQL)){
                     assertTrue("No org_app schema exists", resultSet.next());
+                }
+
+                try(ResultSet resultSet = stmt.executeQuery(CHECK_TABLES_SQL)){
+                    int tableCount = 0;
+                    while(resultSet.next()){
+                        tableCount++;
+                    }
+                    assertEquals("Wrong number of tables in org_app schema", 2, tableCount);
                 }
             }
         }

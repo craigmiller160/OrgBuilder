@@ -56,6 +56,4 @@ public class OrgDataManager {
         schemaManager.createSchema(schemaName);
     }
 
-
-
 }
