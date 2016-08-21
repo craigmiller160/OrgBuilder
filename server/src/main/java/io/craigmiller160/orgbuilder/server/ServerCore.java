@@ -34,10 +34,11 @@ public class ServerCore implements ServletContextListener{
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try{
-            try{
-                OrgApiLogger.getServerLogger().info("Initializing API ServerCore");
+            OrgApiLogger.getServerLogger().info("Initializing API ServerCore");
+            Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
 
-                Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
+            try{
+
                 OrgApiLogger.getServerLogger().debug("Loading API application properties");
                 properties.load(getClass().getClassLoader().getResourceAsStream(PROPS_PATH));
             }
@@ -62,7 +63,7 @@ public class ServerCore implements ServletContextListener{
             }
         }
         catch(OrgApiException ex){
-            OrgApiLogger.getServerLogger().error("CRITICAL ERROR!!! Unable to properly initialize ServerCore", ex);
+            throw new RuntimeException("CRITICAL ERROR!!! Unable to properly initialize the SeverCore", ex);
         }
     }
 
@@ -82,7 +83,7 @@ public class ServerCore implements ServletContextListener{
                     continue;
                 }
                 //If the line starts with "delimiter", change the current delimiter value
-                else if(line.trim().startsWith("delimiter")){
+                else if(line.trim().toLowerCase().startsWith("delimiter")){
                     String[] lineSplit = StringUtils.split(line);
                     delimiter = lineSplit[lineSplit.length - 1];
                     continue;
