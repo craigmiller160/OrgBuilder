@@ -35,4 +35,10 @@ public class ServerCoreTest {
         assertNotNull("Missing! " + ServerProps.POOL_MAX_SIZE_PROP, maxSize);
     }
 
+    @Test
+    public void testDDL(){
+        String ddlScript = ServerCore.getDDLScript();
+        assertNotNull("Missing! DDL Script", ddlScript);
+    }
+
 }

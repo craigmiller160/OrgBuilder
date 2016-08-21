@@ -18,6 +18,9 @@ public class SchemaManager {
     private static final String CREATE_SCHEMA_SQL =
             "create schema %1$s;";
 
+    private static final String USE_SCHEMA_SQL =
+            "use %1$s;";
+
     private final OrgDataSource dataSource;
 
     public SchemaManager(OrgDataSource dataSource){
@@ -41,8 +44,13 @@ public class SchemaManager {
     public void createSchema(String schemaName) throws OrgApiDataException{
         try(Connection conn = dataSource.getConnection()){
             try(Statement stmt = conn.createStatement()){
-                String query = String.format(CREATE_SCHEMA_SQL, schemaName);
-                stmt.executeUpdate(query);
+                String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
+                String useSchemaQuery = String.format(USE_SCHEMA_SQL, schemaName);
+
+                stmt.executeUpdate(createSchemaQuery);
+                stmt.executeUpdate(useSchemaQuery);
+
+
             }
         }
         catch(SQLException ex){
