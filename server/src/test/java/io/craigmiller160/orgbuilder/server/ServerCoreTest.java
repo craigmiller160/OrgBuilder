@@ -1,18 +1,29 @@
 package io.craigmiller160.orgbuilder.server;
 
+import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by craig on 8/13/16.
  */
 public class ServerCoreTest {
+
+    private static final String APP_SCHEMA_CHECK_SQL =
+            "select schema_name " +
+            "from information_schema.schemata " +
+            "where schema_name = 'org_app';";
 
     @BeforeClass
     public static void init(){
@@ -41,6 +52,21 @@ public class ServerCoreTest {
     public void testDDL(){
         String[] ddlScript = ServerCore.getDDLScript();
         assertNotNull("Missing! DDL Script", ddlScript);
+    }
+
+    @Test
+    public void testDataManager() throws Exception{
+        Class<?> clazz = ServerCore.getOrgDataManager().getClass();
+        Method m = clazz.getDeclaredMethod("getDataSource");
+        m.setAccessible(true);
+        OrgDataSource dataSource = (OrgDataSource) m.invoke(ServerCore.getOrgDataManager());
+        try(Connection conn = dataSource.getConnection()){
+            try(Statement stmt = conn.createStatement()){
+                try(ResultSet resultSet = stmt.executeQuery(APP_SCHEMA_CHECK_SQL)){
+                    assertTrue("No org_app schema exists", resultSet.next());
+                }
+            }
+        }
     }
 
 }

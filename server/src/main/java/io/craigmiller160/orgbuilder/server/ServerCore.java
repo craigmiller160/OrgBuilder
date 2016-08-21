@@ -55,7 +55,7 @@ public class ServerCore implements ServletContextListener{
                 OrgApiLogger.getServerLogger().debug("Configuration database utilities");
                 OrgDataSource dataSource = new OrgDataSource();
                 orgDataManager = new OrgDataManager(dataSource);
-                orgDataManager.createAppSchema(appScript); //TODO this method needs to be tested
+                orgDataManager.createAppSchema(appScript);
             }
             catch(IOException | OrgApiDataException ex){
                 throw new OrgApiException("Unable to load and execute DDL scripts", ex);
