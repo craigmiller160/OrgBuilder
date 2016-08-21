@@ -59,7 +59,7 @@ public class SchemaManagerTest {
         schemaManager.createSchema(SCHEMA_NAME);
         String[] tableNames = schemaManager.getTableNames(SCHEMA_NAME);
         assertNotNull("Table Names is null", tableNames);
-        assertEquals("Table names is the wrong size", 4, tableNames.length);
+        assertEquals("Table names is the wrong size", 5, tableNames.length);
     }
 
 }
