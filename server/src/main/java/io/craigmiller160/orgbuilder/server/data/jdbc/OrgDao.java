@@ -76,10 +76,10 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO insert(OrgDTO element) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Org Insert Query:\n" + INSERT_QUERY);
         try{
             long orgId = -1;
             try(PreparedStatement stmt = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)){
-                OrgApiLogger.getDataLogger().trace("Org Insert Query:\n" + INSERT_QUERY);
                 parameterizeOrg(stmt, element);
                 stmt.executeUpdate();
                 try(ResultSet resultSet = stmt.getGeneratedKeys()){
@@ -101,8 +101,8 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO update(OrgDTO element) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Org Update Query:\n" + UPDATE_QUERY);
         try(PreparedStatement stmt = getConnection().prepareStatement(UPDATE_QUERY)){
-            OrgApiLogger.getDataLogger().trace("Org Update Query:\n" + UPDATE_QUERY);
             parameterizeOrg(stmt, element);
             stmt.setLong(UPDATE_KEY_PARAM_INDEX, element.getOrgId());
             stmt.executeUpdate();
@@ -119,8 +119,8 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
         OrgDTO element = null;
         try{
             element = get(id);
+            OrgApiLogger.getDataLogger().trace("Org Delete Query:\n" + DELETE_QUERY);
             try(PreparedStatement stmt = getConnection().prepareStatement(DELETE_QUERY)){
-                OrgApiLogger.getDataLogger().trace("Org Delete Query:\n" + DELETE_QUERY);
                 stmt.setLong(1, id);
                 stmt.executeUpdate();
             }
@@ -134,9 +134,9 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO get(Long id) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Org Get By ID Query:\n" + GET_BY_ID_QUERY);
         OrgDTO element = null;
         try(PreparedStatement stmt = getConnection().prepareStatement(GET_BY_ID_QUERY)){
-            OrgApiLogger.getDataLogger().trace("Org Get By ID Query:\n" + GET_BY_ID_QUERY);
             stmt.setLong(1, id);
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
@@ -153,10 +153,10 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public int getCount() throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Org Count Query:\n" + COUNT_QUERY);
         int count = -1;
         try(Statement stmt = getConnection().createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(COUNT_QUERY)){
-                OrgApiLogger.getDataLogger().trace("Org Count Query:\n" + COUNT_QUERY);
                 if(resultSet.next()){
                     count = resultSet.getInt("org_count");
                 }
@@ -171,10 +171,10 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public List<OrgDTO> getAll() throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Org Get All Query:\n" + GET_ALL_QUERY);
         List<OrgDTO> elements = new ArrayList<>();
         try(Statement stmt = getConnection().createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(GET_ALL_QUERY)){
-                OrgApiLogger.getDataLogger().trace("Org Get All Query:\n" + GET_ALL_QUERY);
                 while(resultSet.next()){
                     OrgDTO element = parseResult(resultSet);
                     elements.add(element);
@@ -190,9 +190,9 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public List<OrgDTO> getAll(long offset, long size) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Org Get All Limit Query:\n" + GET_ALL_LIMIT_QUERY);
         List<OrgDTO> elements = new ArrayList<>();
         try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_LIMIT_QUERY)){
-            OrgApiLogger.getDataLogger().trace("Org Get All Limit Query:\n" + GET_ALL_LIMIT_QUERY);
             stmt.setLong(1, offset);
             stmt.setLong(2, size);
             try(ResultSet resultSet = stmt.executeQuery()){
