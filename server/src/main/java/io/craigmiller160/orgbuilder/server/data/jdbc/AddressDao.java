@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
+import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
@@ -13,10 +14,7 @@ import java.util.List;
 /**
  * Created by craig on 8/21/16.
  */
-public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> {
-
-    //TODO get all by foreign key
-    //TODO count by foreign key
+public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements MemberJoins<AddressDTO,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
@@ -52,6 +50,24 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> {
             "FROM addresses " +
             "ORDER BY address_id ASC " +
             "LIMIT ?,?;";
+
+    private static final String GET_ALL_BY_MEMBER_QUERY =
+            "SELECT * " +
+            "FROM addresses " +
+            "WHERE member_id = ? " +
+            "ORDER BY address_id ASC;";
+
+    private static final String GET_ALL_BY_MEMBER_LIMIT_QUERY =
+            "SELECT * " +
+            "FROM addresses " +
+            "WHERE member_id = ? " +
+            "ORDER BY address_id ASC " +
+            "LIMIT ?,?;";
+
+    private static final String COUNT_BY_MEMBER_QUERY =
+            "SELECT COUNT(*) AS member_count " +
+            "FROM addresses " +
+            "WHERE member_id = ?;";
 
     public AddressDao(Connection connection) {
         super(connection);
@@ -258,5 +274,66 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> {
         }
 
         return elements;
+    }
+
+    @Override
+    public List<AddressDTO> getAllByMember(Long id) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Address Get All By Member Query:\n" + GET_ALL_BY_MEMBER_QUERY);
+        List<AddressDTO> elements = new ArrayList<>();
+        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_BY_MEMBER_QUERY)){
+            stmt.setLong(1, id);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                while(resultSet.next()){
+                    AddressDTO element = parseResult(resultSet);
+                    elements.add(element);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get all addresses by member id. Member ID: " + id, ex);
+        }
+
+        return elements;
+    }
+
+    @Override
+    public List<AddressDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Address Get All By Member Limit Query:\n" + GET_ALL_BY_MEMBER_LIMIT_QUERY);
+        List<AddressDTO> elements = new ArrayList<>();
+        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_BY_MEMBER_LIMIT_QUERY)){
+            stmt.setLong(1, id);
+            stmt.setLong(2, offset);
+            stmt.setLong(3, size);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                while(resultSet.next()){
+                    AddressDTO element = parseResult(resultSet);
+                    elements.add(element);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get all address by member id, with limit. Member ID: " + id + " Offset: " + offset + " Size: " + size, ex);
+        }
+
+        return elements;
+    }
+
+    @Override
+    public long getCountByMember(Long id) throws OrgApiDataException {
+        OrgApiLogger.getDataLogger().trace("Address Count By Member Query:\n" + GET_ALL_BY_MEMBER_LIMIT_QUERY);
+        long count = -1;
+        try(PreparedStatement stmt = getConnection().prepareStatement(COUNT_BY_MEMBER_QUERY)){
+            stmt.setLong(1, id);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                if(resultSet.next()){
+                    count = resultSet.getLong("address_count");
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get count of addresses by member id. Member ID: " + id, ex);
+        }
+
+        return count;
     }
 }
