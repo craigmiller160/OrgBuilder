@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OrgBuilder" default="all.resolve" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <property file="build.properties" />
     <target name="project.resolve">
+        <delete dir="${dir.lib}" />
+        <mkdir dir="${dir.lib}" />
         <ivy:retrieve />
     </target>
     <target name="server.resolve">
-    	<ant antfile="build.xml" dir="server" target="resolve" />
+    	<ant antfile="build.xml" dir="server" target="resolve">
+            <property name="dir.server" value="${dir.server}" />
+        </ant>
     </target>
     <target name="client.resolve">
-    	<ant antfile="build.xml" dir="client" target="resolve" />
+    	<ant antfile="build.xml" dir="client" target="resolve">
+            <property name="dir.client" value="${dir.client}" />
+        </ant>
     </target>
     <target name="all.resolve">
     	<antcall target="project.resolve" />
