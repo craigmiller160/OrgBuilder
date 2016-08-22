@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
@@ -110,6 +111,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     @Override
     public MemberDTO insert(MemberDTO element)  throws OrgApiDataException {
         try(PreparedStatement stmt = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)){
+            OrgApiLogger.getDataLogger().trace("Member Insert Query:\n" + INSERT_QUERY);
             parameterizeMember(stmt, element);
             stmt.executeUpdate();
             try(ResultSet resultSet = stmt.getGeneratedKeys()){
@@ -129,6 +131,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     @Override
     public MemberDTO update(MemberDTO element)  throws OrgApiDataException{
         try(PreparedStatement stmt = getConnection().prepareStatement(UPDATE_QUERY)){
+            OrgApiLogger.getDataLogger().trace("Member Update Query:\n" + UPDATE_QUERY);
             parameterizeMember(stmt, element);
             stmt.setLong(UPDATE_KEY_PARAM_INDEX, element.getMemberId());
             stmt.executeUpdate();
@@ -144,16 +147,10 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     public MemberDTO delete(Long id) throws OrgApiDataException {
         MemberDTO element = null;
         try{
-            try(PreparedStatement stmt = getConnection().prepareStatement(GET_BY_ID_QUERY)){
-                stmt.setLong(1, id);
-                try(ResultSet resultSet = stmt.executeQuery()){
-                    if(resultSet.next()){
-                        element = parseResult(resultSet);
-                    }
-                }
-            }
+            element = get(id);
 
             try(PreparedStatement stmt = getConnection().prepareStatement(DELETE_QUERY)){
+                OrgApiLogger.getDataLogger().trace("Member Delete Query:\n" + DELETE_QUERY);
                 stmt.setLong(1, id);
                 stmt.executeUpdate();
             }
@@ -169,6 +166,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     public MemberDTO get(Long id) throws OrgApiDataException {
         MemberDTO element = null;
         try(PreparedStatement stmt = getConnection().prepareStatement(GET_BY_ID_QUERY)){
+            OrgApiLogger.getDataLogger().trace("Member Get By ID Query:\n" + GET_BY_ID_QUERY);
             stmt.setLong(1, id);
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
@@ -188,6 +186,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
         int count = -1;
         try(Statement stmt = getConnection().createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(COUNT_QUERY)){
+                OrgApiLogger.getDataLogger().trace("Member Count Query:\n" + COUNT_QUERY);
                 if(resultSet.next()){
                     count = resultSet.getInt("member_count");
                 }
@@ -205,6 +204,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
         List<MemberDTO> elements = new ArrayList<>();
         try(Statement stmt = getConnection().createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(GET_ALL_QUERY)){
+                OrgApiLogger.getDataLogger().trace("Member Get All Query:\n" + GET_ALL_QUERY);
                 while(resultSet.next()){
                     MemberDTO element = parseResult(resultSet);
                     elements.add(element);
@@ -222,6 +222,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     public List<MemberDTO> getAll(long offset, long size) throws OrgApiDataException {
         List<MemberDTO> elements = new ArrayList<>();
         try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_LIMIT_QUERY)){
+            OrgApiLogger.getDataLogger().trace("Member Get All Limit Query:\n" + GET_ALL_LIMIT_QUERY);
             stmt.setLong(1, offset);
             stmt.setLong(2, size);
             try(ResultSet resultSet = stmt.executeQuery()){

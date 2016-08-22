@@ -2,8 +2,10 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,11 +15,11 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 2;
 
-    private static final String INSERT_SQL =
+    private static final String INSERT_QUERY =
             "INSERT INTO orgs (org_name) " +
             "VALUES (?);";
 
-    private static final String UPDATE_SQL =
+    private static final String UPDATE_QUERY =
             "UPDATE orgs " +
             "SET org_name = ? " +
             "WHERE org_id = ?;";
@@ -25,6 +27,26 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
     private static final String DELETE_QUERY =
             "DELETE FROM orgs " +
             "WHERE org_id = ?;";
+
+    private static final String GET_BY_ID_QUERY =
+            "SELECT * " +
+            "FROM orgs " +
+            "WHERE org_id = ?;";
+
+    private static final String COUNT_QUERY =
+            "SELECT COUNT(*) AS org_count " +
+            "FROM orgs;";
+
+    private static final String GET_ALL_QUERY =
+            "SELECT * " +
+            "FROM orgs " +
+            "ORDER BY org_id ASC;";
+
+    private static final String GET_ALL_LIMIT_QUERY =
+            "SELECT * " +
+            "FROM orgs " +
+            "ORDER BY org_id ASC " +
+            "LIMIT ?,?;";
 
     public OrgDao(Connection connection) {
         super(connection);
@@ -39,17 +61,33 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
         }
     }
 
+    private OrgDTO parseResult(ResultSet resultSet) throws SQLException{
+        OrgDTO element = new OrgDTO();
+        element.setOrgId(resultSet.getLong("org_id"));
+        element.setOrgName(resultSet.getString("org_name"));
+        Date createdDate = resultSet.getDate("created_date");
+        if(createdDate != null){
+            element.setCreatedDate(createdDate.toLocalDate());
+        }
+        element.setSchemaName(resultSet.getString("schema_name"));
+
+        return element;
+    }
+
     @Override
     public OrgDTO insert(OrgDTO element) throws OrgApiDataException {
-        try(PreparedStatement stmt = getConnection().prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)){
-            parameterizeOrg(stmt, element);
-            stmt.executeUpdate();
+        try{
             long orgId = -1;
-            try(ResultSet resultSet = stmt.getGeneratedKeys()){
-                if(!resultSet.next()){
-                    throw new SQLException("Unable to retrieve ID from inserted Org. Org: " + element.toString());
+            try(PreparedStatement stmt = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)){
+                OrgApiLogger.getDataLogger().trace("Org Insert Query:\n" + INSERT_QUERY);
+                parameterizeOrg(stmt, element);
+                stmt.executeUpdate();
+                try(ResultSet resultSet = stmt.getGeneratedKeys()){
+                    if(!resultSet.next()){
+                        throw new SQLException("Unable to retrieve ID from inserted Org. Org: " + element.toString());
+                    }
+                    orgId = resultSet.getLong(1);
                 }
-                orgId = resultSet.getLong(1);
             }
 
             element = get(orgId);
@@ -63,7 +101,8 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO update(OrgDTO element) throws OrgApiDataException {
-        try(PreparedStatement stmt = getConnection().prepareStatement(UPDATE_SQL)){
+        try(PreparedStatement stmt = getConnection().prepareStatement(UPDATE_QUERY)){
+            OrgApiLogger.getDataLogger().trace("Org Update Query:\n" + UPDATE_QUERY);
             parameterizeOrg(stmt, element);
             stmt.setLong(UPDATE_KEY_PARAM_INDEX, element.getOrgId());
             stmt.executeUpdate();
@@ -77,33 +116,96 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO delete(Long id) throws OrgApiDataException {
-        try(PreparedStatement stmt = getConnection().prepareStatement(DELETE_QUERY)){
-            //TODO finish this
+        OrgDTO element = null;
+        try{
+            element = get(id);
+            try(PreparedStatement stmt = getConnection().prepareStatement(DELETE_QUERY)){
+                OrgApiLogger.getDataLogger().trace("Org Delete Query:\n" + DELETE_QUERY);
+                stmt.setLong(1, id);
+                stmt.executeUpdate();
+            }
         }
         catch(SQLException ex){
-            //TODO handle this
+            throw new OrgApiDataException("Unable to delete Org. ID: " + id, ex);
         }
 
-        return null;
+        return element;
     }
 
     @Override
     public OrgDTO get(Long id) throws OrgApiDataException {
-        return null;
+        OrgDTO element = null;
+        try(PreparedStatement stmt = getConnection().prepareStatement(GET_BY_ID_QUERY)){
+            OrgApiLogger.getDataLogger().trace("Org Get By ID Query:\n" + GET_BY_ID_QUERY);
+            stmt.setLong(1, id);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                if(resultSet.next()){
+                    element = parseResult(resultSet);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get Org by ID. ID: " + id, ex);
+        }
+
+        return element;
     }
 
     @Override
     public int getCount() throws OrgApiDataException {
-        return 0;
+        int count = -1;
+        try(Statement stmt = getConnection().createStatement()){
+            try(ResultSet resultSet = stmt.executeQuery(COUNT_QUERY)){
+                OrgApiLogger.getDataLogger().trace("Org Count Query:\n" + COUNT_QUERY);
+                if(resultSet.next()){
+                    count = resultSet.getInt("org_count");
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get count of Orgs table", ex);
+        }
+
+        return count;
     }
 
     @Override
     public List<OrgDTO> getAll() throws OrgApiDataException {
-        return null;
+        List<OrgDTO> elements = new ArrayList<>();
+        try(Statement stmt = getConnection().createStatement()){
+            try(ResultSet resultSet = stmt.executeQuery(GET_ALL_QUERY)){
+                OrgApiLogger.getDataLogger().trace("Org Get All Query:\n" + GET_ALL_QUERY);
+                while(resultSet.next()){
+                    OrgDTO element = parseResult(resultSet);
+                    elements.add(element);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to retrieve all orgs", ex);
+        }
+
+        return elements;
     }
 
     @Override
     public List<OrgDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return null;
+        List<OrgDTO> elements = new ArrayList<>();
+        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_LIMIT_QUERY)){
+            OrgApiLogger.getDataLogger().trace("Org Get All Limit Query:\n" + GET_ALL_LIMIT_QUERY);
+            stmt.setLong(1, offset);
+            stmt.setLong(2, size);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                while(resultSet.next()){
+                    OrgDTO element = parseResult(resultSet);
+                    elements.add(element);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to retrieve orgs within range. Offset: " + offset + " Size: " + size, ex);
+        }
+
+        return elements;
     }
 }
