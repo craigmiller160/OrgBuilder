@@ -13,6 +13,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
     private String prefix;
     private String lineNumber;
     private String extension;
+    private long memberId;
 
     public PhoneDTO(){}
 
@@ -29,33 +30,6 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
 
     public void setPhoneId(long phoneId) {
         this.phoneId = phoneId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PhoneDTO phoneDTO = (PhoneDTO) o;
-
-        if (phoneId != phoneDTO.phoneId) return false;
-        if (phoneType != phoneDTO.phoneType) return false;
-        if (areaCode != null ? !areaCode.equals(phoneDTO.areaCode) : phoneDTO.areaCode != null) return false;
-        if (prefix != null ? !prefix.equals(phoneDTO.prefix) : phoneDTO.prefix != null) return false;
-        if (lineNumber != null ? !lineNumber.equals(phoneDTO.lineNumber) : phoneDTO.lineNumber != null) return false;
-        return extension != null ? extension.equals(phoneDTO.extension) : phoneDTO.extension == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (phoneId ^ (phoneId >>> 32));
-        result = 31 * result + (phoneType != null ? phoneType.hashCode() : 0);
-        result = 31 * result + (areaCode != null ? areaCode.hashCode() : 0);
-        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
-        result = 31 * result + (lineNumber != null ? lineNumber.hashCode() : 0);
-        result = 31 * result + (extension != null ? extension.hashCode() : 0);
-        return result;
     }
 
     public PhoneType getPhoneType() {
@@ -126,6 +100,43 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
         }
 
         return builder.toString();
+    }
+
+    public long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(long memberId) {
+        this.memberId = memberId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PhoneDTO phoneDTO = (PhoneDTO) o;
+
+        if (phoneId != phoneDTO.phoneId) return false;
+        if (memberId != phoneDTO.memberId) return false;
+        if (phoneType != phoneDTO.phoneType) return false;
+        if (areaCode != null ? !areaCode.equals(phoneDTO.areaCode) : phoneDTO.areaCode != null) return false;
+        if (prefix != null ? !prefix.equals(phoneDTO.prefix) : phoneDTO.prefix != null) return false;
+        if (lineNumber != null ? !lineNumber.equals(phoneDTO.lineNumber) : phoneDTO.lineNumber != null) return false;
+        return extension != null ? extension.equals(phoneDTO.extension) : phoneDTO.extension == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (phoneId ^ (phoneId >>> 32));
+        result = 31 * result + (phoneType != null ? phoneType.hashCode() : 0);
+        result = 31 * result + (areaCode != null ? areaCode.hashCode() : 0);
+        result = 31 * result + (prefix != null ? prefix.hashCode() : 0);
+        result = 31 * result + (lineNumber != null ? lineNumber.hashCode() : 0);
+        result = 31 * result + (extension != null ? extension.hashCode() : 0);
+        result = 31 * result + (int) (memberId ^ (memberId >>> 32));
+        return result;
     }
 
     @Override

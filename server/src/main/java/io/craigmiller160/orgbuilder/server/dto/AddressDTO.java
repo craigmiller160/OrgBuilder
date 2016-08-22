@@ -14,6 +14,7 @@ public class AddressDTO implements Comparable<AddressDTO>{
     private String city;
     private State state;
     private String zipCode;
+    private long memberId;
 
     public AddressDTO(){}
 
@@ -90,6 +91,7 @@ public class AddressDTO implements Comparable<AddressDTO>{
         AddressDTO that = (AddressDTO) o;
 
         if (addressId != that.addressId) return false;
+        if (memberId != that.memberId) return false;
         if (addressType != that.addressType) return false;
         if (address != null ? !address.equals(that.address) : that.address != null) return false;
         if (unit != null ? !unit.equals(that.unit) : that.unit != null) return false;
@@ -108,7 +110,16 @@ public class AddressDTO implements Comparable<AddressDTO>{
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
+        result = 31 * result + (int) (memberId ^ (memberId >>> 32));
         return result;
+    }
+
+    public long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(long memberId) {
+        this.memberId = memberId;
     }
 
     @Override

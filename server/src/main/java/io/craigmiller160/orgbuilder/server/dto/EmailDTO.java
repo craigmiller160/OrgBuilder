@@ -8,6 +8,7 @@ public class EmailDTO {
     private long emailId;
     private EmailType emailType;
     private String emailAddress;
+    private long memberId;
 
     public EmailDTO(){}
 
@@ -21,27 +22,6 @@ public class EmailDTO {
 
     public void setEmailId(long emailId) {
         this.emailId = emailId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        EmailDTO emailDTO = (EmailDTO) o;
-
-        if (emailId != emailDTO.emailId) return false;
-        if (emailType != emailDTO.emailType) return false;
-        return emailAddress != null ? emailAddress.equals(emailDTO.emailAddress) : emailDTO.emailAddress == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = (int) (emailId ^ (emailId >>> 32));
-        result = 31 * result + (emailType != null ? emailType.hashCode() : 0);
-        result = 31 * result + (emailAddress != null ? emailAddress.hashCode() : 0);
-        return result;
     }
 
     public EmailType getEmailType() {
@@ -59,6 +39,37 @@ public class EmailDTO {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
+    }
+
+    public long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(long memberId) {
+        this.memberId = memberId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EmailDTO emailDTO = (EmailDTO) o;
+
+        if (emailId != emailDTO.emailId) return false;
+        if (memberId != emailDTO.memberId) return false;
+        if (emailType != emailDTO.emailType) return false;
+        return emailAddress != null ? emailAddress.equals(emailDTO.emailAddress) : emailDTO.emailAddress == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (emailId ^ (emailId >>> 32));
+        result = 31 * result + (emailType != null ? emailType.hashCode() : 0);
+        result = 31 * result + (emailAddress != null ? emailAddress.hashCode() : 0);
+        result = 31 * result + (int) (memberId ^ (memberId >>> 32));
+        return result;
     }
 
     @Override
