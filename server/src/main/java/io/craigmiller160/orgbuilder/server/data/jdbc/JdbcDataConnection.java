@@ -4,7 +4,9 @@ import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
+import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +27,9 @@ public class JdbcDataConnection implements DataConnection {
     //Static initializer to populate the daoMap
     static {
         Map<Class,Class> map = new HashMap<>();
+        map.put(AddressDTO.class, AddressDao.class);
         map.put(MemberDTO.class, MemberDao.class);
+        map.put(OrgDTO.class, OrgDao.class);
 
         entityDaoMap = Collections.unmodifiableMap(map);
     }
