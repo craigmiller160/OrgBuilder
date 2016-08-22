@@ -68,7 +68,7 @@ public interface Dao<E,I> {
      * @return the count of the elements of
      *          this type in the database.
      */
-    int getCount() throws OrgApiDataException;
+    long getCount() throws OrgApiDataException;
 
     /**
      * Get all of the elements of the type

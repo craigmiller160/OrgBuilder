@@ -181,13 +181,13 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     }
 
     @Override
-    public int getCount() throws OrgApiDataException {
+    public long getCount() throws OrgApiDataException {
         OrgApiLogger.getDataLogger().trace("Member Count Query:\n" + COUNT_QUERY);
-        int count = -1;
+        long count = -1;
         try(Statement stmt = getConnection().createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(COUNT_QUERY)){
                 if(resultSet.next()){
-                    count = resultSet.getInt("member_count");
+                    count = resultSet.getLong("member_count");
                 }
             }
         }
