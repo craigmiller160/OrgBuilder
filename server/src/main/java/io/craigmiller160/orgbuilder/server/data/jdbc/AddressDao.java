@@ -19,12 +19,12 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
     private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
     private static final String INSERT_QUERY =
-            "insert into addresses (address_type, address, unit, city, state, zip_code, member_id) " +
-            "values (?,?,?,?,?,?,?);";
+            "INSERT INTO addresses (address_type, address, unit, city, state, zip_code, member_id) " +
+            "VALUES (?,?,?,?,?,?,?);";
 
     private static final String UPDATE_QUERY =
             "UPDATE addresses " +
-            "SET addressType = ?, address = ?, unit = ?, city = ?, state = ?, zip_code = ?, member_id = ? " +
+            "SET address_type = ?, address = ?, unit = ?, city = ?, state = ?, zip_code = ?, member_id = ? " +
             "WHERE address_id = ?;";
 
     private static final String DELETE_QUERY =
@@ -73,7 +73,8 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
         super(connection);
     }
 
-    private void parameterizeAddress(PreparedStatement stmt, AddressDTO element) throws SQLException{
+    @Override
+    protected void parameterizeElement(PreparedStatement stmt, AddressDTO element) throws SQLException{
         if(element.getAddressType() != null){
             stmt.setString(1, element.getAddressType().toString());
         }
@@ -124,7 +125,8 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
         }
     }
 
-    private AddressDTO parseResult(ResultSet resultSet) throws SQLException{
+    @Override
+    protected AddressDTO parseResult(ResultSet resultSet) throws SQLException{
         AddressDTO element = new AddressDTO();
         String addressType = resultSet.getString("address_type");
         if(!StringUtils.isEmpty(addressType)){
@@ -145,135 +147,37 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
 
     @Override
     public AddressDTO insert(AddressDTO element) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Insert Query:\n" + INSERT_QUERY);
-        try{
-            try(PreparedStatement stmt = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)){
-                parameterizeAddress(stmt, element);
-                stmt.executeUpdate();
-                try(ResultSet resultSet = stmt.getGeneratedKeys()){
-                    if(!resultSet.next()){
-                        throw new SQLException("Unable to retrieve ID from inserted Address. Address: " + element.toString());
-                    }
-                    element.setAddressId(resultSet.getLong(1));
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to insert Address. Address: " + element.toString(), ex);
-        }
-
-        return element;
+        return executeInsert(element, INSERT_QUERY);
     }
 
     @Override
     public AddressDTO update(AddressDTO element) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Update Query:\n" + UPDATE_QUERY);
-        try(PreparedStatement stmt = getConnection().prepareStatement(UPDATE_QUERY)){
-            parameterizeAddress(stmt, element);
-            stmt.setLong(UPDATE_KEY_PARAM_INDEX, element.getAddressId());
-            stmt.executeUpdate();
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to update Address. Address: " + element.toString(), ex);
-        }
-
-        return element;
+        return executeUpdate(element, element.getAddressId(), UPDATE_KEY_PARAM_INDEX, UPDATE_QUERY);
     }
 
     @Override
     public AddressDTO delete(Long id) throws OrgApiDataException {
-        AddressDTO element = null;
-        try{
-            element = get(id);
-
-            try(PreparedStatement stmt = getConnection().prepareStatement(DELETE_QUERY)){
-                OrgApiLogger.getDataLogger().trace("Address Delete Query:\n" + DELETE_QUERY);
-                stmt.setLong(1, id);
-                stmt.executeUpdate();
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to delete Address. ID: " + id, ex);
-        }
-
-        return element;
+        return executeDelete(id, DELETE_QUERY);
     }
 
     @Override
     public AddressDTO get(Long id) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Get By ID Query:\n" + GET_BY_ID_QUERY);
-        AddressDTO element = null;
-        try(PreparedStatement stmt = getConnection().prepareStatement(GET_BY_ID_QUERY)){
-            stmt.setLong(1, id);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                if(resultSet.next()){
-                    element = parseResult(resultSet);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve address by ID. ID: " + id, ex);
-        }
-
-        return element;
+        return executeGet(id, AddressDTO.class.getSimpleName(), GET_BY_ID_QUERY);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Count Query:\n" + COUNT_QUERY);
-        long count = -1;
-        try(Statement stmt = getConnection().createStatement()){
-            try(ResultSet resultSet = stmt.executeQuery(COUNT_QUERY)){
-                if(resultSet.next()){
-                    count = resultSet.getLong("address_count");
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve count from address table", ex);
-        }
-
-        return count;
+        return executeCount(AddressDTO.class.getSimpleName(), COUNT_QUERY);
     }
 
     @Override
     public List<AddressDTO> getAll() throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Get All Query:\n" + GET_ALL_QUERY);
-        List<AddressDTO> elements = new ArrayList<>();
-        try(Statement stmt = getConnection().createStatement()){
-            try(ResultSet resultSet = stmt.executeQuery(GET_ALL_QUERY)){
-                while(resultSet.next()){
-                    AddressDTO element = parseResult(resultSet);
-                    elements.add(element);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve all addresses", ex);
-        }
-
-        return elements;
+        return executeGetAll(AddressDTO.class.getSimpleName(), GET_ALL_QUERY);
     }
 
     @Override
     public List<AddressDTO> getAll(long offset, long size) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Get All Limit Query:\n" + GET_ALL_LIMIT_QUERY);
-        List<AddressDTO> elements = new ArrayList<>();
-        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_LIMIT_QUERY)){
-            stmt.setLong(1, offset);
-            stmt.setLong(2, size);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                while(resultSet.next()){
-                    AddressDTO element = parseResult(resultSet);
-                    elements.add(element);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve addresses within range. Offset: " + offset + " Size: " + size, ex);
-        }
-
-        return elements;
+        return executeGetAllLimit(AddressDTO.class.getSimpleName(), offset, size, GET_ALL_LIMIT_QUERY);
     }
 
     @Override

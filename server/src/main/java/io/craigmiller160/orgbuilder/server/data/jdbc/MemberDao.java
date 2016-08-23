@@ -53,7 +53,8 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
         super(connection);
     }
 
-    private void parameterizeMember(PreparedStatement stmt, MemberDTO element) throws SQLException{
+    @Override
+    protected void parameterizeElement(PreparedStatement stmt, MemberDTO element) throws SQLException{
         if(element.getFirstName() != null){
             stmt.setString(1, element.getFirstName());
         }
@@ -90,7 +91,8 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
         }
     }
 
-    private MemberDTO parseResult(ResultSet resultSet) throws SQLException{
+    @Override
+    protected MemberDTO parseResult(ResultSet resultSet) throws SQLException{
         MemberDTO element = new MemberDTO();
         element.setMemberId(resultSet.getLong("member_id"));
         element.setFirstName(resultSet.getString("first_name"));
@@ -110,131 +112,36 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
     @Override
     public MemberDTO insert(MemberDTO element)  throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Member Insert Query:\n" + INSERT_QUERY);
-        try(PreparedStatement stmt = getConnection().prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS)){
-            parameterizeMember(stmt, element);
-            stmt.executeUpdate();
-            try(ResultSet resultSet = stmt.getGeneratedKeys()){
-                if(!resultSet.next()){
-                    throw new SQLException("Unable to retrieve ID from inserted Member. Member: " + element.toString());
-                }
-                element.setMemberId(resultSet.getLong(1));
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to insert Member. Member: " + element.toString(), ex);
-        }
-
-        return element;
+        return executeInsert(element, INSERT_QUERY);
     }
 
     @Override
     public MemberDTO update(MemberDTO element)  throws OrgApiDataException{
-        OrgApiLogger.getDataLogger().trace("Member Update Query:\n" + UPDATE_QUERY);
-        try(PreparedStatement stmt = getConnection().prepareStatement(UPDATE_QUERY)){
-            parameterizeMember(stmt, element);
-            stmt.setLong(UPDATE_KEY_PARAM_INDEX, element.getMemberId());
-            stmt.executeUpdate();
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to update Member. Member: " + element.toString(), ex);
-        }
-
-        return element;
+        return executeUpdate(element, element.getMemberId(), UPDATE_KEY_PARAM_INDEX, UPDATE_QUERY);
     }
 
     @Override
     public MemberDTO delete(Long id) throws OrgApiDataException {
-        MemberDTO element = null;
-        try{
-            element = get(id);
-            OrgApiLogger.getDataLogger().trace("Member Delete Query:\n" + DELETE_QUERY);
-            try(PreparedStatement stmt = getConnection().prepareStatement(DELETE_QUERY)){
-                stmt.setLong(1, id);
-                stmt.executeUpdate();
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to delete member. ID: " + id, ex);
-        }
-
-        return element;
+        return executeDelete(id, DELETE_QUERY);
     }
 
     @Override
     public MemberDTO get(Long id) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Member Get By ID Query:\n" + GET_BY_ID_QUERY);
-        MemberDTO element = null;
-        try(PreparedStatement stmt = getConnection().prepareStatement(GET_BY_ID_QUERY)){
-            stmt.setLong(1, id);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                if(resultSet.next()){
-                    element = parseResult(resultSet);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve member by id. ID: " + id, ex);
-        }
-
-        return element;
+        return executeGet(id, MemberDTO.class.getSimpleName(), GET_BY_ID_QUERY);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Member Count Query:\n" + COUNT_QUERY);
-        long count = -1;
-        try(Statement stmt = getConnection().createStatement()){
-            try(ResultSet resultSet = stmt.executeQuery(COUNT_QUERY)){
-                if(resultSet.next()){
-                    count = resultSet.getLong("member_count");
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve count from members table", ex);
-        }
-
-        return count;
+        return executeCount(MemberDTO.class.getSimpleName(), COUNT_QUERY);
     }
 
     @Override
     public List<MemberDTO> getAll() throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Member Get All Query:\n" + GET_ALL_QUERY);
-        List<MemberDTO> elements = new ArrayList<>();
-        try(Statement stmt = getConnection().createStatement()){
-            try(ResultSet resultSet = stmt.executeQuery(GET_ALL_QUERY)){
-                while(resultSet.next()){
-                    MemberDTO element = parseResult(resultSet);
-                    elements.add(element);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve all members", ex);
-        }
-
-        return elements;
+        return executeGetAll(MemberDTO.class.getSimpleName(), GET_ALL_QUERY);
     }
 
     @Override
     public List<MemberDTO> getAll(long offset, long size) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Member Get All Limit Query:\n" + GET_ALL_LIMIT_QUERY);
-        List<MemberDTO> elements = new ArrayList<>();
-        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_LIMIT_QUERY)){
-            stmt.setLong(1, offset);
-            stmt.setLong(2, size);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                while(resultSet.next()){
-                    MemberDTO element = parseResult(resultSet);
-                    elements.add(element);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve members within range. Offset: " + offset + " Size: " + size, ex);
-        }
-
-        return elements;
+        return executeGetAllLimit(MemberDTO.class.getSimpleName(), offset, size, GET_ALL_LIMIT_QUERY);
     }
 }

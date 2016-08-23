@@ -96,7 +96,7 @@ public class MemberDaoTest {
     @Test
     public void testCount() throws Exception{
         testInsert();
-        int count = memberDao.getCount();
+        long count = memberDao.getCount();
         assertEquals("Incorrect count of members in database", 1, count);
     }
 
