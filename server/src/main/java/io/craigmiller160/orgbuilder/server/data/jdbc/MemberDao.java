@@ -111,6 +111,11 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     }
 
     @Override
+    protected String getElementName() {
+        return MemberDTO.class.getSimpleName();
+    }
+
+    @Override
     public MemberDTO insert(MemberDTO element)  throws OrgApiDataException {
         return executeInsert(element, INSERT_QUERY);
     }
@@ -127,21 +132,21 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
     @Override
     public MemberDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, MemberDTO.class.getSimpleName(), GET_BY_ID_QUERY);
+        return executeGet(id, GET_BY_ID_QUERY);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(MemberDTO.class.getSimpleName(), COUNT_QUERY);
+        return executeCount(COUNT_QUERY);
     }
 
     @Override
     public List<MemberDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(MemberDTO.class.getSimpleName(), GET_ALL_QUERY);
+        return executeGetAll(GET_ALL_QUERY);
     }
 
     @Override
     public List<MemberDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(MemberDTO.class.getSimpleName(), offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
     }
 }

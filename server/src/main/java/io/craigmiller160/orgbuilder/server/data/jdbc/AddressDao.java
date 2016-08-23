@@ -1,20 +1,17 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
-import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
-import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by craig on 8/21/16.
  */
-public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements MemberJoins<AddressDTO,Long> {
+public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
@@ -65,7 +62,7 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
             "LIMIT ?,?;";
 
     private static final String COUNT_BY_MEMBER_QUERY =
-            "SELECT COUNT(*) AS member_count " +
+            "SELECT COUNT(*) AS address_by_member_count " +
             "FROM addresses " +
             "WHERE member_id = ?;";
 
@@ -146,6 +143,11 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
     }
 
     @Override
+    protected String getElementName() {
+        return AddressDTO.class.getSimpleName();
+    }
+
+    @Override
     public AddressDTO insert(AddressDTO element) throws OrgApiDataException {
         return executeInsert(element, INSERT_QUERY);
     }
@@ -162,82 +164,36 @@ public class AddressDao extends AbstractJdbcDao<AddressDTO,Long> implements Memb
 
     @Override
     public AddressDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, AddressDTO.class.getSimpleName(), GET_BY_ID_QUERY);
+        return executeGet(id, GET_BY_ID_QUERY);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(AddressDTO.class.getSimpleName(), COUNT_QUERY);
+        return executeCount(COUNT_QUERY);
     }
 
     @Override
     public List<AddressDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(AddressDTO.class.getSimpleName(), GET_ALL_QUERY);
+        return executeGetAll(GET_ALL_QUERY);
     }
 
     @Override
     public List<AddressDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(AddressDTO.class.getSimpleName(), offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
     }
 
     @Override
     public List<AddressDTO> getAllByMember(Long id) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Get All By Member Query:\n" + GET_ALL_BY_MEMBER_QUERY);
-        List<AddressDTO> elements = new ArrayList<>();
-        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_BY_MEMBER_QUERY)){
-            stmt.setLong(1, id);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                while(resultSet.next()){
-                    AddressDTO element = parseResult(resultSet);
-                    elements.add(element);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to get all addresses by member id. Member ID: " + id, ex);
-        }
-
-        return elements;
+        return executeGetAllByMember(id, GET_ALL_BY_MEMBER_QUERY);
     }
 
     @Override
     public List<AddressDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Get All By Member Limit Query:\n" + GET_ALL_BY_MEMBER_LIMIT_QUERY);
-        List<AddressDTO> elements = new ArrayList<>();
-        try(PreparedStatement stmt = getConnection().prepareStatement(GET_ALL_BY_MEMBER_LIMIT_QUERY)){
-            stmt.setLong(1, id);
-            stmt.setLong(2, offset);
-            stmt.setLong(3, size);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                while(resultSet.next()){
-                    AddressDTO element = parseResult(resultSet);
-                    elements.add(element);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to get all address by member id, with limit. Member ID: " + id + " Offset: " + offset + " Size: " + size, ex);
-        }
-
-        return elements;
+        return executeGetAllByMemberLimit(id, offset, size, GET_ALL_BY_MEMBER_LIMIT_QUERY);
     }
 
     @Override
     public long getCountByMember(Long id) throws OrgApiDataException {
-        OrgApiLogger.getDataLogger().trace("Address Count By Member Query:\n" + GET_ALL_BY_MEMBER_LIMIT_QUERY);
-        long count = -1;
-        try(PreparedStatement stmt = getConnection().prepareStatement(COUNT_BY_MEMBER_QUERY)){
-            stmt.setLong(1, id);
-            try(ResultSet resultSet = stmt.executeQuery()){
-                if(resultSet.next()){
-                    count = resultSet.getLong("address_count");
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to get count of addresses by member id. Member ID: " + id, ex);
-        }
-
-        return count;
+        return executeGetCountByMember(id, COUNT_BY_MEMBER_QUERY);
     }
 }

@@ -3,7 +3,6 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
-import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * Created by craig on 8/22/16.
  */
-public class PhoneDao extends AbstractJdbcDao<PhoneDTO,Long> implements MemberJoins<PhoneDTO,Long> {
+public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 7;
 
@@ -48,6 +47,24 @@ public class PhoneDao extends AbstractJdbcDao<PhoneDTO,Long> implements MemberJo
             "FROM phones " +
             "ORDER BY phone_id ASC " +
             "LIMIT ?,?;";
+
+    private static final String GET_ALL_BY_MEMBER_QUERY =
+            "SELECT * " +
+            "FROM phones " +
+            "WHERE member_id = ? " +
+            "ORDER BY phone_id ASC;";
+
+    private static final String GET_ALL_BY_MEMBER_LIMIT_QUERY =
+            "SELECT * " +
+            "FROM phones " +
+            "WHERE member_id = ? " +
+            "ORDER BY phone_id ASC " +
+            "LIMIT ?,?;";
+
+    private static final String COUNT_BY_MEMBER_QUERY =
+            "SELECT COUNT(*) AS phone_by_member_count " +
+            "FROM phones " +
+            "WHERE member_id = ?;";
 
     public PhoneDao(Connection connection) {
         super(connection);
@@ -112,6 +129,11 @@ public class PhoneDao extends AbstractJdbcDao<PhoneDTO,Long> implements MemberJo
     }
 
     @Override
+    protected String getElementName() {
+        return PhoneDTO.class.getSimpleName();
+    }
+
+    @Override
     public PhoneDTO insert(PhoneDTO element) throws OrgApiDataException {
         return executeInsert(element, INSERT_QUERY);
     }
@@ -128,39 +150,36 @@ public class PhoneDao extends AbstractJdbcDao<PhoneDTO,Long> implements MemberJo
 
     @Override
     public PhoneDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, PhoneDTO.class.getSimpleName(), GET_BY_ID_QUERY);
+        return executeGet(id, GET_BY_ID_QUERY);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(PhoneDTO.class.getSimpleName(), COUNT_QUERY);
+        return executeCount(COUNT_QUERY);
     }
 
     @Override
     public List<PhoneDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(PhoneDTO.class.getSimpleName(), GET_ALL_QUERY);
+        return executeGetAll(GET_ALL_QUERY);
     }
 
     @Override
     public List<PhoneDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(PhoneDTO.class.getSimpleName(), offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
     }
 
     @Override
     public List<PhoneDTO> getAllByMember(Long id) throws OrgApiDataException {
-        //TODO finish this
-        return null;
+        return executeGetAllByMember(id, GET_ALL_BY_MEMBER_QUERY);
     }
 
     @Override
     public List<PhoneDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        //TODO finish this
-        return null;
+        return executeGetAllByMemberLimit(id, offset, size, GET_ALL_BY_MEMBER_LIMIT_QUERY);
     }
 
     @Override
     public long getCountByMember(Long id) throws OrgApiDataException {
-        //TODO finish this
-        return 0;
+        return executeGetCountByMember(id, COUNT_BY_MEMBER_QUERY);
     }
 }

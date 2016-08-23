@@ -51,6 +51,11 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
     }
 
     @Override
+    protected String getElementName() {
+        return OrgDTO.class.getSimpleName();
+    }
+
+    @Override
     protected void parameterizeElement(PreparedStatement stmt, OrgDTO element) throws SQLException{
         if(element.getOrgName() != null){
             stmt.setString(1, element.getOrgName());
@@ -91,21 +96,21 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, OrgDTO.class.getSimpleName(), GET_BY_ID_QUERY);
+        return executeGet(id, GET_BY_ID_QUERY);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(OrgDTO.class.getSimpleName(), COUNT_QUERY);
+        return executeCount(COUNT_QUERY);
     }
 
     @Override
     public List<OrgDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(OrgDTO.class.getSimpleName(), GET_ALL_QUERY);
+        return executeGetAll(GET_ALL_QUERY);
     }
 
     @Override
     public List<OrgDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(OrgDTO.class.getSimpleName(), offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
     }
 }
