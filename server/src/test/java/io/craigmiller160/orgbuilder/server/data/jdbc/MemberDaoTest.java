@@ -26,42 +26,9 @@ public class MemberDaoTest {
             "alter table members " +
             "auto_increment = 1000;";
 
-    private static OrgDataSource dataSource;
-    private MemberDao memberDao;
-    private Connection connection;
-
-    @BeforeClass
-    public static void init() throws Exception{
-        ServerCore serverCore = new ServerCore();
-        serverCore.contextInitialized(null);
-
-        dataSource = ServerTestUtils.getOrgDataSource(ServerCore.getOrgDataManager());
-        ServerCore.getOrgDataManager().createNewSchema(TEST_SCHEMA_NAME);
 
 
-    }
 
-    @Before
-    public void setUp() throws Exception{
-        connection = dataSource.getConnection();
-        connection.setAutoCommit(false);
-        memberDao = new MemberDao(connection);
-    }
-
-    @After
-    public void cleanUp() throws Exception{
-        connection.rollback();
-        try(Statement stmt = connection.createStatement()){
-            stmt.executeUpdate(REST_AUTO_INC_SQL);
-        }
-        connection.commit();
-        connection.close();
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception{
-        ServerCore.getOrgDataManager().deleteSchema(TEST_SCHEMA_NAME);
-    }
 
     @Test
     public void testInsert() throws Exception{
