@@ -2,6 +2,8 @@ package io.craigmiller160.orgbuilder.server.dto;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by craigmiller on 8/12/16.
@@ -14,6 +16,10 @@ public class MemberDTO implements Comparable<MemberDTO>{
     private String lastName;
     private LocalDate dateOfBirth;
     private Gender gender;
+
+    private List<AddressDTO> addresses = new ArrayList<>();
+    private List<PhoneDTO> phones = new ArrayList<>();
+    private List<EmailDTO> emails = new ArrayList<>();
 
     public MemberDTO(){}
 
@@ -78,6 +84,30 @@ public class MemberDTO implements Comparable<MemberDTO>{
 
     public void setGender(Gender gender) {
         this.gender = gender;
+    }
+
+    public void setAddresses(List<AddressDTO> addresses){
+        this.addresses = addresses != null ? addresses : new ArrayList<>();
+    }
+
+    public List<AddressDTO> getAddresses(){
+        return addresses;
+    }
+
+    public void setPhones(List<PhoneDTO> phones){
+        this.phones = phones != null ? phones : new ArrayList<>();
+    }
+
+    public List<PhoneDTO> getPhones(){
+        return phones;
+    }
+
+    public void setEmails(List<EmailDTO> emails){
+        this.emails = emails != null ? emails : new ArrayList<>();
+    }
+
+    public List<EmailDTO> getEmails(){
+        return emails;
     }
 
     @Override
