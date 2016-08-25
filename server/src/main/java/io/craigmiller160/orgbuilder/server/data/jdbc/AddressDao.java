@@ -125,6 +125,7 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
     @Override
     protected AddressDTO parseResult(ResultSet resultSet) throws SQLException{
         AddressDTO element = new AddressDTO();
+        element.setAddressId(resultSet.getLong("address_id"));
         String addressType = resultSet.getString("address_type");
         if(!StringUtils.isEmpty(addressType)){
             element.setAddressType(AddressDTO.AddressType.valueOf(addressType));

@@ -1,14 +1,13 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
-import io.craigmiller160.orgbuilder.server.ServerCore;
-import io.craigmiller160.orgbuilder.server.ServerTestUtils;
-import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -26,13 +25,32 @@ public class MemberDaoTest {
             "alter table members " +
             "auto_increment = 1000;";
 
+    private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
+    private MemberDao memberDao;
 
+    @BeforeClass
+    public static void init() throws Exception{
+        daoTestUtils.initializeTestClass(TEST_SCHEMA_NAME);
+    }
 
+    @Before
+    public void setUp() throws Exception{
+        this.memberDao = daoTestUtils.prepareTestDao(MemberDao.class);
+    }
 
+    @After
+    public void cleanUp() throws Exception{
+        daoTestUtils.cleanUpTest(REST_AUTO_INC_SQL);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception{
+        daoTestUtils.tearDownTestClass(TEST_SCHEMA_NAME);
+    }
 
     @Test
     public void testInsert() throws Exception{
-        MemberDTO memberDTO = getMember1();
+        MemberDTO memberDTO = daoTestUtils.getMember1();
         memberDTO = memberDao.insert(memberDTO);
         assertEquals("Failed to insert MemberDTO", 1000, memberDTO.getMemberId());
     }
@@ -40,7 +58,7 @@ public class MemberDaoTest {
     @Test
     public void testUpdateAndGet() throws Exception{
         testInsert();
-        MemberDTO memberDTO = getMember1();
+        MemberDTO memberDTO = daoTestUtils.getMember1();
         memberDTO.setFirstName("John");
         memberDTO.setMemberId(1000L);
         memberDao.update(memberDTO);
@@ -52,7 +70,7 @@ public class MemberDaoTest {
     @Test
     public void testDeleteAndGet() throws Exception{
         testInsert();
-        MemberDTO member1 = getMember1();
+        MemberDTO member1 = daoTestUtils.getMember1();
         member1.setMemberId(1000L);
         MemberDTO member2 = memberDao.delete(1000L);
         assertEquals("Deleted member is not the same as inserted member", member1, member2);
@@ -70,7 +88,7 @@ public class MemberDaoTest {
     @Test
     public void testGetAll() throws Exception{
         for(int i = 0; i < 10; i++){
-            MemberDTO member = getMember1();
+            MemberDTO member = daoTestUtils.getMember1();
             memberDao.insert(member);
         }
 
@@ -81,7 +99,7 @@ public class MemberDaoTest {
     @Test
     public void testGetAllLimit() throws Exception{
         for(int i = 0; i < 10; i++){
-            MemberDTO member = getMember1();
+            MemberDTO member = daoTestUtils.getMember1();
             memberDao.insert(member);
         }
 
@@ -92,14 +110,6 @@ public class MemberDaoTest {
         assertEquals("Third returned member is incorrect", 1005L, members.get(2).getMemberId());
     }
 
-    private MemberDTO getMember1(){
-        MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setFirstName("Craig");
-        memberDTO.setMiddleName("Evan");
-        memberDTO.setLastName("Miller");
-        memberDTO.setGender(Gender.MALE);
-        memberDTO.setDateOfBirth(LocalDate.of(1988, 10, 26));
-        return memberDTO;
-    }
+
 
 }
