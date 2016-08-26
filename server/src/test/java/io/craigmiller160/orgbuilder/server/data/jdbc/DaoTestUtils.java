@@ -48,11 +48,14 @@ public class DaoTestUtils {
         return constructor.newInstance(connection);
     }
 
-    public void cleanUpTest(String resetAutoIncSql) throws Exception{
+    public void cleanUpTest(String... resetAutoIncSql) throws Exception{
         connection.rollback();
-        try(Statement stmt = connection.createStatement()){
-            stmt.executeUpdate(resetAutoIncSql);
+        for(String sql : resetAutoIncSql){
+            try(Statement stmt = connection.createStatement()){
+                stmt.executeUpdate(sql);
+            }
         }
+
         connection.commit();
         connection.close();
         connection = null;

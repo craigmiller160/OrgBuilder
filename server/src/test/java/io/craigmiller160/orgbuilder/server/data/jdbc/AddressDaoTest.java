@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by craigmiller on 8/24/16.
@@ -17,9 +18,12 @@ import static org.junit.Assert.assertEquals;
 public class AddressDaoTest {
 
     private static final String TEST_SCHEMA_NAME = "test_address";
-    private static final String REST_AUTO_INC_SQL =
-            "alter table addresses " +
-            "auto_increment = 1000;";
+    private static final String RESET_ADDRESS_AUTO_INC_SQL =
+            "ALTER TABLE addresses " +
+            "AUTO_INCREMENT = 0;";
+    private static final String RESET_MEMBER_AUTO_INC_SQL =
+            "ALTER TABLE members " +
+            "AUTO_INCREMENT = 1000;";
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private AddressDao addressDao;
@@ -40,7 +44,7 @@ public class AddressDaoTest {
 
     @After
     public void cleanUp() throws Exception{
-        daoTestUtils.cleanUpTest(REST_AUTO_INC_SQL);
+        daoTestUtils.cleanUpTest(RESET_ADDRESS_AUTO_INC_SQL, RESET_MEMBER_AUTO_INC_SQL);
     }
 
     @AfterClass
@@ -53,6 +57,19 @@ public class AddressDaoTest {
         AddressDTO address = daoTestUtils.getAddress1();
         address = addressDao.insert(address);
         assertEquals("Failed to insert address", 1, address.getAddressId());
+    }
+
+    @Test
+    public void testUpdateAndGet() throws Exception{
+        String newAddress = "10306 Casa Palarmo Dr";
+        testInsert();
+        AddressDTO address = daoTestUtils.getAddress1();
+        address.setAddressId(1);
+        address.setAddress(newAddress);
+        addressDao.update(address);
+        address = addressDao.get(1L);
+        assertNotNull("AddressDTO is null", address);
+        assertEquals("AddressDTO has the wrong address value", newAddress, address.getAddress());
     }
 
 }

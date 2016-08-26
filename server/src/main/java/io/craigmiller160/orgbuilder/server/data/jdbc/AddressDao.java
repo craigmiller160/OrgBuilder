@@ -87,7 +87,7 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
         }
 
         if(element.getUnit() != null){
-            stmt.setString(3, element.getAddress());
+            stmt.setString(3, element.getUnit());
         }
         else{
             stmt.setNull(3, Types.VARCHAR);
