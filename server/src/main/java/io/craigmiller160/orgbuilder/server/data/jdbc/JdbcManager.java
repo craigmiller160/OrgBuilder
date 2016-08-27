@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -46,16 +44,11 @@ public class JdbcManager {
         OrgApiLogger.getDataLogger().debug("Initializing JdbcManager");
         this.entityDaoMap = initEntityDaoMap();
         Map<Class<? extends Dao>,Map<Query,String>> mappedQueries = new HashMap<>();
-        ExecutorService executor = Executors.newCachedThreadPool();
         Collection<Class<? extends Dao<?,?>>> daoTypes = entityDaoMap.values();
-        Map<Class<? extends Dao>,Future<Map<Query,String>>> futures = new HashMap<>();
-
-        daoTypes.forEach((c) -> futures.put(c, executor.submit(() -> parseDaoQueries(createQueryFileName(c)))));
-        ThrowingStream.of(futures.entrySet().stream(), OrgApiQueryParsingException.class)
-                .forEach((e) -> addToFinalMap(e, mappedQueries));
+        ThrowingStream.of(daoTypes.stream(), OrgApiQueryParsingException.class)
+                .forEach((c) -> mappedQueries.put(c, parseDaoQueries(createQueryFileName(c))));
 
         this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
-        executor.shutdownNow();
     }
 
     private Map<Class<?>,Class<? extends Dao<?,?>>> initEntityDaoMap(){
@@ -125,8 +118,14 @@ public class JdbcManager {
                     continue;
                 }
 
-                queryBuilder.appendln(line);
+                boolean endQuery = false;
                 if(line.trim().endsWith(delimiter)){
+                    endQuery = true;
+                    line = line.replace(delimiter, "");
+                }
+
+                queryBuilder.appendln(line);
+                if(endQuery){
                     if(currentQuery == null){
                         throw new IOException("No name found for parsed named query");
                     }
