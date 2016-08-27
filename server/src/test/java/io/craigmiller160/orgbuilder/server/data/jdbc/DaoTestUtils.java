@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -114,6 +115,26 @@ public class DaoTestUtils {
         memberDTO.setDateOfBirth(LocalDate.of(1959, 4, 29));
 
         return memberDTO;
+    }
+
+    public PhoneDTO getPhone1(){
+        PhoneDTO phone = new PhoneDTO();
+        phone.setPhoneType(PhoneDTO.PhoneType.HOME);
+        phone.setAreaCode("732");
+        phone.setPrefix("613");
+        phone.setLineNumber("7826");
+        phone.setMemberId(1000);
+        return phone;
+    }
+
+    public PhoneDTO getPhone2(){
+        PhoneDTO phone = new PhoneDTO();
+        phone.setPhoneType(PhoneDTO.PhoneType.MOBILE);
+        phone.setAreaCode("908");
+        phone.setPrefix("616");
+        phone.setLineNumber("2695");
+        phone.setMemberId(1001);
+        return phone;
     }
 
 }

@@ -119,6 +119,10 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
     protected PhoneDTO parseResult(ResultSet resultSet) throws SQLException {
         PhoneDTO element = new PhoneDTO();
         element.setPhoneId(resultSet.getLong("phone_id"));
+        String phoneType = resultSet.getString("phone_type");
+        if(!StringUtils.isEmpty(phoneType)){
+            element.setPhoneType(PhoneDTO.PhoneType.valueOf(phoneType));
+        }
         element.setAreaCode(resultSet.getString("area_code"));
         element.setPrefix(resultSet.getString("prefix"));
         element.setLineNumber(resultSet.getString("line_number"));
