@@ -5,6 +5,7 @@ import io.craigmiller160.orgbuilder.server.ServerTestUtils;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
+import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
@@ -135,6 +136,22 @@ public class DaoTestUtils {
         phone.setLineNumber("2695");
         phone.setMemberId(1001);
         return phone;
+    }
+
+    public EmailDTO getEmail1(){
+        EmailDTO email = new EmailDTO();
+        email.setEmailType(EmailDTO.EmailType.PERSONAL);
+        email.setEmailAddress("craigmiller160@gmail.com");
+        email.setMemberId(1000);
+        return email;
+    }
+
+    public EmailDTO getEmail2(){
+        EmailDTO email = new EmailDTO();
+        email.setEmailType(EmailDTO.EmailType.WORK);
+        email.setEmailAddress("cmiller@pilotfishtechnology.com");
+        email.setMemberId(1001);
+        return email;
     }
 
 }

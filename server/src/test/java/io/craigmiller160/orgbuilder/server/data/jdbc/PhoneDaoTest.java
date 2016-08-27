@@ -136,13 +136,13 @@ public class PhoneDaoTest {
     }
 
     private void insertManyPhones() throws Exception{
-        //10 of address1, tied to member1
+        //10 of phone1, tied to member1
         for(int i = 0; i < 10; i++){
             PhoneDTO phone = daoTestUtils.getPhone1();
             phoneDao.insert(phone);
         }
 
-        //5 of address2, tied to member2
+        //5 of phone2, tied to member2
         for(int i = 0; i < 5; i++){
             PhoneDTO phone = daoTestUtils.getPhone2();
             phoneDao.insert(phone);

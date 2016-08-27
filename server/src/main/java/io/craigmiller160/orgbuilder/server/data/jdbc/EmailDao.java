@@ -85,7 +85,7 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
             stmt.setNull(2, Types.VARCHAR);
         }
 
-        if(element.getMemberId() <= 0){
+        if(element.getMemberId() > 0){
             stmt.setLong(3, element.getMemberId());
         }
         else{
