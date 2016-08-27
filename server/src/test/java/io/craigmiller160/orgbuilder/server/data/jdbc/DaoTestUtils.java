@@ -83,6 +83,18 @@ public class DaoTestUtils {
         return address;
     }
 
+    public AddressDTO getAddress2(){
+        AddressDTO address = new AddressDTO();
+        address.setAddressType(AddressDTO.AddressType.WORK);
+        address.setAddress("10306 Casa Palarmo Dr");
+        address.setUnit("6");
+        address.setCity("Riverview");
+        address.setState(State.FL);
+        address.setZipCode("33578");
+        address.setMemberId(1001);
+        return address;
+    }
+
     public MemberDTO getMember1(){
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setFirstName("Craig");
@@ -90,6 +102,17 @@ public class DaoTestUtils {
         memberDTO.setLastName("Miller");
         memberDTO.setGender(Gender.MALE);
         memberDTO.setDateOfBirth(LocalDate.of(1988, 10, 26));
+        return memberDTO;
+    }
+
+    public MemberDTO getMember2(){
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setFirstName("Gary");
+        memberDTO.setMiddleName("Brian");
+        memberDTO.setLastName("Miller");
+        memberDTO.setGender(Gender.MALE);
+        memberDTO.setDateOfBirth(LocalDate.of(1959, 4, 29));
+
         return memberDTO;
     }
 

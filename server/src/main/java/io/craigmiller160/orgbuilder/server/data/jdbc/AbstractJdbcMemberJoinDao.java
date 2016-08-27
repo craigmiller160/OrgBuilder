@@ -26,8 +26,10 @@ public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E
         try(PreparedStatement stmt = connection.prepareStatement(getAllByMemberQuery)){
             stmt.setObject(1, id);
             try(ResultSet resultSet = stmt.executeQuery()){
-                E element = parseResult(resultSet);
-                elements.add(element);
+                while(resultSet.next()){
+                    E element = parseResult(resultSet);
+                    elements.add(element);
+                }
             }
         }
         catch(SQLException ex){

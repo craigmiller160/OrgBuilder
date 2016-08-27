@@ -2,7 +2,6 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
-import io.craigmiller160.orgbuilder.server.dto.State;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,6 +41,8 @@ public class AddressDaoTest {
         MemberDao memberDao = daoTestUtils.prepareTestDao(MemberDao.class);
         MemberDTO member = daoTestUtils.getMember1();
         //If this fails, the issue is with the MemberDao
+        memberDao.insert(member);
+        member = daoTestUtils.getMember2();
         memberDao.insert(member);
     }
 
@@ -88,33 +89,64 @@ public class AddressDaoTest {
 
     @Test
     public void testCount() throws Exception{
-        testInsert();
+        insertManyAddresses();
         long count = addressDao.getCount();
-        assertEquals("Incorrect count of addresses", 1, count);
+        assertEquals("Incorrect count of addresses", 15, count);
     }
 
     @Test
     public void testGetAll() throws Exception{
-        for(int i = 0; i < 10; i++){
-            AddressDTO address = daoTestUtils.getAddress1();
-            addressDao.insert(address);
-        }
+        insertManyAddresses();
         List<AddressDTO> addresses = addressDao.getAll();
-        assertEquals("Get All returned the wrong number of addresses", 10, addresses.size());
+        assertEquals("Get All returned the wrong number of addresses", 15, addresses.size());
     }
 
     @Test
     public void testGetAllLimit() throws Exception{
-        for(int i = 0; i < 10; i++){
-            AddressDTO address = daoTestUtils.getAddress1();
-            addressDao.insert(address);
-        }
-
+        insertManyAddresses();
         List<AddressDTO> addresses = addressDao.getAll(3, 3);
         assertEquals("Get All Limit returned the wrong number of addresses", 3, addresses.size());
         assertEquals("First returned address is incorrect", 4, addresses.get(0).getAddressId());
         assertEquals("Second returned address is incorrect", 5, addresses.get(1).getAddressId());
         assertEquals("Third returned address is incorrect", 6, addresses.get(2).getAddressId());
+    }
+
+    @Test
+    public void testGetAllByMember() throws Exception{
+        insertManyAddresses();
+        List<AddressDTO> addresses = addressDao.getAllByMember(1001L);
+        assertEquals("Wrong number of addresses returned for member with ID 1001", 5, addresses.size());
+    }
+
+    @Test
+    public void testGetAllByMemberLimit() throws Exception{
+        insertManyAddresses();
+        List<AddressDTO> addresses = addressDao.getAllByMember(1001L, 1, 3);
+        assertEquals("Wrong number of addresses returned for member with ID 1001", 3, addresses.size());
+        assertEquals("First returned address is incorrect", 12, addresses.get(0).getAddressId());
+        assertEquals("Second returned address is incorrect", 13, addresses.get(1).getAddressId());
+        assertEquals("Third returned address is incorrect", 14, addresses.get(2).getAddressId());
+    }
+
+    @Test
+    public void testGetCountByMember() throws Exception{
+        insertManyAddresses();
+        long count = addressDao.getCountByMember(1001L);
+        assertEquals("Wrong count of addresses returned for member with ID 1001", 5, count);
+    }
+
+    private void insertManyAddresses() throws Exception{
+        //10 of address1, tied to member1
+        for(int i = 0; i < 10; i++){
+            AddressDTO address = daoTestUtils.getAddress1();
+            addressDao.insert(address);
+        }
+
+        //5 of address2, tied to member2
+        for(int i = 0; i < 5; i++){
+            AddressDTO address = daoTestUtils.getAddress2();
+            addressDao.insert(address);
+        }
     }
 
 }
