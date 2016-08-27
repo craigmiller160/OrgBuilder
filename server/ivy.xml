@@ -23,5 +23,7 @@
         <dependency org="org.glassfish.jersey.media" name="jersey-media-moxy" rev="2.23.1"/>
 
         <dependency org="mysql" name="mysql-connector-java" rev="5.1.39"/>
+
+        <dependency org="com.github.jeffreyfalgout" name="throwing-streams" rev="2.4.0" />
     </dependencies>
 </ivy-module>
