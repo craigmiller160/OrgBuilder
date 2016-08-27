@@ -64,7 +64,7 @@ public class SchemaManager {
                 stmt.executeUpdate(useSchemaQuery);
 
                 String[] ddlScript = ServerCore.getDDLScript();
-                for(String query : ddlScript){
+                for(String query : ddlScript){ //TODO this can be replaced by Stream
                     stmt.executeUpdate(query);
                 }
             }

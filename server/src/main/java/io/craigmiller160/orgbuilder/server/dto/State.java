@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import java.util.Arrays;
+
 /**
  * Enumeration of US States.
  *
@@ -92,12 +94,9 @@ public enum State {
      * @return the <tt>State</tt> enum.
      */
     public static State getStateForName(String name){
-        for(State state : State.values()){
-            if(state.getName().equalsIgnoreCase(name)){
-                return state;
-            }
-        }
-        return null;
+        return Arrays.stream(State.values())
+                .filter((s) -> s.getName().equalsIgnoreCase(name))
+                .findFirst().orElse(null);
     }
 
 }

@@ -14,11 +14,14 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import throwing.stream.ThrowingStream;
 
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 /**
  * An abstract superclass for all DAO testing logic,
@@ -57,16 +60,19 @@ public class DaoTestUtils {
 
     public void cleanUpTest(String... resetAutoIncSql) throws Exception{
         connection.rollback();
-        for(String sql : resetAutoIncSql){
-            try(Statement stmt = connection.createStatement()){
-                stmt.executeUpdate(sql);
-                connection.commit();
-            }
-        }
+        ThrowingStream.of(Arrays.stream(resetAutoIncSql), SQLException.class)
+                .forEach(this::executeCleanupSQL);
 
         connection.commit();
         connection.close();
         connection = null;
+    }
+
+    private void executeCleanupSQL(String sql) throws SQLException{
+        try(Statement stmt = connection.createStatement()){
+            stmt.executeUpdate(sql);
+            connection.commit();
+        }
     }
 
     public void tearDownTestClass(String testSchemaName) throws Exception{

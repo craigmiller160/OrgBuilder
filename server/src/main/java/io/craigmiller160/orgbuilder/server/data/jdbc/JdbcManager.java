@@ -36,13 +36,7 @@ public class JdbcManager {
     private static final String QUERY_FILE_SUFFIX = "_queries.sql";
 
     private final Map<Class<?>,Class<? extends Dao<?,?>>> entityDaoMap;
-    //Static initializer to populate the daoMap
-    static {
-
-    }
-
     private final Map<Class<? extends Dao>,Map<Query,String>> mappedQueries;
-    private final ExecutorService executor;
 
     public static JdbcManager newInstance() throws OrgApiQueryParsingException{
         return new JdbcManager();
@@ -52,15 +46,14 @@ public class JdbcManager {
         OrgApiLogger.getDataLogger().debug("Initializing JdbcManager");
         this.entityDaoMap = initEntityDaoMap();
         Map<Class<? extends Dao>,Map<Query,String>> mappedQueries = new HashMap<>();
-        executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newCachedThreadPool();
         Collection<Class<? extends Dao<?,?>>> daoTypes = entityDaoMap.values();
         Map<Class<? extends Dao>,Future<Map<Query,String>>> futures = new HashMap<>();
-        for(Class<? extends Dao> clazz : daoTypes){
-            futures.put(clazz, executor.submit(() -> parseDaoQueries(createQueryFileName(clazz))));
-        }
 
+        daoTypes.forEach((c) -> futures.put(c, executor.submit(() -> parseDaoQueries(createQueryFileName(c)))));
         ThrowingStream.of(futures.entrySet().stream(), OrgApiQueryParsingException.class)
                 .forEach((e) -> addToFinalMap(e, mappedQueries));
+
         this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
         executor.shutdownNow();
     }
