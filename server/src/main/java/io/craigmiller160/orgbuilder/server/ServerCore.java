@@ -47,6 +47,7 @@ public class ServerCore implements ServletContextListener{
             }
 
             try{
+                //TODO integrate this logic directly into the data manager
                 OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
                 InputStream ddlStream = getClass().getClassLoader().getResourceAsStream(ORG_DDL_PATH);
                 ddlScript = parseDDLScript(ddlStream);

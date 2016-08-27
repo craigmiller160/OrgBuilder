@@ -22,21 +22,11 @@ import java.util.Map;
  */
 public class JdbcDataConnection implements DataConnection {
 
-    private static final Map<Class,Class> entityDaoMap;
-
-    //Static initializer to populate the daoMap
-    static {
-        Map<Class,Class> map = new HashMap<>();
-        map.put(AddressDTO.class, AddressDao.class);
-        map.put(MemberDTO.class, MemberDao.class);
-        map.put(OrgDTO.class, OrgDao.class);
-
-        entityDaoMap = Collections.unmodifiableMap(map);
-    }
-
     private final Connection connection;
+    private final JdbcManager jdbcManager;
 
-    public JdbcDataConnection(OrgDataSource dataSource, String schemaName) throws OrgApiDataException{
+    public JdbcDataConnection(OrgDataSource dataSource, JdbcManager jdbcManager, String schemaName) throws OrgApiDataException{
+        this.jdbcManager = jdbcManager;
         try{
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
@@ -49,9 +39,10 @@ public class JdbcDataConnection implements DataConnection {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <E> Dao<E, ?> newDao(Class<E> entityType) throws OrgApiDataException{
-        Class<Dao<E,?>> daoClazz = entityDaoMap.get(entityType);
+        Class<Dao<E,?>> daoClazz = (Class<Dao<E,?>>) jdbcManager.getEntityDaoMap().get(entityType);
         if(daoClazz != null){
             try {
                 Constructor<Dao<E,?>> constructor = daoClazz.getConstructor(Connection.class);

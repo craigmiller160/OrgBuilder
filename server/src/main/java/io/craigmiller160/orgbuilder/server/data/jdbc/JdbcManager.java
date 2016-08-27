@@ -1,0 +1,168 @@
+package io.craigmiller160.orgbuilder.server.data.jdbc;
+
+import io.craigmiller160.orgbuilder.server.data.Dao;
+import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
+import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
+import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
+import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrBuilder;
+import throwing.stream.ThrowingStream;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+/**
+ * Created by craig on 8/27/16.
+ */
+public class JdbcManager {
+
+    private static final String QUERY_KEY = "QUERY=";
+    private static final String SQL_FILE_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/";
+    private static final String ORG_SCHEMA_FILENAME = "org_schema_ddl.sql";
+    private static final String APP_SCHEMA_FILENAME = "app_schema_ddl.sql";
+    private static final String QUERY_FILE_SUFFIX = "_queries.sql";
+
+    private final Map<Class<?>,Class<? extends Dao<?,?>>> entityDaoMap;
+    //Static initializer to populate the daoMap
+    static {
+
+    }
+
+    private final Map<Class<? extends Dao>,Map<Query,String>> mappedQueries;
+    private final ExecutorService executor;
+
+    public static JdbcManager newInstance() throws OrgApiQueryParsingException{
+        return new JdbcManager();
+    }
+
+    private JdbcManager() throws OrgApiQueryParsingException{
+        OrgApiLogger.getDataLogger().debug("Initializing JdbcManager");
+        this.entityDaoMap = initEntityDaoMap();
+        Map<Class<? extends Dao>,Map<Query,String>> mappedQueries = new HashMap<>();
+        executor = Executors.newCachedThreadPool();
+        Collection<Class<? extends Dao<?,?>>> daoTypes = entityDaoMap.values();
+        Map<Class<? extends Dao>,Future<Map<Query,String>>> futures = new HashMap<>();
+        for(Class<? extends Dao> clazz : daoTypes){
+            futures.put(clazz, executor.submit(() -> parseDaoQueries(createQueryFileName(clazz))));
+        }
+
+        ThrowingStream.of(futures.entrySet().stream(), OrgApiQueryParsingException.class)
+                .forEach((e) -> addToFinalMap(e, mappedQueries));
+        this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
+        executor.shutdownNow();
+    }
+
+    private Map<Class<?>,Class<? extends Dao<?,?>>> initEntityDaoMap(){
+        Map<Class<?>,Class<? extends Dao<?,?>>> map = new HashMap<>();
+        map.put(AddressDTO.class, AddressDao.class);
+        map.put(MemberDTO.class, MemberDao.class);
+        map.put(OrgDTO.class, OrgDao.class);
+        map.put(PhoneDTO.class, PhoneDao.class);
+        map.put(EmailDTO.class, EmailDao.class);
+
+        return Collections.unmodifiableMap(map);
+    }
+
+    public Map<Class<?>,Class<? extends Dao<?,?>>> getEntityDaoMap(){
+        return entityDaoMap;
+    }
+
+    public Map<Class<? extends Dao>,Map<Query,String>> getMappedQueries(){
+        return mappedQueries;
+    }
+
+    private String createQueryFileName(Class<? extends Dao> clazz){
+        return String.format("%s%s%s", SQL_FILE_PATH, clazz.getSimpleName(), QUERY_FILE_SUFFIX);
+    }
+
+    private void addToFinalMap(Map.Entry<Class<? extends Dao>,Future<Map<Query,String>>> mapEntry, Map<Class<? extends Dao>,Map<Query,String>> finalMap) throws OrgApiQueryParsingException{
+        try{
+            finalMap.put(mapEntry.getKey(), mapEntry.getValue().get());
+        }
+        catch(InterruptedException | ExecutionException ex){
+            throw new OrgApiQueryParsingException("Unable to parse SQL query files", ex);
+        }
+    }
+
+    private Map<Query,String> parseDaoQueries(String file) throws OrgApiQueryParsingException{
+        OrgApiLogger.getDataLogger().trace("Attempting to load queries from file: " + file);
+        Map<Query,String> queries = new HashMap<>();
+        InputStream fileStream = getClass().getClassLoader().getResourceAsStream(file);
+        StrBuilder queryBuilder = new StrBuilder();
+        int currentLine = 0;
+        String delimiter = ";";
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(fileStream))){
+            Query currentQuery = null;
+            String line = null;
+            while((line = reader.readLine()) != null){
+                currentLine++;
+                //If the line is blank, and nothing has been added to the queryBuilder yet, skip it
+                if(StringUtils.isEmpty(line) && queryBuilder.length() == 0) {
+                    continue;
+                }
+                //If the line is a comment, it only matters if it's the header for a named query.
+                else if(line.trim().startsWith("-- ")){
+                    if(line.trim().length() > 3 && line.trim().substring(3).startsWith(QUERY_KEY)){
+                        String newQuery = line.trim().substring(9);
+                        if(currentQuery != null){
+                            throw new IOException("New named query is declared while prior query is being parsed. " +
+                                    "Current Query: " + currentQuery.toString() + " New Query: " + newQuery);
+                        }
+                        currentQuery = Query.valueOf(newQuery);
+                    }
+                    continue;
+                }
+                //If the line starts with "delimiter", change the current delimiter value
+                else if(line.trim().toLowerCase().startsWith("delimiter")){
+                    String[] lineSplit = StringUtils.split(line);
+                    delimiter = lineSplit[lineSplit.length - 1];
+                    continue;
+                }
+
+                queryBuilder.appendln(line);
+                if(line.trim().endsWith(delimiter)){
+                    if(currentQuery == null){
+                        throw new IOException("No name found for parsed named query");
+                    }
+                    queries.put(currentQuery, queryBuilder.toString());
+                    currentQuery = null;
+                    queryBuilder.clear();
+                }
+            }
+        }
+        catch(IOException ex){
+            throw new OrgApiQueryParsingException("Error parsing query file. File: " + file + " Line: " + currentLine, ex);
+        }
+
+        OrgApiLogger.getDataLogger().debug("Queries loaded from file. File: " + file + " # Queries: " + queries.size());
+
+        return Collections.unmodifiableMap(queries);
+    }
+
+    public enum Query{
+        INSERT,
+        UPDATE,
+        DELETE,
+        GET_BY_ID,
+        COUNT,
+        GET_ALL,
+        GET_ALL_LIMIT,
+        GET_ALL_BY_MEMBER,
+        GET_ALL_BY_MEMBER_LIMIT,
+        COUNT_BY_MEMBER;
+    }
+
+}

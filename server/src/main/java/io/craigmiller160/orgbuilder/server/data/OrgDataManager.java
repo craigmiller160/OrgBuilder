@@ -1,6 +1,8 @@
 package io.craigmiller160.orgbuilder.server.data;
 
+import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
+import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
@@ -15,10 +17,12 @@ public class OrgDataManager {
 
     private final OrgDataSource dataSource;
     private final SchemaManager schemaManager;
+    private final JdbcManager jdbcManager;
 
-    public OrgDataManager(OrgDataSource dataSource){
+    public OrgDataManager(OrgDataSource dataSource) throws OrgApiException{
         this.dataSource = dataSource;
         this.schemaManager = new SchemaManager(dataSource);
+        this.jdbcManager = JdbcManager.newInstance();
     }
 
     public void createAppSchema(String[] queries) throws OrgApiDataException{
@@ -48,7 +52,7 @@ public class OrgDataManager {
             throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
         }
 
-        return new JdbcDataConnection(dataSource, schemaName);
+        return new JdbcDataConnection(dataSource, jdbcManager, schemaName);
     }
 
     public void createNewSchema(String schemaName) throws OrgApiDataException{
