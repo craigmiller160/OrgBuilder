@@ -29,10 +29,12 @@ public class DaoTestUtils {
 
     private static OrgDataSource dataSource;
     private Connection connection;
+    private String testSchemaName;
 
     public void initializeTestClass(String testSchemaName) throws Exception{
         ServerCore serverCore = new ServerCore();
         serverCore.contextInitialized(null);
+        this.testSchemaName = testSchemaName;
 
         dataSource = ServerTestUtils.getOrgDataSource(ServerCore.getOrgDataManager());
         ServerCore.getOrgDataManager().createNewSchema(testSchemaName);
@@ -42,6 +44,9 @@ public class DaoTestUtils {
         if(connection == null){
             connection = dataSource.getConnection();
             connection.setAutoCommit(false);
+            try(Statement stmt = connection.createStatement()){
+                stmt.executeUpdate("use " + testSchemaName);
+            }
         }
 
         Constructor<T> constructor = daoClazz.getConstructor(Connection.class);
@@ -53,6 +58,7 @@ public class DaoTestUtils {
         for(String sql : resetAutoIncSql){
             try(Statement stmt = connection.createStatement()){
                 stmt.executeUpdate(sql);
+                connection.commit();
             }
         }
 
