@@ -7,6 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
+
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
 
 /**
  * Created by craig on 8/21/16.
@@ -66,8 +69,10 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
             "FROM addresses " +
             "WHERE member_id = ?;";
 
-    public AddressDao(Connection connection) {
-        super(connection);
+
+
+    public AddressDao(Connection connection, Map<Query,String> queries) {
+        super(connection, queries);
     }
 
     @Override
@@ -150,51 +155,51 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
 
     @Override
     public AddressDTO insert(AddressDTO element) throws OrgApiDataException {
-        return executeInsert(element, INSERT_QUERY);
+        return executeInsert(element);
     }
 
     @Override
     public AddressDTO update(AddressDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getAddressId(), UPDATE_KEY_PARAM_INDEX, UPDATE_QUERY);
+        return executeUpdate(element, element.getAddressId(), UPDATE_KEY_PARAM_INDEX);
     }
 
     @Override
     public AddressDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id, DELETE_QUERY);
+        return executeDelete(id);
     }
 
     @Override
     public AddressDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, GET_BY_ID_QUERY);
+        return executeGet(id);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(COUNT_QUERY);
+        return executeCount();
     }
 
     @Override
     public List<AddressDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(GET_ALL_QUERY);
+        return executeGetAll();
     }
 
     @Override
     public List<AddressDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size);
     }
 
     @Override
     public List<AddressDTO> getAllByMember(Long id) throws OrgApiDataException {
-        return executeGetAllByMember(id, GET_ALL_BY_MEMBER_QUERY);
+        return executeGetAllByMember(id);
     }
 
     @Override
     public List<AddressDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        return executeGetAllByMemberLimit(id, offset, size, GET_ALL_BY_MEMBER_LIMIT_QUERY);
+        return executeGetAllByMemberLimit(id, offset, size);
     }
 
     @Override
     public long getCountByMember(Long id) throws OrgApiDataException {
-        return executeGetCountByMember(id, COUNT_BY_MEMBER_QUERY);
+        return executeGetCountByMember(id);
     }
 }

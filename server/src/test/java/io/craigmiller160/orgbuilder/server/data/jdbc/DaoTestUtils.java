@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * An abstract superclass for all DAO testing logic,
@@ -28,7 +29,8 @@ import java.util.Arrays;
  */
 public class DaoTestUtils {
 
-    private static OrgDataSource dataSource;
+    private OrgDataSource dataSource;
+    private JdbcManager jdbcManager;
     private Connection connection;
     private String testSchemaName;
 
@@ -38,6 +40,7 @@ public class DaoTestUtils {
         this.testSchemaName = testSchemaName;
 
         dataSource = ServerTestUtils.getOrgDataSource(ServerCore.getOrgDataManager());
+        jdbcManager = ServerTestUtils.getJdbcManager(ServerCore.getOrgDataManager());
         if(isAppSchema){
             ServerCore.getOrgDataManager().createAppSchema(testSchemaName);
         }
@@ -56,8 +59,8 @@ public class DaoTestUtils {
             }
         }
 
-        Constructor<T> constructor = daoClazz.getConstructor(Connection.class);
-        return constructor.newInstance(connection);
+        Constructor<T> constructor = daoClazz.getConstructor(Connection.class, Map.class);
+        return constructor.newInstance(connection, jdbcManager.getMappedQueries().get(daoClazz));
     }
 
     public void cleanUpTest(String... resetAutoIncSql) throws Exception{

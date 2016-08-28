@@ -5,6 +5,9 @@ import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
+
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
 
 /**
  * Created by craig on 8/21/16.
@@ -46,8 +49,8 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
             "ORDER BY org_id ASC " +
             "LIMIT ?,?;";
 
-    public OrgDao(Connection connection) {
-        super(connection);
+    public OrgDao(Connection connection, Map<Query,String> queries) {
+        super(connection, queries);
     }
 
     @Override
@@ -81,36 +84,36 @@ public class OrgDao extends AbstractJdbcDao<OrgDTO,Long> {
 
     @Override
     public OrgDTO insert(OrgDTO element) throws OrgApiDataException {
-        return executeInsert(element, INSERT_QUERY);
+        return executeInsert(element);
     }
 
     @Override
     public OrgDTO update(OrgDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getOrgId(), UPDATE_KEY_PARAM_INDEX, UPDATE_QUERY);
+        return executeUpdate(element, element.getOrgId(), UPDATE_KEY_PARAM_INDEX);
     }
 
     @Override
     public OrgDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id, DELETE_QUERY);
+        return executeDelete(id);
     }
 
     @Override
     public OrgDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, GET_BY_ID_QUERY);
+        return executeGet(id);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(COUNT_QUERY);
+        return executeCount();
     }
 
     @Override
     public List<OrgDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(GET_ALL_QUERY);
+        return executeGetAll();
     }
 
     @Override
     public List<OrgDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size);
     }
 }

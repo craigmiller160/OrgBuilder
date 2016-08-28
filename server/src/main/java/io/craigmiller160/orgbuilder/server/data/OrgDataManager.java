@@ -28,6 +28,10 @@ public class OrgDataManager {
         return schemaManager;
     }
 
+    JdbcManager getJdbcManager(){
+        return jdbcManager;
+    }
+
     public DataConnection connectToSchema(String schemaName) throws OrgApiDataException{
         if(!schemaManager.schemaExists(schemaName)){
             throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);

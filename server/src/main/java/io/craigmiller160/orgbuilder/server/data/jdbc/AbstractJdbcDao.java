@@ -7,6 +7,9 @@ import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
 
 /**
  * Created by craigmiller on 8/17/16.
@@ -15,8 +18,11 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
 
     protected final Connection connection;
 
-    protected AbstractJdbcDao(Connection connection){
+    protected final Map<Query,String> queries;
+
+    protected AbstractJdbcDao(Connection connection, Map<Query,String> queries){
         this.connection = connection;
+        this.queries = queries;
     }
 
     protected abstract void parameterizeElement(PreparedStatement stmt, E element) throws SQLException;
@@ -25,7 +31,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
 
     protected abstract String getElementName();
 
-    protected E executeInsert(E element, String insertQuery) throws OrgApiDataException{
+    protected E executeInsert(E element) throws OrgApiDataException{
+        String insertQuery = queries.get(Query.INSERT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Insert Query:\n" + insertQuery);
         try{
             I id = null;
@@ -50,7 +57,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected E executeUpdate(E element, I id, int updateKeyParamIndex, String updateQuery) throws OrgApiDataException{
+    protected E executeUpdate(E element, I id, int updateKeyParamIndex) throws OrgApiDataException{
+        String updateQuery = queries.get(Query.UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Update Query:\n" + updateQuery);
         try(PreparedStatement stmt = connection.prepareStatement(updateQuery)){
             parameterizeElement(stmt, element);
@@ -64,7 +72,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected E executeDelete(I id, String deleteQuery) throws OrgApiDataException{
+    protected E executeDelete(I id) throws OrgApiDataException{
+        String deleteQuery = queries.get(Query.DELETE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Delete Query:\n" + deleteQuery);
         E element = get(id);
         try{
@@ -80,7 +89,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected E executeGet(I id, String getQuery) throws OrgApiDataException{
+    protected E executeGet(I id) throws OrgApiDataException{
+        String getQuery = queries.get(Query.GET_BY_ID);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get By ID Query:\n" + getQuery);
         E element = null;
         try(PreparedStatement stmt = connection.prepareStatement(getQuery)){
@@ -98,7 +108,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected long executeCount(String countQuery) throws OrgApiDataException{
+    protected long executeCount() throws OrgApiDataException{
+        String countQuery = queries.get(Query.COUNT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Count Query:\n" + countQuery);
         long count = -1;
         try(Statement stmt = connection.createStatement()){
@@ -115,7 +126,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return count;
     }
 
-    protected List<E> executeGetAll(String getAllQuery) throws OrgApiDataException{
+    protected List<E> executeGetAll() throws OrgApiDataException{
+        String getAllQuery = queries.get(Query.GET_ALL);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All Query:\n" + getAllQuery);
         List<E> elements = new ArrayList<>();
         try(Statement stmt = connection.createStatement()){
@@ -133,7 +145,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return elements;
     }
 
-    protected List<E> executeGetAllLimit(long offset, long size, String getAllLimitQuery) throws OrgApiDataException{
+    protected List<E> executeGetAllLimit(long offset, long size) throws OrgApiDataException{
+        String getAllLimitQuery = queries.get(Query.GET_ALL_LIMIT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All Limit Query:\n" + getAllLimitQuery);
         List<E> elements = new ArrayList<>();
         try(PreparedStatement stmt = connection.prepareStatement(getAllLimitQuery)){

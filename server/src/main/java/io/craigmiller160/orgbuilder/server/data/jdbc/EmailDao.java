@@ -6,6 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
+
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
 
 /**
  * Created by craig on 8/23/16.
@@ -65,8 +68,8 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
             "FROM emails " +
             "WHERE member_id = ?;";
 
-    public EmailDao(Connection connection) {
-        super(connection);
+    public EmailDao(Connection connection, Map<Query,String> queries) {
+        super(connection, queries);
     }
 
     @Override
@@ -115,51 +118,51 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
 
     @Override
     public EmailDTO insert(EmailDTO element) throws OrgApiDataException {
-        return executeInsert(element, INSERT_QUERY);
+        return executeInsert(element);
     }
 
     @Override
     public EmailDTO update(EmailDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getEmailId(), UPDATE_KEY_PARAM_INDEX, UPDATE_QUERY);
+        return executeUpdate(element, element.getEmailId(), UPDATE_KEY_PARAM_INDEX);
     }
 
     @Override
     public EmailDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id, DELETE_QUERY);
+        return executeDelete(id);
     }
 
     @Override
     public EmailDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, GET_BY_ID_QUERY);
+        return executeGet(id);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(COUNT_QUERY);
+        return executeCount();
     }
 
     @Override
     public List<EmailDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(GET_ALL_QUERY);
+        return executeGetAll();
     }
 
     @Override
     public List<EmailDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size);
     }
 
     @Override
     public List<EmailDTO> getAllByMember(Long id) throws OrgApiDataException {
-        return executeGetAllByMember(id, GET_ALL_BY_MEMBER_QUERY);
+        return executeGetAllByMember(id);
     }
 
     @Override
     public List<EmailDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        return executeGetAllByMemberLimit(id, offset, size, GET_ALL_BY_MEMBER_LIMIT_QUERY);
+        return executeGetAllByMemberLimit(id, offset, size);
     }
 
     @Override
     public long getCountByMember(Long id) throws OrgApiDataException {
-        return executeGetCountByMember(id, COUNT_BY_MEMBER_QUERY);
+        return executeGetCountByMember(id);
     }
 }

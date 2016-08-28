@@ -9,6 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
 
 /**
  * Created by craig on 8/18/16.
@@ -49,8 +52,8 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
             "ORDER BY member_id ASC " +
             "LIMIT ?,?;";
 
-    public MemberDao(Connection connection) {
-        super(connection);
+    public MemberDao(Connection connection, Map<Query,String> queries) {
+        super(connection, queries);
     }
 
     @Override
@@ -117,36 +120,36 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
     @Override
     public MemberDTO insert(MemberDTO element)  throws OrgApiDataException {
-        return executeInsert(element, INSERT_QUERY);
+        return executeInsert(element);
     }
 
     @Override
     public MemberDTO update(MemberDTO element)  throws OrgApiDataException{
-        return executeUpdate(element, element.getMemberId(), UPDATE_KEY_PARAM_INDEX, UPDATE_QUERY);
+        return executeUpdate(element, element.getMemberId(), UPDATE_KEY_PARAM_INDEX);
     }
 
     @Override
     public MemberDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id, DELETE_QUERY);
+        return executeDelete(id);
     }
 
     @Override
     public MemberDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, GET_BY_ID_QUERY);
+        return executeGet(id);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(COUNT_QUERY);
+        return executeCount();
     }
 
     @Override
     public List<MemberDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(GET_ALL_QUERY);
+        return executeGetAll();
     }
 
     @Override
     public List<MemberDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size);
     }
 }

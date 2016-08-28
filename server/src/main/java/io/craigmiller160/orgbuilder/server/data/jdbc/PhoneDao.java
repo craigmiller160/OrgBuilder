@@ -6,6 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
+
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
 
 /**
  * Created by craig on 8/22/16.
@@ -65,8 +68,8 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
             "FROM phones " +
             "WHERE member_id = ?;";
 
-    public PhoneDao(Connection connection) {
-        super(connection);
+    public PhoneDao(Connection connection, Map<Query,String> queries) {
+        super(connection, queries);
     }
 
     @Override
@@ -138,51 +141,51 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
 
     @Override
     public PhoneDTO insert(PhoneDTO element) throws OrgApiDataException {
-        return executeInsert(element, INSERT_QUERY);
+        return executeInsert(element);
     }
 
     @Override
     public PhoneDTO update(PhoneDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getPhoneId(), UPDATE_KEY_PARAM_INDEX,UPDATE_QUERY);
+        return executeUpdate(element, element.getPhoneId(), UPDATE_KEY_PARAM_INDEX);
     }
 
     @Override
     public PhoneDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id, DELETE_QUERY);
+        return executeDelete(id);
     }
 
     @Override
     public PhoneDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id, GET_BY_ID_QUERY);
+        return executeGet(id);
     }
 
     @Override
     public long getCount() throws OrgApiDataException {
-        return executeCount(COUNT_QUERY);
+        return executeCount();
     }
 
     @Override
     public List<PhoneDTO> getAll() throws OrgApiDataException {
-        return executeGetAll(GET_ALL_QUERY);
+        return executeGetAll();
     }
 
     @Override
     public List<PhoneDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size, GET_ALL_LIMIT_QUERY);
+        return executeGetAllLimit(offset, size);
     }
 
     @Override
     public List<PhoneDTO> getAllByMember(Long id) throws OrgApiDataException {
-        return executeGetAllByMember(id, GET_ALL_BY_MEMBER_QUERY);
+        return executeGetAllByMember(id);
     }
 
     @Override
     public List<PhoneDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        return executeGetAllByMemberLimit(id, offset, size, GET_ALL_BY_MEMBER_LIMIT_QUERY);
+        return executeGetAllByMemberLimit(id, offset, size);
     }
 
     @Override
     public long getCountByMember(Long id) throws OrgApiDataException {
-        return executeGetCountByMember(id, COUNT_BY_MEMBER_QUERY);
+        return executeGetCountByMember(id);
     }
 }
