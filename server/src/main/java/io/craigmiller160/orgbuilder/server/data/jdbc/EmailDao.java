@@ -61,7 +61,7 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long> {
 
         element.setEmailAddress(resultSet.getString("email_address"));
         element.setPreferred(resultSet.getBoolean("preferred_email"));
-        element.setMemberId(resultSet.getLong("member_id"));
+        element.setMemberId(resultSet.getLong("email_member_id"));
 
         return element;
     }

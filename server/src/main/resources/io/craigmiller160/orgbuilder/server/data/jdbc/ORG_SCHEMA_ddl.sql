@@ -21,9 +21,9 @@ CREATE TABLE addresses (
   state CHAR(2),
   zip_code CHAR(6),
   preferred_address BOOLEAN NOT NULL DEFAULT FALSE,
-  member_id BIGINT NOT NULL,
+  address_member_id BIGINT NOT NULL,
   PRIMARY KEY (address_id),
-  FOREIGN KEY (member_id) REFERENCES members (member_id)
+  FOREIGN KEY (address_member_id) REFERENCES members (member_id)
 );
 
 CREATE TABLE phones (
@@ -34,9 +34,9 @@ CREATE TABLE phones (
   line_number CHAR(4),
   extension VARCHAR(20),
   preferred_phone BOOLEAN NOT NULL DEFAULT FALSE,
-  member_id BIGINT NOT NULL,
+  phone_member_id BIGINT NOT NULL,
   PRIMARY KEY (phone_id),
-  FOREIGN KEY (member_id) REFERENCES members (member_id)
+  FOREIGN KEY (phone_member_id) REFERENCES members (member_id)
 );
 
 CREATE TABLE emails (
@@ -44,7 +44,7 @@ CREATE TABLE emails (
   email_type VARCHAR(20) NOT NULL DEFAULT 'PERSONAL',
   email_address VARCHAR(255),
   preferred_email BOOLEAN NOT NULL DEFAULT FALSE,
-  member_id BIGINT NOT NULL,
+  email_member_id BIGINT NOT NULL,
   PRIMARY KEY (email_id),
-  FOREIGN KEY (member_id) REFERENCES members (member_id)
+  FOREIGN KEY (email_member_id) REFERENCES members (member_id)
 );

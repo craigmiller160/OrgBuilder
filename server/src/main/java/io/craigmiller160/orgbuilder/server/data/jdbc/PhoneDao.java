@@ -83,7 +83,7 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long> {
         element.setLineNumber(resultSet.getString("line_number"));
         element.setExtension(resultSet.getString("extension"));
         element.setPreferred(resultSet.getBoolean("preferred_phone"));
-        element.setMemberId(resultSet.getLong("member_id"));
+        element.setMemberId(resultSet.getLong("phone_member_id"));
 
         return element;
     }
