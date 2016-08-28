@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Created by craig on 8/13/16.
  */
-public class PhoneDTO implements Comparable<PhoneDTO>{
+public class PhoneDTO implements Comparable<PhoneDTO>, JoinedWithMemberDTO{
 
     private long phoneId;
     private PhoneType phoneType;
@@ -103,18 +103,22 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
         return builder.toString();
     }
 
+    @Override
     public long getMemberId() {
         return memberId;
     }
 
+    @Override
     public void setMemberId(long memberId) {
         this.memberId = memberId;
     }
 
+    @Override
     public boolean isPreferred() {
         return preferred;
     }
 
+    @Override
     public void setPreferred(boolean preferred) {
         this.preferred = preferred;
     }

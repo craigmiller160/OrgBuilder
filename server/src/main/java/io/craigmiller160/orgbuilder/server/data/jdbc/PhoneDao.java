@@ -15,7 +15,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craig on 8/22/16.
  */
-public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
+public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
@@ -96,5 +96,10 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
     @Override
     protected int getUpdatedParamIndex() {
         return UPDATE_KEY_PARAM_INDEX;
+    }
+
+    @Override
+    protected Long getIdForElement(PhoneDTO element) {
+        return element.getPhoneId();
     }
 }

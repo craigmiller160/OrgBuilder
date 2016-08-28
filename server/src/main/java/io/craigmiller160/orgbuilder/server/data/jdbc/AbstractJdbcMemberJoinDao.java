@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.dto.JoinedWithMemberDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
@@ -17,14 +18,47 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craig on 8/23/16.
  */
-public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E,I> implements MemberJoins<E,M> {
+public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I> extends AbstractJdbcDao<E,I> implements MemberJoins<E> {
 
     public AbstractJdbcMemberJoinDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
     }
 
+    protected abstract I getIdForElement(E element);
+
     @Override
-    public List<E> getAllByMember(M id) throws OrgApiDataException {
+    public E insert(E element) throws OrgApiDataException {
+        E result = super.insert(element);
+        if(result.isPreferred()){
+            clearPreferred(result);
+        }
+        return result;
+    }
+
+    private void clearPreferred(E result) throws OrgApiDataException{
+        I id = getIdForElement(result);
+        try(PreparedStatement stmt = connection.prepareStatement(queries.get(Query.CLEAR_PREFERRED))){
+            stmt.setObject(1, result.getMemberId());
+            stmt.setObject(2, id);
+            stmt.executeUpdate();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to reset " + getElementName() + " preferred field for other records after insert.", ex);
+        }
+    }
+
+    @Override
+    public E update(E element, I id) throws OrgApiDataException {
+        E result =  super.update(element, id);
+        if(result.isPreferred()){
+            clearPreferred(result);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<E> getAllByMember(long id) throws OrgApiDataException {
         String getAllByMemberQuery = queries.get(Query.GET_ALL_BY_MEMBER);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All By Member Query:\n" + getAllByMemberQuery);
         List<E> elements = new ArrayList<>();
@@ -44,7 +78,7 @@ public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E
     }
 
     @Override
-    public List<E> getAllByMember(M id, long offset, long size) throws OrgApiDataException {
+    public List<E> getAllByMember(long id, long offset, long size) throws OrgApiDataException {
         String getAllByMemberLimitQuery = queries.get(Query.GET_ALL_BY_MEMBER_LIMIT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All By Member Limit Query:\n" + getAllByMemberLimitQuery);
         List<E> elements = new ArrayList<>();
@@ -66,7 +100,7 @@ public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E
     }
 
     @Override
-    public long getCountByMember(M id) throws OrgApiDataException {
+    public long getCountByMember(long id) throws OrgApiDataException {
         String getCountByMemberQuery = queries.get(Query.COUNT_BY_MEMBER);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Count By Member Query:\n" + getCountByMemberQuery);
         long count = -1;

@@ -5,7 +5,7 @@ package io.craigmiller160.orgbuilder.server.dto;
  *
  * Created by craig on 8/13/16.
  */
-public class AddressDTO implements Comparable<AddressDTO>{
+public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO{
 
     private long addressId;
     private AddressType addressType;
@@ -84,10 +84,12 @@ public class AddressDTO implements Comparable<AddressDTO>{
         this.zipCode = zipCode;
     }
 
+    @Override
     public boolean isPreferred() {
         return preferred;
     }
 
+    @Override
     public void setPreferred(boolean preferred) {
         this.preferred = preferred;
     }
@@ -125,10 +127,12 @@ public class AddressDTO implements Comparable<AddressDTO>{
         return result;
     }
 
+    @Override
     public long getMemberId() {
         return memberId;
     }
 
+    @Override
     public void setMemberId(long memberId) {
         this.memberId = memberId;
     }

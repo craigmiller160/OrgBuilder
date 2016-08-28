@@ -50,3 +50,9 @@ LIMIT ?,?;
 SELECT COUNT(*) AS email_count_by_member
 FROM emails
 WHERE member_id = ?;
+
+-- QUERY=CLEAR_PREFERRED
+UPDATE emails
+SET preferred = FALSE
+WHERE member_id = ?
+AND email_id <> ?;

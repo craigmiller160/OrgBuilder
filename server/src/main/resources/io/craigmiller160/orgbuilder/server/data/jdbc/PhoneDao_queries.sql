@@ -50,3 +50,9 @@ LIMIT ?,?;
 SELECT COUNT(*) AS phone_by_member_count
 FROM phones
 WHERE member_id = ?;
+
+-- QUERY=CLEAR_PREFERRED
+UPDATE phones
+SET preferred = FALSE
+WHERE member_id = ?
+AND phone_id <> ?;

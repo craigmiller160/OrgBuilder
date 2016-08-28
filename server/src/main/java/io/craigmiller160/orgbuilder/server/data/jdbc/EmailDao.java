@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
+import io.craigmiller160.orgbuilder.server.dto.JoinedWithMemberDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
@@ -15,7 +16,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craig on 8/23/16.
  */
-public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
+public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 5;
 
@@ -75,4 +76,8 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
         return UPDATE_KEY_PARAM_INDEX;
     }
 
+    @Override
+    protected Long getIdForElement(EmailDTO element) {
+        return element.getEmailId();
+    }
 }

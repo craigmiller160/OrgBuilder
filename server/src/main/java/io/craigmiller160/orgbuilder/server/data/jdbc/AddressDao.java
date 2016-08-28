@@ -16,7 +16,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craig on 8/21/16.
  */
-public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long> {
+public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 9;
 
@@ -110,4 +110,8 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
         return UPDATE_KEY_PARAM_INDEX;
     }
 
+    @Override
+    protected Long getIdForElement(AddressDTO element) {
+        return element.getAddressId();
+    }
 }

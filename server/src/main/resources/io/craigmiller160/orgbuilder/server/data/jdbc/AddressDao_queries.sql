@@ -50,3 +50,9 @@ LIMIT ?,?;
 SELECT COUNT(*) AS address_by_member_count
 FROM addresses
 WHERE member_id = ?;
+
+-- QUERY=CLEAR_PREFERRED
+UPDATE addresses
+SET preferred = FALSE
+WHERE member_id = ?
+AND address_id <> ?;
