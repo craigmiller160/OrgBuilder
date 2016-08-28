@@ -1,6 +1,5 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
-import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -8,7 +7,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

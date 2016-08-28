@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 
 /**
  * Created by craig on 8/23/16.

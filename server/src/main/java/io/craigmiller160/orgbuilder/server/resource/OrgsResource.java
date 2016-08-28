@@ -2,7 +2,6 @@ package io.craigmiller160.orgbuilder.server.resource;
 
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;

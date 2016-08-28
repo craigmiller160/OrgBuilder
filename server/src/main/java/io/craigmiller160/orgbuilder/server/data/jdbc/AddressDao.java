@@ -1,15 +1,17 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
 import org.apache.commons.lang3.StringUtils;
 
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 
 /**
  * Created by craig on 8/21/16.

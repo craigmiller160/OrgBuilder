@@ -4,12 +4,16 @@ import io.craigmiller160.orgbuilder.server.data.AbstractDao;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.*;
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 
 /**
  * Created by craigmiller on 8/17/16.

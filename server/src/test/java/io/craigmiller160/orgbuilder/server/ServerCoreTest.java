@@ -1,7 +1,6 @@
 package io.craigmiller160.orgbuilder.server;
 
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -9,7 +8,6 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
