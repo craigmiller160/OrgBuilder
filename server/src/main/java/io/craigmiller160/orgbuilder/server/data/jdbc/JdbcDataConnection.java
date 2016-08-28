@@ -58,11 +58,26 @@ public class JdbcDataConnection implements DataConnection {
 
     @Override
     public void commit() throws OrgApiDataException {
-        //TODO finish this
+        try{
+            connection.commit();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to commit database transaction", ex);
+        }
     }
 
     @Override
     public void rollback() throws OrgApiDataException {
-        //TODO finish this
+        try{
+            connection.rollback();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to rollback database transaction", ex);
+        }
+    }
+
+    @Override
+    public void close() throws Exception {
+        connection.close();
     }
 }

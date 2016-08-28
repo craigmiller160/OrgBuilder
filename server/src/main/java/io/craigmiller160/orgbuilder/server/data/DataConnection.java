@@ -3,7 +3,7 @@ package io.craigmiller160.orgbuilder.server.data;
 /**
  * Created by craig on 8/10/16.
  */
-public interface DataConnection {
+public interface DataConnection extends AutoCloseable{
 
     <E> Dao<E,?> newDao(Class<E> entityType) throws OrgApiDataException;
 
