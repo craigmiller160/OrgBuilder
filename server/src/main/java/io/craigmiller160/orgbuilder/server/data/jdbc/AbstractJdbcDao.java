@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.data.AbstractDao;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
@@ -21,21 +22,18 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
 
     protected final Connection connection;
-
     protected final Map<Query,String> queries;
+    protected final DTOSQLConverter<E> converter;
 
     protected AbstractJdbcDao(Connection connection, Map<Query,String> queries){
         this.connection = connection;
         this.queries = queries;
+        this.converter = getDTOSQLConverter();
     }
-
-    protected abstract void parameterizeElement(PreparedStatement stmt, E element) throws SQLException;
-
-    protected abstract E parseResult(ResultSet resultSet) throws SQLException;
 
     protected abstract String getElementName();
 
-    protected abstract int getUpdatedParamIndex();
+    protected abstract DTOSQLConverter<E> getDTOSQLConverter();
 
     @Override
     public E insert(E element) throws OrgApiDataException {
@@ -44,7 +42,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         try{
             I id = null;
             try(PreparedStatement stmt = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)){
-                parameterizeElement(stmt, element);
+                converter.parameterizeElement(stmt, element);
                 stmt.executeUpdate();
                 try(ResultSet resultSet = stmt.getGeneratedKeys()){
                     if(!resultSet.next()){
@@ -69,8 +67,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         String updateQuery = queries.get(Query.UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Update Query:\n" + updateQuery);
         try(PreparedStatement stmt = connection.prepareStatement(updateQuery)){
-            parameterizeElement(stmt, element);
-            stmt.setObject(getUpdatedParamIndex(), id);
+            converter.parameterizeElement(stmt, element);
+            stmt.setObject(converter.getUpdateKeyParamIndex(), id);
             stmt.executeUpdate();
         }
         catch(SQLException ex){
@@ -107,7 +105,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
             stmt.setObject(1, id);
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
-                    element = parseResult(resultSet);
+                    element = converter.parseResultSet(resultSet);
                 }
             }
         }
@@ -145,7 +143,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         try(Statement stmt = connection.createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(getAllQuery)){
                 while(resultSet.next()){
-                    E element = parseResult(resultSet);
+                    E element = converter.parseResultSet(resultSet);
                     elements.add(element);
                 }
             }
@@ -167,7 +165,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
             stmt.setLong(2, size);
             try(ResultSet resultSet = stmt.executeQuery()){
                 while(resultSet.next()){
-                    E element = parseResult(resultSet);
+                    E element = converter.parseResultSet(resultSet);
                     elements.add(element);
                 }
             }
