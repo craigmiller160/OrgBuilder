@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -48,6 +49,16 @@ public class JdbcManagerTest {
         Map<JdbcManager.Query,String> phoneDaoQueries = mappedQueries.get(PhoneDao.class);
         assertNotNull("phoneDaoQueries map is null", phoneDaoQueries);
         assertEquals("phoneDaoQueries map has wrong number of queries", 10, phoneDaoQueries.size());
+
+        //Schema Scripts tests
+        Map<JdbcManager.Schema,List<String>> schemaScripts = jdbcManager.getSchemaScripts();
+        List<String> orgSchema = schemaScripts.get(JdbcManager.Schema.ORG_SCHEMA);
+        assertNotNull("OrgSchema was not loaded", orgSchema);
+        assertEquals("OrgSchema has wrong number of queries", 5, orgSchema.size());
+
+        List<String> appSchema = schemaScripts.get(JdbcManager.Schema.APP_SCHEMA);
+        assertNotNull("AppSchema was not loaded", appSchema);
+        assertEquals("AppSchema has wrong number of queries", 4, appSchema.size());
     }
 
 }

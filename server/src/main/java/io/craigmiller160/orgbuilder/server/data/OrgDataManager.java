@@ -4,11 +4,6 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
-import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Created by craig on 8/10/16.
@@ -21,22 +16,8 @@ public class OrgDataManager {
 
     public OrgDataManager(OrgDataSource dataSource) throws OrgApiException{
         this.dataSource = dataSource;
-        this.schemaManager = new SchemaManager(dataSource);
         this.jdbcManager = JdbcManager.newInstance();
-    }
-
-    public void createAppSchema(String[] queries) throws OrgApiDataException{
-        try(Connection conn = dataSource.getConnection()){
-            try(Statement stmt = conn.createStatement()){
-                for(String query : queries){
-                    OrgApiLogger.getDataLogger().trace("Create App Schema Query:\n" + query);
-                    stmt.executeUpdate(query);
-                }
-            }
-        }
-        catch(SQLException ex){
-            throw new OrgApiDataException("Unable to create application schema", ex);
-        }
+        this.schemaManager = new SchemaManager(dataSource, jdbcManager);
     }
 
     OrgDataSource getDataSource(){
@@ -55,11 +36,26 @@ public class OrgDataManager {
         return new JdbcDataConnection(dataSource, jdbcManager, schemaName);
     }
 
-    public void createNewSchema(String schemaName) throws OrgApiDataException{
+    public void createDefaultAppSchema() throws OrgApiDataException{
+        createSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME, true, false);
+    }
+
+    public void createAppSchema(String schemaName) throws OrgApiDataException{
+        createSchema(schemaName, true, true);
+    }
+
+    public void createOrgSchema(String schemaName) throws OrgApiDataException{
+        createSchema(schemaName, false, true);
+    }
+
+    private void createSchema(String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
         if(schemaManager.schemaExists(schemaName)){
-            throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
+            if(failIfExists){
+                throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
+            }
+            return;
         }
-        schemaManager.createSchema(schemaName);
+        schemaManager.createSchema(schemaName, isAppSchema);
     }
 
     public void deleteSchema(String schemaName) throws OrgApiDataException{

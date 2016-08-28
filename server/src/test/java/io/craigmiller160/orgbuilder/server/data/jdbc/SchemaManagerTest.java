@@ -1,15 +1,11 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
-import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.Statement;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -47,8 +43,8 @@ public class SchemaManagerTest {
     }
 
     @Test
-    public void testCreateSchema() throws Exception{
-        schemaManager.createSchema(SCHEMA_NAME);
+    public void testCreateOrgSchema() throws Exception{
+        schemaManager.createSchema(SCHEMA_NAME, false);
         String[] tableNames = schemaManager.getTableNames(SCHEMA_NAME);
         assertNotNull("Table Names is null", tableNames);
         assertEquals("Table names is the wrong size", 4, tableNames.length);

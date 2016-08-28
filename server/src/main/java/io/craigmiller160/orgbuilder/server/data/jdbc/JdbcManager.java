@@ -53,6 +53,8 @@ public class JdbcManager {
                 .forEach((c) -> mappedQueries.put(c, (Map<Query,String>) parseDaoQueries(createQueryFileName(c), true)));
 
         Map<Schema,List<String>> schemaScripts = new HashMap<>();
+        schemaScripts.put(Schema.APP_SCHEMA, (List<String>) parseDaoQueries(createSchemaFileName(Schema.APP_SCHEMA), false));
+        schemaScripts.put(Schema.ORG_SCHEMA, (List<String>) parseDaoQueries(createSchemaFileName(Schema.ORG_SCHEMA), false));
 
         this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
         this.schemaScripts = Collections.unmodifiableMap(schemaScripts);
@@ -77,8 +79,16 @@ public class JdbcManager {
         return mappedQueries;
     }
 
+    public Map<Schema,List<String>> getSchemaScripts(){
+        return schemaScripts;
+    }
+
     private String createQueryFileName(Class<? extends Dao> clazz){
         return String.format("%s%s%s", SQL_FILE_PATH, clazz.getSimpleName(), QUERY_FILE_SUFFIX);
+    }
+
+    private String createSchemaFileName(Schema schema){
+        return String.format("%s%s%s", SQL_FILE_PATH, schema.toString(), SCHEMA_FILE_SUFFIX);
     }
 
     private void addToFinalMap(Map.Entry<Class<? extends Dao>,Future<Map<Query,String>>> mapEntry, Map<Class<? extends Dao>,Map<Query,String>> finalMap) throws OrgApiQueryParsingException{

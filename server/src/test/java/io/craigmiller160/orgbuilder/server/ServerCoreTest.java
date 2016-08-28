@@ -52,12 +52,6 @@ public class ServerCoreTest {
     }
 
     @Test
-    public void testDDL(){
-        String[] ddlScript = ServerCore.getDDLScript();
-        assertNotNull("Missing! DDL Script", ddlScript);
-    }
-
-    @Test
     public void testDataManager() throws Exception{
         Class<?> clazz = ServerCore.getOrgDataManager().getClass();
         Method m = clazz.getDeclaredMethod("getDataSource");

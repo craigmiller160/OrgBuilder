@@ -47,19 +47,12 @@ public class ServerCore implements ServletContextListener{
             }
 
             try{
-                //TODO integrate this logic directly into the data manager
-                OrgApiLogger.getServerLogger().debug("Loading DDL script into memory");
-                InputStream ddlStream = getClass().getClassLoader().getResourceAsStream(ORG_DDL_PATH);
-                ddlScript = parseDDLScript(ddlStream);
-                ddlStream = getClass().getClassLoader().getResourceAsStream(APP_DDL_PATH);
-                String[] appScript = parseDDLScript(ddlStream);
-
                 OrgApiLogger.getServerLogger().debug("Configuration database utilities");
                 OrgDataSource dataSource = new OrgDataSource();
                 orgDataManager = new OrgDataManager(dataSource);
-                orgDataManager.createAppSchema(appScript);
+                orgDataManager.createDefaultAppSchema();
             }
-            catch(IOException | OrgApiDataException ex){
+            catch(OrgApiDataException ex){
                 throw new OrgApiException("Unable to load and execute DDL scripts", ex);
             }
         }

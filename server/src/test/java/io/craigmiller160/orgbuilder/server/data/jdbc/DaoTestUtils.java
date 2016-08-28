@@ -10,10 +10,6 @@ import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import throwing.stream.ThrowingStream;
 
 import java.lang.reflect.Constructor;
@@ -42,7 +38,7 @@ public class DaoTestUtils {
         this.testSchemaName = testSchemaName;
 
         dataSource = ServerTestUtils.getOrgDataSource(ServerCore.getOrgDataManager());
-        ServerCore.getOrgDataManager().createNewSchema(testSchemaName);
+        ServerCore.getOrgDataManager().createOrgSchema(testSchemaName);
     }
 
     public <T extends Dao> T prepareTestDao(Class<T> daoClazz) throws Exception{

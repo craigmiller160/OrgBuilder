@@ -1,6 +1,5 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
-import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
@@ -14,10 +13,12 @@ import java.util.List;
  */
 public class SchemaManager {
 
+    public static final String DEFAULT_APP_SCHEMA_NAME = "org_app";
+
     private static final String SCHEMA_EXISTS_SQL =
-            "select schema_name " +
-            "from information_schema.schemata " +
-            "where schema_name = ?;";
+            "SELECT schema_name " +
+            "FROM information_schema.schemata " +
+            "WHERE schema_name = ?;";
 
     private static final String CREATE_SCHEMA_SQL =
             "create schema %1$s;";
@@ -32,9 +33,11 @@ public class SchemaManager {
             "drop schema if exists %1$s;";
 
     private final OrgDataSource dataSource;
+    private final JdbcManager jdbcManager;
 
-    public SchemaManager(OrgDataSource dataSource){
+    public SchemaManager(OrgDataSource dataSource, JdbcManager jdbcManager){
         this.dataSource = dataSource;
+        this.jdbcManager = jdbcManager;
     }
 
     public boolean schemaExists(String schemaName) throws OrgApiDataException{
@@ -52,7 +55,8 @@ public class SchemaManager {
         }
     }
 
-    public void createSchema(String schemaName) throws OrgApiDataException{
+    public void createSchema(String schemaName, boolean isAppSchema) throws OrgApiDataException{
+        OrgApiLogger.getDataLogger().debug("Creating schema. App Schema: " + isAppSchema + " Schema Name: " + schemaName);
         try(Connection conn = dataSource.getConnection()){
             try(Statement stmt = conn.createStatement()){
                 String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
@@ -63,8 +67,9 @@ public class SchemaManager {
                 stmt.executeUpdate(createSchemaQuery);
                 stmt.executeUpdate(useSchemaQuery);
 
-                String[] ddlScript = ServerCore.getDDLScript();
-                for(String query : ddlScript){ //TODO this can be replaced by Stream
+                List<String> schemaScript = isAppSchema ? jdbcManager.getSchemaScripts().get(JdbcManager.Schema.APP_SCHEMA) :
+                        jdbcManager.getSchemaScripts().get(JdbcManager.Schema.ORG_SCHEMA);
+                for(String query : schemaScript){
                     stmt.executeUpdate(query);
                 }
             }
