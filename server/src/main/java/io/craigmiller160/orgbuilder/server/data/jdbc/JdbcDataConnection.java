@@ -73,7 +73,12 @@ public class JdbcDataConnection implements DataConnection {
     }
 
     @Override
-    public void close() throws Exception {
-        connection.close();
+    public void close() throws OrgApiDataException {
+        try{
+            connection.close();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to close database connection", ex);
+        }
     }
 }
