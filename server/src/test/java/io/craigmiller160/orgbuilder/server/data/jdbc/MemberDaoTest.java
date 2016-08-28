@@ -30,7 +30,7 @@ public class MemberDaoTest {
 
     @BeforeClass
     public static void init() throws Exception{
-        daoTestUtils.initializeTestClass(TEST_SCHEMA_NAME);
+        daoTestUtils.initializeTestClass(TEST_SCHEMA_NAME, false);
     }
 
     @Before

@@ -32,13 +32,19 @@ public class DaoTestUtils {
     private Connection connection;
     private String testSchemaName;
 
-    public void initializeTestClass(String testSchemaName) throws Exception{
+    public void initializeTestClass(String testSchemaName, boolean isAppSchema) throws Exception{
         ServerCore serverCore = new ServerCore();
         serverCore.contextInitialized(null);
         this.testSchemaName = testSchemaName;
 
         dataSource = ServerTestUtils.getOrgDataSource(ServerCore.getOrgDataManager());
-        ServerCore.getOrgDataManager().createOrgSchema(testSchemaName);
+        if(isAppSchema){
+            ServerCore.getOrgDataManager().createAppSchema(testSchemaName);
+        }
+        else{
+            ServerCore.getOrgDataManager().createOrgSchema(testSchemaName);
+        }
+
     }
 
     public <T extends Dao> T prepareTestDao(Class<T> daoClazz) throws Exception{
