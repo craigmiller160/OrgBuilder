@@ -14,6 +14,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
     private String lineNumber;
     private String extension;
     private long memberId;
+    private boolean preferred;
 
     public PhoneDTO(){}
 
@@ -110,6 +111,14 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
         this.memberId = memberId;
     }
 
+    public boolean isPreferred() {
+        return preferred;
+    }
+
+    public void setPreferred(boolean preferred) {
+        this.preferred = preferred;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,6 +128,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
 
         if (phoneId != phoneDTO.phoneId) return false;
         if (memberId != phoneDTO.memberId) return false;
+        if (preferred != phoneDTO.preferred) return false;
         if (phoneType != phoneDTO.phoneType) return false;
         if (areaCode != null ? !areaCode.equals(phoneDTO.areaCode) : phoneDTO.areaCode != null) return false;
         if (prefix != null ? !prefix.equals(phoneDTO.prefix) : phoneDTO.prefix != null) return false;
@@ -136,6 +146,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>{
         result = 31 * result + (lineNumber != null ? lineNumber.hashCode() : 0);
         result = 31 * result + (extension != null ? extension.hashCode() : 0);
         result = 31 * result + (int) (memberId ^ (memberId >>> 32));
+        result = 31 * result + (preferred ? 1 : 0);
         return result;
     }
 

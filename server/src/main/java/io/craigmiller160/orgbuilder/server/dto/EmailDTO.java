@@ -9,6 +9,7 @@ public class EmailDTO {
     private EmailType emailType;
     private String emailAddress;
     private long memberId;
+    private boolean preferred;
 
     public EmailDTO(){}
 
@@ -49,6 +50,14 @@ public class EmailDTO {
         this.memberId = memberId;
     }
 
+    public boolean isPreferred() {
+        return preferred;
+    }
+
+    public void setPreferred(boolean preferred) {
+        this.preferred = preferred;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,6 +67,7 @@ public class EmailDTO {
 
         if (emailId != emailDTO.emailId) return false;
         if (memberId != emailDTO.memberId) return false;
+        if (preferred != emailDTO.preferred) return false;
         if (emailType != emailDTO.emailType) return false;
         return emailAddress != null ? emailAddress.equals(emailDTO.emailAddress) : emailDTO.emailAddress == null;
 
@@ -69,6 +79,7 @@ public class EmailDTO {
         result = 31 * result + (emailType != null ? emailType.hashCode() : 0);
         result = 31 * result + (emailAddress != null ? emailAddress.hashCode() : 0);
         result = 31 * result + (int) (memberId ^ (memberId >>> 32));
+        result = 31 * result + (preferred ? 1 : 0);
         return result;
     }
 

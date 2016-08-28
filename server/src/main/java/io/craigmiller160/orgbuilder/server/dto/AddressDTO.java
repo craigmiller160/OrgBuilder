@@ -15,6 +15,7 @@ public class AddressDTO implements Comparable<AddressDTO>{
     private State state;
     private String zipCode;
     private long memberId;
+    private boolean preferred;
 
     public AddressDTO(){}
 
@@ -83,6 +84,14 @@ public class AddressDTO implements Comparable<AddressDTO>{
         this.zipCode = zipCode;
     }
 
+    public boolean isPreferred() {
+        return preferred;
+    }
+
+    public void setPreferred(boolean preferred) {
+        this.preferred = preferred;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,6 +101,7 @@ public class AddressDTO implements Comparable<AddressDTO>{
 
         if (addressId != that.addressId) return false;
         if (memberId != that.memberId) return false;
+        if (preferred != that.preferred) return false;
         if (addressType != that.addressType) return false;
         if (address != null ? !address.equals(that.address) : that.address != null) return false;
         if (unit != null ? !unit.equals(that.unit) : that.unit != null) return false;
@@ -111,6 +121,7 @@ public class AddressDTO implements Comparable<AddressDTO>{
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
         result = 31 * result + (int) (memberId ^ (memberId >>> 32));
+        result = 31 * result + (preferred ? 1 : 0);
         return result;
     }
 
