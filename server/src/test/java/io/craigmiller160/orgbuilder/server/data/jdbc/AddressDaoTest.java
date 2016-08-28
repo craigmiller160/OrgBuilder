@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
+import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import org.junit.After;
@@ -133,6 +134,41 @@ public class AddressDaoTest {
         insertManyAddresses();
         long count = addressDao.getCountByMember(1001L);
         assertEquals("Wrong count of addresses returned for member with ID 1001", 5, count);
+    }
+
+    /**
+     * This method tests the reflective query() method invocation.
+     *
+     * The results apply to all DAOs that use this method.
+     *
+     * @throws Exception if an error occurs.
+     */
+    @Test
+    public void testReflectiveQueryMethod() throws Exception{
+        insertManyAddresses();
+        List<AddressDTO> addresses = addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L);
+        assertNotNull("Addresses list is null", addresses);
+        assertEquals("Wrong number of addresses returned for member with ID 1001", 5, addresses.size());
+    }
+
+    /**
+     * This method tests the reflective query() method invocation.
+     * Specifically, it tests an invocation where there are multiple
+     * methods with the same name, but different parameters.
+     *
+     * The results apply to all DAOs that use this method.
+     *
+     * @throws Exception if an error occurs.
+     */
+    @Test
+    public void testReflectiveQueryMethodWithParams() throws Exception{
+        insertManyAddresses();
+        List<AddressDTO> addresses = addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L, 1, 3);
+        assertNotNull("Addresses list is null", addresses);
+        assertEquals("Wrong number of addresses returned for member with ID 1001", 3, addresses.size());
+        assertEquals("First returned address is incorrect", 12, addresses.get(0).getAddressId());
+        assertEquals("Second returned address is incorrect", 13, addresses.get(1).getAddressId());
+        assertEquals("Third returned address is incorrect", 14, addresses.get(2).getAddressId());
     }
 
     private void insertManyAddresses() throws Exception{
