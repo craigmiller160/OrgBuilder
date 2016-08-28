@@ -61,7 +61,7 @@ public class MemberDaoTest {
         MemberDTO memberDTO = daoTestUtils.getMember1();
         memberDTO.setFirstName("John");
         memberDTO.setMemberId(1000L);
-        memberDao.update(memberDTO);
+        memberDao.update(memberDTO, memberDTO.getMemberId());
         MemberDTO memberDTO2 = memberDao.get(1000L);
         assertNotNull("MemberDTO is null", memberDTO2);
         assertEquals("MemberDTO has the wrong first name", "John", memberDTO2.getFirstName());

@@ -18,59 +18,6 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
 
     private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
-    private static final String INSERT_QUERY =
-            "INSERT INTO addresses (address_type, address, unit, city, state, zip_code, member_id) " +
-            "VALUES (?,?,?,?,?,?,?);";
-
-    private static final String UPDATE_QUERY =
-            "UPDATE addresses " +
-            "SET address_type = ?, address = ?, unit = ?, city = ?, state = ?, zip_code = ?, member_id = ? " +
-            "WHERE address_id = ?;";
-
-    private static final String DELETE_QUERY =
-            "DELETE FROM addresses " +
-            "WHERE address_id = ?;";
-
-    private static final String GET_BY_ID_QUERY =
-            "SELECT * " +
-            "FROM addresses " +
-            "WHERE address_id = ?;";
-
-    private static final String COUNT_QUERY =
-            "SELECT COUNT(*) AS address_count " +
-            "FROM addresses;";
-
-    private static final String GET_ALL_QUERY =
-            "SELECT * " +
-            "FROM addresses " +
-            "ORDER BY address_id ASC;";
-
-    private static final String GET_ALL_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM addresses " +
-            "ORDER BY address_id ASC " +
-            "LIMIT ?,?;";
-
-    private static final String GET_ALL_BY_MEMBER_QUERY =
-            "SELECT * " +
-            "FROM addresses " +
-            "WHERE member_id = ? " +
-            "ORDER BY address_id ASC;";
-
-    private static final String GET_ALL_BY_MEMBER_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM addresses " +
-            "WHERE member_id = ? " +
-            "ORDER BY address_id ASC " +
-            "LIMIT ?,?;";
-
-    private static final String COUNT_BY_MEMBER_QUERY =
-            "SELECT COUNT(*) AS address_by_member_count " +
-            "FROM addresses " +
-            "WHERE member_id = ?;";
-
-
-
     public AddressDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
     }
@@ -154,52 +101,8 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
     }
 
     @Override
-    public AddressDTO insert(AddressDTO element) throws OrgApiDataException {
-        return executeInsert(element);
+    protected int getUpdatedParamIndex() {
+        return UPDATE_KEY_PARAM_INDEX;
     }
 
-    @Override
-    public AddressDTO update(AddressDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getAddressId(), UPDATE_KEY_PARAM_INDEX);
-    }
-
-    @Override
-    public AddressDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id);
-    }
-
-    @Override
-    public AddressDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id);
-    }
-
-    @Override
-    public long getCount() throws OrgApiDataException {
-        return executeCount();
-    }
-
-    @Override
-    public List<AddressDTO> getAll() throws OrgApiDataException {
-        return executeGetAll();
-    }
-
-    @Override
-    public List<AddressDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size);
-    }
-
-    @Override
-    public List<AddressDTO> getAllByMember(Long id) throws OrgApiDataException {
-        return executeGetAllByMember(id);
-    }
-
-    @Override
-    public List<AddressDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        return executeGetAllByMemberLimit(id, offset, size);
-    }
-
-    @Override
-    public long getCountByMember(Long id) throws OrgApiDataException {
-        return executeGetCountByMember(id);
-    }
 }

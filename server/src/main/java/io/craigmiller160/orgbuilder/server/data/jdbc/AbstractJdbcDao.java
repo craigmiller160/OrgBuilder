@@ -31,7 +31,10 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
 
     protected abstract String getElementName();
 
-    protected E executeInsert(E element) throws OrgApiDataException{
+    protected abstract int getUpdatedParamIndex();
+
+    @Override
+    public E insert(E element) throws OrgApiDataException {
         String insertQuery = queries.get(Query.INSERT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Insert Query:\n" + insertQuery);
         try{
@@ -57,12 +60,13 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected E executeUpdate(E element, I id, int updateKeyParamIndex) throws OrgApiDataException{
+    @Override
+    public E update(E element, I id) throws OrgApiDataException {
         String updateQuery = queries.get(Query.UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Update Query:\n" + updateQuery);
         try(PreparedStatement stmt = connection.prepareStatement(updateQuery)){
             parameterizeElement(stmt, element);
-            stmt.setObject(updateKeyParamIndex, id);
+            stmt.setObject(getUpdatedParamIndex(), id);
             stmt.executeUpdate();
         }
         catch(SQLException ex){
@@ -72,7 +76,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected E executeDelete(I id) throws OrgApiDataException{
+    @Override
+    public E delete(I id) throws OrgApiDataException {
         String deleteQuery = queries.get(Query.DELETE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Delete Query:\n" + deleteQuery);
         E element = get(id);
@@ -89,7 +94,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected E executeGet(I id) throws OrgApiDataException{
+    @Override
+    public E get(I id) throws OrgApiDataException {
         String getQuery = queries.get(Query.GET_BY_ID);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get By ID Query:\n" + getQuery);
         E element = null;
@@ -108,7 +114,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return element;
     }
 
-    protected long executeCount() throws OrgApiDataException{
+    @Override
+    public long getCount() throws OrgApiDataException {
         String countQuery = queries.get(Query.COUNT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Count Query:\n" + countQuery);
         long count = -1;
@@ -126,7 +133,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return count;
     }
 
-    protected List<E> executeGetAll() throws OrgApiDataException{
+    @Override
+    public List<E> getAll() throws OrgApiDataException {
         String getAllQuery = queries.get(Query.GET_ALL);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All Query:\n" + getAllQuery);
         List<E> elements = new ArrayList<>();
@@ -145,7 +153,8 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
         return elements;
     }
 
-    protected List<E> executeGetAllLimit(long offset, long size) throws OrgApiDataException{
+    @Override
+    public List<E> getAll(long offset, long size) throws OrgApiDataException {
         String getAllLimitQuery = queries.get(Query.GET_ALL_LIMIT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All Limit Query:\n" + getAllLimitQuery);
         List<E> elements = new ArrayList<>();

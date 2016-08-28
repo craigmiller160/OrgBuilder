@@ -17,57 +17,6 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 4;
 
-    private static final String INSERT_QUERY =
-            "INSERT INTO emails (email_type, email_address, member_id) " +
-            "VALUES (?,?,?);";
-
-    private static final String UPDATE_QUERY =
-            "UPDATE emails " +
-            "SET email_type = ?, email_address = ?, member_id = ? " +
-            "WHERE email_id = ?;";
-
-    private static final String DELETE_QUERY =
-            "DELETE FROM emails " +
-            "WHERE email_id = ?;";
-
-    private static final String GET_BY_ID_QUERY =
-            "SELECT * " +
-            "FROM emails " +
-            "WHERE email_id = ?;";
-
-    private static final String COUNT_QUERY =
-            "SELECT COUNT(*) " +
-            "FROM emails;";
-
-    private static final String GET_ALL_QUERY =
-            "SELECT * " +
-            "FROM emails " +
-            "ORDER BY email_id ASC;";
-
-    private static final String GET_ALL_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM emails " +
-            "ORDER BY email_id ASC " +
-            "LIMIT ?,?;";
-
-    private static final String GET_ALL_BY_MEMBER_QUERY =
-            "SELECT * " +
-            "FROM emails " +
-            "WHERE member_id = ? " +
-            "ORDER BY email_id ASC;";
-
-    private static final String GET_ALL_BY_MEMBER_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM emails " +
-            "WHERE member_id = ? " +
-            "ORDER BY email_id ASC " +
-            "LIMIT ?,?;";
-
-    private static final String COUNT_BY_MEMBER_QUERY =
-            "SELECT COUNT(*) " +
-            "FROM emails " +
-            "WHERE member_id = ?;";
-
     public EmailDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
     }
@@ -117,52 +66,8 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
     }
 
     @Override
-    public EmailDTO insert(EmailDTO element) throws OrgApiDataException {
-        return executeInsert(element);
+    protected int getUpdatedParamIndex() {
+        return UPDATE_KEY_PARAM_INDEX;
     }
 
-    @Override
-    public EmailDTO update(EmailDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getEmailId(), UPDATE_KEY_PARAM_INDEX);
-    }
-
-    @Override
-    public EmailDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id);
-    }
-
-    @Override
-    public EmailDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id);
-    }
-
-    @Override
-    public long getCount() throws OrgApiDataException {
-        return executeCount();
-    }
-
-    @Override
-    public List<EmailDTO> getAll() throws OrgApiDataException {
-        return executeGetAll();
-    }
-
-    @Override
-    public List<EmailDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size);
-    }
-
-    @Override
-    public List<EmailDTO> getAllByMember(Long id) throws OrgApiDataException {
-        return executeGetAllByMember(id);
-    }
-
-    @Override
-    public List<EmailDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        return executeGetAllByMemberLimit(id, offset, size);
-    }
-
-    @Override
-    public long getCountByMember(Long id) throws OrgApiDataException {
-        return executeGetCountByMember(id);
-    }
 }

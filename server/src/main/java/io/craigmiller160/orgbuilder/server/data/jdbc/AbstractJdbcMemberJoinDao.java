@@ -23,7 +23,8 @@ public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E
         super(connection, queries);
     }
 
-    protected List<E> executeGetAllByMember(M id) throws OrgApiDataException{
+    @Override
+    public List<E> getAllByMember(M id) throws OrgApiDataException {
         String getAllByMemberQuery = queries.get(Query.GET_ALL_BY_MEMBER);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All By Member Query:\n" + getAllByMemberQuery);
         List<E> elements = new ArrayList<>();
@@ -42,7 +43,8 @@ public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E
         return elements;
     }
 
-    protected List<E> executeGetAllByMemberLimit(M id, long offset, long size) throws OrgApiDataException{
+    @Override
+    public List<E> getAllByMember(M id, long offset, long size) throws OrgApiDataException {
         String getAllByMemberLimitQuery = queries.get(Query.GET_ALL_BY_MEMBER_LIMIT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get All By Member Limit Query:\n" + getAllByMemberLimitQuery);
         List<E> elements = new ArrayList<>();
@@ -63,7 +65,8 @@ public abstract class AbstractJdbcMemberJoinDao<E,I,M> extends AbstractJdbcDao<E
         return elements;
     }
 
-    protected long executeGetCountByMember(M id) throws OrgApiDataException{
+    @Override
+    public long getCountByMember(M id) throws OrgApiDataException {
         String getCountByMemberQuery = queries.get(Query.COUNT_BY_MEMBER);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Count By Member Query:\n" + getCountByMemberQuery);
         long count = -1;

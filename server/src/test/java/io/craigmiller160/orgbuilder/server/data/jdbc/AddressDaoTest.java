@@ -70,7 +70,7 @@ public class AddressDaoTest {
         AddressDTO address = daoTestUtils.getAddress1();
         address.setAddressId(1);
         address.setAddress(newAddress);
-        addressDao.update(address);
+        addressDao.update(address, address.getAddressId());
         address = addressDao.get(1L);
         assertNotNull("AddressDTO is null", address);
         assertEquals("AddressDTO has the wrong address value", newAddress, address.getAddress());

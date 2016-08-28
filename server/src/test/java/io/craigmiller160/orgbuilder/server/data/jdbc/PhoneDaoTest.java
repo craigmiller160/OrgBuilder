@@ -70,7 +70,7 @@ public class PhoneDaoTest {
         PhoneDTO phone = daoTestUtils.getPhone1();
         phone.setPhoneId(1);
         phone.setLineNumber(newLineNum);
-        phoneDao.update(phone);
+        phoneDao.update(phone, phone.getPhoneId());
         phone = phoneDao.get(1L);
         assertNotNull("PhoneDTO is null", phone);
         assertEquals("PhoneDTO has the wrong line number value", newLineNum, phone.getLineNumber());

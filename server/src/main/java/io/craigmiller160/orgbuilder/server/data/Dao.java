@@ -38,9 +38,10 @@ public interface Dao<E,I> {
      * Update the provided element in the database.
      *
      * @param element the element to update.
+     * @param id the ID of the element to update.
      * @return the element, after being updated.
      */
-    E update(E element) throws OrgApiDataException;
+    E update(E element, I id) throws OrgApiDataException;
 
     /**
      * Delete the element with the provided ID from

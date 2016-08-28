@@ -20,38 +20,6 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 6;
 
-    private static final String INSERT_QUERY =
-            "INSERT INTO members (first_name, middle_name, last_name, date_of_birth, gender) " +
-            "VALUES (?,?,?,?,?);";
-
-    private static final String UPDATE_QUERY =
-            "UPDATE members " +
-            "SET first_name = ?, middle_name = ?, last_name = ?, date_of_birth = ?, gender = ? " +
-            "WHERE member_id = ?;";
-
-    private static final String DELETE_QUERY =
-            "DELETE FROM members " +
-            "WHERE member_id = ?;";
-
-    private static final String GET_BY_ID_QUERY =
-            "SELECT * " +
-            "FROM members " +
-            "WHERE member_id = ?;";
-
-    private static final String COUNT_QUERY =
-            "SELECT COUNT(*) AS member_count FROM members;";
-
-    private static final String GET_ALL_QUERY =
-            "SELECT * " +
-            "FROM members " +
-            "ORDER BY member_id ASC;";
-
-    private static final String GET_ALL_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM members " +
-            "ORDER BY member_id ASC " +
-            "LIMIT ?,?;";
-
     public MemberDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
     }
@@ -119,37 +87,7 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     }
 
     @Override
-    public MemberDTO insert(MemberDTO element)  throws OrgApiDataException {
-        return executeInsert(element);
-    }
-
-    @Override
-    public MemberDTO update(MemberDTO element)  throws OrgApiDataException{
-        return executeUpdate(element, element.getMemberId(), UPDATE_KEY_PARAM_INDEX);
-    }
-
-    @Override
-    public MemberDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id);
-    }
-
-    @Override
-    public MemberDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id);
-    }
-
-    @Override
-    public long getCount() throws OrgApiDataException {
-        return executeCount();
-    }
-
-    @Override
-    public List<MemberDTO> getAll() throws OrgApiDataException {
-        return executeGetAll();
-    }
-
-    @Override
-    public List<MemberDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size);
+    protected int getUpdatedParamIndex() {
+        return UPDATE_KEY_PARAM_INDEX;
     }
 }

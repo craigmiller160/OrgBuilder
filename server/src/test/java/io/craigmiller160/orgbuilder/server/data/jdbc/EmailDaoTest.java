@@ -70,7 +70,7 @@ public class EmailDaoTest {
         EmailDTO email = daoTestUtils.getEmail1();
         email.setEmailId(1);
         email.setEmailAddress(newEmail);
-        emailDao.update(email);
+        emailDao.update(email, email.getEmailId());
         email = emailDao.get(1L);
         assertNotNull("EmailDTO is null", email);
         assertEquals("EmailDTO has thew wrong email address value", newEmail, email.getEmailAddress());

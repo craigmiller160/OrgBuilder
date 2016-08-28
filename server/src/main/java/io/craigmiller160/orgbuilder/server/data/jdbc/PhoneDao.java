@@ -17,57 +17,6 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
 
     private static final int UPDATE_KEY_PARAM_INDEX = 7;
 
-    private static final String INSERT_QUERY =
-            "INSERT INTO phones (phone_type, area_code, prefix, line_number, extension, member_id) " +
-            "VALUES (?,?,?,?,?,?)";
-
-    private static final String UPDATE_QUERY =
-            "UPDATE phones " +
-            "SET phone_type = ?, area_code = ?, prefix = ?, line_number = ?, extension = ?, member_id = ? " +
-            "WHERE phone_id = ?;";
-
-    private static final String DELETE_QUERY =
-            "DELETE FROM phones " +
-            "WHERE phone_id = ?;";
-
-    private static final String GET_BY_ID_QUERY =
-            "SELECT * " +
-            "FROM phones " +
-            "WHERE phone_id = ?;";
-
-    private static final String COUNT_QUERY =
-            "SELECT COUNT(*) AS phone_count " +
-            "FROM phones;";
-
-    private static final String GET_ALL_QUERY =
-            "SELECT * " +
-            "FROM phones " +
-            "ORDER BY phone_id ASC;";
-
-    private static final String GET_ALL_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM phones " +
-            "ORDER BY phone_id ASC " +
-            "LIMIT ?,?;";
-
-    private static final String GET_ALL_BY_MEMBER_QUERY =
-            "SELECT * " +
-            "FROM phones " +
-            "WHERE member_id = ? " +
-            "ORDER BY phone_id ASC;";
-
-    private static final String GET_ALL_BY_MEMBER_LIMIT_QUERY =
-            "SELECT * " +
-            "FROM phones " +
-            "WHERE member_id = ? " +
-            "ORDER BY phone_id ASC " +
-            "LIMIT ?,?;";
-
-    private static final String COUNT_BY_MEMBER_QUERY =
-            "SELECT COUNT(*) AS phone_by_member_count " +
-            "FROM phones " +
-            "WHERE member_id = ?;";
-
     public PhoneDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
     }
@@ -140,52 +89,7 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
     }
 
     @Override
-    public PhoneDTO insert(PhoneDTO element) throws OrgApiDataException {
-        return executeInsert(element);
-    }
-
-    @Override
-    public PhoneDTO update(PhoneDTO element) throws OrgApiDataException {
-        return executeUpdate(element, element.getPhoneId(), UPDATE_KEY_PARAM_INDEX);
-    }
-
-    @Override
-    public PhoneDTO delete(Long id) throws OrgApiDataException {
-        return executeDelete(id);
-    }
-
-    @Override
-    public PhoneDTO get(Long id) throws OrgApiDataException {
-        return executeGet(id);
-    }
-
-    @Override
-    public long getCount() throws OrgApiDataException {
-        return executeCount();
-    }
-
-    @Override
-    public List<PhoneDTO> getAll() throws OrgApiDataException {
-        return executeGetAll();
-    }
-
-    @Override
-    public List<PhoneDTO> getAll(long offset, long size) throws OrgApiDataException {
-        return executeGetAllLimit(offset, size);
-    }
-
-    @Override
-    public List<PhoneDTO> getAllByMember(Long id) throws OrgApiDataException {
-        return executeGetAllByMember(id);
-    }
-
-    @Override
-    public List<PhoneDTO> getAllByMember(Long id, long offset, long size) throws OrgApiDataException {
-        return executeGetAllByMemberLimit(id, offset, size);
-    }
-
-    @Override
-    public long getCountByMember(Long id) throws OrgApiDataException {
-        return executeGetCountByMember(id);
+    protected int getUpdatedParamIndex() {
+        return UPDATE_KEY_PARAM_INDEX;
     }
 }
