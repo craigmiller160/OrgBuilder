@@ -87,10 +87,7 @@ public class MemberDaoTest {
 
     @Test
     public void testGetAll() throws Exception{
-        for(int i = 0; i < 10; i++){
-            MemberDTO member = daoTestUtils.getMember1();
-            memberDao.insert(member);
-        }
+        insertManyMembers();
 
         List<MemberDTO> members = memberDao.getAll();
         assertEquals("Get All returned the wrong number of members", 10, members.size());
@@ -98,10 +95,7 @@ public class MemberDaoTest {
 
     @Test
     public void testGetAllLimit() throws Exception{
-        for(int i = 0; i < 10; i++){
-            MemberDTO member = daoTestUtils.getMember1();
-            memberDao.insert(member);
-        }
+        insertManyMembers();
 
         List<MemberDTO> members = memberDao.getAll(3, 3);
         assertEquals("Get All Limit returned the wrong number of members", 3, members.size());
@@ -110,6 +104,11 @@ public class MemberDaoTest {
         assertEquals("Third returned member is incorrect", 1005L, members.get(2).getMemberId());
     }
 
-
+    private void insertManyMembers() throws Exception{
+        for(int i = 0; i < 10; i++){
+            MemberDTO member = daoTestUtils.getMember1();
+            memberDao.insert(member);
+        }
+    }
 
 }

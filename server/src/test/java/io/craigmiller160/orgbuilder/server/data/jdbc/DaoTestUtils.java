@@ -8,6 +8,7 @@ import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
 import throwing.stream.ThrowingStream;
@@ -163,6 +164,13 @@ public class DaoTestUtils {
         email.setEmailAddress("cmiller@pilotfishtechnology.com");
         email.setMemberId(1001);
         return email;
+    }
+
+    public OrgDTO getOrg1(){
+        OrgDTO org = new OrgDTO();
+        org.setOrgName("MyOrg");
+        org.setSchemaName("test_org");
+        return org;
     }
 
 }
