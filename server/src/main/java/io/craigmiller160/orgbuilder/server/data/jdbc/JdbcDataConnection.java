@@ -44,9 +44,10 @@ public class JdbcDataConnection implements DataConnection {
     public <E> Dao<E, ?> newDao(Class<E> entityType) throws OrgApiDataException{
         Class<Dao<E,?>> daoClazz = (Class<Dao<E,?>>) jdbcManager.getEntityDaoMap().get(entityType);
         if(daoClazz != null){
+            Map<JdbcManager.Query,String> queries = jdbcManager.getMappedQueries().get(daoClazz);
             try {
-                Constructor<Dao<E,?>> constructor = daoClazz.getConstructor(Connection.class);
-                return constructor.newInstance(connection);
+                Constructor<Dao<E,?>> constructor = daoClazz.getConstructor(Connection.class, Map.class);
+                return constructor.newInstance(connection, queries);
             }
             catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {
                 throw new OrgApiDataException("Unable to instantiate Dao. Class: " + daoClazz.getName(), ex);
