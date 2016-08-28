@@ -31,12 +31,14 @@ public class JdbcManager {
 
     private static final String QUERY_KEY = "QUERY=";
     private static final String SQL_FILE_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/";
-    private static final String ORG_SCHEMA_FILENAME = "org_schema_ddl.sql";
-    private static final String APP_SCHEMA_FILENAME = "app_schema_ddl.sql";
+    private static final String ORG_SCHEMA_FILENAME = "ORG_SCHEMA_ddl.sql";
+    private static final String APP_SCHEMA_FILENAME = "APP_SCHEMA_ddl.sql";
     private static final String QUERY_FILE_SUFFIX = "_queries.sql";
+    private static final String SCHEMA_FILE_SUFFIX = "_ddl.sql";
 
     private final Map<Class<?>,Class<? extends Dao<?,?>>> entityDaoMap;
     private final Map<Class<? extends Dao>,Map<Query,String>> mappedQueries;
+    private final Map<Schema,List<String>> schemaScripts;
 
     public static JdbcManager newInstance() throws OrgApiQueryParsingException{
         return new JdbcManager();
@@ -50,7 +52,10 @@ public class JdbcManager {
         ThrowingStream.of(daoTypes.stream(), OrgApiQueryParsingException.class)
                 .forEach((c) -> mappedQueries.put(c, (Map<Query,String>) parseDaoQueries(createQueryFileName(c), true)));
 
+        Map<Schema,List<String>> schemaScripts = new HashMap<>();
+
         this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
+        this.schemaScripts = Collections.unmodifiableMap(schemaScripts);
     }
 
     private Map<Class<?>,Class<? extends Dao<?,?>>> initEntityDaoMap(){
@@ -168,6 +173,11 @@ public class JdbcManager {
         GET_ALL_BY_MEMBER,
         GET_ALL_BY_MEMBER_LIMIT,
         COUNT_BY_MEMBER;
+    }
+
+    public enum Schema {
+        ORG_SCHEMA,
+        APP_SCHEMA;
     }
 
 }

@@ -24,8 +24,8 @@ import java.util.Properties;
 public class ServerCore implements ServletContextListener{
 
     private static final String PROPS_PATH = "io/craigmiller160/orgbuilder/server/orgapi.properties";
-    private static final String ORG_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/org_schema_ddl.sql";
-    private static final String APP_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/app_schema_ddl.sql";
+    private static final String ORG_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/ORG_SCHEMA_ddl.sql";
+    private static final String APP_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/APP_SCHEMA_ddl.sql";
 
     private static final Properties properties = new Properties();
     private static OrgDataManager orgDataManager;
