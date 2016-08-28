@@ -33,12 +33,12 @@ public class JdbcManagerTest {
         //AddressDao query tests
         Map<JdbcManager.Query,String> addressDaoQueries = mappedQueries.get(AddressDao.class);
         assertNotNull("addressDaoQueries map is null", addressDaoQueries);
-        assertEquals("addressDaoQueries map has wrong number of queries", 10, addressDaoQueries.size());
+        assertEquals("addressDaoQueries map has wrong number of queries", 11, addressDaoQueries.size());
 
         //EmailDao query tests
         Map<JdbcManager.Query,String> emailDaoQueries = mappedQueries.get(EmailDao.class);
         assertNotNull("emailDaoQueries map is null", emailDaoQueries);
-        assertEquals("emailDaoQueries map has wrong number of queries", 10, emailDaoQueries.size());
+        assertEquals("emailDaoQueries map has wrong number of queries", 11, emailDaoQueries.size());
 
         //MemberDao query tests
         Map<JdbcManager.Query,String> memberDaoQueries = mappedQueries.get(MemberDao.class);
@@ -48,7 +48,7 @@ public class JdbcManagerTest {
         //PhoneDao query tests
         Map<JdbcManager.Query,String> phoneDaoQueries = mappedQueries.get(PhoneDao.class);
         assertNotNull("phoneDaoQueries map is null", phoneDaoQueries);
-        assertEquals("phoneDaoQueries map has wrong number of queries", 10, phoneDaoQueries.size());
+        assertEquals("phoneDaoQueries map has wrong number of queries", 11, phoneDaoQueries.size());
 
         //Schema Scripts tests
         Map<JdbcManager.Schema,List<String>> schemaScripts = jdbcManager.getSchemaScripts();
