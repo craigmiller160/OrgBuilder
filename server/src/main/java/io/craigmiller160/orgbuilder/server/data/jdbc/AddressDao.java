@@ -94,7 +94,7 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long> {
             element.setState(State.valueOf(state));
         }
         element.setZipCode(resultSet.getString("zip_code"));
-        element.setPreferred(resultSet.getBoolean("preferred"));
+        element.setPreferred(resultSet.getBoolean("preferred_address"));
         element.setMemberId(resultSet.getLong("member_id"));
 
         return element;
