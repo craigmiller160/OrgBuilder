@@ -41,12 +41,12 @@ public class JdbcDataConnection implements DataConnection {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <E> Dao<E, ?> newDao(Class<E> entityType) throws OrgApiDataException{
-        Class<Dao<E,?>> daoClazz = (Class<Dao<E,?>>) jdbcManager.getEntityDaoMap().get(entityType);
+    public <E,I> Dao<E, I> newDao(Class<E> entityType) throws OrgApiDataException{
+        Class<Dao<E,I>> daoClazz = (Class<Dao<E,I>>) jdbcManager.getEntityDaoMap().get(entityType);
         if(daoClazz != null){
             Map<JdbcManager.Query,String> queries = jdbcManager.getMappedQueries().get(daoClazz);
             try {
-                Constructor<Dao<E,?>> constructor = daoClazz.getConstructor(Connection.class, Map.class);
+                Constructor<Dao<E,I>> constructor = daoClazz.getConstructor(Connection.class, Map.class);
                 return constructor.newInstance(connection, queries);
             }
             catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ex) {

@@ -5,7 +5,7 @@ package io.craigmiller160.orgbuilder.server.data;
  */
 public interface DataConnection extends AutoCloseable{
 
-    <E> Dao<E,?> newDao(Class<E> entityType) throws OrgApiDataException;
+    <E,I> Dao<E,I> newDao(Class<E> entityType) throws OrgApiDataException;
 
     void commit() throws OrgApiDataException;
 
