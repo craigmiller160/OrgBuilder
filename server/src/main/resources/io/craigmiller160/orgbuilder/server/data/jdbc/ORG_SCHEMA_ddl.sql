@@ -20,6 +20,7 @@ CREATE TABLE addresses (
   city VARCHAR(255),
   state CHAR(2),
   zip_code CHAR(6),
+  preferred BOOLEAN NOT NULL DEFAULT FALSE,
   member_id BIGINT NOT NULL,
   PRIMARY KEY (address_id),
   FOREIGN KEY (member_id) REFERENCES members (member_id)
@@ -32,6 +33,7 @@ CREATE TABLE phones (
   prefix CHAR(3),
   line_number CHAR(4),
   extension VARCHAR(20),
+  preferred BOOLEAN NOT NULL DEFAULT FALSE,
   member_id BIGINT NOT NULL,
   PRIMARY KEY (phone_id),
   FOREIGN KEY (member_id) REFERENCES members (member_id)
@@ -41,6 +43,7 @@ CREATE TABLE emails (
   email_id BIGINT NOT NULL AUTO_INCREMENT,
   email_type VARCHAR(20) NOT NULL DEFAULT 'PERSONAL',
   email_address VARCHAR(255),
+  preferred BOOLEAN NOT NULL DEFAULT FALSE,
   member_id BIGINT NOT NULL,
   PRIMARY KEY (email_id),
   FOREIGN KEY (member_id) REFERENCES members (member_id)
