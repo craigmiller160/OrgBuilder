@@ -1,12 +1,12 @@
 -- The queries used by the AddressDao
 
 -- QUERY=INSERT
-INSERT INTO addresses (address_type, address, unit, city, state, zip_code, member_id)
-VALUES (?,?,?,?,?,?,?);
+INSERT INTO addresses (address_type, address, unit, city, state, zip_code, preferred, member_id)
+VALUES (?,?,?,?,?,?,?,?);
 
 -- QUERY=UPDATE
 UPDATE addresses
-SET address_type = ?, address = ?, unit = ?, city = ?, state = ?, zip_code = ?, member_id = ?
+SET address_type = ?, address = ?, unit = ?, city = ?, state = ?, zip_code = ?, preferred = ?, member_id = ?
 WHERE address_id = ?;
 
 -- QUERY=DELETE

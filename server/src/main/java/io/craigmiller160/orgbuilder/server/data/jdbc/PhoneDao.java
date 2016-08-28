@@ -17,7 +17,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
  */
 public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 7;
+    private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
     public PhoneDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
@@ -60,11 +60,13 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
             stmt.setNull(5, Types.VARCHAR);
         }
 
+        stmt.setBoolean(6, element.isPreferred());
+
         if(element.getMemberId() > 0){
-            stmt.setLong(6, element.getMemberId());
+            stmt.setLong(7, element.getMemberId());
         }
         else{
-            stmt.setNull(6, Types.BIGINT);
+            stmt.setNull(7, Types.BIGINT);
         }
     }
 
@@ -80,6 +82,7 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long,Long> {
         element.setPrefix(resultSet.getString("prefix"));
         element.setLineNumber(resultSet.getString("line_number"));
         element.setExtension(resultSet.getString("extension"));
+        element.setPreferred(resultSet.getBoolean("preferred"));
         element.setMemberId(resultSet.getLong("member_id"));
 
         return element;

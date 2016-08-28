@@ -17,7 +17,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
  */
 public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 4;
+    private static final int UPDATE_KEY_PARAM_INDEX = 5;
 
     public EmailDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
@@ -39,11 +39,13 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
             stmt.setNull(2, Types.VARCHAR);
         }
 
+        stmt.setBoolean(3, element.isPreferred());
+
         if(element.getMemberId() > 0){
-            stmt.setLong(3, element.getMemberId());
+            stmt.setLong(4, element.getMemberId());
         }
         else{
-            stmt.setNull(3, Types.BIGINT);
+            stmt.setNull(4, Types.BIGINT);
         }
     }
 
@@ -57,6 +59,7 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long,Long> {
         }
 
         element.setEmailAddress(resultSet.getString("email_address"));
+        element.setPreferred(resultSet.getBoolean("preferred"));
         element.setMemberId(resultSet.getLong("member_id"));
 
         return element;

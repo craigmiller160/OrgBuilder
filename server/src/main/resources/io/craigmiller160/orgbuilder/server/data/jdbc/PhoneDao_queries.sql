@@ -1,12 +1,12 @@
 -- The queries used by the PhoneDao
 
 -- QUERY=INSERT
-INSERT INTO phones (phone_type, area_code, prefix, line_number, extension, member_id)
-VALUES (?,?,?,?,?,?);
+INSERT INTO phones (phone_type, area_code, prefix, line_number, extension, preferred, member_id)
+VALUES (?,?,?,?,?,?,?);
 
 -- QUERY=UPDATE
 UPDATE phones
-SET phone_type = ?, area_code = ?, prefix = ?, line_number = ?, extension = ?, member_id = ?
+SET phone_type = ?, area_code = ?, prefix = ?, line_number = ?, extension = ?, preferred = ?, member_id = ?
 WHERE phone_id = ?;
 
 -- QUERY=DELETE

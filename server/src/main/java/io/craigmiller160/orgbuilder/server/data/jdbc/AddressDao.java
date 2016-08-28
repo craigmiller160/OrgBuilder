@@ -18,7 +18,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
  */
 public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 8;
+    private static final int UPDATE_KEY_PARAM_INDEX = 9;
 
     public AddressDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
@@ -68,11 +68,13 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
             stmt.setNull(6, Types.CHAR);
         }
 
+        stmt.setBoolean(7, element.isPreferred());
+
         if(element.getMemberId() > 0){
-            stmt.setLong(7, element.getMemberId());
+            stmt.setLong(8, element.getMemberId());
         }
         else{
-            stmt.setNull(7, Types.BIGINT);
+            stmt.setNull(8, Types.BIGINT);
         }
     }
 
@@ -92,6 +94,7 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long, Long>
             element.setState(State.valueOf(state));
         }
         element.setZipCode(resultSet.getString("zip_code"));
+        element.setPreferred(resultSet.getBoolean("preferred"));
         element.setMemberId(resultSet.getLong("member_id"));
 
         return element;
