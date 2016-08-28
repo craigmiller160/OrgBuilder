@@ -37,7 +37,9 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I>
 
     private void clearPreferred(E result) throws OrgApiDataException{
         I id = getIdForElement(result);
-        try(PreparedStatement stmt = connection.prepareStatement(queries.get(Query.CLEAR_PREFERRED))){
+        String clearPreferredQuery = queries.get(Query.CLEAR_PREFERRED);
+        OrgApiLogger.getDataLogger().trace(getElementName() + " Clear Preferred Query:\n" + clearPreferredQuery);
+        try(PreparedStatement stmt = connection.prepareStatement(clearPreferredQuery)){
             stmt.setObject(1, result.getMemberId());
             stmt.setObject(2, id);
             stmt.executeUpdate();
