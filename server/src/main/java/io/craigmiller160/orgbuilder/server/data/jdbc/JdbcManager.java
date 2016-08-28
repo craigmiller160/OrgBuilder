@@ -15,9 +15,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -46,7 +48,7 @@ public class JdbcManager {
         Map<Class<? extends Dao>,Map<Query,String>> mappedQueries = new HashMap<>();
         Collection<Class<? extends Dao<?,?>>> daoTypes = entityDaoMap.values();
         ThrowingStream.of(daoTypes.stream(), OrgApiQueryParsingException.class)
-                .forEach((c) -> mappedQueries.put(c, parseDaoQueries(createQueryFileName(c))));
+                .forEach((c) -> mappedQueries.put(c, (Map<Query,String>) parseDaoQueries(createQueryFileName(c), true)));
 
         this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
     }
@@ -83,9 +85,10 @@ public class JdbcManager {
         }
     }
 
-    private Map<Query,String> parseDaoQueries(String file) throws OrgApiQueryParsingException{
-        OrgApiLogger.getDataLogger().trace("Attempting to load queries from file: " + file);
-        Map<Query,String> queries = new HashMap<>();
+    private Object parseDaoQueries(String file, boolean isNamedQueries) throws OrgApiQueryParsingException{
+        Object queries = isNamedQueries ? new HashMap<Query,String>() : new ArrayList<String>();
+        OrgApiLogger.getDataLogger().trace("Attempting to load sql file. File: " + file + " Named Queries: " + isNamedQueries);
+
         InputStream fileStream = getClass().getClassLoader().getResourceAsStream(file);
         StrBuilder queryBuilder = new StrBuilder();
         int currentLine = 0;
@@ -101,7 +104,7 @@ public class JdbcManager {
                 }
                 //If the line is a comment, it only matters if it's the header for a named query.
                 else if(line.trim().startsWith("-- ")){
-                    if(line.trim().length() > 3 && line.trim().substring(3).startsWith(QUERY_KEY)){
+                    if(isNamedQueries && line.trim().length() > 3 && line.trim().substring(3).startsWith(QUERY_KEY)){
                         String newQuery = line.trim().substring(9);
                         if(currentQuery != null){
                             throw new IOException("New named query is declared while prior query is being parsed. " +
@@ -126,11 +129,17 @@ public class JdbcManager {
 
                 queryBuilder.appendln(line);
                 if(endQuery){
-                    if(currentQuery == null){
-                        throw new IOException("No name found for parsed named query");
+                    if(isNamedQueries){
+                        if(currentQuery == null){
+                            throw new IOException("No name found for parsed named query");
+                        }
+                        ((Map<Query,String>)queries).put(currentQuery, queryBuilder.toString());
+                        currentQuery = null;
                     }
-                    queries.put(currentQuery, queryBuilder.toString());
-                    currentQuery = null;
+                    else{
+                        ((List<String>) queries).add(queryBuilder.toString());
+                    }
+
                     queryBuilder.clear();
                 }
             }
@@ -139,9 +148,13 @@ public class JdbcManager {
             throw new OrgApiQueryParsingException("Error parsing query file. File: " + file + " Line: " + currentLine, ex);
         }
 
-        OrgApiLogger.getDataLogger().debug("Queries loaded from file. File: " + file + " # Queries: " + queries.size());
+        OrgApiLogger.getDataLogger().debug("Queries loaded from file. File: " + file);
 
-        return Collections.unmodifiableMap(queries);
+        if(isNamedQueries){
+            queries = Collections.unmodifiableMap((Map<Query,String>) queries);
+        }
+
+        return queries;
     }
 
     public enum Query{
