@@ -15,25 +15,23 @@
     </target>
     <target name="prepare" depends="clean">
         <mkdir dir="${dir.server.build.staging}" />
-        <mkdir dir="${dir.server.build.staging.classes}" />
-        <mkdir dir="${dir.server.build.staging.lib}" />
-        <copy todir="${dir.server.build.staging.classes}">
+        <copy todir="${dir.server.build.staging}">
             <fileset dir="${dir.server.resources}" includes="**/*" />
         </copy>
-        <copy file="${dir.server.web}/WEB-INF/web.xml" todir="${dir.server.build.staging.webinf}" />
     </target>
     <target name="compile" depends="prepare">
         <antcall target="resolve" />
-        <javac destdir="${dir.server.build.staging.classes}"
+        <javac destdir="${dir.server.build.staging}"
                source="${server.java.version}" target="${server.java.version}"
                classpathref="server.libs" >
             <src path="${dir.server.src}" />
         </javac>
     </target>
     <target name="package" depends="compile">
-        <war basedir="${dir.server.build.staging}" destfile="${dir.server.build}/${ant.project.name}-${server.project.version}.war"
-             webxml="${dir.server.build.staging.webinf}/web.xml">
-            <zipfileset dir="${dir.server.lib}" />
+        <war destfile="${dir.server.build}/${ant.project.name}-${server.project.version}.war"
+             webxml="${dir.server.web}/WEB-INF/web.xml">
+            <classes dir="${dir.server.build.staging}" />
+            <lib dir="${dir.server.lib}" />
             <manifest>
                 <attribute name="Project-Name" value="${ant.project.name}" />
                 <attribute name="Version" value="${server.project.version}" />
