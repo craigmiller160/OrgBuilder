@@ -61,4 +61,4 @@ AND phone_id <> ?;
 SELECT *
 FROM phones
 WHERE phone_member_id = ?
-AND preferred_phone = ?;
+AND preferred_phone = TRUE;

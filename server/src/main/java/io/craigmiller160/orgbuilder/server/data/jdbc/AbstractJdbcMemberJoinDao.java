@@ -122,8 +122,21 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I>
 
     @Override
     public E getPreferredForMember(long memberId) throws OrgApiDataException {
-        //TODO finish this
+        String getPreferredForMemberQuery = queries.get(Query.GET_PREFERRED_FOR_MEMBER);
+        OrgApiLogger.getDataLogger().trace(getElementName() + " Get Preferred For Member Query:\n" + getPreferredForMemberQuery);
+        E result = null;
+        try(PreparedStatement stmt = connection.prepareStatement(getPreferredForMemberQuery)){
+            stmt.setLong(1, memberId);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                if(resultSet.next()){
+                    result = converter.parseResultSet(resultSet);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get preferred for member for " + getElementName() + ". Member ID: " + memberId, ex);
+        }
 
-        return null;
+        return result;
     }
 }

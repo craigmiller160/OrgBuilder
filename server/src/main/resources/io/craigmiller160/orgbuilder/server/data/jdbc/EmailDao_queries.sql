@@ -61,4 +61,4 @@ AND email_id <> ?;
 SELECT *
 FROM emails
 WHERE email_member_id = ?
-AND preferred_email = ?;
+AND preferred_email = TRUE;

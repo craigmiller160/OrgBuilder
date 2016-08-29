@@ -61,4 +61,4 @@ AND address_id <> ?;
 SELECT *
 FROM addresses
 WHERE address_member_id = ?
-AND preferred_address = ?;
+AND preferred_address = TRUE;
