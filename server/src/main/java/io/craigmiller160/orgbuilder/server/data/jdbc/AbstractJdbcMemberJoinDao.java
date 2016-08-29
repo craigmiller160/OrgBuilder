@@ -120,5 +120,10 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I>
         return count;
     }
 
+    @Override
+    public E getPreferredForMember(long memberId) throws OrgApiDataException {
+        //TODO finish this
 
+        return null;
+    }
 }

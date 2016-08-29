@@ -56,3 +56,9 @@ UPDATE addresses
 SET preferred_address = FALSE
 WHERE address_member_id = ?
 AND address_id <> ?;
+
+-- QUERY=GET_PREFERRED_FOR_MEMBER
+SELECT *
+FROM addresses
+WHERE address_member_id = ?
+AND preferred_address = ?;

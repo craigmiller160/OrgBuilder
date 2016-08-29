@@ -56,3 +56,9 @@ UPDATE phones
 SET preferred_phone = FALSE
 WHERE phone_member_id = ?
 AND phone_id <> ?;
+
+-- QUERY=GET_PREFERRED_FOR_MEMBER
+SELECT *
+FROM phones
+WHERE phone_member_id = ?
+AND preferred_phone = ?;

@@ -56,3 +56,9 @@ UPDATE emails
 SET preferred_email = FALSE
 WHERE email_member_id = ?
 AND email_id <> ?;
+
+-- QUERY=GET_PREFERRED_FOR_MEMBER
+SELECT *
+FROM emails
+WHERE email_member_id = ?
+AND preferred_email = ?;

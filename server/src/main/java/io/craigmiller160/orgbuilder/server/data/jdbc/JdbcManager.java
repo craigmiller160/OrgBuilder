@@ -183,7 +183,8 @@ public class JdbcManager {
         GET_ALL_BY_MEMBER,
         GET_ALL_BY_MEMBER_LIMIT,
         COUNT_BY_MEMBER,
-        CLEAR_PREFERRED;
+        CLEAR_PREFERRED,
+        GET_PREFERRED_FOR_MEMBER;
     }
 
     public enum Schema {
