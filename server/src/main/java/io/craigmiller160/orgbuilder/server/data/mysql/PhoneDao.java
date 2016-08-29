@@ -1,18 +1,13 @@
-package io.craigmiller160.orgbuilder.server.data.jdbc;
+package io.craigmiller160.orgbuilder.server.data.mysql;
 
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverterFactory;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
+import static io.craigmiller160.orgbuilder.server.data.mysql.JdbcManager.Query;
 
 /**
  * Created by craig on 8/22/16.

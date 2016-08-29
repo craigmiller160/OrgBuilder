@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.jdbc;
+package io.craigmiller160.orgbuilder.server.data.mysql;
 
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
 public class JdbcManager {
 
     private static final String QUERY_KEY = "QUERY=";
-    private static final String SQL_FILE_PATH = "io/craigmiller160/orgbuilder/server/data/jdbc/";
+    private static final String SQL_FILE_PATH = "io/craigmiller160/orgbuilder/server/data/mysql/";
     private static final String ORG_SCHEMA_FILENAME = "ORG_SCHEMA_ddl.sql";
     private static final String APP_SCHEMA_FILENAME = "APP_SCHEMA_ddl.sql";
     private static final String QUERY_FILE_SUFFIX = "_queries.sql";

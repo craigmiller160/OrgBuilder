@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.jdbc;
+package io.craigmiller160.orgbuilder.server.data.mysql;
 
 import io.craigmiller160.orgbuilder.server.data.AbstractDao;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
+import static io.craigmiller160.orgbuilder.server.data.mysql.JdbcManager.Query;
 
 /**
  * Created by craigmiller on 8/17/16.
