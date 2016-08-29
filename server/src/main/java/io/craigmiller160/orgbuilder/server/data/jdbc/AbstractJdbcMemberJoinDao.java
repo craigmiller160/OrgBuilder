@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.mysql;
+package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.mysql.JdbcManager.Query;
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 
 /**
  * Created by craig on 8/23/16.

@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.mysql;
+package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import org.junit.AfterClass;

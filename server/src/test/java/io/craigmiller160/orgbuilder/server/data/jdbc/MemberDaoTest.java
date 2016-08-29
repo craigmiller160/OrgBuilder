@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.mysql;
+package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import org.junit.After;

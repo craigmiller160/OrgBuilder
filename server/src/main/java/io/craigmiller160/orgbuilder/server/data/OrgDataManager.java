@@ -1,9 +1,9 @@
 package io.craigmiller160.orgbuilder.server.data;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
-import io.craigmiller160.orgbuilder.server.data.mysql.JdbcDataConnection;
-import io.craigmiller160.orgbuilder.server.data.mysql.JdbcManager;
-import io.craigmiller160.orgbuilder.server.data.mysql.SchemaManager;
+import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
+import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager;
+import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 
 /**
  * Created by craig on 8/10/16.

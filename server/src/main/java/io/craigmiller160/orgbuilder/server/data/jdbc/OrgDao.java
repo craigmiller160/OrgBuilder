@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.data.mysql;
+package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverter;
@@ -7,7 +7,7 @@ import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverterFactory;
 import java.sql.Connection;
 import java.util.Map;
 
-import static io.craigmiller160.orgbuilder.server.data.mysql.JdbcManager.Query;
+import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 
 /**
  * Created by craig on 8/21/16.

@@ -2,7 +2,7 @@ package io.craigmiller160.orgbuilder.server;
 
 import io.craigmiller160.orgbuilder.server.data.OrgDataManager;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
-import io.craigmiller160.orgbuilder.server.data.mysql.JdbcManager;
+import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager;
 
 import java.lang.reflect.Method;
 
