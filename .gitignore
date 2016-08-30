@@ -11,9 +11,9 @@ client/out
 server/out
 
 # Ant build
-build
-client/build
-server/build
+/build
+/client/build
+/server/build
 
 # Java files
 *.class
