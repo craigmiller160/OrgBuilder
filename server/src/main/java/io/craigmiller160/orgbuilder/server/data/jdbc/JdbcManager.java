@@ -2,13 +2,8 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
-import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
-import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
-import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
-import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
-import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
-import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
+import io.craigmiller160.orgbuilder.server.data.DataDTOMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 import throwing.stream.ThrowingStream;
@@ -23,8 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * Created by craig on 8/27/16.

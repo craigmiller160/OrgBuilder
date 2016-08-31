@@ -1,6 +1,5 @@
-package io.craigmiller160.orgbuilder.server.util;
+package io.craigmiller160.orgbuilder.server.data;
 
-import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.jdbc.AddressDao;
 import io.craigmiller160.orgbuilder.server.data.jdbc.EmailDao;
 import io.craigmiller160.orgbuilder.server.data.jdbc.MemberDao;

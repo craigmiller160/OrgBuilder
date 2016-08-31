@@ -7,7 +7,7 @@ import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverterFactory;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
-import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
+import io.craigmiller160.orgbuilder.server.data.DataDTOMap;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

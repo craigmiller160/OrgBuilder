@@ -1,12 +1,7 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc.converter;
 
-import io.craigmiller160.orgbuilder.server.ServerCore;
-import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
-import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
-import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
-import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Date;
@@ -14,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Map;
 
 /**
  * Created by craig on 8/28/16.

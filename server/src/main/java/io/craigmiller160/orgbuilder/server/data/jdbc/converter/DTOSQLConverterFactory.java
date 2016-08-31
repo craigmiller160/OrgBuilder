@@ -1,7 +1,7 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc.converter;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
-import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
+import io.craigmiller160.orgbuilder.server.data.DataDTOMap;
 
 import java.util.Map;
 
