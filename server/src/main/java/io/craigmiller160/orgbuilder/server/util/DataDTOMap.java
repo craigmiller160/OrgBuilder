@@ -11,12 +11,12 @@ import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
-import io.craigmiller160.orgbuilder.server.dto.converter.AddressDTOSQLConverter;
-import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverter;
-import io.craigmiller160.orgbuilder.server.dto.converter.EmailDTOSQLConverter;
-import io.craigmiller160.orgbuilder.server.dto.converter.MemberDTOSQLConverter;
-import io.craigmiller160.orgbuilder.server.dto.converter.OrgDTOSQLConverter;
-import io.craigmiller160.orgbuilder.server.dto.converter.PhoneDTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.AddressDTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.EmailDTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.MemberDTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.OrgDTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.PhoneDTOSQLConverter;
 
 import java.util.Collections;
 import java.util.HashMap;

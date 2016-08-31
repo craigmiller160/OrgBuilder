@@ -1,8 +1,8 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
-import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverter;
-import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverterFactory;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverterFactory;
 
 import java.sql.Connection;
 import java.util.Map;

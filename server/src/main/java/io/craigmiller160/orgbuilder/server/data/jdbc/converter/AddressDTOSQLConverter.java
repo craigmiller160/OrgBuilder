@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.dto.converter;
+package io.craigmiller160.orgbuilder.server.data.jdbc.converter;
 
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;

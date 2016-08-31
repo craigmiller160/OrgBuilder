@@ -2,7 +2,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.data.AbstractDao;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
-import io.craigmiller160.orgbuilder.server.dto.converter.DTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
