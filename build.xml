@@ -6,8 +6,24 @@
         <mkdir dir="${dir.lib}" />
         <ivy:retrieve />
     </target>
+    <target name="project.clean">
+        <delete dir="${dir.build}" />
+    </target>
+    <target name="project.prepare" depends="project.clean">
+        <mkdir dir="${dir.build}" />
+    </target>
     <target name="server.resolve">
     	<ant antfile="build.xml" dir="server" target="resolve">
+            <property name="dir.server" value="${dir.server}" />
+        </ant>
+    </target>
+    <target name="server.clean">
+        <ant antfile="build.xml" dir="server" target="clean">
+            <property name="dir.server" value="${dir.server}" />
+        </ant>
+    </target>
+    <target name="server.package">
+        <ant antfile="build.xml" dir="server" target="package">
             <property name="dir.server" value="${dir.server}" />
         </ant>
     </target>
@@ -21,12 +37,16 @@
     	<antcall target="server.resolve" />
     	<antcall target="client.resolve" />
     </target>
-    <target name="server.package">
-        <ant antfile="build.xml" dir="server" target="package">
-            <property name="dir.server" value="${dir.server}" />
-        </ant>
+    <target name="all.clean">
+        <antcall target="server.clean" />
     </target>
-    <target name="all.package">
+    <target name="all.package" depends="project.prepare">
+        <antcall target="project.resolve" />
         <antcall target="server.package" />
+        <copy todir="${dir.build}">
+            <fileset dir="${dir.server.build}">
+                <include name="*.jar" />
+            </fileset>
+        </copy>
     </target>
 </project>
