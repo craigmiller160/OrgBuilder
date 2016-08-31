@@ -5,6 +5,7 @@ import io.craigmiller160.orgbuilder.server.data.OrgDataManager;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.util.ApiUncaughtExceptionHandler;
+import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -24,12 +26,10 @@ import java.util.Properties;
 public class ServerCore implements ServletContextListener{
 
     private static final String PROPS_PATH = "io/craigmiller160/orgbuilder/server/orgapi.properties";
-    private static final String ORG_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/mysql/ORG_SCHEMA_ddl.sql";
-    private static final String APP_DDL_PATH = "io/craigmiller160/orgbuilder/server/data/mysql/APP_SCHEMA_ddl.sql";
 
+    private static Map<Class,DataDTOMap> dataDtoMap;
     private static final Properties properties = new Properties();
     private static OrgDataManager orgDataManager;
-    private static String[] ddlScript;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -45,6 +45,8 @@ public class ServerCore implements ServletContextListener{
             catch(IOException ex){
                 throw new OrgApiException("Unable to load API application properties", ex);
             }
+
+            dataDtoMap = DataDTOMap.generateDataDTOMap();
 
             try{
                 OrgApiLogger.getServerLogger().debug("Configuration database utilities");
@@ -101,8 +103,8 @@ public class ServerCore implements ServletContextListener{
         return orgDataManager;
     }
 
-    public static String[] getDDLScript(){
-        return ddlScript;
+    public static Map<Class,DataDTOMap> getDataDTOMap(){
+        return dataDtoMap;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
@@ -37,7 +38,7 @@ public class JdbcDataConnection implements DataConnection {
     @SuppressWarnings("unchecked")
     @Override
     public <E,I> Dao<E, I> newDao(Class<E> entityType) throws OrgApiDataException{
-        Class<Dao<E,I>> daoClazz = (Class<Dao<E,I>>) jdbcManager.getEntityDaoMap().get(entityType);
+        Class<Dao<E,I>> daoClazz = (Class<Dao<E,I>>) ServerCore.getDataDTOMap().get(entityType).getDaoType();
         if(daoClazz != null){
             Map<JdbcManager.Query,String> queries = jdbcManager.getMappedQueries().get(daoClazz);
             try {

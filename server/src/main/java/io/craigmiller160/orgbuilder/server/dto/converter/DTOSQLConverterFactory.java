@@ -1,10 +1,12 @@
 package io.craigmiller160.orgbuilder.server.dto.converter;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,28 +17,22 @@ import java.util.Map;
  */
 public class DTOSQLConverterFactory {
 
-    private static final Map<Class,DTOSQLConverter> converterMap;
-
-    //TODO find a way to combine this map with the entity/dao map, to reduce mapping code
-    static{
-        Map<Class<?>,DTOSQLConverter<?>> map = new HashMap<>();
-        map.put(MemberDTO.class, new MemberDTOSQLConverter());
-        map.put(AddressDTO.class, new AddressDTOSQLConverter());
-        map.put(EmailDTO.class, new EmailDTOSQLConverter());
-        map.put(OrgDTO.class, new OrgDTOSQLConverter());
-        map.put(PhoneDTO.class, new PhoneDTOSQLConverter());
-
-        converterMap = Collections.unmodifiableMap(map);
-    }
-
     public static DTOSQLConverterFactory newInstance(){
         return new DTOSQLConverterFactory();
     }
 
-    private DTOSQLConverterFactory(){}
+    private final Map<Class,DataDTOMap> dataDtoMap;
+
+    private DTOSQLConverterFactory(){
+        this.dataDtoMap = ServerCore.getDataDTOMap();
+    }
 
     public <E> DTOSQLConverter<E> getDTOSQLConverter(Class<E> dtoType){
-        return converterMap.get(dtoType);
+        DataDTOMap<E> mapping = dataDtoMap.get(dtoType);
+        if(mapping == null){
+            throw new IllegalArgumentException("No Data DTO mapping exists for provided DTO class type. DTO Type: " + dtoType.getName());
+        }
+        return mapping.getDTOSQLConverter();
     }
 
 }

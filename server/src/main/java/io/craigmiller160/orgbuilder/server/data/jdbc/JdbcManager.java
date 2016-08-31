@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
@@ -7,6 +8,7 @@ import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
+import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 import throwing.stream.ThrowingStream;
@@ -31,12 +33,9 @@ public class JdbcManager {
 
     private static final String QUERY_KEY = "QUERY=";
     private static final String SQL_FILE_PATH = "io/craigmiller160/orgbuilder/server/data/mysql/";
-    private static final String ORG_SCHEMA_FILENAME = "ORG_SCHEMA_ddl.sql";
-    private static final String APP_SCHEMA_FILENAME = "APP_SCHEMA_ddl.sql";
     private static final String QUERY_FILE_SUFFIX = "_queries.sql";
     private static final String SCHEMA_FILE_SUFFIX = "_ddl.sql";
 
-    private final Map<Class<?>,Class<? extends Dao<?,?>>> entityDaoMap;
     private final Map<Class<? extends Dao>,Map<Query,String>> mappedQueries;
     private final Map<Schema,List<String>> schemaScripts;
 
@@ -46,11 +45,10 @@ public class JdbcManager {
 
     private JdbcManager() throws OrgApiQueryParsingException{
         OrgApiLogger.getDataLogger().debug("Initializing JdbcManager");
-        this.entityDaoMap = initEntityDaoMap();
         Map<Class<? extends Dao>,Map<Query,String>> mappedQueries = new HashMap<>();
-        Collection<Class<? extends Dao<?,?>>> daoTypes = entityDaoMap.values();
-        ThrowingStream.of(daoTypes.stream(), OrgApiQueryParsingException.class)
-                .forEach((c) -> mappedQueries.put(c, (Map<Query,String>) parseDaoQueries(createQueryFileName(c), true)));
+        Collection<DataDTOMap> dataDTOMaps = ServerCore.getDataDTOMap().values();
+        ThrowingStream.of(dataDTOMaps.stream(), OrgApiQueryParsingException.class)
+                .forEach((ddm) -> mappedQueries.put(ddm.getDaoType(), (Map<Query,String>) parseDaoQueries(createQueryFileName(ddm.getDaoType()), true)));
 
         Map<Schema,List<String>> schemaScripts = new HashMap<>();
         schemaScripts.put(Schema.APP_SCHEMA, (List<String>) parseDaoQueries(createSchemaFileName(Schema.APP_SCHEMA), false));
@@ -58,21 +56,6 @@ public class JdbcManager {
 
         this.mappedQueries = Collections.unmodifiableMap(mappedQueries);
         this.schemaScripts = Collections.unmodifiableMap(schemaScripts);
-    }
-
-    private Map<Class<?>,Class<? extends Dao<?,?>>> initEntityDaoMap(){
-        Map<Class<?>,Class<? extends Dao<?,?>>> map = new HashMap<>();
-        map.put(AddressDTO.class, AddressDao.class);
-        map.put(MemberDTO.class, MemberDao.class);
-        map.put(OrgDTO.class, OrgDao.class);
-        map.put(PhoneDTO.class, PhoneDao.class);
-        map.put(EmailDTO.class, EmailDao.class);
-
-        return Collections.unmodifiableMap(map);
-    }
-
-    public Map<Class<?>,Class<? extends Dao<?,?>>> getEntityDaoMap(){
-        return entityDaoMap;
     }
 
     public Map<Class<? extends Dao>,Map<Query,String>> getMappedQueries(){
