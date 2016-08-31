@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS orgs (
   org_id BIGINT NOT NULL AUTO_INCREMENT,
   org_name VARCHAR(255) NOT NULL,
   created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  schema_name VARCHAR(50) NOT NULL,
+  org_schema_name VARCHAR(50) NOT NULL,
   PRIMARY KEY (org_id)
 );
 
@@ -26,5 +26,5 @@ DELIMITER ;;
 CREATE TRIGGER orgs_before_schema_name_trigger
 BEFORE INSERT ON orgs FOR EACH ROW
   BEGIN
-    SET NEW.schema_name = CONCAT((LAST_INSERT_ID() + 1),SUBSTRING(NEW.org_name,1,3));
+    SET NEW.org_schema_name = CONCAT((LAST_INSERT_ID() + 1),SUBSTRING(NEW.org_name,1,5));
   END ;;

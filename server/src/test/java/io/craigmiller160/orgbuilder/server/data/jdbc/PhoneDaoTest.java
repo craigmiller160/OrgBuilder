@@ -146,6 +146,27 @@ public class PhoneDaoTest {
         assertEquals("Phone returned does not equal phone expected", phone1, phone2);
     }
 
+    @Test
+    public void testInsertOrUpdate() throws Exception{
+        testInsert();
+        PhoneDTO phoneToUpdate = daoTestUtils.getPhone1();
+        phoneToUpdate.setLineNumber("9876");
+        phoneToUpdate.setPhoneId(1);
+        phoneDao.insertOrUpdate(phoneToUpdate);
+
+        PhoneDTO result = phoneDao.get(1L);
+        assertNotNull("Update result phone is null", result);
+        assertEquals("PhoneDao insertOrUpdate method did not update existing phone", phoneToUpdate, result);
+
+        PhoneDTO phoneToInsert = daoTestUtils.getPhone2();
+        phoneDao.insertOrUpdate(phoneToInsert);
+        phoneToInsert.setPhoneId(2);
+
+        result = phoneDao.get(2L);
+        assertNotNull("Insert result phone is null", result);
+        assertEquals("PhoneDao insertOrUpdate method did not insert new phone", phoneToInsert, result);
+    }
+
     private void insertManyPhones() throws Exception{
         //10 of phone1, tied to member1
         for(int i = 0; i < 10; i++){

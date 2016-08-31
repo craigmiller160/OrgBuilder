@@ -44,30 +44,30 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
     public E insert(E element) throws OrgApiDataException {
         String insertQuery = queries.get(Query.INSERT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Insert Query:\n" + insertQuery);
-        return executeInsert(element, insertQuery);
-    }
-
-    //This method can be used for insert or insertOrUpdate
-    private E executeInsert(E element, String query) throws OrgApiDataException{
         try{
-            I id = null;
-            try(PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
-                converter.parameterizeElement(stmt, element);
-                stmt.executeUpdate();
-                try(ResultSet resultSet = stmt.getGeneratedKeys()){
-                    if(!resultSet.next()){
-                        throw new SQLException("Unable to retrieve ID from inserted " + getElementName() + ": " + element.toString());
-                    }
-                    //noinspection unchecked
-                    id = (I) resultSet.getObject(1);
-                }
-            }
-
-            element = get(id);
+            return executeInsert(element, insertQuery);
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to insert " + getElementName() + ": " + element.toString(), ex);
         }
+    }
+
+    //This method can be used for insert or insertOrUpdate
+    private E executeInsert(E element, String query) throws SQLException, OrgApiDataException{
+        I id = null;
+        try(PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
+            converter.parameterizeElement(stmt, element);
+            stmt.executeUpdate();
+            try(ResultSet resultSet = stmt.getGeneratedKeys()){
+                if(!resultSet.next()){
+                    throw new SQLException("Unable to retrieve ID from inserted " + getElementName() + ": " + element.toString());
+                }
+                //noinspection unchecked
+                id = (I) resultSet.getObject(1);
+            }
+        }
+
+        element = get(id);
 
         return element;
     }
@@ -76,7 +76,13 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
     public E insertOrUpdate(E element) throws OrgApiDataException {
         String insertOrUpdateQuery = queries.get(Query.INSERT_OR_UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Insert or Update Query:\n" + insertOrUpdateQuery);
-        return executeInsert(element, insertOrUpdateQuery);
+        try{
+            return executeInsert(element, insertOrUpdateQuery);
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to insert or update " + getElementName() + ": " + element.toString(), ex);
+        }
+
     }
 
     @Override

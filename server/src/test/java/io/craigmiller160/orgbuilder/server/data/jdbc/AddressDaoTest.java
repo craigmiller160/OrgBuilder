@@ -182,6 +182,27 @@ public class AddressDaoTest {
         assertEquals("Third returned address is incorrect", 14, addresses.get(2).getAddressId());
     }
 
+    @Test
+    public void testInsertOrUpdate() throws Exception{
+        testInsert();
+        AddressDTO addressToUpdate = daoTestUtils.getAddress1();
+        addressToUpdate.setAddress("Another address value");
+        addressToUpdate.setAddressId(1);
+        addressDao.insertOrUpdate(addressToUpdate);
+
+        AddressDTO result = addressDao.get(1L);
+        assertNotNull("Update result address is null", result);
+        assertEquals("AddressDao insertOrUpdate method did not update existing address", addressToUpdate, result);
+
+        AddressDTO addressToInsert = daoTestUtils.getAddress2();
+        addressDao.insertOrUpdate(addressToInsert);
+        addressToInsert.setAddressId(2);
+
+        result = addressDao.get(2L);
+        assertNotNull("Insert result address is null", result);
+        assertEquals("AddressDao insertOrUpdate method did not insert new address", addressToInsert, result);
+    }
+
     private void insertManyAddresses() throws Exception{
         //10 of address1, tied to member1
         for(int i = 0; i < 10; i++){

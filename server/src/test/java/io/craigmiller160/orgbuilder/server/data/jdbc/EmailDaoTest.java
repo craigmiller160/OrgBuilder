@@ -146,6 +146,27 @@ public class EmailDaoTest {
         assertEquals("Email returned does not equal email expected", email1, email2);
     }
 
+    @Test
+    public void testInsertOrUpdate() throws Exception{
+        testInsert();
+        EmailDTO emailToUpdate = daoTestUtils.getEmail1();
+        emailToUpdate.setEmailAddress("AnotherValue");
+        emailToUpdate.setEmailId(1);
+        emailDao.insertOrUpdate(emailToUpdate);
+
+        EmailDTO result = emailDao.get(1L);
+        assertNotNull("Update result email is null", result);
+        assertEquals("EmailDao insertOrUpdate method did not update existing email", emailToUpdate, result);
+
+        EmailDTO emailToInsert = daoTestUtils.getEmail2();
+        emailDao.insertOrUpdate(emailToInsert);
+        emailToInsert.setEmailId(2);
+
+        result = emailDao.get(2L);
+        assertNotNull("Insert result email is null", result);
+        assertEquals("EmailDao insertOrUpdate method did not insert new email", emailToInsert, result);
+    }
+
     private void insertManyEmails() throws Exception{
         //10 of email1, tied to member1
         for(int i = 0; i < 10; i++){

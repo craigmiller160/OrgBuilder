@@ -102,6 +102,27 @@ public class MemberDaoTest {
         assertEquals("Third returned member is incorrect", 1005L, members.get(2).getMemberId());
     }
 
+    @Test
+    public void testInsertOrUpdate() throws Exception{
+        testInsert();
+        MemberDTO memberToUpdate = daoTestUtils.getMember1();
+        memberToUpdate.setFirstName("AnotherValue");
+        memberToUpdate.setMemberId(1000);
+        memberDao.insertOrUpdate(memberToUpdate);
+
+        MemberDTO result = memberDao.get(1000L);
+        assertNotNull("Update result member is null", result);
+        assertEquals("MemberDao insertOrUpdate method did not update existing member", memberToUpdate, result);
+
+        MemberDTO memberToInsert = daoTestUtils.getMember2();
+        memberDao.insertOrUpdate(memberToInsert);
+        memberToInsert.setMemberId(1001);
+
+        result = memberDao.get(1001L);
+        assertNotNull("Insert result member is null", result);
+        assertEquals("MemberDao insertOrUpdate method did not insert new member", memberToInsert, result);
+    }
+
     private void insertManyMembers() throws Exception{
         for(int i = 0; i < 10; i++){
             MemberDTO member = daoTestUtils.getMember1();

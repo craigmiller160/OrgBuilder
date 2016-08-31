@@ -169,7 +169,12 @@ public class DaoTestUtils {
     public OrgDTO getOrg1(){
         OrgDTO org = new OrgDTO();
         org.setOrgName("MyOrg");
-        org.setSchemaName("test_org");
+        return org;
+    }
+
+    public OrgDTO getOrg2(){
+        OrgDTO org = new OrgDTO();
+        org.setOrgName("NewOrg");
         return org;
     }
 

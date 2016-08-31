@@ -103,6 +103,26 @@ public class OrgDaoTest {
         assertEquals("Third returned org is incorrect", 6, orgs.get(2).getOrgId());
     }
 
+    @Test
+    public void testInsertOrUpdate() throws Exception{
+        testInsert();
+        OrgDTO orgToUpdate = daoTestUtils.getOrg1();
+        orgToUpdate.setOrgName("AnotherValue");
+        orgToUpdate.setOrgId(1);
+        orgDao.insertOrUpdate(orgToUpdate);
+
+        OrgDTO result = orgDao.get(1L);
+        assertNotNull("Update result member is null", result);
+        assertEquals("OrgDao insertOrUpdate method did not update existing org", orgToUpdate.getOrgName(), result.getOrgName());
+
+        OrgDTO orgToInsert = daoTestUtils.getOrg2();
+        orgDao.insertOrUpdate(orgToInsert);
+        orgToInsert.setOrgId(2);
+
+        result = orgDao.get(2L);
+        assertNotNull("Insert result org is null", result);
+    }
+
     private void insertManyOrgs() throws Exception{
         for(int i = 0; i < 10; i++){
             OrgDTO org = daoTestUtils.getOrg1();

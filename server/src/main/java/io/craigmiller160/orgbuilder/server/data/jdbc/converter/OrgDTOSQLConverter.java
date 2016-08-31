@@ -41,7 +41,7 @@ public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
         if(createdDate != null){
             element.setCreatedDate(createdDate.toLocalDate());
         }
-        element.setSchemaName(resultSet.getString("schema_name"));
+        element.setSchemaName(resultSet.getString("org_schema_name"));
 
         return element;
     }
