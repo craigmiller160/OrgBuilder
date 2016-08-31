@@ -45,7 +45,7 @@
         <antcall target="server.package" />
         <copy todir="${dir.build}">
             <fileset dir="${dir.server.build}">
-                <include name="*.jar" />
+                <include name="*.war" />
             </fileset>
         </copy>
     </target>
