@@ -74,15 +74,6 @@ public class JdbcManager {
         return String.format("%s%s%s", SQL_FILE_PATH, schema.toString(), SCHEMA_FILE_SUFFIX);
     }
 
-    private void addToFinalMap(Map.Entry<Class<? extends Dao>,Future<Map<Query,String>>> mapEntry, Map<Class<? extends Dao>,Map<Query,String>> finalMap) throws OrgApiQueryParsingException{
-        try{
-            finalMap.put(mapEntry.getKey(), mapEntry.getValue().get());
-        }
-        catch(InterruptedException | ExecutionException ex){
-            throw new OrgApiQueryParsingException("Unable to parse SQL query files", ex);
-        }
-    }
-
     private Object parseDaoQueries(String file, boolean isNamedQueries) throws OrgApiQueryParsingException{
         Object queries = isNamedQueries ? new HashMap<Query,String>() : new ArrayList<String>();
         OrgApiLogger.getDataLogger().trace("Attempting to load sql file. File: " + file + " Named Queries: " + isNamedQueries);
