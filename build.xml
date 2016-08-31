@@ -38,6 +38,7 @@
     	<antcall target="client.resolve" />
     </target>
     <target name="all.clean">
+        <antcall target="project.clean" />
         <antcall target="server.clean" />
     </target>
     <target name="all.package" depends="project.prepare">
