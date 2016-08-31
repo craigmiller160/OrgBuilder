@@ -21,4 +21,12 @@
     	<antcall target="server.resolve" />
     	<antcall target="client.resolve" />
     </target>
+    <target name="server.package">
+        <ant antfile="build.xml" dir="server" target="package">
+            <property name="dir.server" value="${dir.server}" />
+        </ant>
+    </target>
+    <target name="all.package">
+        <antcall target="server.package" />
+    </target>
 </project>
