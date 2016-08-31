@@ -135,6 +135,17 @@ public class EmailDaoTest {
         assertEquals("Wrong count of emails returned for member with ID 1001", 5, count);
     }
 
+    @Test
+    public void testGetPreferredForMember() throws Exception{
+        EmailDTO email1 = daoTestUtils.getEmail1();
+        email1.setPreferred(true);
+        email1 = emailDao.insert(email1);
+
+        EmailDTO email2 = emailDao.getPreferredForMember(1000);
+        assertNotNull("Preferred email for member 1000 is null", email1);
+        assertEquals("Email returned does not equal email expected", email1, email2);
+    }
+
     private void insertManyEmails() throws Exception{
         //10 of email1, tied to member1
         for(int i = 0; i < 10; i++){

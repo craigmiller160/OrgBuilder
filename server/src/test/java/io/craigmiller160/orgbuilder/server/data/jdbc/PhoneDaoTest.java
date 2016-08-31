@@ -135,6 +135,17 @@ public class PhoneDaoTest {
         assertEquals("Wrong count of phones returned for member with ID 1001", 5, count);
     }
 
+    @Test
+    public void testGetPreferredForMember() throws Exception{
+        PhoneDTO phone1 = daoTestUtils.getPhone1();
+        phone1.setPreferred(true);
+        phone1 = phoneDao.insert(phone1);
+
+        PhoneDTO phone2 = phoneDao.getPreferredForMember(1000);
+        assertNotNull("Preferred phone for member 1000 is null", phone1);
+        assertEquals("Phone returned does not equal phone expected", phone1, phone2);
+    }
+
     private void insertManyPhones() throws Exception{
         //10 of phone1, tied to member1
         for(int i = 0; i < 10; i++){

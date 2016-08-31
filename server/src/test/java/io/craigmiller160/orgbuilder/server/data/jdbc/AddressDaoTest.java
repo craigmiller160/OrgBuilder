@@ -136,6 +136,17 @@ public class AddressDaoTest {
         assertEquals("Wrong count of addresses returned for member with ID 1001", 5, count);
     }
 
+    @Test
+    public void testGetPreferredForMember() throws Exception{
+        AddressDTO address1 = daoTestUtils.getAddress1();
+        address1.setPreferred(true);
+        address1 = addressDao.insert(address1);
+
+        AddressDTO address2 = addressDao.getPreferredForMember(1000);
+        assertNotNull("Preferred address for member 1000 is null", address2);
+        assertEquals("Address returned does not equal address expected", address1, address2);
+    }
+
     /**
      * This method tests the reflective query() method invocation.
      *
