@@ -1,6 +1,8 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,6 +15,12 @@ import static org.junit.Assert.assertNotNull;
  * Created by craig on 8/27/16.
  */
 public class JdbcManagerTest {
+
+    @Before
+    public void setUp(){
+        ServerCore serverCore = new ServerCore();
+        serverCore.contextInitialized(null);
+    }
 
     @Test
     public void testQueryLoading() throws Exception{
@@ -28,27 +36,27 @@ public class JdbcManagerTest {
         //OrgDao query tests
         Map<JdbcManager.Query,String> orgDaoQueries = mappedQueries.get(OrgDao.class);
         assertNotNull("OrgDaoQueries map is null", orgDaoQueries);
-        assertEquals("OrgDaoQueries map has wrong number of queries", 7, orgDaoQueries.size());
+        assertEquals("OrgDaoQueries map has wrong number of queries", 8, orgDaoQueries.size());
 
         //AddressDao query tests
         Map<JdbcManager.Query,String> addressDaoQueries = mappedQueries.get(AddressDao.class);
         assertNotNull("addressDaoQueries map is null", addressDaoQueries);
-        assertEquals("addressDaoQueries map has wrong number of queries", 12, addressDaoQueries.size());
+        assertEquals("addressDaoQueries map has wrong number of queries", 13, addressDaoQueries.size());
 
         //EmailDao query tests
         Map<JdbcManager.Query,String> emailDaoQueries = mappedQueries.get(EmailDao.class);
         assertNotNull("emailDaoQueries map is null", emailDaoQueries);
-        assertEquals("emailDaoQueries map has wrong number of queries", 12, emailDaoQueries.size());
+        assertEquals("emailDaoQueries map has wrong number of queries", 13, emailDaoQueries.size());
 
         //MemberDao query tests
         Map<JdbcManager.Query,String> memberDaoQueries = mappedQueries.get(MemberDao.class);
         assertNotNull("memberDaoQueries map is null", memberDaoQueries);
-        assertEquals("memberDaoQueries map has wrong number of queries", 7, memberDaoQueries.size());
+        assertEquals("memberDaoQueries map has wrong number of queries", 8, memberDaoQueries.size());
 
         //PhoneDao query tests
         Map<JdbcManager.Query,String> phoneDaoQueries = mappedQueries.get(PhoneDao.class);
         assertNotNull("phoneDaoQueries map is null", phoneDaoQueries);
-        assertEquals("phoneDaoQueries map has wrong number of queries", 12, phoneDaoQueries.size());
+        assertEquals("phoneDaoQueries map has wrong number of queries", 13, phoneDaoQueries.size());
 
         //Schema Scripts tests
         Map<JdbcManager.Schema,List<String>> schemaScripts = jdbcManager.getSchemaScripts();

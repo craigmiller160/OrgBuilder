@@ -1,12 +1,12 @@
 -- The queries used by the EmailDao
 
 -- QUERY=INSERT
-INSERT INTO emails (email_type, email_address, preferred_email, email_member_id)
-VALUES (?,?,?,?);
+INSERT INTO emails (email_id, email_type, email_address, preferred_email, email_member_id)
+VALUES (?,?,?,?,?);
 
 -- QUERY=UPDATE
 UPDATE emails
-SET email_type = ?, email_address = ?, preferred_email = ?, email_member_id = ?
+SET email_id = ?, email_type = ?, email_address = ?, preferred_email = ?, email_member_id = ?
 WHERE email_id = ?;
 
 -- QUERY=DELETE
@@ -62,3 +62,9 @@ SELECT *
 FROM emails
 WHERE email_member_id = ?
 AND preferred_email = TRUE;
+
+-- QUERY=INSERT_OR_UPDATE
+INSERT INTO emails (email_id, email_type, email_address, preferred_email, email_member_id)
+VALUES (?,?,?,?,?)
+ON DUPLICATE KEY UPDATE email_type = VALUES (email_type), email_address = VALUES (email_address),
+  preferred_email = VALUES (preferred_email), email_member_id = VALUES (email_member_id);

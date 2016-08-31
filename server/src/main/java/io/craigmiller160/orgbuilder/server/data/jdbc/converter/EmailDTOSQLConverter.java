@@ -13,31 +13,38 @@ import java.sql.Types;
  */
 public class EmailDTOSQLConverter implements DTOSQLConverter<EmailDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 5;
+    private static final int UPDATE_KEY_PARAM_INDEX = 6;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, EmailDTO element) throws SQLException {
-        if(element.getEmailType() != null){
-            stmt.setString(1, element.getEmailType().toString());
+        if(element.getEmailId() > 0){
+            stmt.setLong(1, element.getEmailId());
         }
         else{
-            stmt.setNull(1, Types.VARCHAR);
+            stmt.setNull(1, Types.BIGINT);
         }
 
-        if(element.getEmailAddress() != null){
-            stmt.setString(2, element.getEmailAddress());
+        if(element.getEmailType() != null){
+            stmt.setString(2, element.getEmailType().toString());
         }
         else{
             stmt.setNull(2, Types.VARCHAR);
         }
 
-        stmt.setBoolean(3, element.isPreferred());
-
-        if(element.getMemberId() > 0){
-            stmt.setLong(4, element.getMemberId());
+        if(element.getEmailAddress() != null){
+            stmt.setString(3, element.getEmailAddress());
         }
         else{
-            stmt.setNull(4, Types.BIGINT);
+            stmt.setNull(3, Types.VARCHAR);
+        }
+
+        stmt.setBoolean(4, element.isPreferred());
+
+        if(element.getMemberId() > 0){
+            stmt.setLong(5, element.getMemberId());
+        }
+        else{
+            stmt.setNull(5, Types.BIGINT);
         }
     }
 

@@ -21,43 +21,50 @@ import java.util.Map;
  */
 public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 6;
+    private static final int UPDATE_KEY_PARAM_INDEX = 7;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, MemberDTO element) throws SQLException {
-        if(element.getFirstName() != null){
-            stmt.setString(1, element.getFirstName());
+        if(element.getMemberId() > 0){
+            stmt.setLong(1, element.getMemberId());
         }
         else{
-            stmt.setNull(1, Types.VARCHAR);
+            stmt.setNull(1, Types.BIGINT);
         }
 
-        if(element.getMiddleName() != null){
-            stmt.setString(2, element.getMiddleName());
+        if(element.getFirstName() != null){
+            stmt.setString(2, element.getFirstName());
         }
         else{
             stmt.setNull(2, Types.VARCHAR);
         }
 
-        if(element.getLastName() != null){
-            stmt.setString(3, element.getLastName());
+        if(element.getMiddleName() != null){
+            stmt.setString(3, element.getMiddleName());
         }
         else{
             stmt.setNull(3, Types.VARCHAR);
         }
 
-        if(element.getDateOfBirth() != null){
-            stmt.setDate(4, Date.valueOf(element.getDateOfBirth()));
+        if(element.getLastName() != null){
+            stmt.setString(4, element.getLastName());
         }
         else{
-            stmt.setNull(4, Types.DATE);
+            stmt.setNull(4, Types.VARCHAR);
+        }
+
+        if(element.getDateOfBirth() != null){
+            stmt.setDate(5, Date.valueOf(element.getDateOfBirth()));
+        }
+        else{
+            stmt.setNull(5, Types.DATE);
         }
 
         if(element.getGender() != null){
-            stmt.setString(5, element.getGender().toString());
+            stmt.setString(6, element.getGender().toString());
         }
         else{
-            stmt.setNull(5, Types.VARCHAR);
+            stmt.setNull(6, Types.VARCHAR);
         }
     }
 

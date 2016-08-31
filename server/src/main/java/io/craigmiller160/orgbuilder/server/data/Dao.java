@@ -24,13 +24,13 @@ import java.util.List;
  */
 public interface Dao<E,I> {
 
-    //TODO add documentation for all exceptions
-
     /**
      * Insert the provided element into the database.
      *
      * @param element the element to be inserted.
      * @return the element, after being inserted.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     E insert(E element) throws OrgApiDataException;
 
@@ -40,8 +40,21 @@ public interface Dao<E,I> {
      * @param element the element to update.
      * @param id the ID of the element to update.
      * @return the element, after being updated.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     E update(E element, I id) throws OrgApiDataException;
+
+    /**
+     * Insert or update the provided element, depending
+     * on if it already exists in the database.
+     *
+     * @param element the element to insert or update.
+     * @return the element, after insert or update.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
+     */
+    E insertOrUpdate(E element) throws OrgApiDataException;
 
     /**
      * Delete the element with the provided ID from
@@ -49,6 +62,8 @@ public interface Dao<E,I> {
      *
      * @param id the ID of the element.
      * @return the element that was deleted.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     E delete(I id) throws OrgApiDataException;
 
@@ -58,6 +73,8 @@ public interface Dao<E,I> {
      *
      * @param id the ID of the element.
      * @return the element that was retrieved.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     E get(I id) throws OrgApiDataException;
 
@@ -68,6 +85,8 @@ public interface Dao<E,I> {
      *
      * @return the count of the elements of
      *          this type in the database.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     long getCount() throws OrgApiDataException;
 
@@ -77,6 +96,8 @@ public interface Dao<E,I> {
      *
      * @return all of the elements of this type in
      *          the database.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     List<E> getAll() throws OrgApiDataException;
 
@@ -89,6 +110,8 @@ public interface Dao<E,I> {
      * @param limit the limit of how many elements to retrieve.
      * @return all of the elements of this type between the
      *          offset and limit in the database.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     List<E> getAll(long offset, long size) throws OrgApiDataException;
 
@@ -100,6 +123,8 @@ public interface Dao<E,I> {
      * @param queryName the name of the query method.
      * @param params the parameters for the query method.
      * @return a list of the element results.
+     * @throws OrgApiDataException if unable to perform
+     *                          the database operation.
      */
     List<E> query(String queryName, Object...params) throws OrgApiDataException;
 

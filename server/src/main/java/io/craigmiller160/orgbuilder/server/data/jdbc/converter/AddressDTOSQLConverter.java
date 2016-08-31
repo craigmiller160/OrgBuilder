@@ -14,59 +14,66 @@ import java.sql.Types;
  */
 public class AddressDTOSQLConverter implements DTOSQLConverter<AddressDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 9;
+    private static final int UPDATE_KEY_PARAM_INDEX = 10;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, AddressDTO element) throws SQLException {
-        if(element.getAddressType() != null){
-            stmt.setString(1, element.getAddressType().toString());
+        if(element.getAddressId() > 0){
+            stmt.setLong(1, element.getAddressId());
         }
         else{
-            stmt.setNull(1, Types.VARCHAR);
+            stmt.setNull(1, Types.BIGINT);
         }
 
-        if(element.getAddress() != null){
-            stmt.setString(2, element.getAddress());
+        if(element.getAddressType() != null){
+            stmt.setString(2, element.getAddressType().toString());
         }
         else{
             stmt.setNull(2, Types.VARCHAR);
         }
 
-        if(element.getUnit() != null){
-            stmt.setString(3, element.getUnit());
+        if(element.getAddress() != null){
+            stmt.setString(3, element.getAddress());
         }
         else{
             stmt.setNull(3, Types.VARCHAR);
         }
 
-        if(element.getCity() != null){
-            stmt.setString(4, element.getCity());
+        if(element.getUnit() != null){
+            stmt.setString(4, element.getUnit());
         }
         else{
             stmt.setNull(4, Types.VARCHAR);
         }
 
-        if(element.getState() != null){
-            stmt.setString(5, element.getState().toString());
+        if(element.getCity() != null){
+            stmt.setString(5, element.getCity());
         }
         else{
-            stmt.setNull(5, Types.CHAR);
+            stmt.setNull(5, Types.VARCHAR);
         }
 
-        if(element.getZipCode() != null){
-            stmt.setString(6, element.getZipCode());
+        if(element.getState() != null){
+            stmt.setString(6, element.getState().toString());
         }
         else{
             stmt.setNull(6, Types.CHAR);
         }
 
-        stmt.setBoolean(7, element.isPreferred());
-
-        if(element.getMemberId() > 0){
-            stmt.setLong(8, element.getMemberId());
+        if(element.getZipCode() != null){
+            stmt.setString(7, element.getZipCode());
         }
         else{
-            stmt.setNull(8, Types.BIGINT);
+            stmt.setNull(7, Types.CHAR);
+        }
+
+        stmt.setBoolean(8, element.isPreferred());
+
+        if(element.getMemberId() > 0){
+            stmt.setLong(9, element.getMemberId());
+        }
+        else{
+            stmt.setNull(9, Types.BIGINT);
         }
     }
 

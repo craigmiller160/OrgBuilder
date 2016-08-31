@@ -1,12 +1,12 @@
 -- The queries used by the MemberDao
 
 -- QUERY=INSERT
-INSERT INTO members (first_name, middle_name, last_name, date_of_birth, gender)
-VALUES (?,?,?,?,?);
+INSERT INTO members (member_id, first_name, middle_name, last_name, date_of_birth, gender)
+VALUES (?,?,?,?,?,?);
 
 -- QUERY=UPDATE
 UPDATE members
-SET first_name = ?, middle_name = ?, last_name = ?, date_of_birth = ?, gender = ?
+SET member_id = ?, first_name = ?, middle_name = ?, last_name = ?, date_of_birth = ?, gender = ?
 WHERE member_id = ?;
 
 -- QUERY=DELETE
@@ -41,3 +41,9 @@ FROM members m
   LEFT JOIN emails e ON m.member_id = e.email_member_id AND e.preferred_email = TRUE
 ORDER BY member_id ASC
 LIMIT ?,?;
+
+-- QUERY=INSERT_OR_UPDATE
+INSERT INTO members (member_id, first_name, middle_name, last_name, date_of_birth, gender)
+VALUES (?,?,?,?,?,?)
+ON DUPLICATE KEY UPDATE first_name = VALUES (first_name), middle_name = VALUES (middle_name),
+  last_name = VALUES (last_name), date_of_birth = VALUES (date_of_birth), gender = VALUES (gender);

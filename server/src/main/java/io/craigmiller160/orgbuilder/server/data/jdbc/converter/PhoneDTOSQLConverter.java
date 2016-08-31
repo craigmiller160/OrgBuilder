@@ -13,52 +13,59 @@ import java.sql.Types;
  */
 public class PhoneDTOSQLConverter implements DTOSQLConverter<PhoneDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 8;
+    private static final int UPDATE_KEY_PARAM_INDEX = 9;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, PhoneDTO element) throws SQLException {
-        if(element.getPhoneType() != null){
-            stmt.setString(1, element.getPhoneType().toString());
+        if(element.getPhoneId() > 0){
+            stmt.setLong(1, element.getPhoneId());
         }
         else{
-            stmt.setNull(1, Types.VARCHAR);
+            stmt.setNull(1, Types.BIGINT);
+        }
+
+        if(element.getPhoneType() != null){
+            stmt.setString(2, element.getPhoneType().toString());
+        }
+        else{
+            stmt.setNull(2, Types.VARCHAR);
         }
 
         if(!StringUtils.isEmpty(element.getAreaCode())){
-            stmt.setString(2, element.getAreaCode());
-        }
-        else{
-            stmt.setNull(2, Types.CHAR);
-        }
-
-        if(!StringUtils.isEmpty(element.getPrefix())){
-            stmt.setString(3, element.getPrefix());
+            stmt.setString(3, element.getAreaCode());
         }
         else{
             stmt.setNull(3, Types.CHAR);
         }
 
-        if(!StringUtils.isEmpty(element.getLineNumber())){
-            stmt.setString(4, element.getLineNumber());
+        if(!StringUtils.isEmpty(element.getPrefix())){
+            stmt.setString(4, element.getPrefix());
         }
         else{
             stmt.setNull(4, Types.CHAR);
         }
 
-        if(!StringUtils.isEmpty(element.getExtension())){
-            stmt.setString(5, element.getExtension());
+        if(!StringUtils.isEmpty(element.getLineNumber())){
+            stmt.setString(5, element.getLineNumber());
         }
         else{
-            stmt.setNull(5, Types.VARCHAR);
+            stmt.setNull(5, Types.CHAR);
         }
 
-        stmt.setBoolean(6, element.isPreferred());
+        if(!StringUtils.isEmpty(element.getExtension())){
+            stmt.setString(6, element.getExtension());
+        }
+        else{
+            stmt.setNull(6, Types.VARCHAR);
+        }
+
+        stmt.setBoolean(7, element.isPreferred());
 
         if(element.getMemberId() > 0){
-            stmt.setLong(7, element.getMemberId());
+            stmt.setLong(8, element.getMemberId());
         }
         else{
-            stmt.setNull(7, Types.BIGINT);
+            stmt.setNull(8, Types.BIGINT);
         }
     }
 

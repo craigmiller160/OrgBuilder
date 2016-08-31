@@ -13,15 +13,22 @@ import java.sql.Types;
  */
 public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 2;
+    private static final int UPDATE_KEY_PARAM_INDEX = 3;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, OrgDTO element) throws SQLException {
-        if(element.getOrgName() != null){
-            stmt.setString(1, element.getOrgName());
+        if(element.getOrgId() > 0){
+            stmt.setLong(1, element.getOrgId());
         }
         else{
-            stmt.setNull(1, Types.VARCHAR);
+            stmt.setNull(1, Types.BIGINT);
+        }
+
+        if(element.getOrgName() != null){
+            stmt.setString(2, element.getOrgName());
+        }
+        else{
+            stmt.setNull(2, Types.VARCHAR);
         }
     }
 

@@ -158,7 +158,8 @@ public class JdbcManager {
         GET_ALL_BY_MEMBER_LIMIT,
         COUNT_BY_MEMBER,
         CLEAR_PREFERRED,
-        GET_PREFERRED_FOR_MEMBER;
+        GET_PREFERRED_FOR_MEMBER,
+        INSERT_OR_UPDATE;
     }
 
     public enum Schema {
