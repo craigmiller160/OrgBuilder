@@ -1,7 +1,12 @@
 package io.craigmiller160.orgbuilder.server.dto.converter;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
+import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
+import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.util.DataDTOMap;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Date;
@@ -9,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Map;
 
 /**
  * Created by craig on 8/28/16.
@@ -69,6 +75,23 @@ public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
         String gender = resultSet.getString("gender");
         if(!StringUtils.isEmpty(gender)){
             element.setGender(Gender.valueOf(gender));
+        }
+
+        Map<Class,DataDTOMap> map = ServerCore.getDataDTOMap();
+
+        if(resultSet.getObject("address_id") != null){
+            AddressDTO preferredAddress = (AddressDTO) map.get(AddressDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
+            element.setPreferredAddress(preferredAddress);
+        }
+
+        if(resultSet.getObject("phone_id") != null){
+            PhoneDTO preferredPhone = (PhoneDTO) map.get(PhoneDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
+            element.setPreferredPhone(preferredPhone);
+        }
+
+        if(resultSet.getObject("email_id") != null){
+            EmailDTO preferredEmail = (EmailDTO) map.get(EmailDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
+            element.setPreferredEmail(preferredEmail);
         }
 
         return element;
