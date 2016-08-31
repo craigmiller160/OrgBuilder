@@ -69,6 +69,7 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I>
             try(ResultSet resultSet = stmt.executeQuery()){
                 while(resultSet.next()){
                     E element = converter.parseResultSet(resultSet);
+                    element = parseResultSetAdditional(element, resultSet);
                     elements.add(element);
                 }
             }
@@ -91,6 +92,7 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I>
             try(ResultSet resultSet = stmt.executeQuery()){
                 while(resultSet.next()){
                     E element = converter.parseResultSet(resultSet);
+                    element = parseResultSetAdditional(element, resultSet);
                     elements.add(element);
                 }
             }
@@ -130,6 +132,7 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I>
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
                     result = converter.parseResultSet(resultSet);
+                    result = parseResultSetAdditional(result, resultSet);
                 }
             }
         }

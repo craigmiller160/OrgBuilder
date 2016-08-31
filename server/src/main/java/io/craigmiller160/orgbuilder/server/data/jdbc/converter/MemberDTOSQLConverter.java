@@ -77,23 +77,6 @@ public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
             element.setGender(Gender.valueOf(gender));
         }
 
-        Map<Class,DataDTOMap> map = ServerCore.getDataDTOMap();
-
-        if(resultSet.getObject("address_id") != null){
-            AddressDTO preferredAddress = (AddressDTO) map.get(AddressDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
-            element.setPreferredAddress(preferredAddress);
-        }
-
-        if(resultSet.getObject("phone_id") != null){
-            PhoneDTO preferredPhone = (PhoneDTO) map.get(PhoneDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
-            element.setPreferredPhone(preferredPhone);
-        }
-
-        if(resultSet.getObject("email_id") != null){
-            EmailDTO preferredEmail = (EmailDTO) map.get(EmailDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
-            element.setPreferredEmail(preferredEmail);
-        }
-
         return element;
     }
 

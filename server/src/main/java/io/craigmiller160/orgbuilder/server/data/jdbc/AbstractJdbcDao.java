@@ -35,6 +35,11 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
 
     protected abstract DTOSQLConverter<E> getDTOSQLConverter();
 
+    protected E parseResultSetAdditional(E element, ResultSet resultSet) throws SQLException{
+        //Do nothing, for subclasses to provide extra implementation
+        return element;
+    }
+
     @Override
     public E insert(E element) throws OrgApiDataException {
         String insertQuery = queries.get(Query.INSERT);
@@ -106,6 +111,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
                     element = converter.parseResultSet(resultSet);
+                    element = parseResultSetAdditional(element, resultSet);
                 }
             }
         }
@@ -144,6 +150,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
             try(ResultSet resultSet = stmt.executeQuery(getAllQuery)){
                 while(resultSet.next()){
                     E element = converter.parseResultSet(resultSet);
+                    element = parseResultSetAdditional(element, resultSet);
                     elements.add(element);
                 }
             }
@@ -166,6 +173,7 @@ public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
             try(ResultSet resultSet = stmt.executeQuery()){
                 while(resultSet.next()){
                     E element = converter.parseResultSet(resultSet);
+                    element = parseResultSetAdditional(element, resultSet);
                     elements.add(element);
                 }
             }
