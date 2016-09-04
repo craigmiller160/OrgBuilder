@@ -1,7 +1,5 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
-import io.craigmiller160.orgbuilder.server.dto.UserDTO;
-
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
@@ -10,32 +8,32 @@ import java.security.Principal;
  */
 public class OrgApiSecurityContext implements SecurityContext {
 
-    private UserDTO user;
+    private UserOrgPrincipal principal;
 
     public OrgApiSecurityContext(){
         this(null);
     }
 
-    public OrgApiSecurityContext(UserDTO user){
-        this.user = user;
+    public OrgApiSecurityContext(UserOrgPrincipal principal){
+        this.principal = principal;
     }
 
     @Override
     public Principal getUserPrincipal() {
-        return user;
+        return principal;
     }
 
-    public UserDTO getUser(){
-        return user;
+    public UserOrgPrincipal getUser(){
+        return principal;
     }
 
-    public void setUser(UserDTO user){
-        this.user = user;
+    public void setUserPrincipal(UserOrgPrincipal principal){
+        this.principal = principal;
     }
 
     @Override
-    public boolean isUserInRole(String roleString) {
-        return user != null && user.getRole().equals(Role.valueOf(roleString));
+    public boolean isUserInRole(String role) {
+        return principal != null && principal.isUserInRole(role);
     }
 
     @Override

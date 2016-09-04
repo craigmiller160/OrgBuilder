@@ -5,6 +5,8 @@ import io.craigmiller160.orgbuilder.server.data.jdbc.EmailDao;
 import io.craigmiller160.orgbuilder.server.data.jdbc.MemberDao;
 import io.craigmiller160.orgbuilder.server.data.jdbc.OrgDao;
 import io.craigmiller160.orgbuilder.server.data.jdbc.PhoneDao;
+import io.craigmiller160.orgbuilder.server.data.jdbc.UserDao;
+import io.craigmiller160.orgbuilder.server.data.jdbc.converter.UserDTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
@@ -16,6 +18,7 @@ import io.craigmiller160.orgbuilder.server.data.jdbc.converter.EmailDTOSQLConver
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.MemberDTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.OrgDTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.PhoneDTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +36,7 @@ public class DataDTOMap<T> {
         map.put(EmailDTO.class, new DataDTOMap<>(EmailDTO.class, new EmailDTOSQLConverter(), EmailDao.class));
         map.put(OrgDTO.class, new DataDTOMap<>(OrgDTO.class, new OrgDTOSQLConverter(), OrgDao.class));
         map.put(PhoneDTO.class, new DataDTOMap<>(PhoneDTO.class, new PhoneDTOSQLConverter(), PhoneDao.class));
+        map.put(UserDTO.class, new DataDTOMap<>(UserDTO.class, new UserDTOSQLConverter(), UserDao.class));
 
         return Collections.unmodifiableMap(map);
     }
