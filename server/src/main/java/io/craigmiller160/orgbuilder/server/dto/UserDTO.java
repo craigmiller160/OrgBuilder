@@ -2,18 +2,17 @@ package io.craigmiller160.orgbuilder.server.dto;
 
 import io.craigmiller160.orgbuilder.server.rest.Role;
 
-import java.security.Principal;
-
 /**
  * Created by craig on 9/4/16.
  */
-public class UserDTO implements Principal, Comparable<UserDTO>{
+public class UserDTO implements Comparable<UserDTO>{
 
     private long userId;
     private String userName;
     private String userEmail;
+    private String password;
     private Role role;
-    private OrgDTO org;
+    private long orgId;
 
     public long getUserId() {
         return userId;
@@ -47,17 +46,20 @@ public class UserDTO implements Principal, Comparable<UserDTO>{
         this.role = role;
     }
 
-    public OrgDTO getOrg() {
-        return org;
+    public long getOrgId() {
+        return orgId;
     }
 
-    public void setOrg(OrgDTO org) {
-        this.org = org;
+    public void setOrgId(long orgId) {
+        this.orgId = orgId;
     }
 
-    @Override
-    public String getName() {
-        return userName;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
@@ -68,10 +70,11 @@ public class UserDTO implements Principal, Comparable<UserDTO>{
         UserDTO userDTO = (UserDTO) o;
 
         if (userId != userDTO.userId) return false;
+        if (orgId != userDTO.orgId) return false;
         if (userName != null ? !userName.equals(userDTO.userName) : userDTO.userName != null) return false;
         if (userEmail != null ? !userEmail.equals(userDTO.userEmail) : userDTO.userEmail != null) return false;
-        if (role != userDTO.role) return false;
-        return org != null ? org.equals(userDTO.org) : userDTO.org == null;
+        if (password != null ? !password.equals(userDTO.password) : userDTO.password != null) return false;
+        return role == userDTO.role;
 
     }
 
@@ -80,8 +83,9 @@ public class UserDTO implements Principal, Comparable<UserDTO>{
         int result = (int) (userId ^ (userId >>> 32));
         result = 31 * result + (userName != null ? userName.hashCode() : 0);
         result = 31 * result + (userEmail != null ? userEmail.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (role != null ? role.hashCode() : 0);
-        result = 31 * result + (org != null ? org.hashCode() : 0);
+        result = 31 * result + (int) (orgId ^ (orgId >>> 32));
         return result;
     }
 
