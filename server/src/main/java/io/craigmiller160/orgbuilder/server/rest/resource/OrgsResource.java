@@ -1,6 +1,6 @@
-package io.craigmiller160.orgbuilder.server.resource;
+package io.craigmiller160.orgbuilder.server.rest.resource;
 
-import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -11,7 +11,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -19,44 +21,42 @@ import java.util.List;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs/{orgId}/members/{memberId}")
-public class PhonesResource {
+@Path("/orgs")
+public class OrgsResource {
 
-    @PathParam("orgId")
-    private long orgId;
-
-    @PathParam("memberId")
-    private long memberId;
+    @Context
+    private SecurityContext securityContext;
 
     @GET
-    public List<PhoneDTO> getAllPhones(@QueryParam("offset") long offset, @QueryParam("size") long size){
+    public List<OrgDTO> getAllOrgs(@QueryParam("offset") long offset, @QueryParam("size") long size){
         //TODO finish this
         return null;
     }
 
     @POST
-    public PhoneDTO addPhone(PhoneDTO phone){
+    public OrgDTO addOrg(OrgDTO org){
         //TODO finish this
         return null;
     }
 
     @PUT
-    @Path("/{phoneId}")
-    public PhoneDTO updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone){
+    @Path("/{orgId}")
+    public OrgDTO updateOrg(@PathParam("orgId") long orgId, OrgDTO org){
+        org.setOrgId(orgId);
         //TODO finish this
         return null;
     }
 
     @DELETE
-    @Path("/{phoneId}")
-    public PhoneDTO deletePhone(@PathParam("phoneId") long phoneId){
+    @Path("/{orgId}")
+    public OrgDTO deleteOrg(@PathParam("orgId") long orgId){
         //TODO finish this
         return null;
     }
 
     @GET
-    @Path("/{phoneId}")
-    public PhoneDTO getPhone(@PathParam("phoneId") long phoneId){
+    @Path("/{orgId}")
+    public OrgDTO getOrg(@PathParam("orgId") long orgId){
         //TODO finish this
         return null;
     }

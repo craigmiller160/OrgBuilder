@@ -15,7 +15,7 @@ public class OrgApiLogger {
     /*
      * The logger category names
      */
-    private static final String RESOURCE_LOGGER = "io.craigmiller160.orgbuilder.server.resource";
+    private static final String RESOURCE_LOGGER = "io.craigmiller160.orgbuilder.server.rest";
     private static final String SERVICE_LOGGER = "io.craigmiller160.orgbuilder.server.service";
     private static final String DATA_LOGGER = "io.craigmiller160.orgbuilder.server.data";
     private static final String UTIL_LOGGER = "io.craigmiller160.orgbuilder.server.util";
@@ -40,7 +40,7 @@ public class OrgApiLogger {
     }
 
     /**
-     * Get the logger for RESTful resource classes.
+     * Get the logger for RESTful rest classes.
      *
      * @return the logger.
      */

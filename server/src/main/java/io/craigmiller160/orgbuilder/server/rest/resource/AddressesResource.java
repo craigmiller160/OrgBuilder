@@ -1,4 +1,4 @@
-package io.craigmiller160.orgbuilder.server.resource;
+package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 
@@ -11,7 +11,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 /**
@@ -21,6 +23,9 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/orgs/{orgId}/members/{memberId}")
 public class AddressesResource {
+
+    @Context
+    private SecurityContext securityContext;
 
     @PathParam("orgId")
     private long orgId;
