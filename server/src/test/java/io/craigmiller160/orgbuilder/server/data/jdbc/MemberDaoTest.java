@@ -25,6 +25,11 @@ public class MemberDaoTest {
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private MemberDao memberDao;
+    private final DaoTestMethods<MemberDTO,Long,MemberDao> daoTestMethods;
+
+    public MemberDaoTest(){
+        this.daoTestMethods = new DaoTestMethods<>(MemberDTO.class.getSimpleName());
+    }
 
     @BeforeClass
     public static void init() throws Exception{
@@ -49,78 +54,42 @@ public class MemberDaoTest {
     @Test
     public void testInsert() throws Exception{
         MemberDTO memberDTO = daoTestUtils.getMember1();
-        memberDTO = memberDao.insert(memberDTO);
-        assertEquals("Failed to insert MemberDTO", 1000, memberDTO.getMemberId());
+        daoTestMethods.testInsert(memberDTO, memberDao, 1000L);
     }
 
     @Test
     public void testUpdateAndGet() throws Exception{
-        testInsert();
-        MemberDTO memberDTO = daoTestUtils.getMember1();
-        memberDTO.setFirstName("John");
-        memberDTO.setMemberId(1000L);
-        memberDao.update(memberDTO, memberDTO.getMemberId());
-        MemberDTO memberDTO2 = memberDao.get(1000L);
-        assertNotNull("MemberDTO is null", memberDTO2);
-        assertEquals("MemberDTO has the wrong first name", "John", memberDTO2.getFirstName());
+        MemberDTO member1 = daoTestUtils.getMember1();
+        MemberDTO member2 = daoTestUtils.getMember2();
+        daoTestMethods.testUpdateAndGet(member1, member2, memberDao, 1000L);
     }
 
     @Test
     public void testDeleteAndGet() throws Exception{
-        testInsert();
         MemberDTO member1 = daoTestUtils.getMember1();
-        member1.setMemberId(1000L);
-        MemberDTO member2 = memberDao.delete(1000L);
-        assertEquals("Deleted member is not the same as inserted member", member1, member2);
-        member2 = memberDao.get(1000L);
-        assertNull("Member record was not deleted", member2);
+        daoTestMethods.testDeleteAndGet(member1, memberDao, 1000L);
     }
 
     @Test
     public void testCount() throws Exception{
-        testInsert();
-        long count = memberDao.getCount();
-        assertEquals("Incorrect count of members in database", 1, count);
+        daoTestMethods.testCount(this::insertManyMembers, memberDao, 10);
     }
 
     @Test
     public void testGetAll() throws Exception{
-        insertManyMembers();
-
-        List<MemberDTO> members = memberDao.getAll();
-        assertEquals("Get All returned the wrong number of members", 10, members.size());
+        daoTestMethods.testGetAll(this::insertManyMembers, memberDao, 10);
     }
 
     @Test
     public void testGetAllLimit() throws Exception{
-        insertManyMembers();
-
-        List<MemberDTO> members = memberDao.getAll(3, 3);
-        assertEquals("Get All Limit returned the wrong number of members", 3, members.size());
-        assertEquals("First returned member is incorrect", 1003L, members.get(0).getMemberId());
-        assertEquals("Second returned member is incorrect", 1004L, members.get(1).getMemberId());
-        assertEquals("Third returned member is incorrect", 1005L, members.get(2).getMemberId());
+        daoTestMethods.testGetAllLimit(this::insertManyMembers, memberDao, 3, 3, new Long[]{1003L, 1004L, 1005L});
     }
 
     @Test
     public void testInsertOrUpdate() throws Exception{
-        testInsert();
         MemberDTO memberToUpdate = daoTestUtils.getMember1();
-        memberToUpdate.setFirstName("AnotherValue");
-        memberToUpdate.setMemberId(1000);
-        memberDao.insertOrUpdate(memberToUpdate);
-
-        MemberDTO result = memberDao.get(1000L);
-        assertNotNull("Update result member is null", result);
-        assertEquals("MemberDao insertOrUpdate method did not update existing member", memberToUpdate, result);
-
         MemberDTO memberToInsert = daoTestUtils.getMember2();
-        memberDao.insertOrUpdate(memberToInsert);
-        memberToInsert.setMemberId(1001);
-
-        result = memberDao.get(1001L);
-        assertNotNull("Insert result member is null", result);
-        assertEquals("MemberDao insertOrUpdate method did not insert new member", memberToInsert, result);
+        daoTestMethods.testInsertOrUpdate(memberToUpdate, memberToInsert, memberDao, 1000L, 1001L);
     }
 
     private void insertManyMembers() throws Exception{

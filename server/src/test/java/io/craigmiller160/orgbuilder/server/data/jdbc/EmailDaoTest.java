@@ -29,6 +29,11 @@ public class EmailDaoTest {
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private EmailDao emailDao;
+    private final MemberJoinDaoTestMethods<EmailDTO,Long,EmailDao> daoTestMethods;
+
+    public EmailDaoTest(){
+        this.daoTestMethods = new MemberJoinDaoTestMethods<>(EmailDTO.class.getSimpleName());
+    }
 
     @BeforeClass
     public static void init() throws Exception{
@@ -59,112 +64,63 @@ public class EmailDaoTest {
     @Test
     public void testInsert() throws Exception{
         EmailDTO email = daoTestUtils.getEmail1();
-        email = emailDao.insert(email);
-        assertEquals("Failed to insert email", 1, email.getEmailId());
+        daoTestMethods.testInsert(email, emailDao, 1L);
     }
 
     @Test
     public void testUpdateAndGet() throws Exception{
-        String newEmail = "cmiller@buonoforgovernor.com";
-        testInsert();
-        EmailDTO email = daoTestUtils.getEmail1();
-        email.setEmailId(1);
-        email.setEmailAddress(newEmail);
-        emailDao.update(email, email.getEmailId());
-        email = emailDao.get(1L);
-        assertNotNull("EmailDTO is null", email);
-        assertEquals("EmailDTO has thew wrong email address value", newEmail, email.getEmailAddress());
+        EmailDTO email1 = daoTestUtils.getEmail1();
+        EmailDTO email2 = daoTestUtils.getEmail2();
+        daoTestMethods.testUpdateAndGet(email1, email2, emailDao, 1L);
     }
 
     @Test
     public void testDeleteAndGet() throws Exception{
-        testInsert();
         EmailDTO email1 = daoTestUtils.getEmail1();
-        email1.setEmailId(1);
-        EmailDTO email2 = emailDao.delete(1L);
-        assertEquals("Deleted email is not the same as inserted email", email1, email2);
-        email2 = emailDao.get(1L);
-        assertNull("Email record was not deleted", email2);
+        daoTestMethods.testDeleteAndGet(email1, emailDao, 1L);
     }
 
     @Test
     public void testCount() throws Exception{
-        insertManyEmails();
-        long count = emailDao.getCount();
-        assertEquals("Wrong count of emails", 15, count);
+        daoTestMethods.testCount(this::insertManyEmails, emailDao, 15);
     }
 
     @Test
     public void testGetAll() throws Exception{
-        insertManyEmails();
-        List<EmailDTO> emails = emailDao.getAll();
-        assertEquals("Get All returned the wrong number of emails", 15, emails.size());
+        daoTestMethods.testGetAll(this::insertManyEmails, emailDao, 15);
     }
 
     @Test
     public void testGetAllLimit() throws Exception{
-        insertManyEmails();
-        List<EmailDTO> emails = emailDao.getAll(3, 3);
-        assertEquals("Get All Limit returned the wrong number of emails", 3, emails.size());
-        assertEquals("First returned email is incorrect", 4, emails.get(0).getEmailId());
-        assertEquals("Second returned email is incorrect", 5, emails.get(1).getEmailId());
-        assertEquals("Third returned email is incorrect", 6, emails.get(2).getEmailId());
+        daoTestMethods.testGetAllLimit(this::insertManyEmails, emailDao, 3, 3, new Long[]{4L, 5L, 6L});
     }
 
     @Test
     public void testGetAllByMember() throws Exception{
-        insertManyEmails();
-        List<EmailDTO> emails = emailDao.getAllByMember(1001L);
-        assertEquals("Wrong number of emails returned for member with ID 1001", 5, emails.size());
+        daoTestMethods.testGetAllByMember(this::insertManyEmails, emailDao, 1001L, 5);
     }
 
     @Test
     public void testGetAllByMemberLimit() throws Exception{
-        insertManyEmails();
-        List<EmailDTO> emails = emailDao.getAllByMember(1001L, 1, 3);
-        assertEquals("Wrong number of emails returned for member with ID 1001", 3, emails.size());
-        assertEquals("First returned email is incorrect", 12, emails.get(0).getEmailId());
-        assertEquals("Second returned email is incorrect", 13, emails.get(1).getEmailId());
-        assertEquals("Third returned email is incorrect", 14, emails.get(2).getEmailId());
+        daoTestMethods.testGetAllByMemberLimit(this::insertManyEmails, emailDao, 1001L, 1, 3, new Long[]{12L, 13L, 14L});
     }
 
     @Test
     public void testGetCountByMember() throws Exception{
-        insertManyEmails();
-        long count = emailDao.getCountByMember(1001L);
-        assertEquals("Wrong count of emails returned for member with ID 1001", 5, count);
+        daoTestMethods.testGetCountByMember(this::insertManyEmails, emailDao, 1001, 5);
     }
 
     @Test
     public void testGetPreferredForMember() throws Exception{
         EmailDTO email1 = daoTestUtils.getEmail1();
-        email1.setPreferred(true);
-        email1 = emailDao.insert(email1);
-
-        EmailDTO email2 = emailDao.getPreferredForMember(1000);
-        assertNotNull("Preferred email for member 1000 is null", email1);
-        assertEquals("Email returned does not equal email expected", email1, email2);
+        daoTestMethods.testGetPreferredForMember(email1, emailDao, 1000);
     }
 
     @Test
     public void testInsertOrUpdate() throws Exception{
-        testInsert();
         EmailDTO emailToUpdate = daoTestUtils.getEmail1();
-        emailToUpdate.setEmailAddress("AnotherValue");
-        emailToUpdate.setEmailId(1);
-        emailDao.insertOrUpdate(emailToUpdate);
-
-        EmailDTO result = emailDao.get(1L);
-        assertNotNull("Update result email is null", result);
-        assertEquals("EmailDao insertOrUpdate method did not update existing email", emailToUpdate, result);
-
         EmailDTO emailToInsert = daoTestUtils.getEmail2();
-        emailDao.insertOrUpdate(emailToInsert);
-        emailToInsert.setEmailId(2);
-
-        result = emailDao.get(2L);
-        assertNotNull("Insert result email is null", result);
-        assertEquals("EmailDao insertOrUpdate method did not insert new email", emailToInsert, result);
+        daoTestMethods.testInsertOrUpdate(emailToUpdate, emailToInsert, emailDao, 1L, 2L);
     }
 
     private void insertManyEmails() throws Exception{

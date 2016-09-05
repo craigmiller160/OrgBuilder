@@ -12,6 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by craig on 8/21/16.
@@ -51,7 +52,7 @@ public class OrgDaoTest {
     public void testInsert() throws Exception{
         OrgDTO org = daoTestUtils.getOrg1();
         org = orgDao.insert(org);
-        assertEquals("Failed to insert OrgDTO", 1, org.getOrgId());
+        assertTrue("Failed to insert OrgDTO", 1 == org.getElementId());
     }
 
     @Test
@@ -59,8 +60,8 @@ public class OrgDaoTest {
         testInsert();
         OrgDTO org = daoTestUtils.getOrg1();
         org.setOrgName("Org2");
-        org.setOrgId(1L);
-        orgDao.update(org, org.getOrgId());
+        org.setElementId(1L);
+        orgDao.update(org, org.getElementId());
         OrgDTO memberDTO2 = orgDao.get(1L);
         assertNotNull("OrgDTO is null", memberDTO2);
         assertEquals("OrgDTO has the wrong org name", "Org2", memberDTO2.getOrgName());
@@ -98,9 +99,9 @@ public class OrgDaoTest {
 
         List<OrgDTO> orgs = orgDao.getAll(3, 3);
         assertEquals("Get All Limit returned the wrong number of orgs", 3, orgs.size());
-        assertEquals("First returned org is incorrect", 4, orgs.get(0).getOrgId());
-        assertEquals("Second returned org is incorrect", 5, orgs.get(1).getOrgId());
-        assertEquals("Third returned org is incorrect", 6, orgs.get(2).getOrgId());
+        assertTrue("First returned org is incorrect", 4 == orgs.get(0).getElementId());
+        assertTrue("Second returned org is incorrect", 5 == orgs.get(1).getElementId());
+        assertTrue("Third returned org is incorrect", 6 == orgs.get(2).getElementId());
     }
 
     @Test
@@ -108,7 +109,7 @@ public class OrgDaoTest {
         testInsert();
         OrgDTO orgToUpdate = daoTestUtils.getOrg1();
         orgToUpdate.setOrgName("AnotherValue");
-        orgToUpdate.setOrgId(1);
+        orgToUpdate.setElementId(1L);
         orgDao.insertOrUpdate(orgToUpdate);
 
         OrgDTO result = orgDao.get(1L);
@@ -117,7 +118,7 @@ public class OrgDaoTest {
 
         OrgDTO orgToInsert = daoTestUtils.getOrg2();
         orgDao.insertOrUpdate(orgToInsert);
-        orgToInsert.setOrgId(2);
+        orgToInsert.setElementId(2L);
 
         result = orgDao.get(2L);
         assertNotNull("Insert result org is null", result);

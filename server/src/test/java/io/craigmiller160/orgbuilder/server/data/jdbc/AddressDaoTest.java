@@ -14,6 +14,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by craigmiller on 8/24/16.
@@ -30,6 +31,11 @@ public class AddressDaoTest {
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private AddressDao addressDao;
+    private final MemberJoinDaoTestMethods<AddressDTO,Long,AddressDao> daoTestMethods;
+
+    public AddressDaoTest(){
+        this.daoTestMethods = new MemberJoinDaoTestMethods<>(AddressDTO.class.getSimpleName());
+    }
 
     @BeforeClass
     public static void init() throws Exception{
@@ -60,91 +66,56 @@ public class AddressDaoTest {
     @Test
     public void testInsert() throws Exception{
         AddressDTO address = daoTestUtils.getAddress1();
-        address = addressDao.insert(address);
-        assertEquals("Failed to insert address", 1, address.getAddressId());
+        daoTestMethods.testInsert(address, addressDao, 1L);
     }
 
     @Test
     public void testUpdateAndGet() throws Exception{
-        String newAddress = "10306 Casa Palarmo Dr";
-        testInsert();
-        AddressDTO address = daoTestUtils.getAddress1();
-        address.setAddressId(1);
-        address.setAddress(newAddress);
-        addressDao.update(address, address.getAddressId());
-        address = addressDao.get(1L);
-        assertNotNull("AddressDTO is null", address);
-        assertEquals("AddressDTO has the wrong address value", newAddress, address.getAddress());
+        AddressDTO address1 = daoTestUtils.getAddress1();
+        AddressDTO address2 = daoTestUtils.getAddress2();
+        daoTestMethods.testUpdateAndGet(address1, address2, addressDao, 1L);
     }
 
     @Test
     public void testDeleteAndGet() throws Exception{
-        testInsert();
         AddressDTO address1 = daoTestUtils.getAddress1();
-        address1.setAddressId(1);
-        AddressDTO address2 = addressDao.delete(1L);
-        assertEquals("Deleted address is not the same as inserted address", address1, address2);
-        address2 = addressDao.get(1L);
-        assertNull("Address record was not deleted", address2);
+        daoTestMethods.testDeleteAndGet(address1, addressDao, 1L);
     }
 
     @Test
     public void testCount() throws Exception{
-        insertManyAddresses();
-        long count = addressDao.getCount();
-        assertEquals("Incorrect count of addresses", 15, count);
+        daoTestMethods.testCount(this::insertManyAddresses, addressDao, 15);
     }
 
     @Test
     public void testGetAll() throws Exception{
-        insertManyAddresses();
-        List<AddressDTO> addresses = addressDao.getAll();
-        assertEquals("Get All returned the wrong number of addresses", 15, addresses.size());
+        daoTestMethods.testGetAll(this::insertManyAddresses, addressDao, 15);
     }
 
     @Test
     public void testGetAllLimit() throws Exception{
-        insertManyAddresses();
-        List<AddressDTO> addresses = addressDao.getAll(3, 3);
-        assertEquals("Get All Limit returned the wrong number of addresses", 3, addresses.size());
-        assertEquals("First returned address is incorrect", 4, addresses.get(0).getAddressId());
-        assertEquals("Second returned address is incorrect", 5, addresses.get(1).getAddressId());
-        assertEquals("Third returned address is incorrect", 6, addresses.get(2).getAddressId());
+        daoTestMethods.testGetAllLimit(this::insertManyAddresses, addressDao, 3, 3, new Long[] {4L, 5L, 6L});
     }
 
     @Test
     public void testGetAllByMember() throws Exception{
-        insertManyAddresses();
-        List<AddressDTO> addresses = addressDao.getAllByMember(1001L);
-        assertEquals("Wrong number of addresses returned for member with ID 1001", 5, addresses.size());
+        daoTestMethods.testGetAllByMember(this::insertManyAddresses, addressDao, 1001L, 5);
     }
 
     @Test
     public void testGetAllByMemberLimit() throws Exception{
-        insertManyAddresses();
-        List<AddressDTO> addresses = addressDao.getAllByMember(1001L, 1, 3);
-        assertEquals("Wrong number of addresses returned for member with ID 1001", 3, addresses.size());
-        assertEquals("First returned address is incorrect", 12, addresses.get(0).getAddressId());
-        assertEquals("Second returned address is incorrect", 13, addresses.get(1).getAddressId());
-        assertEquals("Third returned address is incorrect", 14, addresses.get(2).getAddressId());
+        daoTestMethods.testGetAllByMemberLimit(this::insertManyAddresses, addressDao, 1001L, 1, 3, new Long[]{12L, 13L, 14L});
     }
 
     @Test
     public void testGetCountByMember() throws Exception{
-        insertManyAddresses();
-        long count = addressDao.getCountByMember(1001L);
-        assertEquals("Wrong count of addresses returned for member with ID 1001", 5, count);
+        daoTestMethods.testGetCountByMember(this::insertManyAddresses, addressDao, 1001, 5);
     }
 
     @Test
     public void testGetPreferredForMember() throws Exception{
         AddressDTO address1 = daoTestUtils.getAddress1();
-        address1.setPreferred(true);
-        address1 = addressDao.insert(address1);
-
-        AddressDTO address2 = addressDao.getPreferredForMember(1000);
-        assertNotNull("Preferred address for member 1000 is null", address2);
-        assertEquals("Address returned does not equal address expected", address1, address2);
+        daoTestMethods.testGetPreferredForMember(address1, addressDao, 1000);
     }
 
     /**
@@ -177,30 +148,16 @@ public class AddressDaoTest {
         List<AddressDTO> addresses = addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L, 1, 3);
         assertNotNull("Addresses list is null", addresses);
         assertEquals("Wrong number of addresses returned for member with ID 1001", 3, addresses.size());
-        assertEquals("First returned address is incorrect", 12, addresses.get(0).getAddressId());
-        assertEquals("Second returned address is incorrect", 13, addresses.get(1).getAddressId());
-        assertEquals("Third returned address is incorrect", 14, addresses.get(2).getAddressId());
+        assertTrue("First returned address is incorrect", 12L == addresses.get(0).getElementId());
+        assertTrue("Second returned address is incorrect", 13L == addresses.get(1).getElementId());
+        assertTrue("Third returned address is incorrect", 14L == addresses.get(2).getElementId());
     }
 
     @Test
     public void testInsertOrUpdate() throws Exception{
-        testInsert();
         AddressDTO addressToUpdate = daoTestUtils.getAddress1();
-        addressToUpdate.setAddress("Another address value");
-        addressToUpdate.setAddressId(1);
-        addressDao.insertOrUpdate(addressToUpdate);
-
-        AddressDTO result = addressDao.get(1L);
-        assertNotNull("Update result address is null", result);
-        assertEquals("AddressDao insertOrUpdate method did not update existing address", addressToUpdate, result);
-
         AddressDTO addressToInsert = daoTestUtils.getAddress2();
-        addressDao.insertOrUpdate(addressToInsert);
-        addressToInsert.setAddressId(2);
-
-        result = addressDao.get(2L);
-        assertNotNull("Insert result address is null", result);
-        assertEquals("AddressDao insertOrUpdate method did not insert new address", addressToInsert, result);
+        daoTestMethods.testInsertOrUpdate(addressToUpdate, addressToInsert, addressDao, 1L, 2L);
     }
 
     private void insertManyAddresses() throws Exception{

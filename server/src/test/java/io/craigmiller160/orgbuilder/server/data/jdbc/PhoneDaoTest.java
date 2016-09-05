@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
+import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import org.junit.After;
@@ -29,6 +30,11 @@ public class PhoneDaoTest {
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private PhoneDao phoneDao;
+    private final MemberJoinDaoTestMethods<PhoneDTO,Long,PhoneDao> daoTestMethods;
+
+    public PhoneDaoTest(){
+        this.daoTestMethods = new MemberJoinDaoTestMethods<>(PhoneDTO.class.getSimpleName());
+    }
 
     @BeforeClass
     public static void init() throws Exception{
@@ -59,112 +65,63 @@ public class PhoneDaoTest {
     @Test
     public void testInsert() throws Exception{
         PhoneDTO phone = daoTestUtils.getPhone1();
-        phone = phoneDao.insert(phone);
-        assertEquals("Failed to insert phone", 1, phone.getPhoneId());
+        daoTestMethods.testInsert(phone, phoneDao, 1L);
     }
 
     @Test
     public void testUpdateAndGet() throws Exception{
-        String newLineNum = "8024";
-        testInsert();
-        PhoneDTO phone = daoTestUtils.getPhone1();
-        phone.setPhoneId(1);
-        phone.setLineNumber(newLineNum);
-        phoneDao.update(phone, phone.getPhoneId());
-        phone = phoneDao.get(1L);
-        assertNotNull("PhoneDTO is null", phone);
-        assertEquals("PhoneDTO has the wrong line number value", newLineNum, phone.getLineNumber());
+        PhoneDTO phone1 = daoTestUtils.getPhone1();
+        PhoneDTO phone2 = daoTestUtils.getPhone2();
+        daoTestMethods.testUpdateAndGet(phone1, phone2, phoneDao, 1L);
     }
 
     @Test
     public void testDeleteAndGet() throws Exception{
-        testInsert();
         PhoneDTO phone1 = daoTestUtils.getPhone1();
-        phone1.setPhoneId(1);
-        PhoneDTO phone2 = phoneDao.delete(1L);
-        assertEquals("Deleted phone is not the same as inserted phone", phone1, phone2);
-        phone2 = phoneDao.get(1L);
-        assertNull("Phone record was not deleted", phone2);
+        daoTestMethods.testDeleteAndGet(phone1, phoneDao, 1L);
     }
 
     @Test
     public void testCount() throws Exception{
-        insertManyPhones();
-        long count = phoneDao.getCount();
-        assertEquals("Incorrect count of phones", 15, count);
+        daoTestMethods.testCount(this::insertManyPhones, phoneDao, 15);
     }
 
     @Test
     public void testGetAll() throws Exception{
-        insertManyPhones();
-        List<PhoneDTO> phones = phoneDao.getAll();
-        assertEquals("Get All returned the wrong number of phones", 15, phones.size());
+        daoTestMethods.testGetAll(this::insertManyPhones, phoneDao, 15);
     }
 
     @Test
     public void testGetAllLimit() throws Exception{
-        insertManyPhones();
-        List<PhoneDTO> phones = phoneDao.getAll(3, 3);
-        assertEquals("Get All Limit returned the wrong number of phones", 3, phones.size());
-        assertEquals("First returned phone is incorrect", 4, phones.get(0).getPhoneId());
-        assertEquals("Second returned phone is incorrect", 5, phones.get(1).getPhoneId());
-        assertEquals("Third returned phone is incorrect", 6, phones.get(2).getPhoneId());
+        daoTestMethods.testGetAllLimit(this::insertManyPhones, phoneDao, 3, 3, new Long[]{4L, 5L, 6L});
     }
 
     @Test
     public void testGetAllByMember() throws Exception{
-        insertManyPhones();
-        List<PhoneDTO> phones = phoneDao.getAllByMember(1001L);
-        assertEquals("Wrong number of phones returned for member with ID 1001", 5, phones.size());
+        daoTestMethods.testGetAllByMember(this::insertManyPhones, phoneDao, 1001L, 5);
     }
 
     @Test
     public void testGetAllByMemberLimit() throws Exception{
-        insertManyPhones();
-        List<PhoneDTO> phones = phoneDao.getAllByMember(1001L, 1, 3);
-        assertEquals("Wrong number of phones returned for member with ID 1001", 3, phones.size());
-        assertEquals("First returned phone is incorrect", 12, phones.get(0).getPhoneId());
-        assertEquals("Second returned phone is incorrect", 13, phones.get(1).getPhoneId());
-        assertEquals("Third returned phone is incorrect", 14, phones.get(2).getPhoneId());
+        daoTestMethods.testGetAllByMemberLimit(this::insertManyPhones, phoneDao, 1001L, 1, 3, new Long[]{12L, 13L, 14L});
     }
 
     @Test
     public void testGetCountByMember() throws Exception{
-        insertManyPhones();
-        long count = phoneDao.getCountByMember(1001L);
-        assertEquals("Wrong count of phones returned for member with ID 1001", 5, count);
+        daoTestMethods.testGetCountByMember(this::insertManyPhones, phoneDao, 1001, 5);
     }
 
     @Test
     public void testGetPreferredForMember() throws Exception{
         PhoneDTO phone1 = daoTestUtils.getPhone1();
-        phone1.setPreferred(true);
-        phone1 = phoneDao.insert(phone1);
-
-        PhoneDTO phone2 = phoneDao.getPreferredForMember(1000);
-        assertNotNull("Preferred phone for member 1000 is null", phone1);
-        assertEquals("Phone returned does not equal phone expected", phone1, phone2);
+        daoTestMethods.testGetPreferredForMember(phone1, phoneDao, 1000);
     }
 
     @Test
     public void testInsertOrUpdate() throws Exception{
-        testInsert();
         PhoneDTO phoneToUpdate = daoTestUtils.getPhone1();
-        phoneToUpdate.setLineNumber("9876");
-        phoneToUpdate.setPhoneId(1);
-        phoneDao.insertOrUpdate(phoneToUpdate);
-
-        PhoneDTO result = phoneDao.get(1L);
-        assertNotNull("Update result phone is null", result);
-        assertEquals("PhoneDao insertOrUpdate method did not update existing phone", phoneToUpdate, result);
-
         PhoneDTO phoneToInsert = daoTestUtils.getPhone2();
-        phoneDao.insertOrUpdate(phoneToInsert);
-        phoneToInsert.setPhoneId(2);
-
-        result = phoneDao.get(2L);
-        assertNotNull("Insert result phone is null", result);
-        assertEquals("PhoneDao insertOrUpdate method did not insert new phone", phoneToInsert, result);
+        daoTestMethods.testInsertOrUpdate(phoneToUpdate, phoneToInsert, phoneDao, 1L, 2L);
     }
 
     private void insertManyPhones() throws Exception{
