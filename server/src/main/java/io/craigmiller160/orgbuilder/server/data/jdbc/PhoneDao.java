@@ -30,6 +30,6 @@ public class PhoneDao extends AbstractJdbcMemberJoinDao<PhoneDTO,Long> {
 
     @Override
     protected Long getIdForElement(PhoneDTO element) {
-        return element.getPhoneId();
+        return element.getElementId();
     }
 }

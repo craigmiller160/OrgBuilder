@@ -18,8 +18,8 @@ public class AddressDTOSQLConverter implements DTOSQLConverter<AddressDTO> {
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, AddressDTO element) throws SQLException {
-        if(element.getAddressId() > 0){
-            stmt.setLong(1, element.getAddressId());
+        if(element.getElementId() > 0){
+            stmt.setLong(1, element.getElementId());
         }
         else{
             stmt.setNull(1, Types.BIGINT);
@@ -80,7 +80,7 @@ public class AddressDTOSQLConverter implements DTOSQLConverter<AddressDTO> {
     @Override
     public AddressDTO parseResultSet(ResultSet resultSet) throws SQLException {
         AddressDTO element = new AddressDTO();
-        element.setAddressId(resultSet.getLong("address_id"));
+        element.setElementId(resultSet.getLong("address_id"));
         String addressType = resultSet.getString("address_type");
         if(!StringUtils.isEmpty(addressType)){
             element.setAddressType(AddressDTO.AddressType.valueOf(addressType));

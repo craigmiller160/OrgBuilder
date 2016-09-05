@@ -17,8 +17,8 @@ public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, OrgDTO element) throws SQLException {
-        if(element.getOrgId() > 0){
-            stmt.setLong(1, element.getOrgId());
+        if(element.getElementId() > 0){
+            stmt.setLong(1, element.getElementId());
         }
         else{
             stmt.setNull(1, Types.BIGINT);
@@ -35,7 +35,7 @@ public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
     @Override
     public OrgDTO parseResultSet(ResultSet resultSet) throws SQLException {
         OrgDTO element = new OrgDTO();
-        element.setOrgId(resultSet.getLong("org_id"));
+        element.setElementId(resultSet.getLong("org_id"));
         element.setOrgName(resultSet.getString("org_name"));
         Date createdDate = resultSet.getDate("created_date");
         if(createdDate != null){

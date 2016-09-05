@@ -18,8 +18,8 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, UserDTO element) throws SQLException {
-        if(element.getUserId() > 0){
-            stmt.setLong(1, element.getUserId());
+        if(element.getElementId() > 0){
+            stmt.setLong(1, element.getElementId());
         }
         else{
             stmt.setNull(1, Types.BIGINT);
@@ -64,7 +64,7 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
     @Override
     public UserDTO parseResultSet(ResultSet resultSet) throws SQLException {
         UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(resultSet.getLong("user_id"));
+        userDTO.setElementId(resultSet.getLong("user_id"));
         userDTO.setUserName(resultSet.getString("user_name"));
         userDTO.setUserEmail(resultSet.getString("user_email"));
         userDTO.setPassword(resultSet.getString("user_password"));

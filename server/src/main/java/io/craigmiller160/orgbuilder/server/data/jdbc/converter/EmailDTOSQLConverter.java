@@ -17,8 +17,8 @@ public class EmailDTOSQLConverter implements DTOSQLConverter<EmailDTO> {
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, EmailDTO element) throws SQLException {
-        if(element.getEmailId() > 0){
-            stmt.setLong(1, element.getEmailId());
+        if(element.getElementId() > 0){
+            stmt.setLong(1, element.getElementId());
         }
         else{
             stmt.setNull(1, Types.BIGINT);
@@ -51,7 +51,7 @@ public class EmailDTOSQLConverter implements DTOSQLConverter<EmailDTO> {
     @Override
     public EmailDTO parseResultSet(ResultSet resultSet) throws SQLException {
         EmailDTO element = new EmailDTO();
-        element.setEmailId(resultSet.getLong("email_id"));
+        element.setElementId(resultSet.getLong("email_id"));
         String emailType = resultSet.getString("email_type");
         if(!StringUtils.isEmpty(emailType)){
             element.setEmailType(EmailDTO.EmailType.valueOf(emailType));

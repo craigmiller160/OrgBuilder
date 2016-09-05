@@ -19,8 +19,8 @@ public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, MemberDTO element) throws SQLException {
-        if(element.getMemberId() > 0){
-            stmt.setLong(1, element.getMemberId());
+        if(element.getElementId() > 0){
+            stmt.setLong(1, element.getElementId());
         }
         else{
             stmt.setNull(1, Types.BIGINT);
@@ -65,7 +65,7 @@ public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
     @Override
     public MemberDTO parseResultSet(ResultSet resultSet) throws SQLException {
         MemberDTO element = new MemberDTO();
-        element.setMemberId(resultSet.getLong("member_id"));
+        element.setElementId(resultSet.getLong("member_id"));
         element.setFirstName(resultSet.getString("first_name"));
         element.setMiddleName(resultSet.getString("middle_name"));
         element.setLastName(resultSet.getString("last_name"));

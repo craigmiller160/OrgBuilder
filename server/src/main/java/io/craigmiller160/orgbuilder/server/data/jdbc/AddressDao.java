@@ -30,6 +30,6 @@ public class AddressDao extends AbstractJdbcMemberJoinDao<AddressDTO,Long> {
 
     @Override
     protected Long getIdForElement(AddressDTO element) {
-        return element.getAddressId();
+        return element.getElementId();
     }
 }

@@ -17,8 +17,8 @@ public class PhoneDTOSQLConverter implements DTOSQLConverter<PhoneDTO> {
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, PhoneDTO element) throws SQLException {
-        if(element.getPhoneId() > 0){
-            stmt.setLong(1, element.getPhoneId());
+        if(element.getElementId() > 0){
+            stmt.setLong(1, element.getElementId());
         }
         else{
             stmt.setNull(1, Types.BIGINT);
@@ -72,7 +72,7 @@ public class PhoneDTOSQLConverter implements DTOSQLConverter<PhoneDTO> {
     @Override
     public PhoneDTO parseResultSet(ResultSet resultSet) throws SQLException {
         PhoneDTO element = new PhoneDTO();
-        element.setPhoneId(resultSet.getLong("phone_id"));
+        element.setElementId(resultSet.getLong("phone_id"));
         String phoneType = resultSet.getString("phone_type");
         if(!StringUtils.isEmpty(phoneType)){
             element.setPhoneType(PhoneDTO.PhoneType.valueOf(phoneType));

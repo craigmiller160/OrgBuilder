@@ -18,7 +18,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craig on 8/23/16.
  */
-public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO,I> extends AbstractJdbcDao<E,I> implements MemberJoins<E> {
+public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>,I> extends AbstractJdbcDao<E,I> implements MemberJoins<E> {
 
     public AbstractJdbcMemberJoinDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);

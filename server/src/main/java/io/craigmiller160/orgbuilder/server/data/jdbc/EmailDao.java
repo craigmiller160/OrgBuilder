@@ -32,6 +32,6 @@ public class EmailDao extends AbstractJdbcMemberJoinDao<EmailDTO,Long> {
 
     @Override
     protected Long getIdForElement(EmailDTO element) {
-        return element.getEmailId();
+        return element.getElementId();
     }
 }
