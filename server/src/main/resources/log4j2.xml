@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="ERROR">
+    <Properties>
+        <Property name="mainPatternLayout">%d{MM-dd-yy HH:mm:ss.SSS} %-5level: [%-7c{1}]: %msg %n%rEx{full}</Property>
+    </Properties>
     <Appenders>
         <Console name="OrgBuilderConsole" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{MM-dd-yy HH:mm:ss.SSS} %-5level: [%-8c{1}]: %msg %n%rEx{full}"/>
+            <PatternLayout pattern="${mainPatternLayout}"/>
         </Console>
+        <RollingFile name="OrgBuilderFile" fileName="logs/${date:yyyyMMdd}/orgapi.log" filePattern="logs/$${date:yyyMMdd}/orgapi.log.%i">
+            <PatternLayout pattern="${mainPatternLayout}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB" />
+            </Policies>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="ERROR" />
         <Logger name="io.craigmiller160.orgbuilder.server" level="DEBUG">
             <AppenderRef ref="OrgBuilderConsole" />
+            <AppenderRef ref="OrgBuilderFile" />
         </Logger>
         <Logger name="com.mysql" level="ERROR" />
     </Loggers>
