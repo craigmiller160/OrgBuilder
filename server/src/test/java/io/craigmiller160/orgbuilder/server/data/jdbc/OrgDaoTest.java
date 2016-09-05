@@ -23,7 +23,7 @@ public class OrgDaoTest {
 
     private static final String REST_AUTO_INC_SQL =
             "alter table orgs " +
-                    "auto_increment = 1;";
+            "auto_increment = 1;";
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private OrgDao orgDao;

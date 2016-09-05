@@ -11,6 +11,8 @@ import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
+import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.rest.Role;
 import throwing.stream.ThrowingStream;
 
 import java.lang.reflect.Constructor;
@@ -176,6 +178,28 @@ public class DaoTestUtils {
         OrgDTO org = new OrgDTO();
         org.setOrgName("NewOrg");
         return org;
+    }
+
+    public UserDTO getUser1(){
+        UserDTO user = new UserDTO();
+        user.setUserName("MyUser");
+        user.setPassword("MyPassword");
+        user.setUserEmail("MyEmail@gmail.com");
+        user.setRole(Role.ADMIN);
+        user.setOrgId(1);
+
+        return user;
+    }
+
+    public UserDTO getUser2(){
+        UserDTO user = new UserDTO();
+        user.setUserName("NewUser");
+        user.setPassword("NewPassword");
+        user.setUserEmail("NewEmail@gmail.com");
+        user.setRole(Role.READ_ONLY);
+        user.setOrgId(2);
+
+        return user;
     }
 
 }
