@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by craigmiller on 8/12/16.
  */
-public class MemberDTO implements Comparable<MemberDTO>{
+public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
 
     private long memberId;
     private String firstName;
@@ -34,12 +34,14 @@ public class MemberDTO implements Comparable<MemberDTO>{
         this.gender = gender;
     }
 
-    public long getMemberId() {
+    @Override
+    public Long getElementId() {
         return memberId;
     }
 
-    public void setMemberId(long memberId) {
-        this.memberId = memberId;
+    @Override
+    public void setElementId(Long id) {
+        this.memberId = id;
     }
 
     public String getFirstName() {

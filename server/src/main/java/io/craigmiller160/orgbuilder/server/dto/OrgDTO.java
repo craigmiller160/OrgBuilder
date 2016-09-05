@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Created by craig on 8/21/16.
  */
-public class OrgDTO implements Comparable<OrgDTO>{
+public class OrgDTO implements Comparable<OrgDTO>, DTO<Long>{
 
     private long orgId;
     private String orgName;
@@ -21,12 +21,14 @@ public class OrgDTO implements Comparable<OrgDTO>{
         this.schemaName = schemaName;
     }
 
-    public long getOrgId() {
+    @Override
+    public Long getElementId() {
         return orgId;
     }
 
-    public void setOrgId(long orgId) {
-        this.orgId = orgId;
+    @Override
+    public void setElementId(Long id) {
+        this.orgId = id;
     }
 
     public String getOrgName() {

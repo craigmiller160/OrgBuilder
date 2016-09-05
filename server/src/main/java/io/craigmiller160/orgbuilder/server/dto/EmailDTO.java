@@ -3,7 +3,7 @@ package io.craigmiller160.orgbuilder.server.dto;
 /**
  * Created by craig on 8/13/16.
  */
-public class EmailDTO implements Comparable<EmailDTO>, JoinedWithMemberDTO {
+public class EmailDTO implements Comparable<EmailDTO>, JoinedWithMemberDTO<Long>, DTO<Long> {
 
     private long emailId;
     private EmailType emailType;
@@ -17,17 +17,18 @@ public class EmailDTO implements Comparable<EmailDTO>, JoinedWithMemberDTO {
         this.emailAddress = emailAddress;
     }
 
-    public long getEmailId() {
+    public EmailType getEmailType() {
+        return emailType;
+    }
+
+    @Override
+    public Long getElementId(){
         return emailId;
     }
 
-    public void setEmailId(long emailId) {
-        this.emailId = emailId;
-    }
-
-    public EmailType getEmailType() {
-
-        return emailType;
+    @Override
+    public void setElementId(Long id) {
+        this.emailId = id;
     }
 
     public void setEmailType(EmailType emailType) {

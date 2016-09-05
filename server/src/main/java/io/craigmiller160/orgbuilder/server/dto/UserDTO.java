@@ -5,7 +5,7 @@ import io.craigmiller160.orgbuilder.server.rest.Role;
 /**
  * Created by craig on 9/4/16.
  */
-public class UserDTO implements Comparable<UserDTO>{
+public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     private long userId;
     private String userName;
@@ -14,12 +14,14 @@ public class UserDTO implements Comparable<UserDTO>{
     private Role role;
     private long orgId;
 
-    public long getUserId() {
+    @Override
+    public Long getElementId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    @Override
+    public void setElementId(Long id) {
+        this.userId = id;
     }
 
     public String getUserName() {
