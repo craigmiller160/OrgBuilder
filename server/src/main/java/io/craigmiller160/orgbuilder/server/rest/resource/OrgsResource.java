@@ -42,7 +42,7 @@ public class OrgsResource {
     @PUT
     @Path("/{orgId}")
     public OrgDTO updateOrg(@PathParam("orgId") long orgId, OrgDTO org){
-        org.setOrgId(orgId);
+        org.setElementId(orgId);
         //TODO finish this
         return null;
     }

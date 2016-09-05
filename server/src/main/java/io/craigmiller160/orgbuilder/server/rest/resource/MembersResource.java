@@ -45,7 +45,7 @@ public class MembersResource {
     @PUT
     @Path("/{memberId}")
     public MemberDTO updateMember(@PathParam("memberId") long memberId, MemberDTO member){
-        member.setMemberId(memberId);
+        member.setElementId(memberId);
         //TODO finish this
         return null;
     }
