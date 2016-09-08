@@ -11,4 +11,6 @@ public interface DataConnection extends AutoCloseable{
 
     void rollback() throws OrgApiDataException;
 
+    void close() throws OrgApiDataException;
+
 }

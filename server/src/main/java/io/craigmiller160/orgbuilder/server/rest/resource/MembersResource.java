@@ -1,6 +1,9 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
+import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.service.MemberService;
+import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -24,6 +27,8 @@ import java.util.List;
 @Path("/orgs/{orgId}/members")
 public class MembersResource {
 
+    private final ServiceFactory factory = ServiceFactory.newInstance();
+
     @Context
     private SecurityContext securityContext;
 
@@ -37,9 +42,10 @@ public class MembersResource {
     }
 
     @POST
-    public MemberDTO addMember(MemberDTO member){
-        //TODO finish this
-        return null;
+    public MemberDTO addMember(MemberDTO member) throws OrgApiException{
+        //TODO how to handle the exception with Jersey... there's a way, just can't remember
+        MemberService memberService = factory.newMemberService(securityContext);
+        return memberService.addMember(member);
     }
 
     @PUT
