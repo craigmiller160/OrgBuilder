@@ -22,7 +22,7 @@ import java.util.List;
 public abstract class AbstractDao<E,I> implements Dao<E,I> {
 
     @Override
-    public List<E> query(String queryName, Object... params) {
+    public Object query(String queryName, Object... params) {
         Object result = null;
         try{
             result = MethodUtils.invokeMethod(this, queryName, params);
@@ -31,7 +31,6 @@ public abstract class AbstractDao<E,I> implements Dao<E,I> {
             OrgApiLogger.getDataLogger().error("Unable to invoke query method. QueryName: " + queryName + " Params: " + Arrays.toString(params), ex);
         }
 
-        //noinspection unchecked
-        return (List<E>) result;
+        return result;
     }
 }

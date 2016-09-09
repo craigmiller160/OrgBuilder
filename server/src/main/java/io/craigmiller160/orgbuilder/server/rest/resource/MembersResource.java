@@ -74,9 +74,16 @@ public class MembersResource {
 
     @DELETE
     @Path("/{memberId}")
-    public MemberDTO deleteMember(@PathParam("memberId") long memberId){
-        //TODO delete this
-        return null;
+    public MemberDTO deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
+        MemberDTO member = null;
+        try{
+            MemberService memberService = factory.newMemberService(securityContext);
+            member = memberService.deleteMember(memberId);
+        }
+        catch(OrgApiDataException | OrgApiSecurityException ex){
+            throw new OrgApiException("Unable to process request: DELETE " + uriInfo.getPath(), ex);
+        }
+        return member;
     }
 
     @GET

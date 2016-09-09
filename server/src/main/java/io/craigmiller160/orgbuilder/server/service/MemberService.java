@@ -39,7 +39,7 @@ public class MemberService {
         return dataManager.connectToSchema(schemaName);
     }
 
-    private void handleJoinedEntities(MemberDTO member, MemberDTO result, DataConnection connection, int operationType) throws OrgApiDataException{
+    private void insertOrUpdateJoinedEntities(MemberDTO member, MemberDTO result, DataConnection connection) throws OrgApiDataException{
         Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
         Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
         Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
@@ -48,22 +48,24 @@ public class MemberService {
         List<PhoneDTO> phones = member.getPhones();
         List<EmailDTO> emails = member.getEmails();
 
-        if(operationType == INSERT_OR_UPDATE_OPERATION){
-            result.setAddresses(new ArrayList<>());
-            performInsertOrUpdate(result.getAddresses(), addresses, addressDao);
+        result.setAddresses(new ArrayList<>());
+        performInsertOrUpdate(result.getAddresses(), addresses, addressDao);
 
-            result.setPhones(new ArrayList<>());
-            performInsertOrUpdate(result.getPhones(), phones, phoneDao);
+        result.setPhones(new ArrayList<>());
+        performInsertOrUpdate(result.getPhones(), phones, phoneDao);
 
-            result.setEmails(new ArrayList<>());
-            performInsertOrUpdate(result.getEmails(), emails, emailDao);
-        }
-        else if(operationType == DELETE_OPERATION){
-            //TODO there won't be a result ultimately available here
-            result.setAddresses(addressDao.query(MemberJoins.DELETE_BY_MEMBER, member.getElementId()));
-            result.setPhones(phoneDao.query(MemberJoins.DELETE_BY_MEMBER, member.getElementId()));
-            result.setEmails(emailDao.query(MemberJoins.DELETE_BY_MEMBER, member.getElementId()));
-        }
+        result.setEmails(new ArrayList<>());
+        performInsertOrUpdate(result.getEmails(), emails, emailDao);
+    }
+
+    private void deleteJoinedEntities(long memberId, MemberDTO tempResult, DataConnection connection) throws OrgApiDataException{
+        Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
+        Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
+        Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
+
+        tempResult.setAddresses((List<AddressDTO>) addressDao.query(MemberJoins.DELETE_BY_MEMBER, memberId));
+        tempResult.setPhones((List<PhoneDTO>) phoneDao.query(MemberJoins.DELETE_BY_MEMBER, memberId));
+        tempResult.setEmails((List<EmailDTO>) emailDao.query(MemberJoins.DELETE_BY_MEMBER, memberId));
     }
 
     private <E extends DTO<I>,I> void performInsertOrUpdate(List<E> results, List<E> elements, Dao<E,I> dao) throws OrgApiDataException{
@@ -86,7 +88,7 @@ public class MemberService {
             member.setElementId(id);
             result = memberDao.update(member, id);
 
-            handleJoinedEntities(member, result, connection, INSERT_OR_UPDATE_OPERATION);
+            insertOrUpdateJoinedEntities(member, result, connection);
 
             connection.commit();
         }
@@ -110,7 +112,7 @@ public class MemberService {
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             result = memberDao.insert(member);
 
-            handleJoinedEntities(member, result, connection, INSERT_OR_UPDATE_OPERATION);
+            insertOrUpdateJoinedEntities(member, result, connection);
 
             connection.commit();
         }
@@ -132,14 +134,20 @@ public class MemberService {
         MemberDTO result = null;
         try{
             connection = newConnection();
+            MemberDTO tempResult = new MemberDTO();
+            deleteJoinedEntities(memberId, tempResult, connection);
+
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             result = memberDao.delete(memberId);
+            result.setAddresses(tempResult.getAddresses());
+            result.setPhones(tempResult.getPhones());
+            result.setEmails(tempResult.getEmails());
         }
         catch(OrgApiDataException ex){
-            //TODO
+            rollback(connection, ex);
         }
         finally{
-            //TODO
+            closeConnection(connection);
         }
         return result;
     }

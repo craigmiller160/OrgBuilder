@@ -134,7 +134,7 @@ public class AddressDaoTest {
     @Test
     public void testReflectiveQueryMethod() throws Exception{
         insertManyAddresses();
-        List<AddressDTO> addresses = addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L);
+        List<AddressDTO> addresses = (List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L);
         assertNotNull("Addresses list is null", addresses);
         assertEquals("Wrong number of addresses returned for member with ID 1001", 5, addresses.size());
     }
@@ -151,7 +151,7 @@ public class AddressDaoTest {
     @Test
     public void testReflectiveQueryMethodWithParams() throws Exception{
         insertManyAddresses();
-        List<AddressDTO> addresses = addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L, 1, 3);
+        List<AddressDTO> addresses = (List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, 1001L, 1, 3);
         assertNotNull("Addresses list is null", addresses);
         assertEquals("Wrong number of addresses returned for member with ID 1001", 3, addresses.size());
         assertTrue("First returned address is incorrect", 12L == addresses.get(0).getElementId());

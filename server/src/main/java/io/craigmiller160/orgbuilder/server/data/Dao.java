@@ -122,10 +122,10 @@ public interface Dao<E,I> {
      *
      * @param queryName the name of the query method.
      * @param params the parameters for the query method.
-     * @return a list of the element results.
+     * @return a the results, based on the method called.
      * @throws OrgApiDataException if unable to perform
      *                          the database operation.
      */
-    List<E> query(String queryName, Object...params) throws OrgApiDataException;
+    Object query(String queryName, Object...params) throws OrgApiDataException;
 
 }
