@@ -1,6 +1,6 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
-import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
+import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,42 +21,47 @@ import java.util.List;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs")
-public class OrgsResource {
+@Path("/orgs/{orgId}/members/{memberId}")
+public class AddressResource {
 
     @Context
     private SecurityContext securityContext;
 
+    @PathParam("orgId")
+    private long orgId;
+
+    @PathParam("memberId")
+    private long memberId;
+
     @GET
-    public List<OrgDTO> getAllOrgs(@QueryParam("offset") long offset, @QueryParam("size") long size){
+    public List<AddressDTO> getAllAddresses(@QueryParam("offset") long offset, @QueryParam("size") long size){
         //TODO finish this
         return null;
     }
 
     @POST
-    public OrgDTO addOrg(OrgDTO org){
+    public AddressDTO addAddress(AddressDTO address){
         //TODO finish this
         return null;
     }
 
     @PUT
-    @Path("/{orgId}")
-    public OrgDTO updateOrg(@PathParam("orgId") long orgId, OrgDTO org){
-        org.setElementId(orgId);
+    @Path("/{addressId}")
+    public AddressDTO updateAddress(@PathParam("addressId") long addressId, AddressDTO address){
         //TODO finish this
         return null;
     }
 
     @DELETE
-    @Path("/{orgId}")
-    public OrgDTO deleteOrg(@PathParam("orgId") long orgId){
+    @Path("/{addressId}")
+    public AddressDTO deleteAddress(@PathParam("addressId") long addressId){
         //TODO finish this
         return null;
     }
 
     @GET
-    @Path("/{orgId}")
-    public OrgDTO getOrg(@PathParam("orgId") long orgId){
+    @Path("/{addressId}")
+    public AddressDTO getAddress(@PathParam("addressId") long addressId){
         //TODO finish this
         return null;
     }

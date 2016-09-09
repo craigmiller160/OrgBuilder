@@ -28,7 +28,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/orgs/{orgId}/members")
-public class MembersResource {
+public class MemberResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
 

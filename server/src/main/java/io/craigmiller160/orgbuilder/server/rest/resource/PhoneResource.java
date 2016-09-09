@@ -1,6 +1,6 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
-import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
+import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,7 +22,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/orgs/{orgId}/members/{memberId}")
-public class EmailsResource {
+public class PhoneResource {
 
     @Context
     private SecurityContext securityContext;
@@ -34,34 +34,34 @@ public class EmailsResource {
     private long memberId;
 
     @GET
-    public List<EmailDTO> getAllEmails(@QueryParam("offset") long offset, @QueryParam("size") long size){
+    public List<PhoneDTO> getAllPhones(@QueryParam("offset") long offset, @QueryParam("size") long size){
         //TODO finish this
         return null;
     }
 
     @POST
-    public EmailDTO addEmail(EmailDTO email){
+    public PhoneDTO addPhone(PhoneDTO phone){
         //TODO finish this
         return null;
     }
 
     @PUT
-    @Path("/{emailId}")
-    public EmailDTO updateEmail(@PathParam("emailId") long emailId, EmailDTO email){
+    @Path("/{phoneId}")
+    public PhoneDTO updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone){
         //TODO finish this
         return null;
     }
 
     @DELETE
-    @Path("/{emailId}")
-    public EmailDTO deleteEmail(@PathParam("emailId") long emailId){
+    @Path("/{phoneId}")
+    public PhoneDTO deletePhone(@PathParam("phoneId") long phoneId){
         //TODO finish this
         return null;
     }
 
     @GET
-    @Path("/{emailId}")
-    public EmailDTO getEmail(@PathParam("emailId") long emailId){
+    @Path("/{phoneId}")
+    public PhoneDTO getPhone(@PathParam("phoneId") long phoneId){
         //TODO finish this
         return null;
     }

@@ -1,6 +1,6 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
-import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -21,47 +21,42 @@ import java.util.List;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs/{orgId}/members/{memberId}")
-public class PhonesResource {
+@Path("/orgs")
+public class OrgResource {
 
     @Context
     private SecurityContext securityContext;
 
-    @PathParam("orgId")
-    private long orgId;
-
-    @PathParam("memberId")
-    private long memberId;
-
     @GET
-    public List<PhoneDTO> getAllPhones(@QueryParam("offset") long offset, @QueryParam("size") long size){
+    public List<OrgDTO> getAllOrgs(@QueryParam("offset") long offset, @QueryParam("size") long size){
         //TODO finish this
         return null;
     }
 
     @POST
-    public PhoneDTO addPhone(PhoneDTO phone){
+    public OrgDTO addOrg(OrgDTO org){
         //TODO finish this
         return null;
     }
 
     @PUT
-    @Path("/{phoneId}")
-    public PhoneDTO updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone){
+    @Path("/{orgId}")
+    public OrgDTO updateOrg(@PathParam("orgId") long orgId, OrgDTO org){
+        org.setElementId(orgId);
         //TODO finish this
         return null;
     }
 
     @DELETE
-    @Path("/{phoneId}")
-    public PhoneDTO deletePhone(@PathParam("phoneId") long phoneId){
+    @Path("/{orgId}")
+    public OrgDTO deleteOrg(@PathParam("orgId") long orgId){
         //TODO finish this
         return null;
     }
 
     @GET
-    @Path("/{phoneId}")
-    public PhoneDTO getPhone(@PathParam("phoneId") long phoneId){
+    @Path("/{orgId}")
+    public OrgDTO getOrg(@PathParam("orgId") long orgId){
         //TODO finish this
         return null;
     }
