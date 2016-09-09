@@ -2,9 +2,12 @@ package io.craigmiller160.orgbuilder.server.dto;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by craig on 8/13/16.
  */
+@XmlRootElement
 public class PhoneDTO implements Comparable<PhoneDTO>, JoinedWithMemberDTO<Long>, DTO<Long>{
 
     private long phoneId;

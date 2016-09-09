@@ -1,8 +1,11 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by craig on 8/13/16.
  */
+@XmlRootElement
 public class EmailDTO implements Comparable<EmailDTO>, JoinedWithMemberDTO<Long>, DTO<Long> {
 
     private long emailId;

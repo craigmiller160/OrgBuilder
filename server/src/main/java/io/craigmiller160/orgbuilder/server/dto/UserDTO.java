@@ -2,9 +2,12 @@ package io.craigmiller160.orgbuilder.server.dto;
 
 import io.craigmiller160.orgbuilder.server.rest.Role;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by craig on 9/4/16.
  */
+@XmlRootElement
 public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     private long userId;

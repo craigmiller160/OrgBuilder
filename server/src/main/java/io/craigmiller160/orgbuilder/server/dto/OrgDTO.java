@@ -1,10 +1,12 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 
 /**
  * Created by craig on 8/21/16.
  */
+@XmlRootElement
 public class OrgDTO implements Comparable<OrgDTO>, DTO<Long>{
 
     private long orgId;

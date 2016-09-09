@@ -3,9 +3,12 @@ package io.craigmiller160.orgbuilder.server.dto;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by craigmiller on 9/8/16.
  */
+@XmlRootElement
 public class ErrorDTO implements Comparable<ErrorDTO>{
 
     private int statusCode;

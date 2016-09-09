@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * Created by craigmiller on 8/12/16.
  */
+@XmlRootElement
 public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
 
     private long memberId;
