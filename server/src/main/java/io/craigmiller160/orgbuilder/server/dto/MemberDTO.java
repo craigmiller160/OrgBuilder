@@ -16,9 +16,6 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
     private String lastName;
     private LocalDate dateOfBirth;
     private Gender gender;
-    private AddressDTO preferredAddress;
-    private PhoneDTO preferredPhone;
-    private EmailDTO preferredEmail;
 
     private List<AddressDTO> addresses = new ArrayList<>();
     private List<PhoneDTO> phones = new ArrayList<>();
@@ -116,27 +113,30 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
     }
 
     public AddressDTO getPreferredAddress() {
-        return preferredAddress;
-    }
-
-    public void setPreferredAddress(AddressDTO preferredAddress) {
-        this.preferredAddress = preferredAddress;
+        for(AddressDTO address : addresses){
+            if(address != null && address.isPreferred()){
+                return address;
+            }
+        }
+        return null;
     }
 
     public PhoneDTO getPreferredPhone() {
-        return preferredPhone;
-    }
-
-    public void setPreferredPhone(PhoneDTO preferredPhone) {
-        this.preferredPhone = preferredPhone;
+        for(PhoneDTO phone : phones){
+            if(phone != null && phone.isPreferred()){
+                return phone;
+            }
+        }
+        return null;
     }
 
     public EmailDTO getPreferredEmail() {
-        return preferredEmail;
-    }
-
-    public void setPreferredEmail(EmailDTO preferredEmail) {
-        this.preferredEmail = preferredEmail;
+        for(EmailDTO email : emails){
+            if(email != null && email.isPreferred()){
+                return email;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -153,12 +153,6 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         if (dateOfBirth != null ? !dateOfBirth.equals(memberDTO.dateOfBirth) : memberDTO.dateOfBirth != null)
             return false;
         if (gender != memberDTO.gender) return false;
-        if (preferredAddress != null ? !preferredAddress.equals(memberDTO.preferredAddress) : memberDTO.preferredAddress != null)
-            return false;
-        if (preferredPhone != null ? !preferredPhone.equals(memberDTO.preferredPhone) : memberDTO.preferredPhone != null)
-            return false;
-        if (preferredEmail != null ? !preferredEmail.equals(memberDTO.preferredEmail) : memberDTO.preferredEmail != null)
-            return false;
         if (addresses != null ? !addresses.equals(memberDTO.addresses) : memberDTO.addresses != null) return false;
         if (phones != null ? !phones.equals(memberDTO.phones) : memberDTO.phones != null) return false;
         return emails != null ? emails.equals(memberDTO.emails) : memberDTO.emails == null;
@@ -173,9 +167,6 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
         result = 31 * result + (gender != null ? gender.hashCode() : 0);
-        result = 31 * result + (preferredAddress != null ? preferredAddress.hashCode() : 0);
-        result = 31 * result + (preferredPhone != null ? preferredPhone.hashCode() : 0);
-        result = 31 * result + (preferredEmail != null ? preferredEmail.hashCode() : 0);
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
         result = 31 * result + (phones != null ? phones.hashCode() : 0);
         result = 31 * result + (emails != null ? emails.hashCode() : 0);

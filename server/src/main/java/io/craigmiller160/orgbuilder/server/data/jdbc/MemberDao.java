@@ -41,17 +41,17 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
         if(resultSet.getObject("address_id") != null){
             AddressDTO preferredAddress = (AddressDTO) map.get(AddressDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
-            element.setPreferredAddress(preferredAddress);
+            element.getAddresses().add(preferredAddress);
         }
 
         if(resultSet.getObject("phone_id") != null){
             PhoneDTO preferredPhone = (PhoneDTO) map.get(PhoneDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
-            element.setPreferredPhone(preferredPhone);
+            element.getPhones().add(preferredPhone);
         }
 
         if(resultSet.getObject("email_id") != null){
             EmailDTO preferredEmail = (EmailDTO) map.get(EmailDTO.class).getDTOSQLConverter().parseResultSet(resultSet);
-            element.setPreferredEmail(preferredEmail);
+            element.getEmails().add(preferredEmail);
         }
         return element;
     }

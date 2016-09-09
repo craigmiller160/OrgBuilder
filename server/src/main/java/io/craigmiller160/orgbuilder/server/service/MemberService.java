@@ -43,11 +43,6 @@ public class MemberService {
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
             Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-            //TODO refactor these fields away, make them just get stored in the list rather than separately
-            AddressDTO preferredAddress = member.getPreferredAddress();
-            PhoneDTO preferredPhone = member.getPreferredPhone();
-            EmailDTO preferredEmail = member.getPreferredEmail();
-
             List<AddressDTO> addresses = member.getAddresses();
             List<PhoneDTO> phones = member.getPhones();
             List<EmailDTO> emails = member.getEmails();
