@@ -45,9 +45,17 @@ public class MemberResource {
     private long orgId;
 
     @GET
-    public List<MemberDTO> getAllMembers(@QueryParam("offset") long offset, @QueryParam("size") long size){
-        //TODO finish this
-        return null;
+    public Response getAllMembers(@QueryParam("offset") long offset, @QueryParam("size") long size) throws OrgApiException{
+        try{
+            MemberService memberService = factory.newMemberService(securityContext);
+            List<MemberDTO> results = memberService.getAllMembers(offset, size);
+            return Response
+                    .ok(results)
+                    .build();
+        }
+        catch(OrgApiDataException | OrgApiSecurityException ex){
+            throw new OrgApiException("Unable to process request: GET " + uriInfo.getPath(), ex);
+        }
     }
 
     @POST

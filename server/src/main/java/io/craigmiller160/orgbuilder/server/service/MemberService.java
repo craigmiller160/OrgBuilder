@@ -183,6 +183,28 @@ public class MemberService {
         return result;
     }
 
+    public List<MemberDTO> getAllMembers(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
+        if(!AccessValidator.hasReadAccess(securityContext)){
+            throw new OrgApiSecurityException("User does not have API read access. User: " + securityContext.getUserPrincipal().getName());
+        }
+        DataConnection connection = null;
+        List<MemberDTO> results = null;
+        try{
+            connection = newConnection();
+            Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
+            results = (offset >= 0 && size > 0) ? memberDao.getAll() : memberDao.getAll(offset, size);
+        }
+        catch(OrgApiDataException ex){
+            rollback(connection, ex);
+        }
+        finally {
+            closeConnection(connection);
+        }
+        return results;
+    }
+
+
+
     private void rollback(DataConnection connection, OrgApiDataException ex) throws OrgApiDataException{
         if(connection != null){
             try{
