@@ -1,8 +1,10 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.service.MemberService;
+import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
 import javax.ws.rs.Consumes;
@@ -17,6 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
 /**
@@ -32,6 +35,9 @@ public class MembersResource {
     @Context
     private SecurityContext securityContext;
 
+    @Context
+    private UriInfo uriInfo;
+
     @PathParam("orgId")
     private long orgId;
 
@@ -43,9 +49,14 @@ public class MembersResource {
 
     @POST
     public MemberDTO addMember(MemberDTO member) throws OrgApiException{
-        //TODO how to handle the exception with Jersey... there's a way, just can't remember
-        MemberService memberService = factory.newMemberService(securityContext);
-        return memberService.addMember(member);
+        try{
+            MemberService memberService = factory.newMemberService(securityContext);
+            member = memberService.addMember(member);
+        }
+        catch(OrgApiDataException | OrgApiSecurityException ex){
+            throw new OrgApiException("Unable to process request: POST " + uriInfo.getPath(), ex);
+        }
+        return member;
     }
 
     @PUT
