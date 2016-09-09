@@ -24,9 +24,11 @@ public class MemberService {
 
     private final String schemaName;
     private final OrgDataManager dataManager;
+    private final SecurityContext securityContext;
 
     public MemberService(SecurityContext securityContext){
         this.dataManager = ServerCore.getOrgDataManager();
+        this.securityContext = securityContext;
         this.schemaName = ((UserOrgPrincipal) securityContext.getUserPrincipal()).getOrg().getSchemaName();
     }
 
@@ -34,7 +36,10 @@ public class MemberService {
         return dataManager.connectToSchema(schemaName);
     }
 
-    public MemberDTO addMember(MemberDTO member) throws OrgApiException{
+    public MemberDTO addMember(MemberDTO member) throws OrgApiDataException, OrgApiSecurityException{
+        if(!AccessValidator.hasWriteAccess(securityContext)){
+            throw new OrgApiSecurityException("User does not have API write access. User: " + securityContext.getUserPrincipal().getName());
+        }
         DataConnection connection = null;
         try{
             connection = dataManager.connectToSchema(schemaName);
@@ -70,30 +75,32 @@ public class MemberService {
             connection.commit();
         }
         catch(OrgApiDataException ex){
-            OrgApiLogger.getServiceLogger().error("Error while performing database operation. Needs rollback? " + (connection != null), ex);
-            if(connection != null){
-                try{
-                    connection.rollback();
-                }
-                catch(OrgApiDataException ex2){
-                    ex2.addSuppressed(ex);
-                    throw new OrgApiException("Error while attempting to rollback database operation", ex2);
-                }
-            }
-            throw new OrgApiException("Error while performing database operation", ex);
+            rollback(connection, ex);
         }
         finally{
-            if(connection != null){
-                try{
-                    connection.close();
-                }
-                catch(OrgApiDataException ex){
-                    throw new OrgApiException("Unable to close database connection", ex);
-                }
-            }
+            closeConnection(connection);
         }
 
         return member;
+    }
+
+    private void rollback(DataConnection connection, OrgApiDataException ex) throws OrgApiDataException{
+        if(connection != null){
+            try{
+                connection.rollback();
+            }
+            catch(OrgApiDataException ex2){
+                ex2.addSuppressed(ex);
+                throw ex2;
+            }
+        }
+        throw ex;
+    }
+
+    private void closeConnection(DataConnection connection) throws OrgApiDataException{
+        if(connection != null){
+            connection.close();
+        }
     }
 
 }
