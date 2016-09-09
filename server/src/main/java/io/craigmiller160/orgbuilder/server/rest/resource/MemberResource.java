@@ -18,8 +18,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 /**
@@ -48,42 +51,53 @@ public class MemberResource {
     }
 
     @POST
-    public MemberDTO addMember(MemberDTO member) throws OrgApiException{
+    public Response addMember(MemberDTO member) throws OrgApiException{
         try{
             MemberService memberService = factory.newMemberService(securityContext);
             member = memberService.addMember(member);
+            return Response
+                    .created(new URI(uriInfo.getPath() + "/" + member.getElementId()))
+                    .entity(member)
+                    .build();
         }
-        catch(OrgApiDataException | OrgApiSecurityException ex){
+        catch(OrgApiDataException | OrgApiSecurityException | URISyntaxException ex){
             throw new OrgApiException("Unable to process request: POST " + uriInfo.getPath(), ex);
         }
-        return member;
     }
 
     @PUT
     @Path("/{memberId}")
-    public MemberDTO updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
+    public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
         try{
             MemberService memberService = factory.newMemberService(securityContext);
             member = memberService.updateMember(member, memberId);
+            return Response
+                    .accepted(member)
+                    .build();
         }
         catch(OrgApiDataException | OrgApiSecurityException ex){
             throw new OrgApiException("Unable to process request: PUT " + uriInfo.getPath(), ex);
         }
-        return member;
     }
 
     @DELETE
     @Path("/{memberId}")
-    public MemberDTO deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
-        MemberDTO member = null;
+    public Response deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
         try{
             MemberService memberService = factory.newMemberService(securityContext);
-            member = memberService.deleteMember(memberId);
+            MemberDTO member = memberService.deleteMember(memberId);
+            if(member != null){
+                return Response
+                        .accepted(member)
+                        .build();
+            }
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .build();
         }
         catch(OrgApiDataException | OrgApiSecurityException ex){
             throw new OrgApiException("Unable to process request: DELETE " + uriInfo.getPath(), ex);
         }
-        return member;
     }
 
     @GET
