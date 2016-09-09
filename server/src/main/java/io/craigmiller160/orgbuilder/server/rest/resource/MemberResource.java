@@ -102,9 +102,17 @@ public class MemberResource {
 
     @GET
     @Path("/{memberId}")
-    public MemberDTO getMember(@PathParam("memberId") long memberId, @QueryParam("joins") boolean joins){
-        //TODO delete this
-        return null;
+    public Response getMember(@PathParam("memberId") long memberId) throws OrgApiException{
+        try{
+            MemberService memberService = factory.newMemberService(securityContext);
+            MemberDTO member = memberService.getMember(memberId);
+            return Response
+                    .ok(member)
+                    .build();
+        }
+        catch(OrgApiDataException | OrgApiSecurityException ex){
+            throw new OrgApiException("Unable to process request: GET " + uriInfo.getPath(), ex);
+        }
     }
 
 }

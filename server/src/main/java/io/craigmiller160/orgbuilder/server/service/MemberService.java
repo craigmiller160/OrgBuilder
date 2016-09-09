@@ -152,6 +152,37 @@ public class MemberService {
         return result;
     }
 
+    public MemberDTO getMember(Long memberId) throws OrgApiDataException, OrgApiSecurityException{
+        if(!AccessValidator.hasReadAccess(securityContext)){
+            throw new OrgApiSecurityException("User does not have API read access. User: " + securityContext.getUserPrincipal().getName());
+        }
+        DataConnection connection = null;
+        MemberDTO result = null;
+        try{
+            connection = newConnection();
+            Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
+            Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
+            Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
+            Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
+
+            result = memberDao.get(memberId);
+            if(result == null){
+                return null;
+            }
+
+            result.setAddresses((List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
+            result.setPhones((List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
+            result.setEmails((List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
+        }
+        catch(OrgApiDataException ex){
+            rollback(connection, ex);
+        }
+        finally{
+            closeConnection(connection);
+        }
+        return result;
+    }
+
     private void rollback(DataConnection connection, OrgApiDataException ex) throws OrgApiDataException{
         if(connection != null){
             try{
