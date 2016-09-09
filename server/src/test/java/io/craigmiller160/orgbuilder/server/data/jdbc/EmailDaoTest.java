@@ -123,6 +123,12 @@ public class EmailDaoTest {
         daoTestMethods.testInsertOrUpdate(emailToUpdate, emailToInsert, emailDao, 1L, 2L);
     }
 
+    @Test
+    public void testDeleteByMember() throws Exception{
+        EmailDTO email = daoTestUtils.getEmail1();
+        daoTestMethods.testDeleteByMember(email, emailDao, 1000, 1);
+    }
+
     private void insertManyEmails() throws Exception{
         //10 of email1, tied to member1
         for(int i = 0; i < 10; i++){

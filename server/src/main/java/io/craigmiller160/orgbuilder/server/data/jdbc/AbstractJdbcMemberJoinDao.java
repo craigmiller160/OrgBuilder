@@ -148,15 +148,12 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>
     public List<E> deleteByMember(long memberId) throws OrgApiDataException {
         String deleteByMemberQuery = queries.get(Query.DELETE_BY_MEMBER);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Delete By Member Query:\n" + deleteByMemberQuery);
-        List<E> result = new ArrayList<>();
-        try(PreparedStatement stmt = connection.prepareStatement(deleteByMemberQuery, Statement.RETURN_GENERATED_KEYS)){
-            stmt.setLong(1, memberId);
-            stmt.executeUpdate();
-            try(ResultSet resultSet = stmt.getGeneratedKeys()){
-                while(resultSet.next()){
-                    I id = (I) resultSet.getObject(0);
-                    result.add(get(id));
-                }
+        List<E> result = null;
+        try{
+            result = getAllByMember(memberId);
+            try(PreparedStatement stmt = connection.prepareStatement(deleteByMemberQuery, Statement.RETURN_GENERATED_KEYS)){
+                stmt.setLong(1, memberId);
+                stmt.executeUpdate();
             }
         }
         catch(SQLException ex){

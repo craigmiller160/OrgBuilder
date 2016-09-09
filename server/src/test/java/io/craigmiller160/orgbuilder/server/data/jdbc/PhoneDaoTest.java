@@ -124,6 +124,12 @@ public class PhoneDaoTest {
         daoTestMethods.testInsertOrUpdate(phoneToUpdate, phoneToInsert, phoneDao, 1L, 2L);
     }
 
+    @Test
+    public void testDeleteByMember() throws Exception{
+        PhoneDTO phone = daoTestUtils.getPhone1();
+        daoTestMethods.testDeleteByMember(phone, phoneDao, 1000, 1);
+    }
+
     private void insertManyPhones() throws Exception{
         //10 of phone1, tied to member1
         for(int i = 0; i < 10; i++){

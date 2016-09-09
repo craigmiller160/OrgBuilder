@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by craig on 9/4/16.
@@ -45,6 +46,15 @@ public class MemberJoinDaoTestMethods<E extends JoinedWithMemberDTO<I>,I,D exten
         assertNotNull("Preferred " + elementName + " for member " + memberId + " is null", result2);
         assertEquals(elementName + " returned does not equal expected", result1, result2);
 
+    }
+
+    public void testDeleteByMember(E element, D dao, long memberId, int expectedResultCount) throws Exception{
+        element = dao.insert(element);
+        List<E> result = dao.deleteByMember(memberId);
+        assertNotNull("Result is null", result);
+        assertEquals("Wrong number of results returned", expectedResultCount, result.size());
+        element = dao.get(element.getElementId());
+        assertNull("Element was not deleted", element);
     }
 
 }
