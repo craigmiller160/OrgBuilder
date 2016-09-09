@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.rest;
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 
 import javax.ws.rs.core.Response;
@@ -17,6 +18,7 @@ public class OrgApiExceptionMapper implements ExceptionMapper<OrgApiException> {
 
     @Override
     public Response toResponse(OrgApiException e) {
+        OrgApiLogger.getRestLogger().error("Request error", e);
         ErrorDTO error = new ErrorDTO();
         Throwable cause = e.getCause();
         if(cause != null){

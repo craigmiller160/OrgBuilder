@@ -61,10 +61,15 @@ public class MembersResource {
 
     @PUT
     @Path("/{memberId}")
-    public MemberDTO updateMember(@PathParam("memberId") long memberId, MemberDTO member){
-        member.setElementId(memberId);
-        //TODO finish this
-        return null;
+    public MemberDTO updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
+        try{
+            MemberService memberService = factory.newMemberService(securityContext);
+            member = memberService.updateMember(member, memberId);
+        }
+        catch(OrgApiDataException | OrgApiSecurityException ex){
+            throw new OrgApiException("Unable to process request: PUT " + uriInfo.getPath(), ex);
+        }
+        return member;
     }
 
     @DELETE

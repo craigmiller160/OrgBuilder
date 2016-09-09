@@ -12,6 +12,9 @@ public interface MemberJoins<E extends JoinedWithMemberDTO> {
     String GET_ALL_BY_MEMBER = "getAllByMember";
     String COUNT_BY_MEMBER = "countByMember";
     String GET_PREFERRED_FOR_MEMBER = "getPreferredForMember";
+    String DELETE_BY_MEMBER = "deleteByMember";
+
+    //TODO something needs to be done about these methods being compatible with the reflective query() method
 
     List<E> getAllByMember(long memberId) throws OrgApiDataException;
 
