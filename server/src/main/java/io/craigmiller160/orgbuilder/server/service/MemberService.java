@@ -10,6 +10,7 @@ import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.DTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.rest.UserOrgPrincipal;
 
@@ -183,16 +184,17 @@ public class MemberService {
         return result;
     }
 
-    public List<MemberDTO> getAllMembers(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
+    public MemberListDTO getAllMembers(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
         if(!AccessValidator.hasReadAccess(securityContext)){
             throw new OrgApiSecurityException("User does not have API read access. User: " + securityContext.getUserPrincipal().getName());
         }
         DataConnection connection = null;
-        List<MemberDTO> results = null;
+        MemberListDTO results = null;
         try{
             connection = newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
-            results = (offset >= 0 && size > 0) ? memberDao.getAll() : memberDao.getAll(offset, size);
+            List<MemberDTO> list = (offset >= 0 && size > 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
+            results = new MemberListDTO(list);
         }
         catch(OrgApiDataException ex){
             rollback(connection, ex);

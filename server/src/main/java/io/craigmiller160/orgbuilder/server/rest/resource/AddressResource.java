@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs/{orgId}/members/{memberId}")
+@Path("/orgs/{orgId}/members/{memberId}/addresses")
 public class AddressResource {
 
     @Context

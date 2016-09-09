@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.rest.resource;
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
+import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
 import io.craigmiller160.orgbuilder.server.service.MemberService;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
@@ -48,7 +49,7 @@ public class MemberResource {
     public Response getAllMembers(@QueryParam("offset") long offset, @QueryParam("size") long size) throws OrgApiException{
         try{
             MemberService memberService = factory.newMemberService(securityContext);
-            List<MemberDTO> results = memberService.getAllMembers(offset, size);
+            MemberListDTO results = memberService.getAllMembers(offset, size);
             return Response
                     .ok(results)
                     .build();
