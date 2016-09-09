@@ -99,6 +99,7 @@ public class UserDaoTest {
     private void insertManyUsers() throws Exception{
         for(int i = 0; i < 10; i++){
             UserDTO user = daoTestUtils.getUser1();
+            user.setUserName(user.getUserName() + i);
             userDao.insert(user);
         }
     }

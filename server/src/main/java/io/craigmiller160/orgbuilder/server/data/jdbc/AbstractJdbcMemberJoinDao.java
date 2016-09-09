@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -138,6 +139,28 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to get preferred for member for " + getElementName() + ". Member ID: " + memberId, ex);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<E> deleteByMember(long memberId) throws OrgApiDataException {
+        String deleteByMemberQuery = queries.get(Query.DELETE_BY_MEMBER);
+        OrgApiLogger.getDataLogger().trace(getElementName() + " Delete By Member Query:\n" + deleteByMemberQuery);
+        List<E> result = new ArrayList<>();
+        try(PreparedStatement stmt = connection.prepareStatement(deleteByMemberQuery, Statement.RETURN_GENERATED_KEYS)){
+            stmt.setLong(1, memberId);
+            stmt.executeUpdate();
+            try(ResultSet resultSet = stmt.getGeneratedKeys()){
+                while(resultSet.next()){
+                    I id = (I) resultSet.getObject(0);
+                    result.add(get(id));
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to delete by member for " + getElementName() + ". Member ID: " + memberId, ex);
         }
 
         return result;

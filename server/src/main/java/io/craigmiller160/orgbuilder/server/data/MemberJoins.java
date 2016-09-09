@@ -21,4 +21,6 @@ public interface MemberJoins<E extends JoinedWithMemberDTO> {
 
     E getPreferredForMember(long memberId) throws OrgApiDataException;
 
+    List<E> deleteByMember(long memberId) throws OrgApiDataException;
+
 }

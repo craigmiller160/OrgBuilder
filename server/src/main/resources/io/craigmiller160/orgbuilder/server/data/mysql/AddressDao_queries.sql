@@ -63,6 +63,10 @@ FROM addresses
 WHERE address_member_id = ?
 AND preferred_address = TRUE;
 
+-- QUERY=DELETE_BY_MEMBER
+DELETE FROM addresses
+WHERE address_member_id = ?;
+
 -- QUERY=INSERT_OR_UPDATE
 INSERT INTO addresses (address_id, address_type, address, unit, city, state, zip_code, preferred_address, address_member_id)
 VALUES (?,?,?,?,?,?,?,?,?)

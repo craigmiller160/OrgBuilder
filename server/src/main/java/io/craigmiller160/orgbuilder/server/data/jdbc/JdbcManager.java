@@ -152,7 +152,8 @@ public class JdbcManager {
         COUNT_BY_MEMBER,
         CLEAR_PREFERRED,
         GET_PREFERRED_FOR_MEMBER,
-        INSERT_OR_UPDATE;
+        INSERT_OR_UPDATE,
+        DELETE_BY_MEMBER;
     }
 
     public enum Schema {
