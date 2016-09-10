@@ -4,12 +4,14 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
+import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.service.MemberService;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -46,12 +48,21 @@ public class MemberResource {
     private long orgId;
 
     @GET
-    public Response getAllMembers(@QueryParam("offset") long offset, @QueryParam("size") long size) throws OrgApiException{
+    public Response getAllMembers(@QueryParam("offset") @DefaultValue("-1") long offset,
+                                  @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         try{
+            if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
+                throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
+            }
             MemberService memberService = factory.newMemberService(securityContext);
             MemberListDTO results = memberService.getAllMembers(offset, size);
+            if(results != null){
+                return Response
+                        .ok(results)
+                        .build();
+            }
             return Response
-                    .ok(results)
+                    .noContent()
                     .build();
         }
         catch(OrgApiDataException | OrgApiSecurityException ex){
@@ -101,7 +112,7 @@ public class MemberResource {
                         .build();
             }
             return Response
-                    .status(Response.Status.NOT_FOUND)
+                    .noContent()
                     .build();
         }
         catch(OrgApiDataException | OrgApiSecurityException ex){
@@ -115,8 +126,13 @@ public class MemberResource {
         try{
             MemberService memberService = factory.newMemberService(securityContext);
             MemberDTO member = memberService.getMember(memberId);
+            if(member != null){
+                return Response
+                        .ok(member)
+                        .build();
+            }
             return Response
-                    .ok(member)
+                    .noContent()
                     .build();
         }
         catch(OrgApiDataException | OrgApiSecurityException ex){

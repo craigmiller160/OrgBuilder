@@ -140,9 +140,13 @@ public class MemberService {
 
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             result = memberDao.delete(memberId);
-            result.setAddresses(tempResult.getAddresses());
-            result.setPhones(tempResult.getPhones());
-            result.setEmails(tempResult.getEmails());
+            if(result != null){
+                result.setAddresses(tempResult.getAddresses());
+                result.setPhones(tempResult.getPhones());
+                result.setEmails(tempResult.getEmails());
+            }
+
+            connection.commit();
         }
         catch(OrgApiDataException ex){
             rollback(connection, ex);
@@ -174,6 +178,8 @@ public class MemberService {
             result.setAddresses((List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
             result.setPhones((List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
             result.setEmails((List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
+
+            connection.commit();
         }
         catch(OrgApiDataException ex){
             rollback(connection, ex);
@@ -193,8 +199,12 @@ public class MemberService {
         try{
             connection = newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
-            List<MemberDTO> list = (offset >= 0 && size > 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
-            results = new MemberListDTO(list);
+            List<MemberDTO> list = (offset >= 0 && size >= 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
+            if(list.size() > 0){
+                results = new MemberListDTO(list);
+            }
+
+            connection.commit();
         }
         catch(OrgApiDataException ex){
             rollback(connection, ex);
