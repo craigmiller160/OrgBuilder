@@ -17,6 +17,7 @@ public class SecurityFilter implements ContainerRequestFilter{
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         //TODO perform authentication... REAL authentication
+        //TODO test the URI to check the specified org_id, make sure it matches the allowed org_id for the user
         UserDTO userDTO = new UserDTO();
         userDTO.setElementId(1L);
         userDTO.setUserName("Craig");

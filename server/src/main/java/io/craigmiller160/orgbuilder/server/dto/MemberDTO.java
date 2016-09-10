@@ -1,6 +1,9 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import io.craigmiller160.orgbuilder.server.rest.LocalDateAdapter;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
     private String firstName;
     private String middleName;
     private String lastName;
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateOfBirth;
     private Gender gender;
 
