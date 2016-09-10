@@ -23,9 +23,6 @@ import java.util.List;
  */
 public class MemberService {
 
-    private static final int INSERT_OR_UPDATE_OPERATION = 101;
-    private static final int DELETE_OPERATION = 102;
-
     private final String schemaName;
     private final OrgDataManager dataManager;
     private final SecurityContext securityContext;
