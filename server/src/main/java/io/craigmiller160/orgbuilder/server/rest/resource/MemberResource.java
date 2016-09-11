@@ -50,94 +50,70 @@ public class MemberResource {
     @GET
     public Response getAllMembers(@QueryParam("offset") @DefaultValue("-1") long offset,
                                   @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
-        try{
-            if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
-                throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
-            }
-            MemberService memberService = factory.newMemberService(securityContext);
-            MemberListDTO results = memberService.getAllMembers(offset, size);
-            if(results != null){
-                return Response
-                        .ok(results)
-                        .build();
-            }
+        if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
+            throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
+        }
+        MemberService memberService = factory.newMemberService(securityContext);
+        MemberListDTO results = memberService.getAllMembers(offset, size);
+        if(results != null){
             return Response
-                    .noContent()
+                    .ok(results)
                     .build();
         }
-        catch(OrgApiDataException | OrgApiSecurityException ex){
-            throw new OrgApiException("Unable to process request: GET " + uriInfo.getPath(), ex);
-        }
+        return Response
+                .noContent()
+                .build();
     }
 
     @POST
     public Response addMember(MemberDTO member) throws OrgApiException{
-        try{
-            MemberService memberService = factory.newMemberService(securityContext);
-            member = memberService.addMember(member);
-            return Response
-                    .created(new URI(uriInfo.getPath() + "/" + member.getElementId()))
-                    .entity(member)
-                    .build();
-        }
-        catch(OrgApiDataException | OrgApiSecurityException | URISyntaxException ex){
-            throw new OrgApiException("Unable to process request: POST " + uriInfo.getPath(), ex);
-        }
+        MemberService memberService = factory.newMemberService(securityContext);
+        member = memberService.addMember(member);
+
+        return Response
+                .created(URI.create(uriInfo.getPath() + "/" + member.getElementId()))
+                .entity(member)
+                .build();
     }
 
     @PUT
     @Path("/{memberId}")
     public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
-        try{
-            MemberService memberService = factory.newMemberService(securityContext);
-            member = memberService.updateMember(member, memberId);
-            return Response
-                    .accepted(member)
-                    .build();
-        }
-        catch(OrgApiDataException | OrgApiSecurityException ex){
-            throw new OrgApiException("Unable to process request: PUT " + uriInfo.getPath(), ex);
-        }
+        MemberService memberService = factory.newMemberService(securityContext);
+        member = memberService.updateMember(member, memberId);
+        return Response
+                .accepted(member)
+                .build();
     }
 
     @DELETE
     @Path("/{memberId}")
     public Response deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
-        try{
-            MemberService memberService = factory.newMemberService(securityContext);
-            MemberDTO member = memberService.deleteMember(memberId);
-            if(member != null){
-                return Response
-                        .accepted(member)
-                        .build();
-            }
+        MemberService memberService = factory.newMemberService(securityContext);
+        MemberDTO member = memberService.deleteMember(memberId);
+        if(member != null){
             return Response
-                    .noContent()
+                    .accepted(member)
                     .build();
         }
-        catch(OrgApiDataException | OrgApiSecurityException ex){
-            throw new OrgApiException("Unable to process request: DELETE " + uriInfo.getPath(), ex);
-        }
+        return Response
+                .noContent()
+                .build();
     }
 
     @GET
     @Path("/{memberId}")
     public Response getMember(@PathParam("memberId") long memberId) throws OrgApiException{
-        try{
-            MemberService memberService = factory.newMemberService(securityContext);
-            MemberDTO member = memberService.getMember(memberId);
-            if(member != null){
-                return Response
-                        .ok(member)
-                        .build();
-            }
+        MemberService memberService = factory.newMemberService(securityContext);
+        MemberDTO member = memberService.getMember(memberId);
+        if(member != null){
             return Response
-                    .noContent()
+                    .ok(member)
                     .build();
         }
-        catch(OrgApiDataException | OrgApiSecurityException ex){
-            throw new OrgApiException("Unable to process request: GET " + uriInfo.getPath(), ex);
-        }
+        return Response
+                .noContent()
+                .build();
     }
 
 }

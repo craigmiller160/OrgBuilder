@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 import io.craigmiller160.orgbuilder.server.data.AbstractDao;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverter;
+import io.craigmiller160.orgbuilder.server.dto.DTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
@@ -19,7 +20,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craigmiller on 8/17/16.
  */
-public abstract class AbstractJdbcDao<E,I> extends AbstractDao<E,I>  {
+public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,I>  {
 
     protected final Connection connection;
     protected final Map<Query,String> queries;
