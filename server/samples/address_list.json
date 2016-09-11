@@ -1,0 +1,24 @@
+{
+  "addressList": [
+    {
+      "address": "3 Brookside Ct",
+      "addressType": "HOME",
+      "city": "East Brunswick",
+      "elementId": 1,
+      "memberId": 1000,
+      "preferred": false,
+      "state": "NJ",
+      "zipCode": "08816"
+    },
+    {
+      "address": "10306 Casa Palarmo Dr",
+      "addressType": "HOME",
+      "city": "Tampa",
+      "elementId": 2,
+      "memberId": 1000,
+      "preferred": true,
+      "state": "FL",
+      "zipCode": "33578"
+    }
+  ]
+}

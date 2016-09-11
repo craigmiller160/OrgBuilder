@@ -1,0 +1,75 @@
+{
+  "dateOfBirth": "1958-04-29",
+  "addresses": [
+    {
+      "address": "3 Brookside Ct",
+      "addressType": "HOME",
+      "city": "East Brunswick",
+      "elementId": 1,
+      "memberId": 1000,
+      "preferred": false,
+      "state": "NJ",
+      "zipCode": "08816"
+    },
+    {
+      "address": "10306 Casa Palarmo Dr",
+      "addressType": "HOME",
+      "city": "Tampa",
+      "elementId": 2,
+      "memberId": 1000,
+      "preferred": true,
+      "state": "FL",
+      "zipCode": "33578"
+    }
+  ],
+  "elementId": 1000,
+  "emails": [
+    {
+      "elementId": 1,
+      "emailAddress": "craigmiller160@gmail.com",
+      "emailType": "PERSONAL",
+      "memberId": 1000,
+      "preferred": false
+    },
+    {
+      "elementId": 2,
+      "emailAddress": "cmiller@pilotfishtechnology.com",
+      "emailType": "OTHER",
+      "memberId": 1000,
+      "preferred": true
+    }
+  ],
+  "firstName": "Gary",
+  "gender": "MALE",
+  "lastName": "Miller",
+  "middleName": "Jules",
+  "phones": [
+    {
+      "areaCode": "732",
+      "elementId": 1,
+      "lineNumber": "7826",
+      "memberId": 1000,
+      "phoneType": "HOME",
+      "preferred": false,
+      "prefix": "613"
+    },
+    {
+      "areaCode": "908",
+      "elementId": 2,
+      "lineNumber": "4040",
+      "memberId": 1000,
+      "phoneType": "HOME",
+      "preferred": true,
+      "prefix": "616"
+    },
+    {
+      "areaCode": "908",
+      "elementId": 3,
+      "lineNumber": "5555",
+      "memberId": 1000,
+      "phoneType": "HOME",
+      "preferred": false,
+      "prefix": "616"
+    }
+  ]
+}

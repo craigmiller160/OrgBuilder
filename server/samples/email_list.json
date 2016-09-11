@@ -1,0 +1,18 @@
+{
+  "emailList": [
+    {
+      "elementId": 1,
+      "emailAddress": "craigmiller160@gmail.com",
+      "emailType": "PERSONAL",
+      "memberId": 1000,
+      "preferred": false
+    },
+    {
+      "elementId": 2,
+      "emailAddress": "cmiller@pilotfishtechnology.com",
+      "emailType": "OTHER",
+      "memberId": 1000,
+      "preferred": true
+    }
+  ]
+}

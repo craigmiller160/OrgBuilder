@@ -1,0 +1,22 @@
+{
+  "phoneList": [
+    {
+      "areaCode": "732",
+      "elementId": 1,
+      "lineNumber": "7826",
+      "memberId": 1000,
+      "phoneType": "HOME",
+      "preferred": false,
+      "prefix": "613"
+    },
+    {
+      "areaCode": "908",
+      "elementId": 2,
+      "lineNumber": "4040",
+      "memberId": 1000,
+      "phoneType": "HOME",
+      "preferred": true,
+      "prefix": "616"
+    }
+  ]
+}
