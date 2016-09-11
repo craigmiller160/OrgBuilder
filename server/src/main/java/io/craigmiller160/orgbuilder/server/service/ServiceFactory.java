@@ -27,4 +27,8 @@ public class ServiceFactory {
         return new PhoneService(securityContext);
     }
 
+    public EmailService newEmailService(SecurityContext securityContext){
+        return new EmailService(securityContext);
+    }
+
 }
