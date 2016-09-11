@@ -19,4 +19,8 @@ public class ServiceFactory {
         return new MemberService(securityContext);
     }
 
+    public AddressService newAddressService(SecurityContext securityContext){
+        return new AddressService(securityContext);
+    }
+
 }

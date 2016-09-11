@@ -106,6 +106,7 @@ public class MemberResource {
     public Response getMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.getMember(memberId);
+
         if(member != null){
             return Response
                     .ok(member)

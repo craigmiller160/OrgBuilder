@@ -1,9 +1,19 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
+import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
+import io.craigmiller160.orgbuilder.server.dto.AddressListDTO;
+import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
+import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
+import io.craigmiller160.orgbuilder.server.service.AddressService;
+import io.craigmiller160.orgbuilder.server.service.MemberService;
+import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
+import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -13,7 +23,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -24,8 +37,13 @@ import java.util.List;
 @Path("/orgs/{orgId}/members/{memberId}/addresses")
 public class AddressResource {
 
+    private final ServiceFactory factory = ServiceFactory.newInstance();
+
     @Context
     private SecurityContext securityContext;
+
+    @Context
+    private UriInfo uriInfo;
 
     @PathParam("orgId")
     private long orgId;
@@ -34,36 +52,76 @@ public class AddressResource {
     private long memberId;
 
     @GET
-    public List<AddressDTO> getAllAddresses(@QueryParam("offset") long offset, @QueryParam("size") long size){
-        //TODO finish this
-        return null;
+    public Response getAllAddresses(@QueryParam("offset") @DefaultValue("-1") long offset,
+                                            @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
+        if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
+            throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
+        }
+
+        AddressService addressService = factory.newAddressService(securityContext);
+        AddressListDTO results = addressService.getAllAddresses(offset, size);
+        if(results != null){
+            return Response
+                    .ok(results)
+                    .build();
+        }
+        return Response
+                .noContent()
+                .build();
     }
 
     @POST
-    public AddressDTO addAddress(AddressDTO address){
-        //TODO finish this
-        return null;
+    public Response addAddress(AddressDTO address) throws OrgApiException{
+        AddressService addressService = factory.newAddressService(securityContext);
+        address = addressService.addAddress(address);
+
+        return Response
+                .created(URI.create(uriInfo.getPath() + "/" + address.getElementId()))
+                .entity(address)
+                .build();
     }
 
     @PUT
     @Path("/{addressId}")
-    public AddressDTO updateAddress(@PathParam("addressId") long addressId, AddressDTO address){
-        //TODO finish this
-        return null;
+    public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
+        AddressService addressService = factory.newAddressService(securityContext);
+        address = addressService.updateAddress(address, addressId);
+
+        return Response
+                .accepted(address)
+                .build();
     }
 
     @DELETE
     @Path("/{addressId}")
-    public AddressDTO deleteAddress(@PathParam("addressId") long addressId){
-        //TODO finish this
-        return null;
+    public Response deleteAddress(@PathParam("addressId") long addressId) throws OrgApiException{
+        AddressService addressService = factory.newAddressService(securityContext);
+        AddressDTO address = addressService.deleteAddress(addressId);
+
+        if(address != null){
+            return Response
+                    .accepted(address)
+                    .build();
+        }
+        return Response
+                .noContent()
+                .build();
     }
 
     @GET
     @Path("/{addressId}")
-    public AddressDTO getAddress(@PathParam("addressId") long addressId){
-        //TODO finish this
-        return null;
+    public Response getAddress(@PathParam("addressId") long addressId) throws OrgApiException{
+        AddressService addressService = factory.newAddressService(securityContext);
+        AddressDTO address = addressService.getAddress(addressId);
+
+        if(address != null){
+            return Response
+                    .ok(address)
+                    .build();
+        }
+        return Response
+                .noContent()
+                .build();
     }
 
 }
