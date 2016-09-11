@@ -23,4 +23,8 @@ public class ServiceFactory {
         return new AddressService(securityContext);
     }
 
+    public PhoneService newPhoneService(SecurityContext securityContext){
+        return new PhoneService(securityContext);
+    }
+
 }
