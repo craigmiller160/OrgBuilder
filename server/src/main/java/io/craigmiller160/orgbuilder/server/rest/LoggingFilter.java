@@ -23,7 +23,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String method = requestContext.getMethod();
-        String path = requestContext.getUriInfo().getPath();
+        String path = request.getRequestURI();
         String remoteAddress = request.getRemoteAddr();
         OrgApiLogger.getRestLogger().info("Request received from " + remoteAddress + " | " + method + " " + path);
     }
@@ -31,7 +31,7 @@ public class LoggingFilter implements ContainerRequestFilter, ContainerResponseF
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
         String method = requestContext.getMethod();
-        String path = requestContext.getUriInfo().getPath();
+        String path = request.getRequestURI();
         String remoteAddress = request.getRemoteAddr();
         int status = responseContext.getStatus();
         OrgApiLogger.getRestLogger().info("Response sent to " + remoteAddress + " | " + status + " " + method + " " + path);

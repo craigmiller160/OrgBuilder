@@ -6,6 +6,8 @@ import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -16,21 +18,20 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class OrgApiExceptionMapper implements ExceptionMapper<OrgApiException> {
 
+    @Context
+    private HttpServletRequest request;
+
     @Override
     public Response toResponse(OrgApiException e) {
-        OrgApiLogger.getRestLogger().error("Request error", e);
+        String method = request.getMethod();
+        String path = request.getRequestURI();
+        int status = getStatusCodeForExceptionType(e);
+        OrgApiLogger.getRestLogger().error("Request error: " + status + " " + method + " " + path, e);
+
         ErrorDTO error = new ErrorDTO();
-        Throwable cause = e.getCause();
-        if(cause != null){
-            error.setExceptionName(cause.getClass().getSimpleName());
-            error.setErrorMessage(cause.getMessage());
-            error.setStatusCode(getStatusCodeForExceptionType(cause));
-        }
-        else{
-            error.setExceptionName(e.getClass().getSimpleName());
-            error.setErrorMessage(e.getMessage());
-            error.setStatusCode(getStatusCodeForExceptionType(e));
-        }
+        error.setExceptionName(e.getClass().getSimpleName());
+        error.setErrorMessage(e.getMessage());
+        error.setStatusCode(status);
 
         return Response
                 .status(error.getStatusCode())
