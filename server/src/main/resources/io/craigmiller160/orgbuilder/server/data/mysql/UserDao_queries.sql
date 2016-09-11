@@ -38,3 +38,8 @@ INSERT INTO users (user_id, user_name, user_email, passwd, role, org_id)
 VALUES (?,?,?,?,?,?)
 ON DUPLICATE KEY UPDATE user_name = VALUES (user_name), user_email = VALUES (user_email),
   passwd = VALUES (passwd), role = VALUES (role), org_id = VALUES (org_id);
+
+-- QUERY=GET_WITH_NAME
+SELECT *
+FROM users
+WHERE user_name = ?;

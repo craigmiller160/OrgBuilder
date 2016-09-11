@@ -8,6 +8,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Created by craig on 9/4/16.
  */
@@ -94,6 +97,16 @@ public class UserDaoTest {
         UserDTO userToUpdate = daoTestUtils.getUser1();
         UserDTO userToInsert = daoTestUtils.getUser2();
         daoTestMethods.testInsertOrUpdate(userToUpdate, userToInsert, userDao, 1L, 2L);
+    }
+
+    @Test
+    public void testGetWithName() throws Exception{
+        UserDTO user = daoTestUtils.getUser1();
+        daoTestMethods.testInsert(user, userDao, 1L);
+        user.setElementId(1L);
+        UserDTO result = userDao.getWithName(user.getUserName());
+        assertNotNull("Result is null", result);
+        assertEquals("Result is invalid", user, result);
     }
 
     private void insertManyUsers() throws Exception{
