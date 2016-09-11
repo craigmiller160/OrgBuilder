@@ -4,7 +4,7 @@
       "dateOfBirth": "1958-04-29",
       "addresses": [
         {
-          "address": "10306 Casa Palarmo Dr",
+          "address": "10509 Casa Wallo Dr",
           "addressType": "HOME",
           "city": "Tampa",
           "elementId": 2,
@@ -18,7 +18,7 @@
       "emails": [
         {
           "elementId": 2,
-          "emailAddress": "cmiller@pilotfishtechnology.com",
+          "emailAddress": "cmiller@gmail.com",
           "emailType": "OTHER",
           "memberId": 1000,
           "preferred": true
@@ -36,7 +36,7 @@
           "memberId": 1000,
           "phoneType": "HOME",
           "preferred": true,
-          "prefix": "616"
+          "prefix": "619"
         }
       ]
     },

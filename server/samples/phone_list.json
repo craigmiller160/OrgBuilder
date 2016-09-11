@@ -7,7 +7,7 @@
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": false,
-      "prefix": "613"
+      "prefix": "619"
     },
     {
       "areaCode": "908",
@@ -16,7 +16,7 @@
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": true,
-      "prefix": "616"
+      "prefix": "619"
     }
   ]
 }

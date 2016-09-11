@@ -1,14 +1,14 @@
 {
   "addressList": [
     {
-      "address": "3 Brookside Ct",
+      "address": "123 Hart Ct",
       "addressType": "HOME",
-      "city": "East Brunswick",
+      "city": "Hometown",
       "elementId": 1,
       "memberId": 1000,
       "preferred": false,
       "state": "NJ",
-      "zipCode": "08816"
+      "zipCode": "08895"
     },
     {
       "address": "10306 Casa Palarmo Dr",

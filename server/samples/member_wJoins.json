@@ -2,17 +2,17 @@
   "dateOfBirth": "1958-04-29",
   "addresses": [
     {
-      "address": "3 Brookside Ct",
+      "address": "123 Hart Ct",
       "addressType": "HOME",
-      "city": "East Brunswick",
+      "city": "Hometown",
       "elementId": 1,
       "memberId": 1000,
       "preferred": false,
       "state": "NJ",
-      "zipCode": "08816"
+      "zipCode": "08895"
     },
     {
-      "address": "10306 Casa Palarmo Dr",
+      "address": "10509 Casa Wallo Dr",
       "addressType": "HOME",
       "city": "Tampa",
       "elementId": 2,
@@ -33,7 +33,7 @@
     },
     {
       "elementId": 2,
-      "emailAddress": "cmiller@pilotfishtechnology.com",
+      "emailAddress": "cmiller@gmail.com",
       "emailType": "OTHER",
       "memberId": 1000,
       "preferred": true
@@ -51,7 +51,7 @@
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": false,
-      "prefix": "613"
+      "prefix": "619"
     },
     {
       "areaCode": "908",
@@ -60,7 +60,7 @@
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": true,
-      "prefix": "616"
+      "prefix": "619"
     },
     {
       "areaCode": "908",
@@ -69,7 +69,7 @@
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": false,
-      "prefix": "616"
+      "prefix": "619"
     }
   ]
 }
