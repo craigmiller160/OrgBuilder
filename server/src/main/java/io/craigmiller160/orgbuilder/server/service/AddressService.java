@@ -17,7 +17,7 @@ public class AddressService {
     private final ServiceCommons serviceCommons;
 
     public AddressService(SecurityContext securityContext){
-        this.serviceCommons = new ServiceCommons(securityContext);
+        this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
     public AddressDTO addAddress(AddressDTO address) throws OrgApiDataException, OrgApiSecurityException{

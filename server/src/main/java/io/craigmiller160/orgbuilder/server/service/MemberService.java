@@ -23,7 +23,7 @@ public class MemberService {
     private final ServiceCommons serviceCommons;
 
     public MemberService(SecurityContext securityContext){
-        this.serviceCommons = new ServiceCommons(securityContext);
+        this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
     private void insertOrUpdateJoinedEntities(MemberDTO member, MemberDTO result, DataConnection connection) throws OrgApiDataException{

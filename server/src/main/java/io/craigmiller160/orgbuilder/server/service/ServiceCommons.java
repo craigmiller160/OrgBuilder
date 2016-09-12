@@ -16,15 +16,17 @@ public class ServiceCommons {
     private final String schemaName;
     private final OrgDataManager dataManager;
     private final SecurityContext securityContext;
+    private final boolean useAppSchema;
 
-    public ServiceCommons(SecurityContext securityContext){
+    public ServiceCommons(SecurityContext securityContext, boolean useAppSchema){
+        this.useAppSchema = useAppSchema;
         this.dataManager = ServerCore.getOrgDataManager();
         this.securityContext = securityContext;
         this.schemaName = ((UserOrgPrincipal) securityContext.getUserPrincipal()).getOrg().getSchemaName();
     }
 
     public final DataConnection newConnection() throws OrgApiDataException {
-        return dataManager.connectToSchema(schemaName);
+        return useAppSchema ? dataManager.connectToAppSchema() : dataManager.connectToSchema(schemaName);
     }
 
     public final void rollback(DataConnection connection, OrgApiDataException ex) throws OrgApiDataException{
@@ -55,6 +57,18 @@ public class ServiceCommons {
     public void hasReadAccess() throws OrgApiSecurityException{
         if(!AccessValidator.hasReadAccess(securityContext)){
             throw new OrgApiSecurityException("User does not have API read access. User: " + securityContext.getUserPrincipal().getName());
+        }
+    }
+
+    public void hasAdminAccess() throws OrgApiSecurityException{
+        if(!AccessValidator.hasAdminAccess(securityContext)){
+            throw new OrgApiSecurityException("User does not have API admin access. User: " + securityContext.getUserPrincipal().getName());
+        }
+    }
+
+    public void hasMasterAccess() throws OrgApiSecurityException{
+        if(!AccessValidator.hasMasterAccess(securityContext)){
+            throw new OrgApiSecurityException("User does not have API master access. User: " + securityContext.getUserPrincipal().getName());
         }
     }
 

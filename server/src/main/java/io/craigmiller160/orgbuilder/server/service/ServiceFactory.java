@@ -31,4 +31,8 @@ public class ServiceFactory {
         return new EmailService(securityContext);
     }
 
+    public OrgService newOrgService(SecurityContext securityContext){
+        return new OrgService(securityContext);
+    }
+
 }

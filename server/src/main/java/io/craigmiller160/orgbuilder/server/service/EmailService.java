@@ -18,7 +18,7 @@ public class EmailService {
     private final ServiceCommons serviceCommons;
 
     public EmailService(SecurityContext securityContext){
-        this.serviceCommons = new ServiceCommons(securityContext);
+        this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
     public EmailDTO addEmail(EmailDTO email) throws OrgApiDataException, OrgApiSecurityException{
