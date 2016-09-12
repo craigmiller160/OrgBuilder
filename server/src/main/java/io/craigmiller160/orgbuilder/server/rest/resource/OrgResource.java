@@ -41,8 +41,6 @@ public class OrgResource {
     @Context
     private UriInfo uriInfo;
 
-    //TODO need to remove schema name from response
-
     @GET
     public Response getAllOrgs(@QueryParam("offset") @DefaultValue("-1") long offset,
                                @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
