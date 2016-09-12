@@ -1,6 +1,9 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import io.craigmiller160.orgbuilder.server.rest.LocalDateAdapter;
+
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
 /**
@@ -11,6 +14,7 @@ public class OrgDTO implements Comparable<OrgDTO>, DTO<Long>{
 
     private long orgId;
     private String orgName;
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate createdDate;
     private String schemaName;
 
