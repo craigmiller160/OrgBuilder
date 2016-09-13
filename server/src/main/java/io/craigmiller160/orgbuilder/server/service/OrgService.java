@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
@@ -29,6 +30,7 @@ public class OrgService {
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
             result = orgDao.insert(org);
+            ServerCore.getOrgDataManager().createOrgSchema(result.getSchemaName());
 
             connection.commit();
         }

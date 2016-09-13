@@ -5,6 +5,9 @@ import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * Created by craig on 8/10/16.
  */
@@ -17,7 +20,7 @@ public class OrgDataManager {
     public OrgDataManager(OrgDataSource dataSource) throws OrgApiException{
         this.dataSource = dataSource;
         this.jdbcManager = JdbcManager.newInstance();
-        this.schemaManager = new SchemaManager(dataSource, jdbcManager);
+        this.schemaManager = new SchemaManager(jdbcManager);
     }
 
     OrgDataSource getDataSource(){
@@ -36,8 +39,22 @@ public class OrgDataManager {
         return connectToSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
     }
 
+    private Connection getConnection() throws OrgApiDataException{
+        try{
+            return dataSource.getConnection();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to open database connection", ex);
+        }
+    }
+
     public DataConnection connectToSchema(String schemaName) throws OrgApiDataException{
-        if(!schemaManager.schemaExists(schemaName)){
+        return connectToSchema(null, schemaName);
+    }
+
+    public DataConnection connectToSchema(Connection connection, String schemaName) throws OrgApiDataException{
+        connection = connection == null ? getConnection() : connection;
+        if(!schemaManager.schemaExists(connection, schemaName)){
             throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
         }
 
@@ -45,29 +62,51 @@ public class OrgDataManager {
     }
 
     public void createDefaultAppSchema() throws OrgApiDataException{
-        createSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME, true, false);
+        createDefaultAppSchema(null);
+    }
+
+    public void createDefaultAppSchema(Connection connection) throws OrgApiDataException{
+        createSchema(connection, SchemaManager.DEFAULT_APP_SCHEMA_NAME, true, false);
     }
 
     public void createAppSchema(String schemaName) throws OrgApiDataException{
-        createSchema(schemaName, true, true);
+        createAppSchema(null, schemaName);
+    }
+
+    public void createAppSchema(Connection connection, String schemaName) throws OrgApiDataException{
+        createSchema(connection, schemaName, true, true);
     }
 
     public void createOrgSchema(String schemaName) throws OrgApiDataException{
-        createSchema(schemaName, false, true);
+        createOrgSchema(null, schemaName);
+    }
+
+    public void createOrgSchema(Connection connection, String schemaName) throws OrgApiDataException{
+        createSchema(connection, schemaName, false, true);
     }
 
     private void createSchema(String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
-        if(schemaManager.schemaExists(schemaName)){
+        createSchema(null, schemaName, isAppSchema, failIfExists);
+    }
+
+    private void createSchema(Connection connection, String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
+        connection = connection == null ? getConnection() : connection;
+        if(schemaManager.schemaExists(connection, schemaName)){
             if(failIfExists){
                 throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
             }
             return;
         }
-        schemaManager.createSchema(schemaName, isAppSchema);
+        schemaManager.createSchema(connection, schemaName, isAppSchema);
     }
 
     public void deleteSchema(String schemaName) throws OrgApiDataException{
-        schemaManager.deleteSchema(schemaName);
+        deleteSchema(null, schemaName);
+    }
+
+    public void deleteSchema(Connection connection, String schemaName) throws OrgApiDataException{
+        connection = connection == null ? getConnection() : connection;
+        schemaManager.deleteSchema(connection, schemaName);
     }
 
 }

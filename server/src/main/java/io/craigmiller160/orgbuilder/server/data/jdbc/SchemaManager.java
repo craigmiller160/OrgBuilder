@@ -36,22 +36,18 @@ public class SchemaManager {
     private static final String DELETE_SCHEMA_SQL =
             "drop schema if exists %1$s;";
 
-    private final OrgDataSource dataSource;
     private final JdbcManager jdbcManager;
 
-    public SchemaManager(OrgDataSource dataSource, JdbcManager jdbcManager){
-        this.dataSource = dataSource;
+    public SchemaManager(JdbcManager jdbcManager){
         this.jdbcManager = jdbcManager;
     }
 
-    public boolean schemaExists(String schemaName) throws OrgApiDataException{
-        try(Connection conn = dataSource.getConnection()){
-            try(PreparedStatement stmt = conn.prepareStatement(SCHEMA_EXISTS_SQL)){
-                OrgApiLogger.getDataLogger().trace("Schema Exists Query:\n" + SCHEMA_EXISTS_SQL);
-                stmt.setString(1, schemaName);
-                try(ResultSet resultSet = stmt.executeQuery()){
-                    return resultSet.next();
-                }
+    public boolean schemaExists(Connection connection, String schemaName) throws OrgApiDataException{
+        try(PreparedStatement stmt = connection.prepareStatement(SCHEMA_EXISTS_SQL)){
+            OrgApiLogger.getDataLogger().trace("Schema Exists Query:\n" + SCHEMA_EXISTS_SQL);
+            stmt.setString(1, schemaName);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                return resultSet.next();
             }
         }
         catch(SQLException ex){
@@ -59,23 +55,21 @@ public class SchemaManager {
         }
     }
 
-    public void createSchema(String schemaName, boolean isAppSchema) throws OrgApiDataException{
+    public void createSchema(Connection connection, String schemaName, boolean isAppSchema) throws OrgApiDataException{
         OrgApiLogger.getDataLogger().debug("Creating schema. App Schema: " + isAppSchema + " Schema Name: " + schemaName);
-        try(Connection conn = dataSource.getConnection()){
-            try(Statement stmt = conn.createStatement()){
-                String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
-                String useSchemaQuery = String.format(USE_SCHEMA_SQL, schemaName);
-                OrgApiLogger.getDataLogger().trace("Create Schema Query:\n" + CREATE_SCHEMA_SQL);
-                OrgApiLogger.getDataLogger().trace("Use Schema Query:\n" + USE_SCHEMA_SQL);
+        try(Statement stmt = connection.createStatement()){
+            String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
+            String useSchemaQuery = String.format(USE_SCHEMA_SQL, schemaName);
+            OrgApiLogger.getDataLogger().trace("Create Schema Query:\n" + CREATE_SCHEMA_SQL);
+            OrgApiLogger.getDataLogger().trace("Use Schema Query:\n" + USE_SCHEMA_SQL);
 
-                stmt.executeUpdate(createSchemaQuery);
-                stmt.executeUpdate(useSchemaQuery);
+            stmt.executeUpdate(createSchemaQuery);
+            stmt.executeUpdate(useSchemaQuery);
 
-                List<String> schemaScript = isAppSchema ? jdbcManager.getSchemaScripts().get(JdbcManager.Schema.APP_SCHEMA) :
-                        jdbcManager.getSchemaScripts().get(JdbcManager.Schema.ORG_SCHEMA);
-                for(String query : schemaScript){
-                    stmt.executeUpdate(query);
-                }
+            List<String> schemaScript = isAppSchema ? jdbcManager.getSchemaScripts().get(JdbcManager.Schema.APP_SCHEMA) :
+                    jdbcManager.getSchemaScripts().get(JdbcManager.Schema.ORG_SCHEMA);
+            for(String query : schemaScript){
+                stmt.executeUpdate(query);
             }
         }
         catch(SQLException ex){
@@ -83,29 +77,25 @@ public class SchemaManager {
         }
     }
 
-    public void deleteSchema(String schemaName) throws OrgApiDataException{
-        try(Connection conn = dataSource.getConnection()){
-            String query = String.format(DELETE_SCHEMA_SQL, schemaName);
-            OrgApiLogger.getDataLogger().trace("Delete Schema Query:\n" + DELETE_SCHEMA_SQL);
-            try(Statement stmt = conn.createStatement()){
-                stmt.executeUpdate(query);
-            }
+    public void deleteSchema(Connection connection, String schemaName) throws OrgApiDataException{
+        String query = String.format(DELETE_SCHEMA_SQL, schemaName);
+        OrgApiLogger.getDataLogger().trace("Delete Schema Query:\n" + DELETE_SCHEMA_SQL);
+        try(Statement stmt = connection.createStatement()){
+            stmt.executeUpdate(query);
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to delete schema. Schema Name: " + schemaName, ex);
         }
     }
 
-    String[] getTableNames(String schemaName) throws OrgApiDataException{
+    String[] getTableNames(Connection connection, String schemaName) throws OrgApiDataException{
         List<String> tableNames = new ArrayList<>();
-        try(Connection conn = dataSource.getConnection()){
-            try(Statement stmt = conn.createStatement()){
-                String query = String.format(SHOW_TABLES_SQL, schemaName);
-                OrgApiLogger.getDataLogger().trace("Show Schema Tables Query:\n" + DELETE_SCHEMA_SQL);
-                try(ResultSet resultSet = stmt.executeQuery(query)){
-                    while(resultSet.next()){
-                        tableNames.add(resultSet.getString(1));
-                    }
+        try(Statement stmt = connection.createStatement()){
+            String query = String.format(SHOW_TABLES_SQL, schemaName);
+            OrgApiLogger.getDataLogger().trace("Show Schema Tables Query:\n" + DELETE_SCHEMA_SQL);
+            try(ResultSet resultSet = stmt.executeQuery(query)){
+                while(resultSet.next()){
+                    tableNames.add(resultSet.getString(1));
                 }
             }
         }

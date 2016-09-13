@@ -27,7 +27,11 @@ CREATE TRIGGER orgs_before_schema_name_trigger
 BEFORE INSERT ON orgs FOR EACH ROW
   BEGIN
     DECLARE next_index INT;
-    SET next_index = (SELECT MAX(LAST_INSERT_ID()) FROM orgs);
+    SET next_index =
+    (SELECT auto_increment
+     FROM information_schema.tables
+     WHERE table_schema = 'org_app'
+           AND table_name = 'orgs');
 
     IF next_index IS NULL THEN
       SET next_index = 0;
