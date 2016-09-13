@@ -26,5 +26,12 @@ DELIMITER ;;
 CREATE TRIGGER orgs_before_schema_name_trigger
 BEFORE INSERT ON orgs FOR EACH ROW
   BEGIN
-    SET NEW.org_schema_name = CONCAT((LAST_INSERT_ID() + 1),SUBSTRING(NEW.org_name,1,5));
+    DECLARE next_index INT;
+    SET next_index = (SELECT MAX(LAST_INSERT_ID()) FROM orgs);
+
+    IF next_index IS NULL THEN
+      SET next_index = 0;
+    END IF;
+
+    SET NEW.org_schema_name = CONCAT(next_index, SUBSTRING(NEW.org_name,1,5));
   END ;;
