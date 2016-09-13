@@ -22,7 +22,7 @@ public class SecurityFilter implements ContainerRequestFilter{
         userDTO.setElementId(1L);
         userDTO.setUserName("Craig");
         userDTO.setOrgId(1L);
-        userDTO.setRole(Role.MASTER);
+        userDTO.convertStringToRoles("MASTER,ADMIN,WRITE,READ");
         OrgDTO orgDTO = new OrgDTO();
         orgDTO.setElementId(1L);
         orgDTO.setOrgName("TestOrg");

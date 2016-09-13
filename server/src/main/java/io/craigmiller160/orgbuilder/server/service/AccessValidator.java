@@ -10,12 +10,12 @@ import javax.ws.rs.core.SecurityContext;
 public class AccessValidator {
 
     public static boolean hasReadAccess(SecurityContext securityContext){
-        return securityContext.isUserInRole(Role.READ_ONLY.toString()) || securityContext.isUserInRole(Role.READ_WRITE.toString()) ||
+        return securityContext.isUserInRole(Role.READ.toString()) || securityContext.isUserInRole(Role.WRITE.toString()) ||
                 securityContext.isUserInRole(Role.ADMIN.toString()) || securityContext.isUserInRole(Role.MASTER.toString());
     }
 
     public static boolean hasWriteAccess(SecurityContext securityContext){
-        return securityContext.isUserInRole(Role.READ_WRITE.toString()) || securityContext.isUserInRole(Role.ADMIN.toString()) ||
+        return securityContext.isUserInRole(Role.WRITE.toString()) || securityContext.isUserInRole(Role.ADMIN.toString()) ||
                 securityContext.isUserInRole(Role.MASTER.toString());
     }
 

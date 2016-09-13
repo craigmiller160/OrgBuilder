@@ -46,8 +46,8 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
             stmt.setNull(4, Types.VARCHAR);
         }
 
-        if(element.getRole() != null){
-            stmt.setString(5, element.getRole().toString());
+        if(!StringUtils.isEmpty(element.convertRolesToString())){
+            stmt.setString(5, element.convertRolesToString());
         }
         else{
             stmt.setNull(5, Types.VARCHAR);
@@ -68,9 +68,9 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
         userDTO.setUserName(resultSet.getString("user_name"));
         userDTO.setUserEmail(resultSet.getString("user_email"));
         userDTO.setPassword(resultSet.getString("passwd"));
-        String role = resultSet.getString("role");
-        if(!StringUtils.isEmpty(role)){
-            userDTO.setRole(Role.valueOf(role));
+        String roles = resultSet.getString("role");
+        if(!StringUtils.isEmpty(roles)){
+            userDTO.convertStringToRoles(roles);
         }
         userDTO.setOrgId(resultSet.getLong("org_id"));
 

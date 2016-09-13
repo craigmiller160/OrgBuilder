@@ -185,7 +185,7 @@ public class DaoTestUtils {
         user.setUserName("MyUser");
         user.setPassword("MyPassword");
         user.setUserEmail("MyEmail@gmail.com");
-        user.setRole(Role.ADMIN);
+        user.convertStringToRoles("ADMIN,WRITE,READ");
         user.setOrgId(1);
 
         return user;
@@ -196,7 +196,7 @@ public class DaoTestUtils {
         user.setUserName("NewUser");
         user.setPassword("NewPassword");
         user.setUserEmail("NewEmail@gmail.com");
-        user.setRole(Role.READ_ONLY);
+        user.convertStringToRoles("READ");
         user.setOrgId(2);
 
         return user;

@@ -1,8 +1,14 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
 import io.craigmiller160.orgbuilder.server.rest.Role;
+import org.apache.commons.lang3.text.StrBuilder;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by craig on 9/4/16.
@@ -14,7 +20,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     private String userName;
     private String userEmail;
     private String password;
-    private Role role;
+    private Set<Role> roles = new TreeSet<>((r1,r2) -> r1.toString().compareTo(r2.toString()));
     private long orgId;
 
     @Override
@@ -43,12 +49,28 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         this.userEmail = userEmail;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = new TreeSet<>((r1,r2) -> r1.toString().compareTo(r2.toString()));
+        if(roles != null){
+            this.roles.addAll(roles);
+        }
+    }
+
+    public String convertRolesToString(){
+        StrBuilder builder = new StrBuilder();
+        roles.forEach((r) -> builder.append(r.toString()).append(","));
+        builder.replace(builder.length() - 1, builder.length(), "");
+
+        return builder.toString();
+    }
+
+    public void convertStringToRoles(String rolesString){
+        String[] roleStrings = rolesString.split(",");
+        Arrays.stream(roleStrings).forEach((r) -> roles.add(Role.valueOf(r)));
     }
 
     public long getOrgId() {
@@ -79,7 +101,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         if (userName != null ? !userName.equals(userDTO.userName) : userDTO.userName != null) return false;
         if (userEmail != null ? !userEmail.equals(userDTO.userEmail) : userDTO.userEmail != null) return false;
         if (password != null ? !password.equals(userDTO.password) : userDTO.password != null) return false;
-        return role == userDTO.role;
+        return roles != null ? roles.equals(userDTO.roles) : userDTO.roles == null;
 
     }
 
@@ -89,7 +111,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         result = 31 * result + (userName != null ? userName.hashCode() : 0);
         result = 31 * result + (userEmail != null ? userEmail.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (role != null ? role.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
         result = 31 * result + (int) (orgId ^ (orgId >>> 32));
         return result;
     }
