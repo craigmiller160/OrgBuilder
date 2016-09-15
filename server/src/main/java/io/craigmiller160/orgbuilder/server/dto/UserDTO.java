@@ -1,12 +1,9 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
-import io.craigmiller160.orgbuilder.server.rest.Role;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -20,7 +17,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     private String userName;
     private String userEmail;
     private String password;
-    private Set<Role> roles = new TreeSet<>((r1,r2) -> r1.toString().compareTo(r2.toString()));
+    private Set<String> roles = new TreeSet<>();
     private long orgId;
 
     @Override
@@ -49,12 +46,12 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         this.userEmail = userEmail;
     }
 
-    public Set<Role> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = new TreeSet<>((r1,r2) -> r1.toString().compareTo(r2.toString()));
+    public void setRoles(Set<String> roles) {
+        this.roles = new TreeSet<>();
         if(roles != null){
             this.roles.addAll(roles);
         }
@@ -62,7 +59,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     public String convertRolesToString(){
         StrBuilder builder = new StrBuilder();
-        roles.forEach((r) -> builder.append(r.toString()).append(","));
+        roles.forEach((r) -> builder.append(r).append(","));
         builder.replace(builder.length() - 1, builder.length(), "");
 
         return builder.toString();
@@ -70,7 +67,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     public void convertStringToRoles(String rolesString){
         String[] roleStrings = rolesString.split(",");
-        Arrays.stream(roleStrings).forEach((r) -> roles.add(Role.valueOf(r)));
+        Arrays.stream(roleStrings).forEach((r) -> roles.add(r));
     }
 
     public long getOrgId() {

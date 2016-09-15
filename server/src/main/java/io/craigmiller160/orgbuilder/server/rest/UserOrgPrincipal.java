@@ -46,7 +46,7 @@ public class UserOrgPrincipal implements Principal {
     }
 
     public boolean isUserInRole(String role){
-        return user != null && user.getRoles().contains(Role.valueOf(role));
+        return user != null && user.getRoles().contains(role);
     }
 
     @Override
