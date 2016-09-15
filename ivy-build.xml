@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="OrgBuilder" default="all.resolve" xmlns:ivy="antlib:org.apache.ivy.ant">
+	<target name="resolve">
+		<echo message="Working" />
+        <delete dir="${dir.lib}" />
+        <mkdir dir="${dir.lib}" />
+        <ivy:retrieve />
+    </target>
+</project>

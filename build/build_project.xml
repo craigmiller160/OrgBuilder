@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OrgBuilder" default="all.resolve">
-    <property file="build.properties" />
+    <property file="build_project.properties" />
     <target name="project.resolve">
-        <echo message="First level working" />
-        <ant antfile="${basedir}/ivy-build.xml" dir="${basedir}" target="resolve" />
+        <echo message="First level working: ${basedir}" />
+        <ant antfile="${dir.root}/ivy-build.xml" dir="${dir.root}" target="resolve" />
     </target>
-    <!-- <target name="project.clean">
-        <delete dir="${dir.build}" />
+    <target name="project.clean">
+        <delete dir="${dir.build.artifact}" />
     </target>
     <target name="project.prepare" depends="project.clean">
-        <mkdir dir="${dir.build}" />
+        <mkdir dir="${dir.build.artifact}" />
     </target>
     <target name="server.resolve">
-    	<ant antfile="build.xml" dir="server" target="resolve">
+    	<ant antfile="build_server.xml" target="resolve">
             <property name="dir.server" value="${dir.server}" />
         </ant>
     </target>
     <target name="server.clean">
-        <ant antfile="build.xml" dir="server" target="clean">
+        <ant antfile="build_server.xml" target="clean">
             <property name="dir.server" value="${dir.server}" />
         </ant>
     </target>
     <target name="server.package">
-        <ant antfile="build.xml" dir="server" target="package">
+        <ant antfile="build_server.xml" target="package">
             <property name="dir.server" value="${dir.server}" />
         </ant>
     </target>
@@ -48,5 +48,5 @@
                 <include name="*.war" />
             </fileset>
         </copy>
-    </target> -->
+    </target>
 </project>

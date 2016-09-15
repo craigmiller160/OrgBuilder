@@ -11,7 +11,6 @@ client/out
 server/out
 
 # Ant build
-/build
 /client/build
 /server/build
 /server/logs

@@ -6,15 +6,14 @@
         <fileset dir="${dir.server.lib}" includes="**/*.jar" />
     </path>
     <target name="resolve">
-        <delete dir="${dir.server.lib}" />
-        <mkdir dir="${dir.server.lib}" />
-        <ivy:retrieve />
+        <ant antfile="${dir.server}/ivy-build.xml" dir="${dir.server}" target="resolve" />
     </target>
     <target name="clean">
         <delete dir="${dir.server.build}"/>
     </target>
     <target name="prepare" depends="clean">
         <mkdir dir="${dir.server.build.staging}" />
+        <mkdir dir="${dir.server.build.artifact}" />
         <copy todir="${dir.server.build.staging}">
             <fileset dir="${dir.server.resources}" includes="**/*" />
         </copy>
@@ -28,7 +27,7 @@
         </javac>
     </target>
     <target name="package" depends="compile">
-        <war destfile="${dir.server.build}/${ant.project.name}-${server.project.version}.war"
+        <war destfile="${dir.server.build.artifact}/${ant.project.name}-${server.project.version}.war"
              webxml="${dir.server.web}/WEB-INF/web.xml">
             <classes dir="${dir.server.build.staging}" />
             <lib dir="${dir.server.lib}" />
