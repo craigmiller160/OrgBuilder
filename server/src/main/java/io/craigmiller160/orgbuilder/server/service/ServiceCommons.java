@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataManager;
+import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.rest.UserOrgPrincipal;
 
 import javax.ws.rs.core.SecurityContext;
@@ -49,25 +50,25 @@ public class ServiceCommons {
     }
 
     public void hasWriteAccess() throws OrgApiSecurityException{
-        if(!AccessValidator.hasWriteAccess(securityContext)){
+        if(!securityContext.isUserInRole(Role.WRITE.toString())){
             throw new OrgApiSecurityException("User does not have API write access. User: " + securityContext.getUserPrincipal().getName());
         }
     }
 
     public void hasReadAccess() throws OrgApiSecurityException{
-        if(!AccessValidator.hasReadAccess(securityContext)){
+        if(!securityContext.isUserInRole(Role.READ.toString())){
             throw new OrgApiSecurityException("User does not have API read access. User: " + securityContext.getUserPrincipal().getName());
         }
     }
 
     public void hasAdminAccess() throws OrgApiSecurityException{
-        if(!AccessValidator.hasAdminAccess(securityContext)){
+        if(!securityContext.isUserInRole(Role.ADMIN.toString())){
             throw new OrgApiSecurityException("User does not have API admin access. User: " + securityContext.getUserPrincipal().getName());
         }
     }
 
     public void hasMasterAccess() throws OrgApiSecurityException{
-        if(!AccessValidator.hasMasterAccess(securityContext)){
+        if(!securityContext.isUserInRole(Role.MASTER.toString())){
             throw new OrgApiSecurityException("User does not have API master access. User: " + securityContext.getUserPrincipal().getName());
         }
     }
