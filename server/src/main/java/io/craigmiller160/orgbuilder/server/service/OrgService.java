@@ -74,6 +74,7 @@ public class OrgService {
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
             result = orgDao.delete(orgId);
+            ServerCore.getOrgDataManager().deleteSchema(result.getSchemaName());
 
             connection.commit();
         }
