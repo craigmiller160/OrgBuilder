@@ -1,0 +1,9 @@
+#!/bin/bash
+# OrgBuilder ant build shortcut script
+
+if [[ $# -eq 1 ]]; then
+	ant -buildfile build/build_project.xml "$1"
+else
+	ant -buildfile build/build_project.xml
+fi
+
