@@ -21,7 +21,7 @@
     <target name="compile" depends="prepare">
         <antcall target="resolve" />
         <javac destdir="${dir.server.build.staging}"
-               source="${server.java.version}" target="${server.java.version}"
+               source="1.8" target="1.8"
                classpathref="server.libs" >
             <src path="${dir.server.src}" />
         </javac>

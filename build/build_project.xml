@@ -43,8 +43,8 @@
     <target name="all.package" depends="project.prepare">
         <antcall target="project.resolve" />
         <antcall target="server.package" />
-        <copy todir="${dir.build}">
-            <fileset dir="${dir.server.build}">
+        <copy todir="${dir.build.artifact}">
+            <fileset dir="${dir.server.build.artifact}">
                 <include name="*.war" />
             </fileset>
         </copy>
