@@ -16,7 +16,7 @@ public class AddressService {
 
     private final ServiceCommons serviceCommons;
 
-    public AddressService(SecurityContext securityContext){
+    AddressService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 

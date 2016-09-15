@@ -22,7 +22,7 @@ public class MemberService {
 
     private final ServiceCommons serviceCommons;
 
-    public MemberService(SecurityContext securityContext){
+    MemberService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 

@@ -17,7 +17,7 @@ public class EmailService {
 
     private final ServiceCommons serviceCommons;
 
-    public EmailService(SecurityContext securityContext){
+    EmailService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 

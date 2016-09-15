@@ -16,7 +16,7 @@ public class PhoneService {
 
     private final ServiceCommons serviceCommons;
 
-    public PhoneService(SecurityContext securityContext){
+    PhoneService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 

@@ -17,7 +17,7 @@ public class OrgService {
 
     private final ServiceCommons serviceCommons;
 
-    public OrgService(SecurityContext securityContext){
+    OrgService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, true);
     }
 
