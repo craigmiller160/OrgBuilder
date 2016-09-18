@@ -124,6 +124,12 @@ public class AddressDaoTest {
         daoTestMethods.testDeleteByMember(address1, addressDao, 1000, 1);
     }
 
+    @Test
+    public void testGetByIdAndMember() throws Exception{
+        AddressDTO address1 = daoTestUtils.getAddress1();
+        daoTestMethods.testGetByIdAndMember(address1, addressDao, 1000);
+    }
+
     /**
      * This method tests the reflective query() method invocation.
      *

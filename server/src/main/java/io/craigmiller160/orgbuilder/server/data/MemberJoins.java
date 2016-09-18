@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by craig on 8/21/16.
  */
-public interface MemberJoins<E extends JoinedWithMemberDTO> {
+public interface MemberJoins<E extends JoinedWithMemberDTO<I>,I> {
 
     String GET_ALL_BY_MEMBER = "getAllByMember";
     String COUNT_BY_MEMBER = "countByMember";
@@ -23,5 +23,7 @@ public interface MemberJoins<E extends JoinedWithMemberDTO> {
     E getPreferredForMember(long memberId) throws OrgApiDataException;
 
     List<E> deleteByMember(long memberId) throws OrgApiDataException;
+
+    E getByIdAndMember(I id, long memberId) throws OrgApiDataException;
 
 }

@@ -129,6 +129,12 @@ public class EmailDaoTest {
         daoTestMethods.testDeleteByMember(email, emailDao, 1000, 1);
     }
 
+    @Test
+    public void testGetByIdAndMember() throws Exception{
+        EmailDTO email1 = daoTestUtils.getEmail1();
+        daoTestMethods.testGetByIdAndMember(email1, emailDao, 1000);
+    }
+
     private void insertManyEmails() throws Exception{
         //10 of email1, tied to member1
         for(int i = 0; i < 10; i++){

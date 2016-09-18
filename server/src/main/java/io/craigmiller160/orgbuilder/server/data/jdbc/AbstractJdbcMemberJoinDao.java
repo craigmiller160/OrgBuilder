@@ -19,7 +19,7 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
 /**
  * Created by craig on 8/23/16.
  */
-public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>,I> extends AbstractJdbcDao<E,I> implements MemberJoins<E> {
+public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>,I> extends AbstractJdbcDao<E,I> implements MemberJoins<E,I> {
 
     public AbstractJdbcMemberJoinDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
@@ -158,6 +158,28 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to delete by member for " + getElementName() + ". Member ID: " + memberId, ex);
+        }
+
+        return result;
+    }
+
+    @Override
+    public E getByIdAndMember(I id, long memberId) throws OrgApiDataException {
+        String getByIdAndMember = queries.get(Query.GET_BY_ID_AND_MEMBER);
+        OrgApiLogger.getDataLogger().trace(getElementName() + " Get By ID and Member Query:\n" + getByIdAndMember);
+        E result = null;
+        try(PreparedStatement stmt = connection.prepareStatement(getByIdAndMember)){
+            stmt.setObject(1, id);
+            stmt.setLong(2, memberId);
+            try(ResultSet resultSet = stmt.executeQuery()){
+                if(resultSet.next()){
+                    result = converter.parseResultSet(resultSet);
+                    result = parseResultSetAdditional(result, resultSet);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to get by id and member for " + getElementName() + ". ID: " + id + " Member ID: " + memberId, ex);
         }
 
         return result;

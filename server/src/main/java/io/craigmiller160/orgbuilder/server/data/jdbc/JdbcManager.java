@@ -154,7 +154,8 @@ public class JdbcManager {
         GET_PREFERRED_FOR_MEMBER,
         INSERT_OR_UPDATE,
         DELETE_BY_MEMBER,
-        GET_WITH_NAME;
+        GET_WITH_NAME,
+        GET_BY_ID_AND_MEMBER;
     }
 
     public enum Schema {

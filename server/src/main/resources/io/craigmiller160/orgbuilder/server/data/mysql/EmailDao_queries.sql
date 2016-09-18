@@ -67,6 +67,12 @@ AND preferred_email = TRUE;
 DELETE FROM emails
 WHERE email_member_id = ?;
 
+-- QUERY=GET_BY_ID_AND_MEMBER
+SELECT *
+FROM emails
+WHERE email_id = ?
+AND email_member_id = ?;
+
 -- QUERY=INSERT_OR_UPDATE
 INSERT INTO emails (email_id, email_type, email_address, preferred_email, email_member_id)
 VALUES (?,?,?,?,?)

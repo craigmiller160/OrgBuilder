@@ -57,4 +57,12 @@ public class MemberJoinDaoTestMethods<E extends JoinedWithMemberDTO<I>,I,D exten
         assertNull("Element was not deleted", element);
     }
 
+    public void testGetByIdAndMember(E element, D dao, long memberId) throws Exception{
+        element = dao.insert(element);
+        I id = element.getElementId();
+        E result = dao.getByIdAndMember(id, memberId);
+        assertNotNull("Result was null", result);
+        assertEquals("Wrong result returned", element, result);
+    }
+
 }

@@ -67,6 +67,12 @@ AND preferred_phone = TRUE;
 DELETE FROM phones
 WHERE phone_member_id=?;
 
+-- QUERY=GET_BY_ID_AND_MEMBER
+SELECT *
+FROM phones
+WHERE phone_id = ?
+AND phone_member_id = ?;
+
 -- QUERY=INSERT_OR_UPDATE
 INSERT INTO phones (phone_id, phone_type, area_code, prefix, line_number, extension, preferred_phone, phone_member_id)
 VALUES (?,?,?,?,?,?,?,?)
