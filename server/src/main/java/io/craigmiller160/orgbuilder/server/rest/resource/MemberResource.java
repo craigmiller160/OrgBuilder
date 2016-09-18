@@ -2,13 +2,18 @@ package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.dto.Gender;
+import io.craigmiller160.orgbuilder.server.dto.GenderListDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
+import io.craigmiller160.orgbuilder.server.rest.GetMembersFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
+import io.craigmiller160.orgbuilder.server.service.InfoService;
 import io.craigmiller160.orgbuilder.server.service.MemberService;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -48,11 +53,16 @@ public class MemberResource {
     private long orgId;
 
     @GET
-    public Response getAllMembers(@QueryParam("offset") @DefaultValue("-1") long offset,
-                                  @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
-        if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
-            throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
-        }
+    public Response getAllMembers(@BeanParam GetMembersFilterBean membersFilterBean) throws OrgApiException{
+        membersFilterBean.validateFilterParams();
+
+        //TODO figure out how to handle subsequent method calls for the params
+
+
+        long offset = membersFilterBean.getOffset();
+        long size = membersFilterBean.getSize();
+
+
         MemberService memberService = factory.newMemberService(securityContext);
         MemberListDTO results = memberService.getAllMembers(offset, size);
         if(results != null){

@@ -64,13 +64,13 @@ public class MemberService {
 
     public MemberDTO updateMember(MemberDTO member, Long id) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasWriteAccess();
+        member.setElementId(id);
         DataConnection connection = null;
         MemberDTO result = null;
         try{
             connection = serviceCommons.newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
 
-            member.setElementId(id);
             result = memberDao.update(member, id);
 
             insertOrUpdateJoinedEntities(member, result, connection);
@@ -88,6 +88,7 @@ public class MemberService {
 
     public MemberDTO addMember(MemberDTO member) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasWriteAccess();
+        member.setElementId(-1L);
         DataConnection connection = null;
         MemberDTO result = null;
         try{
