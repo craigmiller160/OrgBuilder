@@ -5,6 +5,7 @@ import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ import java.io.IOException;
  * Created by craig on 9/4/16.
  */
 @Provider
+@PreMatching
 public class SecurityFilter implements ContainerRequestFilter{
 
     @Override
