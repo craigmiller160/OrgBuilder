@@ -35,4 +35,8 @@ public class ServiceFactory {
         return new OrgService(securityContext);
     }
 
+    public InfoService newInfoService(SecurityContext securityContext){
+        return new InfoService(securityContext);
+    }
+
 }
