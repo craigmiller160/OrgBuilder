@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.List;
 
 /**
  * Created by craig on 8/23/16.
@@ -54,7 +53,7 @@ public class PhoneResource {
             throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
         }
         PhoneService phoneService = factory.newPhoneService(securityContext);
-        PhoneListDTO results = phoneService.getAllPhones(offset, size);
+        PhoneListDTO results = phoneService.getAllPhonesByMember(memberId, offset, size);
         if(results != null){
             return Response
                     .ok(results)
@@ -68,7 +67,7 @@ public class PhoneResource {
     @POST
     public Response addPhone(PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
-        phone = phoneService.addPhone(phone);
+        phone = phoneService.addPhone(phone, memberId);
 
         return Response
                 .created(URI.create(uriInfo.getPath() + "/" + phone.getElementId()))
@@ -80,7 +79,7 @@ public class PhoneResource {
     @Path("/{phoneId}")
     public Response updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
-        phone = phoneService.updatePhone(phone, phoneId);
+        phone = phoneService.updatePhone(phone, phoneId, memberId);
 
         return Response
                 .accepted(phone)
@@ -107,7 +106,7 @@ public class PhoneResource {
     @Path("/{phoneId}")
     public Response getPhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
-        PhoneDTO phone = phoneService.getPhone(phoneId);
+        PhoneDTO phone = phoneService.getPhoneByMember(phoneId, memberId);
 
         if(phone != null){
             return Response

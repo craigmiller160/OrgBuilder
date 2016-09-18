@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.service;
 
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
+import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailListDTO;
@@ -21,8 +22,10 @@ public class EmailService {
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
-    public EmailDTO addEmail(EmailDTO email) throws OrgApiDataException, OrgApiSecurityException{
+    public EmailDTO addEmail(EmailDTO email, long memberId) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasWriteAccess();
+        email.setElementId(-1L);
+        email.setMemberId(memberId);
         DataConnection connection = null;
         EmailDTO result = null;
         try{
@@ -42,15 +45,16 @@ public class EmailService {
         return result;
     }
 
-    public EmailDTO updateEmail(EmailDTO email, Long emailId) throws OrgApiDataException, OrgApiSecurityException{
+    public EmailDTO updateEmail(EmailDTO email, Long emailId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasWriteAccess();
+        email.setElementId(emailId);
+        email.setMemberId(memberId);
         DataConnection connection = null;
         EmailDTO result = null;
         try{
             connection = serviceCommons.newConnection();
             Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-            email.setElementId(emailId);
             result = emailDao.update(email, emailId);
 
             connection.commit();
@@ -85,7 +89,7 @@ public class EmailService {
         return result;
     }
 
-    public EmailDTO getEmail(Long emailId) throws OrgApiDataException, OrgApiSecurityException{
+    public EmailDTO getEmailByMember(Long emailId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasReadAccess();
         DataConnection connection = null;
         EmailDTO result = null;
@@ -93,7 +97,7 @@ public class EmailService {
             connection = serviceCommons.newConnection();
             Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-            result = emailDao.get(emailId);
+            result = (EmailDTO) emailDao.query(MemberJoins.GET_BY_ID_AND_MEMBER, emailId, memberId);
 
             connection.commit();
         }
@@ -106,7 +110,7 @@ public class EmailService {
         return result;
     }
 
-    public EmailListDTO getAllEmails(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
+    public EmailListDTO getAllEmailsByMember(long memberId, long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasReadAccess();
         DataConnection connection = null;
         EmailListDTO results = null;
@@ -114,7 +118,8 @@ public class EmailService {
             connection = serviceCommons.newConnection();
             Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-            List<EmailDTO> list = (offset >= 0 && size >= 0) ? emailDao.getAll(offset, size) : emailDao.getAll();
+            List<EmailDTO> list = (offset >= 0 && size >= 0) ? (List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId, offset, size) :
+                    (List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId);
             if(list.size() > 0){
                 results = new EmailListDTO(list);
             }

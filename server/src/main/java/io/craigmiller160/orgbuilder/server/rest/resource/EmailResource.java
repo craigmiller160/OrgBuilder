@@ -23,7 +23,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.List;
 
 /**
  * Created by craig on 8/23/16.
@@ -55,7 +54,7 @@ public class EmailResource {
         }
 
         EmailService emailService = factory.newEmailService(securityContext);
-        EmailListDTO results = emailService.getAllEmails(offset, size);
+        EmailListDTO results = emailService.getAllEmailsByMember(memberId, offset, size);
         if(results != null){
             return Response
                     .ok(results)
@@ -69,7 +68,7 @@ public class EmailResource {
     @POST
     public Response addEmail(EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
-        email = emailService.addEmail(email);
+        email = emailService.addEmail(email, memberId);
 
         return Response
                 .created(URI.create(uriInfo.getPath() + "/" + email.getElementId()))
@@ -81,7 +80,7 @@ public class EmailResource {
     @Path("/{emailId}")
     public Response updateEmail(@PathParam("emailId") long emailId, EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
-        email = emailService.updateEmail(email, emailId);
+        email = emailService.updateEmail(email, emailId, memberId);
 
         return Response
                 .accepted(email)
@@ -108,7 +107,7 @@ public class EmailResource {
     @Path("/{emailId}")
     public Response getEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
-        EmailDTO email = emailService.getEmail(emailId);
+        EmailDTO email = emailService.getEmailByMember(emailId, memberId);
 
         if(email != null){
             return Response

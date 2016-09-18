@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.service;
 
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
+import io.craigmiller160.orgbuilder.server.data.MemberJoins;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneListDTO;
@@ -20,8 +21,10 @@ public class PhoneService {
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
-    public PhoneDTO addPhone(PhoneDTO phone) throws OrgApiDataException, OrgApiSecurityException{
+    public PhoneDTO addPhone(PhoneDTO phone, long memberId) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasWriteAccess();
+        phone.setElementId(-1L);
+        phone.setMemberId(memberId);
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
@@ -41,15 +44,16 @@ public class PhoneService {
         return result;
     }
 
-    public PhoneDTO updatePhone(PhoneDTO phone, Long phoneId) throws OrgApiDataException, OrgApiSecurityException{
+    public PhoneDTO updatePhone(PhoneDTO phone, Long phoneId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasWriteAccess();
+        phone.setElementId(phoneId);
+        phone.setMemberId(memberId);
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
-            phone.setElementId(phoneId);
             result = phoneDao.update(phone, phoneId);
 
             connection.commit();
@@ -84,7 +88,7 @@ public class PhoneService {
         return result;
     }
 
-    public PhoneDTO getPhone(Long phoneId) throws OrgApiDataException, OrgApiSecurityException{
+    public PhoneDTO getPhoneByMember(Long phoneId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasReadAccess();
         DataConnection connection = null;
         PhoneDTO result = null;
@@ -92,7 +96,7 @@ public class PhoneService {
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
-            result = phoneDao.get(phoneId);
+            result = (PhoneDTO) phoneDao.query(MemberJoins.GET_BY_ID_AND_MEMBER, phoneId, memberId);
 
             connection.commit();
         }
@@ -105,7 +109,7 @@ public class PhoneService {
         return result;
     }
 
-    public PhoneListDTO getAllPhones(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
+    public PhoneListDTO getAllPhonesByMember(long memberId, long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasReadAccess();
         DataConnection connection = null;
         PhoneListDTO result = null;
@@ -113,7 +117,8 @@ public class PhoneService {
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
-            List<PhoneDTO> list = (offset >= 0 && size >= 0) ? phoneDao.getAll(offset, size) : phoneDao.getAll();
+            List<PhoneDTO> list = (offset >= 0 && size >= 0) ? (List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId, offset, size) :
+                    (List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId);
             if(list.size() > 0){
                 result = new PhoneListDTO(list);
             }

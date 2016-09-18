@@ -23,6 +23,7 @@ public class OrgService {
 
     public OrgDTO addOrg(OrgDTO org) throws OrgApiDataException, OrgApiSecurityException{
         serviceCommons.hasMasterAccess();
+        org.setElementId(-1L);
         DataConnection connection = null;
         OrgDTO result = null;
         try{

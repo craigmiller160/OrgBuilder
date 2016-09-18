@@ -23,6 +23,7 @@ public class UserService {
     }
 
     public UserDTO addUser(UserDTO user) throws OrgApiDataException, OrgApiSecurityException{
+        user.setElementId(-1L);
         //TODO finish this
         return null;
     }

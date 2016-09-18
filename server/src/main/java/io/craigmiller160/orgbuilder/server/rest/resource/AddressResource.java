@@ -1,14 +1,10 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.AddressListDTO;
-import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.service.AddressService;
-import io.craigmiller160.orgbuilder.server.service.MemberService;
-import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
 import javax.ws.rs.Consumes;
@@ -27,7 +23,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.List;
 
 /**
  * Created by craig on 8/23/16.
@@ -59,7 +54,7 @@ public class AddressResource {
         }
 
         AddressService addressService = factory.newAddressService(securityContext);
-        AddressListDTO results = addressService.getAllAddresses(offset, size);
+        AddressListDTO results = addressService.getAllAddressesByMember(memberId, offset, size);
         if(results != null){
             return Response
                     .ok(results)
@@ -73,7 +68,7 @@ public class AddressResource {
     @POST
     public Response addAddress(AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
-        address = addressService.addAddress(address);
+        address = addressService.addAddress(address, memberId);
 
         return Response
                 .created(URI.create(uriInfo.getPath() + "/" + address.getElementId()))
@@ -85,7 +80,7 @@ public class AddressResource {
     @Path("/{addressId}")
     public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
-        address = addressService.updateAddress(address, addressId);
+        address = addressService.updateAddress(address, addressId, memberId);
 
         return Response
                 .accepted(address)
@@ -112,7 +107,7 @@ public class AddressResource {
     @Path("/{addressId}")
     public Response getAddress(@PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
-        AddressDTO address = addressService.getAddress(addressId);
+        AddressDTO address = addressService.getAddressByMember(addressId, memberId);
 
         if(address != null){
             return Response
