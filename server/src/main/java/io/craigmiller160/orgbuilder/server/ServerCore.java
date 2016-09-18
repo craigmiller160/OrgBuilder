@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class ServerCore implements ServletContextListener{
     private static Map<Class,DataDTOMap> dataDtoMap;
     private static final Properties properties = new Properties();
     private static OrgDataManager orgDataManager;
+    private static OrgDataSource orgDataSource;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -50,8 +52,8 @@ public class ServerCore implements ServletContextListener{
 
             try{
                 OrgApiLogger.getServerLogger().debug("Configuration database utilities");
-                OrgDataSource dataSource = new OrgDataSource();
-                orgDataManager = new OrgDataManager(dataSource);
+                orgDataSource = new OrgDataSource();
+                orgDataManager = new OrgDataManager(orgDataSource);
                 orgDataManager.createDefaultAppSchema();
             }
             catch(OrgApiDataException ex){
@@ -109,6 +111,12 @@ public class ServerCore implements ServletContextListener{
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
+        if(orgDataSource != null){
+            try {
+                orgDataSource.closeDataSource();
+            } catch (SQLException ex) {
+                OrgApiLogger.getServerLogger().error("Failed to close OrgDataSource", ex);
+            }
+        }
     }
 }
