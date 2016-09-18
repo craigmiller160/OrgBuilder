@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -16,21 +17,21 @@ import javax.ws.rs.ext.Provider;
  * Created by craigmiller on 9/8/16.
  */
 @Provider
-public class OrgApiExceptionMapper implements ExceptionMapper<OrgApiException> {
+public class OrgApiExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Context
     private HttpServletRequest request;
 
     @Override
-    public Response toResponse(OrgApiException e) {
+    public Response toResponse(Throwable t) {
         String method = request.getMethod();
         String path = request.getRequestURI();
-        int status = getStatusCodeForExceptionType(e);
-        OrgApiLogger.getRestLogger().error("Request error: " + status + " " + method + " " + path, e);
+        int status = getStatusCodeForExceptionType(t);
+        OrgApiLogger.getRestLogger().error("Request error: " + status + " " + method + " " + path, t);
 
         ErrorDTO error = new ErrorDTO();
-        error.setExceptionName(e.getClass().getSimpleName());
-        error.setErrorMessage(e.getMessage());
+        error.setExceptionName(t.getClass().getSimpleName());
+        error.setErrorMessage(t.getMessage());
         error.setStatusCode(status);
 
         return Response
@@ -40,14 +41,14 @@ public class OrgApiExceptionMapper implements ExceptionMapper<OrgApiException> {
     }
 
     private int getStatusCodeForExceptionType(Throwable t){
-        if(t instanceof OrgApiDataException){
-            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
-        }
-        else if(t instanceof OrgApiSecurityException){
+        if(t instanceof OrgApiSecurityException){
             return Response.Status.FORBIDDEN.getStatusCode();
         }
-        else if(t instanceof OrgApiInvalidRequestException){
+        else if(t instanceof OrgApiInvalidRequestException | t instanceof ForbiddenException){
             return Response.Status.BAD_REQUEST.getStatusCode();
+        }
+        if(t instanceof OrgApiDataException || t instanceof OrgApiException){
+            return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
         }
         return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
     }

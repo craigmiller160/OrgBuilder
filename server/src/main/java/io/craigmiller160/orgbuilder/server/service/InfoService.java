@@ -19,12 +19,10 @@ public class InfoService {
     }
 
     public GenderListDTO getGenders() throws OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         return new GenderListDTO(Gender.values());
     }
 
     public StateListDTO getStates() throws OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         return new StateListDTO(State.values());
     }
 
