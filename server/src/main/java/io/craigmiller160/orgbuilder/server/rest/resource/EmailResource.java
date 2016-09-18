@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.service.EmailService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -46,7 +47,10 @@ public class EmailResource {
     @PathParam("memberId")
     private long memberId;
 
+    //TODO need to add an additional restriction for the org related to the user
+
     @GET
+    @RolesAllowed("READ")
     public Response getAllEmails(@QueryParam("offset") @DefaultValue("-1") long offset,
                                        @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
@@ -66,6 +70,7 @@ public class EmailResource {
     }
 
     @POST
+    @RolesAllowed("WRITE")
     public Response addEmail(EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.addEmail(email, memberId);
@@ -78,6 +83,7 @@ public class EmailResource {
 
     @PUT
     @Path("/{emailId}")
+    @RolesAllowed("WRITE")
     public Response updateEmail(@PathParam("emailId") long emailId, EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.updateEmail(email, emailId, memberId);
@@ -89,6 +95,7 @@ public class EmailResource {
 
     @DELETE
     @Path("/{emailId}")
+    @RolesAllowed("WRITE")
     public Response deleteEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO email = emailService.deleteEmail(emailId);
@@ -105,6 +112,7 @@ public class EmailResource {
 
     @GET
     @Path("/{emailId}")
+    @RolesAllowed("READ")
     public Response getEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO email = emailService.getEmailByMember(emailId, memberId);

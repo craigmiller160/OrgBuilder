@@ -23,7 +23,6 @@ public class EmailService {
     }
 
     public EmailDTO addEmail(EmailDTO email, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         email.setElementId(-1L);
         email.setMemberId(memberId);
         DataConnection connection = null;
@@ -46,7 +45,6 @@ public class EmailService {
     }
 
     public EmailDTO updateEmail(EmailDTO email, Long emailId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         email.setElementId(emailId);
         email.setMemberId(memberId);
         DataConnection connection = null;
@@ -69,7 +67,6 @@ public class EmailService {
     }
 
     public EmailDTO deleteEmail(Long emailId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         DataConnection connection = null;
         EmailDTO result = null;
         try{
@@ -90,7 +87,6 @@ public class EmailService {
     }
 
     public EmailDTO getEmailByMember(Long emailId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         EmailDTO result = null;
         try{
@@ -111,7 +107,6 @@ public class EmailService {
     }
 
     public EmailListDTO getAllEmailsByMember(long memberId, long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         EmailListDTO results = null;
         try{

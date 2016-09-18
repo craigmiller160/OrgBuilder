@@ -22,7 +22,6 @@ public class PhoneService {
     }
 
     public PhoneDTO addPhone(PhoneDTO phone, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         phone.setElementId(-1L);
         phone.setMemberId(memberId);
         DataConnection connection = null;
@@ -45,7 +44,6 @@ public class PhoneService {
     }
 
     public PhoneDTO updatePhone(PhoneDTO phone, Long phoneId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         phone.setElementId(phoneId);
         phone.setMemberId(memberId);
         DataConnection connection = null;
@@ -68,7 +66,6 @@ public class PhoneService {
     }
 
     public PhoneDTO deletePhone(Long phoneId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
@@ -89,7 +86,6 @@ public class PhoneService {
     }
 
     public PhoneDTO getPhoneByMember(Long phoneId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
@@ -110,7 +106,6 @@ public class PhoneService {
     }
 
     public PhoneListDTO getAllPhonesByMember(long memberId, long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         PhoneListDTO result = null;
         try{

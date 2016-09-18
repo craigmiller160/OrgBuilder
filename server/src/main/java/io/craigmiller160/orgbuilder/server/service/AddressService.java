@@ -22,7 +22,6 @@ public class AddressService {
     }
 
     public AddressDTO addAddress(AddressDTO address, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         address.setMemberId(memberId);
         address.setElementId(-1L);
         DataConnection connection = null;
@@ -45,7 +44,6 @@ public class AddressService {
     }
 
     public AddressDTO updateAddress(AddressDTO address, Long addressId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         address.setElementId(addressId);
         address.setMemberId(memberId);
         DataConnection connection = null;
@@ -68,7 +66,6 @@ public class AddressService {
     }
 
     public AddressDTO deleteAddress(Long addressId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         DataConnection connection = null;
         AddressDTO result = null;
         try{
@@ -89,7 +86,6 @@ public class AddressService {
     }
 
     public AddressDTO getAddressByMember(Long addressId, long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         AddressDTO result = null;
         try{
@@ -110,7 +106,6 @@ public class AddressService {
     }
 
     public AddressListDTO getAllAddressesByMember(long memberId, long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         AddressListDTO result = null;
         try{

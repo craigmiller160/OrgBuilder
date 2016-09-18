@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.service.PhoneService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -46,7 +47,10 @@ public class PhoneResource {
     @PathParam("memberId")
     private long memberId;
 
+    //TODO need to add an additional restriction for the org related to the user
+
     @GET
+    @RolesAllowed("READ")
     public Response getAllPhones(@QueryParam("offset") @DefaultValue("-1") long offset,
                                        @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
@@ -65,6 +69,7 @@ public class PhoneResource {
     }
 
     @POST
+    @RolesAllowed("WRITE")
     public Response addPhone(PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         phone = phoneService.addPhone(phone, memberId);
@@ -77,6 +82,7 @@ public class PhoneResource {
 
     @PUT
     @Path("/{phoneId}")
+    @RolesAllowed("WRITE")
     public Response updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         phone = phoneService.updatePhone(phone, phoneId, memberId);
@@ -88,6 +94,7 @@ public class PhoneResource {
 
     @DELETE
     @Path("/{phoneId}")
+    @RolesAllowed("WRITE")
     public Response deletePhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO phone = phoneService.deletePhone(phoneId);
@@ -104,6 +111,7 @@ public class PhoneResource {
 
     @GET
     @Path("/{phoneId}")
+    @RolesAllowed("READ")
     public Response getPhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO phone = phoneService.getPhoneByMember(phoneId, memberId);

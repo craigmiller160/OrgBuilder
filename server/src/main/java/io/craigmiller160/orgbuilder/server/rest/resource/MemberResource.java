@@ -13,6 +13,7 @@ import io.craigmiller160.orgbuilder.server.service.MemberService;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -52,7 +53,10 @@ public class MemberResource {
     @PathParam("orgId")
     private long orgId;
 
+    //TODO need to add an additional restriction for the org related to the user
+
     @GET
+    @RolesAllowed("READ")
     public Response getAllMembers(@BeanParam GetMembersFilterBean membersFilterBean) throws OrgApiException{
         membersFilterBean.validateFilterParams();
 
@@ -76,6 +80,7 @@ public class MemberResource {
     }
 
     @POST
+    @RolesAllowed("WRITE")
     public Response addMember(MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         member = memberService.addMember(member);
@@ -88,6 +93,7 @@ public class MemberResource {
 
     @PUT
     @Path("/{memberId}")
+    @RolesAllowed("WRITE")
     public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         member = memberService.updateMember(member, memberId);
@@ -98,6 +104,7 @@ public class MemberResource {
 
     @DELETE
     @Path("/{memberId}")
+    @RolesAllowed("WRITE")
     public Response deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.deleteMember(memberId);
@@ -113,6 +120,7 @@ public class MemberResource {
 
     @GET
     @Path("/{memberId}")
+    @RolesAllowed("READ")
     public Response getMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.getMember(memberId);

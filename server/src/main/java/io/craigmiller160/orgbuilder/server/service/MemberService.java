@@ -63,7 +63,6 @@ public class MemberService {
     }
 
     public MemberDTO updateMember(MemberDTO member, Long id) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         member.setElementId(id);
         DataConnection connection = null;
         MemberDTO result = null;
@@ -87,7 +86,6 @@ public class MemberService {
     }
 
     public MemberDTO addMember(MemberDTO member) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         member.setElementId(-1L);
         DataConnection connection = null;
         MemberDTO result = null;
@@ -111,7 +109,6 @@ public class MemberService {
     }
 
     public MemberDTO deleteMember(Long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasWriteAccess();
         DataConnection connection = null;
         MemberDTO result = null;
         try{
@@ -139,7 +136,6 @@ public class MemberService {
     }
 
     public MemberDTO getMember(Long memberId) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         MemberDTO result = null;
         try{
@@ -170,7 +166,6 @@ public class MemberService {
     }
 
     public MemberListDTO getAllMembers(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
-        serviceCommons.hasReadAccess();
         DataConnection connection = null;
         MemberListDTO results = null;
         try{

@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -42,6 +43,7 @@ public class OrgResource {
     private UriInfo uriInfo;
 
     @GET
+    @RolesAllowed("MASTER")
     public Response getAllOrgs(@QueryParam("offset") @DefaultValue("-1") long offset,
                                @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
@@ -60,8 +62,8 @@ public class OrgResource {
     }
 
     @POST
+    @RolesAllowed("MASTER")
     public Response addOrg(OrgDTO org) throws OrgApiException{
-        //TODO need to create a new schema when this is executed
         OrgService orgService = factory.newOrgService(securityContext);
         org = orgService.addOrg(org);
 
@@ -73,7 +75,9 @@ public class OrgResource {
 
     @PUT
     @Path("/{orgId}")
+    @RolesAllowed("ADMIN")
     public Response updateOrg(@PathParam("orgId") long orgId, OrgDTO org) throws OrgApiException{
+        //TODO need an additional restriction so that only the admin of the org can do this
         OrgService orgService = factory.newOrgService(securityContext);
         org = orgService.updateOrg(org, orgId);
 
@@ -84,6 +88,7 @@ public class OrgResource {
 
     @DELETE
     @Path("/{orgId}")
+    @RolesAllowed("MASTER")
     public Response deleteOrg(@PathParam("orgId") long orgId) throws OrgApiException{
         //TODO need to delete schema
         OrgService orgService = factory.newOrgService(securityContext);
@@ -101,6 +106,7 @@ public class OrgResource {
 
     @GET
     @Path("/{orgId}")
+    @RolesAllowed("ADMIN")
     public Response getOrg(@PathParam("orgId") long orgId) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.getOrg(orgId);

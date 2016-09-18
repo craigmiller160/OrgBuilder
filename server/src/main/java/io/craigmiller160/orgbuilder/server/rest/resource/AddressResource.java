@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.service.AddressService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -46,7 +47,10 @@ public class AddressResource {
     @PathParam("memberId")
     private long memberId;
 
+    //TODO need to add an additional restriction for the org related to the user
+
     @GET
+    @RolesAllowed("READ")
     public Response getAllAddresses(@QueryParam("offset") @DefaultValue("-1") long offset,
                                             @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
@@ -66,6 +70,7 @@ public class AddressResource {
     }
 
     @POST
+    @RolesAllowed("WRITE")
     public Response addAddress(AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         address = addressService.addAddress(address, memberId);
@@ -78,6 +83,7 @@ public class AddressResource {
 
     @PUT
     @Path("/{addressId}")
+    @RolesAllowed("WRITE")
     public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         address = addressService.updateAddress(address, addressId, memberId);
@@ -89,6 +95,7 @@ public class AddressResource {
 
     @DELETE
     @Path("/{addressId}")
+    @RolesAllowed("WRITE")
     public Response deleteAddress(@PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO address = addressService.deleteAddress(addressId);
@@ -105,6 +112,7 @@ public class AddressResource {
 
     @GET
     @Path("/{addressId}")
+    @RolesAllowed("READ")
     public Response getAddress(@PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO address = addressService.getAddressByMember(addressId, memberId);
