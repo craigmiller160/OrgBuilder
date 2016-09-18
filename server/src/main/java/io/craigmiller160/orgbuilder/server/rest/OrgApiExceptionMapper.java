@@ -44,7 +44,7 @@ public class OrgApiExceptionMapper implements ExceptionMapper<OrgApiException> {
             return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
         }
         else if(t instanceof OrgApiSecurityException){
-            return Response.Status.UNAUTHORIZED.getStatusCode();
+            return Response.Status.FORBIDDEN.getStatusCode();
         }
         else if(t instanceof OrgApiInvalidRequestException){
             return Response.Status.BAD_REQUEST.getStatusCode();
