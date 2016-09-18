@@ -84,7 +84,7 @@ public class DaoTestUtils {
     }
 
     public void tearDownTestClass(String testSchemaName) throws Exception{
-        ServerCore.getOrgDataManager().deleteSchema(testSchemaName);
+        ServerCore.getOrgDataManager().deleteSchema(testSchemaName, true);
     }
 
     public AddressDTO getAddress1(){

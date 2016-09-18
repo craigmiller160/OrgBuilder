@@ -49,64 +49,37 @@ public class OrgDataManager {
     }
 
     public DataConnection connectToSchema(String schemaName) throws OrgApiDataException{
-        return connectToSchema(null, schemaName);
-    }
-
-    public DataConnection connectToSchema(Connection connection, String schemaName) throws OrgApiDataException{
-        connection = connection == null ? getConnection() : connection;
-        if(!schemaManager.schemaExists(connection, schemaName)){
-            throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
-        }
-
-        return new JdbcDataConnection(dataSource, jdbcManager, schemaName);
+        return new JdbcDataConnection(getConnection(), schemaManager, jdbcManager, schemaName);
     }
 
     public void createDefaultAppSchema() throws OrgApiDataException{
-        createDefaultAppSchema(null);
-    }
-
-    public void createDefaultAppSchema(Connection connection) throws OrgApiDataException{
-        createSchema(connection, SchemaManager.DEFAULT_APP_SCHEMA_NAME, true, false);
+        createSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME, true, false);
     }
 
     public void createAppSchema(String schemaName) throws OrgApiDataException{
-        createAppSchema(null, schemaName);
-    }
-
-    public void createAppSchema(Connection connection, String schemaName) throws OrgApiDataException{
-        createSchema(connection, schemaName, true, true);
+        createSchema(schemaName, true, false);
     }
 
     public void createOrgSchema(String schemaName) throws OrgApiDataException{
-        createOrgSchema(null, schemaName);
+        createSchema(schemaName, false, true);
     }
 
-    public void createOrgSchema(Connection connection, String schemaName) throws OrgApiDataException{
-        createSchema(connection, schemaName, false, true);
-    }
-
-    private void createSchema(String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
-        createSchema(null, schemaName, isAppSchema, failIfExists);
-    }
-
-    private void createSchema(Connection connection, String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
-        connection = connection == null ? getConnection() : connection;
-        if(schemaManager.schemaExists(connection, schemaName)){
-            if(failIfExists){
-                throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
-            }
-            return;
+    public void createSchema(String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
+        try(Connection connection = getConnection()){
+            schemaManager.createSchema(connection, schemaName, isAppSchema, failIfExists);
         }
-        schemaManager.createSchema(connection, schemaName, isAppSchema);
+        catch(SQLException ex){
+            throw new OrgApiDataException("Failed open database connection to create schema", ex);
+        }
     }
 
-    public void deleteSchema(String schemaName) throws OrgApiDataException{
-        deleteSchema(null, schemaName);
-    }
-
-    public void deleteSchema(Connection connection, String schemaName) throws OrgApiDataException{
-        connection = connection == null ? getConnection() : connection;
-        schemaManager.deleteSchema(connection, schemaName);
+    public void deleteSchema(String schemaName, boolean failIfNotExists) throws OrgApiDataException{
+        try(Connection connection = getConnection()){
+            schemaManager.deleteSchema(connection, schemaName, failIfNotExists);
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Failed open database connection to delete schema", ex);
+        }
     }
 
 }

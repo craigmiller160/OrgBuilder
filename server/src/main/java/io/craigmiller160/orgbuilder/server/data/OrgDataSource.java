@@ -36,11 +36,16 @@ public class OrgDataSource {
 
         if(max > 0){
             dataSource.setMaxTotal(max);
+            dataSource.setMaxIdle(max);
         }
     }
 
     public synchronized Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    public synchronized void closeDataSource() throws SQLException{
+        dataSource.close();
     }
 
 }

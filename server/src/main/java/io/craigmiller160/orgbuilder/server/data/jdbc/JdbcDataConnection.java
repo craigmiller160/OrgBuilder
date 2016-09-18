@@ -4,7 +4,6 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
-import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -21,13 +20,17 @@ public class JdbcDataConnection implements DataConnection {
     private final Connection connection;
     private final JdbcManager jdbcManager;
 
-    public JdbcDataConnection(OrgDataSource dataSource, JdbcManager jdbcManager, String schemaName) throws OrgApiDataException{
+    public JdbcDataConnection(Connection connection, SchemaManager schemaManager, JdbcManager jdbcManager, String schemaName) throws OrgApiDataException{
         this.jdbcManager = jdbcManager;
+        this.connection = connection;
         try{
-            connection = dataSource.getConnection();
+            if(!schemaManager.schemaExists(connection, schemaName)){
+                throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
+            }
             connection.setAutoCommit(false);
             try(Statement stmt = connection.createStatement()){
                 stmt.executeUpdate("use " + schemaName);
+                connection.commit();
             }
         }
         catch(SQLException ex){

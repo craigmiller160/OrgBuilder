@@ -42,7 +42,7 @@ public class SchemaManagerTest {
     //This also tests the deleteSchema() method
     @AfterClass
     public static void tearDown() throws Exception{
-        schemaManager.deleteSchema(connection, SCHEMA_NAME);
+        schemaManager.deleteSchema(connection, SCHEMA_NAME, true);
         connection.close();
     }
 
@@ -54,7 +54,7 @@ public class SchemaManagerTest {
 
     @Test
     public void testCreateOrgSchema() throws Exception{
-        schemaManager.createSchema(connection, SCHEMA_NAME, false);
+        schemaManager.createSchema(connection, SCHEMA_NAME, false, true);
         String[] tableNames = schemaManager.getTableNames(connection, SCHEMA_NAME);
         assertNotNull("Table Names is null", tableNames);
         assertEquals("Table names is the wrong size", 4, tableNames.length);

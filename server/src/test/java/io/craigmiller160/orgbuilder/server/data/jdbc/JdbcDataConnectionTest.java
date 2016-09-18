@@ -44,7 +44,7 @@ public class JdbcDataConnectionTest {
 
     @Test
     public void testNewDaoAndClose() throws Exception{
-        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource, jdbcManager, TEST_SCHEMA)){
+        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource.getConnection(), new SchemaManager(jdbcManager), jdbcManager, TEST_SCHEMA)){
             Dao<OrgDTO,Long> orgDao = jdbcDataConnection.newDao(OrgDTO.class);
             assertNotNull("OrgDao is null", orgDao);
             assertEquals("OrgDao is wrong type", OrgDao.class, orgDao.getClass());
@@ -53,7 +53,7 @@ public class JdbcDataConnectionTest {
 
     @Test
     public void testCommitAndClose() throws Exception{
-        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource, jdbcManager, TEST_SCHEMA)){
+        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource.getConnection(), new SchemaManager(jdbcManager), jdbcManager, TEST_SCHEMA)){
             Dao<MemberDTO,Long> memberDao = jdbcDataConnection.newDao(MemberDTO.class);
             assertNotNull("memberDao is null", memberDao);
 
@@ -62,7 +62,7 @@ public class JdbcDataConnectionTest {
             jdbcDataConnection.commit();
         }
 
-        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource, jdbcManager, TEST_SCHEMA)){
+        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource.getConnection(), new SchemaManager(jdbcManager), jdbcManager, TEST_SCHEMA)){
             Dao<MemberDTO,Long> memberDao = jdbcDataConnection.newDao(MemberDTO.class);
             assertNotNull("memberDao is null", memberDao);
 
@@ -73,7 +73,7 @@ public class JdbcDataConnectionTest {
 
     @Test
     public void testRollbackAndClose() throws Exception{
-        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource, jdbcManager, TEST_SCHEMA)){
+        try(JdbcDataConnection jdbcDataConnection = new JdbcDataConnection(dataSource.getConnection(), new SchemaManager(jdbcManager), jdbcManager, TEST_SCHEMA)){
             Dao<MemberDTO,Long> memberDao = jdbcDataConnection.newDao(MemberDTO.class);
             assertNotNull("memberDao is null", memberDao);
             MemberDTO member = daoTestUtils.getMember1();
@@ -98,7 +98,7 @@ public class JdbcDataConnectionTest {
 
     @AfterClass
     public static void destroy() throws Exception{
-        ServerCore.getOrgDataManager().deleteSchema(TEST_SCHEMA);
+        ServerCore.getOrgDataManager().deleteSchema(TEST_SCHEMA, true);
     }
 
 }

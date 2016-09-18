@@ -1,7 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
-import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
@@ -55,8 +54,15 @@ public class SchemaManager {
         }
     }
 
-    public void createSchema(Connection connection, String schemaName, boolean isAppSchema) throws OrgApiDataException{
+    public void createSchema(Connection connection, String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
         OrgApiLogger.getDataLogger().debug("Creating schema. App Schema: " + isAppSchema + " Schema Name: " + schemaName);
+        if(schemaExists(connection, schemaName)){
+            if(failIfExists){
+                throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
+            }
+            return;
+        }
+
         try(Statement stmt = connection.createStatement()){
             String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
             String useSchemaQuery = String.format(USE_SCHEMA_SQL, schemaName);
@@ -77,7 +83,15 @@ public class SchemaManager {
         }
     }
 
-    public void deleteSchema(Connection connection, String schemaName) throws OrgApiDataException{
+    public void deleteSchema(Connection connection, String schemaName, boolean failIfNotExists) throws OrgApiDataException{
+        OrgApiLogger.getDataLogger().debug("Deleting schema. Schema Name: " + schemaName);
+        if(!schemaExists(connection, schemaName)){
+            if(failIfNotExists){
+                throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
+            }
+            return;
+        }
+
         String query = String.format(DELETE_SCHEMA_SQL, schemaName);
         OrgApiLogger.getDataLogger().trace("Delete Schema Query:\n" + DELETE_SCHEMA_SQL);
         try(Statement stmt = connection.createStatement()){
