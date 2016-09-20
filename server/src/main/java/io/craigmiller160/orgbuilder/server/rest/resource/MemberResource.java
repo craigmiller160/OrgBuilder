@@ -8,6 +8,7 @@ import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
 import io.craigmiller160.orgbuilder.server.rest.GetMembersFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
+import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.InfoService;
 import io.craigmiller160.orgbuilder.server.service.MemberService;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
@@ -56,7 +57,7 @@ public class MemberResource {
     //TODO need to add an additional restriction for the org related to the user
 
     @GET
-    @RolesAllowed("READ")
+    @RolesAllowed(Role.READ)
     public Response getAllMembers(@BeanParam GetMembersFilterBean membersFilterBean) throws OrgApiException{
         membersFilterBean.validateFilterParams();
 
@@ -80,7 +81,7 @@ public class MemberResource {
     }
 
     @POST
-    @RolesAllowed("WRITE")
+    @RolesAllowed(Role.WRITE)
     public Response addMember(MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         member = memberService.addMember(member);
@@ -93,7 +94,7 @@ public class MemberResource {
 
     @PUT
     @Path("/{memberId}")
-    @RolesAllowed("WRITE")
+    @RolesAllowed(Role.WRITE)
     public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         member = memberService.updateMember(member, memberId);
@@ -104,7 +105,7 @@ public class MemberResource {
 
     @DELETE
     @Path("/{memberId}")
-    @RolesAllowed("WRITE")
+    @RolesAllowed(Role.WRITE)
     public Response deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.deleteMember(memberId);
@@ -120,7 +121,7 @@ public class MemberResource {
 
     @GET
     @Path("/{memberId}")
-    @RolesAllowed("READ")
+    @RolesAllowed(Role.READ)
     public Response getMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.getMember(memberId);

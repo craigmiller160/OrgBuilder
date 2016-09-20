@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
+import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
@@ -43,7 +44,7 @@ public class OrgResource {
     private UriInfo uriInfo;
 
     @GET
-    @RolesAllowed("MASTER")
+    @RolesAllowed(Role.MASTER)
     public Response getAllOrgs(@QueryParam("offset") @DefaultValue("-1") long offset,
                                @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
@@ -62,7 +63,7 @@ public class OrgResource {
     }
 
     @POST
-    @RolesAllowed("MASTER")
+    @RolesAllowed(Role.MASTER)
     public Response addOrg(OrgDTO org) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         org = orgService.addOrg(org);
@@ -75,7 +76,7 @@ public class OrgResource {
 
     @PUT
     @Path("/{orgId}")
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Role.ADMIN)
     public Response updateOrg(@PathParam("orgId") long orgId, OrgDTO org) throws OrgApiException{
         //TODO need an additional restriction so that only the admin of the org can do this
         OrgService orgService = factory.newOrgService(securityContext);
@@ -88,7 +89,7 @@ public class OrgResource {
 
     @DELETE
     @Path("/{orgId}")
-    @RolesAllowed("MASTER")
+    @RolesAllowed(Role.MASTER)
     public Response deleteOrg(@PathParam("orgId") long orgId) throws OrgApiException{
         //TODO need to delete schema
         OrgService orgService = factory.newOrgService(securityContext);
@@ -106,7 +107,7 @@ public class OrgResource {
 
     @GET
     @Path("/{orgId}")
-    @RolesAllowed("ADMIN")
+    @RolesAllowed(Role.ADMIN)
     public Response getOrg(@PathParam("orgId") long orgId) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.getOrg(orgId);

@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
+import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.EmailService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
@@ -50,7 +51,7 @@ public class EmailResource {
     //TODO need to add an additional restriction for the org related to the user
 
     @GET
-    @RolesAllowed("READ")
+    @RolesAllowed(Role.READ)
     public Response getAllEmails(@QueryParam("offset") @DefaultValue("-1") long offset,
                                        @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException{
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
@@ -70,7 +71,7 @@ public class EmailResource {
     }
 
     @POST
-    @RolesAllowed("WRITE")
+    @RolesAllowed(Role.WRITE)
     public Response addEmail(EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.addEmail(email, memberId);
@@ -83,7 +84,7 @@ public class EmailResource {
 
     @PUT
     @Path("/{emailId}")
-    @RolesAllowed("WRITE")
+    @RolesAllowed(Role.WRITE)
     public Response updateEmail(@PathParam("emailId") long emailId, EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.updateEmail(email, emailId, memberId);
@@ -95,7 +96,7 @@ public class EmailResource {
 
     @DELETE
     @Path("/{emailId}")
-    @RolesAllowed("WRITE")
+    @RolesAllowed(Role.WRITE)
     public Response deleteEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO email = emailService.deleteEmail(emailId);
@@ -112,7 +113,7 @@ public class EmailResource {
 
     @GET
     @Path("/{emailId}")
-    @RolesAllowed("READ")
+    @RolesAllowed(Role.READ)
     public Response getEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO email = emailService.getEmailByMember(emailId, memberId);
