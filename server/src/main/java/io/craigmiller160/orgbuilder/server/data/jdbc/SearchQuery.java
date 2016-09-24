@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class SearchQuery {
 
+    //TODO need to protect this from SQL injection... have it create a PreparedStatement instead, and handle parameterizing it
+
     private static final String WHERE_CLAUSE = "WHERE ";
     private static final String AND_CLAUSE = "AND ";
     private static final String IS_NULL_CLAUSE = "IS NULL ";
@@ -61,7 +63,7 @@ public class SearchQuery {
             }
 
             if(!StringUtils.isEmpty(orderByClause)){
-                queryBuilder.append(orderByClause).append(";");
+                queryBuilder.append(orderByClause);
             }
 
             return new SearchQuery(queryBuilder.toString());
