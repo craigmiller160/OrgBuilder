@@ -23,7 +23,8 @@ public class SearchQueryTest {
         SearchQuery searchQuery = new SearchQuery.Builder(baseQuery)
                 .addParameter("a.foo", "Value", SearchQuery.STRING_TYPE)
                 .build();
-        assertEquals("Search Query invalid", baseQuery + "\na.foo = 'Value'", searchQuery.getQuery());
+        String resultQuery = baseQuery + "WHERE a.foo = ?";
+        assertEquals("Search Query invalid", resultQuery.trim(), searchQuery.getQuery().trim());
     }
 
 }

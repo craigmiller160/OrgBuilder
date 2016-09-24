@@ -5,6 +5,10 @@ import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +16,6 @@ import java.util.List;
  * Created by craig on 9/22/16.
  */
 public class SearchQuery {
-
-    //TODO need to protect this from SQL injection... have it create a PreparedStatement instead, and handle parameterizing it
 
     private static final String WHERE_CLAUSE = "WHERE ";
     private static final String AND_CLAUSE = "AND ";
@@ -25,13 +27,27 @@ public class SearchQuery {
     public static final int DATE_TYPE = 438;
 
     private final String query;
+    private final List<Triple<String,Object,Integer>> parameters;
 
-    private SearchQuery(String query){
+    private SearchQuery(String query, List<Triple<String,Object,Integer>> parameters){
         this.query = query;
+        this.parameters = parameters;
     }
 
     public String getQuery(){
         return query;
+    }
+
+    public List<Triple<String,Object,Integer>> getParameters(){
+        return parameters;
+    }
+
+    public Statement createAndParameterizeStatement(Connection connection) throws SQLException{
+        PreparedStatement stmt = connection.prepareStatement(query);
+        for(int i = 0; i < parameters.size(); i++){
+            stmt.setObject(i, parameters.get(i).getMiddle());
+        }
+        return stmt;
     }
 
     public static class Builder{
@@ -49,24 +65,37 @@ public class SearchQuery {
             return this;
         }
 
+        //TODO probably don't need type... or maybe I do... ???
         public Builder addParameter(String columnName, Object value, int type){
             parameters.add(ImmutableTriple.of(columnName, value, type));
             return this;
         }
 
+        private String removeTrailingNewline(String text){
+            if(text.charAt(text.length() - 1) == '\n'){
+                text = text.substring(0, text.length() - 1);
+            }
+
+            if(text.charAt(text.length() - 1) == '\r'){
+                text = text.substring(0, text.length() - 1);
+            }
+
+            return text;
+        }
+
         public SearchQuery build(){
             StrBuilder queryBuilder = new StrBuilder();
-            queryBuilder.appendln(baseQuery);
+            queryBuilder.appendln(removeTrailingNewline(baseQuery));
             if(parameters.size() > 0){
                 queryBuilder.append("WHERE ");
-                parameters.forEach((p) -> appendParameter(queryBuilder, p));
+                parameters.forEach(p -> appendParameter(queryBuilder, p));
             }
 
             if(!StringUtils.isEmpty(orderByClause)){
                 queryBuilder.append(orderByClause);
             }
 
-            return new SearchQuery(queryBuilder.toString());
+            return new SearchQuery(queryBuilder.toString(), parameters);
         }
 
         private void appendParameter(StrBuilder queryBuilder, Triple<String,Object,Integer> parameter){
@@ -75,33 +104,11 @@ public class SearchQuery {
             }
             queryBuilder.append(parameter.getLeft()).append(" ");
             if(parameter.getMiddle() == null){
-                queryBuilder.append(IS_NULL_CLAUSE);
+                queryBuilder.appendln(IS_NULL_CLAUSE);
             }
             else{
-                queryBuilder.append("= ");
-                Object value = parameter.getMiddle();
-                if(parameter.getRight() == STRING_TYPE){
-                    String escapedValue = value.toString().replaceAll("'","''");
-                    queryBuilder.append("'").append(escapedValue).append("'");
-                }
-                else if(parameter.getRight() == NUMBER_TYPE){
-                    if(!StringUtils.isNumeric(value.toString())){
-                        throw new IllegalArgumentException("Query Parameter is not numeric. Column: " + parameter.getLeft() + " Value: " + value.toString());
-                    }
-                    queryBuilder.append(value.toString());
-                }
-                else if(parameter.getRight() == BOOLEAN_TYPE){
-                    if(!"true".equalsIgnoreCase(value.toString()) && !"false".equalsIgnoreCase(value.toString()) &&
-                            !"0".equalsIgnoreCase(value.toString()) && !"1".equalsIgnoreCase(value.toString())){
-                        throw new IllegalArgumentException("Query Parameter is not a boolean. Column: " + parameter.getLeft() + " Value: " + value.toString());
-                    }
-                    queryBuilder.append(value.toString());
-                }
-                else if(parameter.getRight() == DATE_TYPE){
-                    throw new UnsupportedOperationException("Date type is not currently supported by SearchQuery.Builder");
-                }
+                queryBuilder.appendln("= ?");
             }
-            queryBuilder.appendNewLine();
         }
 
     }

@@ -51,7 +51,7 @@ public class JdbcManagerTest {
         //MemberDao query tests
         Map<JdbcManager.Query,String> memberDaoQueries = mappedQueries.get(MemberDao.class);
         assertNotNull("memberDaoQueries map is null", memberDaoQueries);
-        assertEquals("memberDaoQueries map has wrong number of queries", 8, memberDaoQueries.size());
+        assertEquals("memberDaoQueries map has wrong number of queries", 9, memberDaoQueries.size());
 
         //PhoneDao query tests
         Map<JdbcManager.Query,String> phoneDaoQueries = mappedQueries.get(PhoneDao.class);
