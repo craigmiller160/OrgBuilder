@@ -1,9 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
-import io.craigmiller160.orgbuilder.server.data.Dao;
-import io.craigmiller160.orgbuilder.server.data.DataConnection;
-import io.craigmiller160.orgbuilder.server.data.MemberJoins;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.data.*;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneListDTO;
 
@@ -92,7 +89,7 @@ public class PhoneService {
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
-            result = (PhoneDTO) phoneDao.query(MemberJoins.GET_BY_ID_AND_MEMBER, phoneId, memberId);
+            result = (PhoneDTO) phoneDao.query(AdditionalQueries.GET_BY_ID_AND_MEMBER, phoneId, memberId);
 
             connection.commit();
         }
@@ -112,8 +109,8 @@ public class PhoneService {
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
-            List<PhoneDTO> list = (offset >= 0 && size >= 0) ? (List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId, offset, size) :
-                    (List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId);
+            List<PhoneDTO> list = (offset >= 0 && size >= 0) ? (List<PhoneDTO>) phoneDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId, offset, size) :
+                    (List<PhoneDTO>) phoneDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId);
             if(list.size() > 0){
                 result = new PhoneListDTO(list);
             }

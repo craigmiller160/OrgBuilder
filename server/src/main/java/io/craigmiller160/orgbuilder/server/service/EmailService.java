@@ -1,9 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
-import io.craigmiller160.orgbuilder.server.data.Dao;
-import io.craigmiller160.orgbuilder.server.data.DataConnection;
-import io.craigmiller160.orgbuilder.server.data.MemberJoins;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.data.*;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailListDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
@@ -93,7 +90,7 @@ public class EmailService {
             connection = serviceCommons.newConnection();
             Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-            result = (EmailDTO) emailDao.query(MemberJoins.GET_BY_ID_AND_MEMBER, emailId, memberId);
+            result = (EmailDTO) emailDao.query(AdditionalQueries.GET_BY_ID_AND_MEMBER, emailId, memberId);
 
             connection.commit();
         }
@@ -113,8 +110,8 @@ public class EmailService {
             connection = serviceCommons.newConnection();
             Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-            List<EmailDTO> list = (offset >= 0 && size >= 0) ? (List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId, offset, size) :
-                    (List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId);
+            List<EmailDTO> list = (offset >= 0 && size >= 0) ? (List<EmailDTO>) emailDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId, offset, size) :
+                    (List<EmailDTO>) emailDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId);
             if(list.size() > 0){
                 results = new EmailListDTO(list);
             }

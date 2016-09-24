@@ -1,9 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
-import io.craigmiller160.orgbuilder.server.data.Dao;
-import io.craigmiller160.orgbuilder.server.data.DataConnection;
-import io.craigmiller160.orgbuilder.server.data.MemberJoins;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.data.*;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.DTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
@@ -50,9 +47,9 @@ public class MemberService {
         Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
         Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
-        tempResult.setAddresses((List<AddressDTO>) addressDao.query(MemberJoins.DELETE_BY_MEMBER, memberId));
-        tempResult.setPhones((List<PhoneDTO>) phoneDao.query(MemberJoins.DELETE_BY_MEMBER, memberId));
-        tempResult.setEmails((List<EmailDTO>) emailDao.query(MemberJoins.DELETE_BY_MEMBER, memberId));
+        tempResult.setAddresses((List<AddressDTO>) addressDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId));
+        tempResult.setPhones((List<PhoneDTO>) phoneDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId));
+        tempResult.setEmails((List<EmailDTO>) emailDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId));
     }
 
     private <E extends DTO<I>,I> void performInsertOrUpdate(List<E> results, List<E> elements, Dao<E,I> dao) throws OrgApiDataException{
@@ -150,9 +147,9 @@ public class MemberService {
                 return null;
             }
 
-            result.setAddresses((List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
-            result.setPhones((List<PhoneDTO>) phoneDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
-            result.setEmails((List<EmailDTO>) emailDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId));
+            result.setAddresses((List<AddressDTO>) addressDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId));
+            result.setPhones((List<PhoneDTO>) phoneDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId));
+            result.setEmails((List<EmailDTO>) emailDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId));
 
             connection.commit();
         }

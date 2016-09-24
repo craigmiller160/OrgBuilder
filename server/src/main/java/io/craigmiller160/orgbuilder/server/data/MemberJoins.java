@@ -9,12 +9,6 @@ import java.util.List;
  */
 public interface MemberJoins<E extends JoinedWithMemberDTO<I>,I> {
 
-    String GET_ALL_BY_MEMBER = "getAllByMember";
-    String COUNT_BY_MEMBER = "countByMember";
-    String GET_PREFERRED_FOR_MEMBER = "getPreferredForMember";
-    String DELETE_BY_MEMBER = "deleteByMember";
-    String GET_BY_ID_AND_MEMBER = "getByIdAndMember";
-
     List<E> getAllByMember(long memberId) throws OrgApiDataException;
 
     List<E> getAllByMember(long memberId, long offset, long size) throws OrgApiDataException;

@@ -1,9 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
-import io.craigmiller160.orgbuilder.server.data.Dao;
-import io.craigmiller160.orgbuilder.server.data.DataConnection;
-import io.craigmiller160.orgbuilder.server.data.MemberJoins;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.data.*;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.AddressListDTO;
 
@@ -92,7 +89,7 @@ public class AddressService {
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 
-            result = (AddressDTO) addressDao.query(MemberJoins.GET_BY_ID_AND_MEMBER, addressId, memberId);
+            result = (AddressDTO) addressDao.query(AdditionalQueries.GET_BY_ID_AND_MEMBER, addressId, memberId);
 
             connection.commit();
         }
@@ -112,8 +109,8 @@ public class AddressService {
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 
-            List<AddressDTO> list = (offset >= 0 && size >= 0) ? (List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId, offset, size) :
-                    (List<AddressDTO>) addressDao.query(MemberJoins.GET_ALL_BY_MEMBER, memberId);
+            List<AddressDTO> list = (offset >= 0 && size >= 0) ? (List<AddressDTO>) addressDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId, offset, size) :
+                    (List<AddressDTO>) addressDao.query(AdditionalQueries.GET_ALL_BY_MEMBER, memberId);
             if(list.size() > 0){
                 result = new AddressListDTO(list);
             }
