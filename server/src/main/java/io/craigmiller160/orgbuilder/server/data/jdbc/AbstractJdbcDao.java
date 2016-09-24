@@ -129,8 +129,7 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
             stmt.setObject(1, id);
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
-                    element = converter.parseResultSet(resultSet);
-                    element = parseResultSetAdditional(element, resultSet);
+                    element = parseResultSet(resultSet);
                 }
             }
         }
@@ -168,9 +167,7 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         try(Statement stmt = connection.createStatement()){
             try(ResultSet resultSet = stmt.executeQuery(getAllQuery)){
                 while(resultSet.next()){
-                    E element = converter.parseResultSet(resultSet);
-                    element = parseResultSetAdditional(element, resultSet);
-                    elements.add(element);
+                    elements.add(parseResultSet(resultSet));
                 }
             }
         }
@@ -179,6 +176,11 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         }
 
         return elements;
+    }
+
+    protected E parseResultSet(ResultSet resultSet) throws SQLException{
+        E element = converter.parseResultSet(resultSet);
+        return parseResultSetAdditional(element, resultSet);
     }
 
     @Override
@@ -191,9 +193,7 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
             stmt.setLong(2, size);
             try(ResultSet resultSet = stmt.executeQuery()){
                 while(resultSet.next()){
-                    E element = converter.parseResultSet(resultSet);
-                    element = parseResultSetAdditional(element, resultSet);
-                    elements.add(element);
+                    elements.add(parseResultSet(resultSet));
                 }
             }
         }

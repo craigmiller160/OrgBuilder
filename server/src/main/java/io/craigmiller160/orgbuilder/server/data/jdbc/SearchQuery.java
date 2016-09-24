@@ -44,7 +44,7 @@ public class SearchQuery {
         return parameters;
     }
 
-    public Statement createAndParameterizeStatement(Connection connection) throws SQLException{
+    public PreparedStatement createAndParameterizeStatement(Connection connection) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(query);
         for(int i = 0; i < parameters.size(); i++){
             stmt.setObject(i, parameters.get(i).getRight());

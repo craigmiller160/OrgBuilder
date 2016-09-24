@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
+import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
@@ -12,6 +13,7 @@ import io.craigmiller160.orgbuilder.server.data.DataDTOMap;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
@@ -20,6 +22,8 @@ import static io.craigmiller160.orgbuilder.server.data.jdbc.JdbcManager.Query;
  * Created by craig on 8/18/16.
  */
 public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
+
+    private final DaoSearchUtil<MemberDTO> daoSearchUtil = new DaoSearchUtil<>();
 
     public MemberDao(Connection connection, Map<Query,String> queries) {
         super(connection, queries);
@@ -54,5 +58,9 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
             element.getEmails().add(preferredEmail);
         }
         return element;
+    }
+
+    public List<MemberDTO> search(SearchQuery searchQuery) throws OrgApiDataException{
+        return daoSearchUtil.search(searchQuery, getElementName(), connection, this::parseResultSet);
     }
 }
