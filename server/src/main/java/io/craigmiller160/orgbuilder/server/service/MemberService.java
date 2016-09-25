@@ -1,12 +1,15 @@
 package io.craigmiller160.orgbuilder.server.service;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.*;
+import io.craigmiller160.orgbuilder.server.data.jdbc.SearchQuery;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.DTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.rest.MemberFilterBean;
 
 import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
@@ -162,13 +165,22 @@ public class MemberService {
         return result;
     }
 
-    public MemberListDTO getAllMembers(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
+    public MemberListDTO getMemberList(MemberFilterBean memberFilterBean) throws OrgApiDataException, OrgApiSecurityException{
         DataConnection connection = null;
         MemberListDTO results = null;
+        long offset = memberFilterBean.getOffset();
+        long size = memberFilterBean.getSize();
         try{
             connection = serviceCommons.newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
-            List<MemberDTO> list = (offset >= 0 && size >= 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
+            List<MemberDTO> list = null;
+            if(memberFilterBean.isSearch()){
+                list = (List<MemberDTO>) memberDao.query(AdditionalQueries.SEARCH, memberFilterBean);
+            }
+            else{
+                list = (offset >= 0 && size >= 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
+            }
+
             if(list.size() > 0){
                 results = new MemberListDTO(list);
             }
@@ -178,9 +190,10 @@ public class MemberService {
         catch(OrgApiDataException ex){
             serviceCommons.rollback(connection, ex);
         }
-        finally {
+        finally{
             serviceCommons.closeConnection(connection);
         }
+
         return results;
     }
 

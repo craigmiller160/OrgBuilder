@@ -22,6 +22,7 @@ public class SearchQuery {
     private static final String WHERE_CLAUSE = "WHERE ";
     private static final String AND_CLAUSE = "AND ";
     private static final String IS_NULL_CLAUSE = "IS NULL ";
+    private static final String LIMIT_CLAUSE = "LIMIT ?,?";
 
     public static final int STRING_TYPE = 435;
     public static final int NUMBER_TYPE = 436;
@@ -30,10 +31,12 @@ public class SearchQuery {
 
     private final String query;
     private final List<Pair<String,Object>> parameters;
+    private final Pair<Long,Long> limit;
 
-    private SearchQuery(String query, List<Pair<String,Object>> parameters){
+    private SearchQuery(String query, List<Pair<String,Object>> parameters, Pair<Long,Long> limit){
         this.query = query;
         this.parameters = parameters;
+        this.limit = limit;
     }
 
     public String getQuery(){
@@ -44,11 +47,21 @@ public class SearchQuery {
         return parameters;
     }
 
+    public Pair<Long,Long> getLimit(){
+        return limit;
+    }
+
     public PreparedStatement createAndParameterizeStatement(Connection connection) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(query);
         for(int i = 0; i < parameters.size(); i++){
             stmt.setObject(i, parameters.get(i).getRight());
         }
+
+        if(limit != null){
+            stmt.setLong(parameters.size(), limit.getLeft());
+            stmt.setLong(parameters.size() + 1, limit.getRight());
+        }
+
         return stmt;
     }
 
@@ -57,6 +70,7 @@ public class SearchQuery {
         private final List<Pair<String,Object>> parameters = new ArrayList<>();
         private final String baseQuery;
         private String orderByClause;
+        private Pair<Long,Long> limit;
 
         public Builder(String baseQuery){
             this.baseQuery = baseQuery;
@@ -64,6 +78,11 @@ public class SearchQuery {
 
         public Builder setOrderByClause(String orderByClause){
             this.orderByClause = orderByClause;
+            return this;
+        }
+
+        public Builder setLimit(long offset, long size){
+            this.limit = ImmutablePair.of(offset, size);
             return this;
         }
 
@@ -93,10 +112,14 @@ public class SearchQuery {
             }
 
             if(!StringUtils.isEmpty(orderByClause)){
-                queryBuilder.append(orderByClause);
+                queryBuilder.appendln(orderByClause);
             }
 
-            return new SearchQuery(queryBuilder.toString(), parameters);
+            if(limit != null){
+                queryBuilder.append(LIMIT_CLAUSE);
+            }
+
+            return new SearchQuery(queryBuilder.toString(), parameters, limit);
         }
 
         private void appendParameter(StrBuilder queryBuilder, Pair<String,Object> parameter){

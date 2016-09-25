@@ -9,6 +9,8 @@ import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverter;
 import io.craigmiller160.orgbuilder.server.data.jdbc.converter.DTOSQLConverterFactory;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.data.DataDTOMap;
+import io.craigmiller160.orgbuilder.server.rest.MemberFilterBean;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -60,7 +62,62 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
         return element;
     }
 
-    public List<MemberDTO> search(SearchQuery searchQuery) throws OrgApiDataException{
-        return daoSearchUtil.search(searchQuery, getElementName(), connection, this::parseResultSet);
+    public List<MemberDTO> search(MemberFilterBean memberFilterBean) throws OrgApiDataException{
+        SearchQuery.Builder builder = new SearchQuery.Builder(queries.get(Query.SEARCH_BASE));
+        if(!StringUtils.isEmpty(memberFilterBean.getFirstName())){
+            builder.addParameter(MemberSearchColumns.FIRST_NAME, memberFilterBean.getFirstName());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getMiddleName())){
+            builder.addParameter(MemberSearchColumns.MIDDLE_NAME, memberFilterBean.getMiddleName());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getLastName())){
+            builder.addParameter(MemberSearchColumns.LAST_NAME, memberFilterBean.getLastName());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getGender())){
+            builder.addParameter(MemberSearchColumns.GENDER, memberFilterBean.getGender());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getAddress())){
+            builder.addParameter(MemberSearchColumns.ADDRESS, memberFilterBean.getAddress());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getUnit())){
+            builder.addParameter(MemberSearchColumns.UNIT, memberFilterBean.getUnit());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getCity())){
+            builder.addParameter(MemberSearchColumns.CITY, memberFilterBean.getCity());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getState())){
+            builder.addParameter(MemberSearchColumns.STATE, memberFilterBean.getState());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getZipCode())){
+            builder.addParameter(MemberSearchColumns.ZIP_CODE, memberFilterBean.getZipCode());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getAreaCode())){
+            builder.addParameter(MemberSearchColumns.AREA_CODE, memberFilterBean.getAreaCode());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getPrefix())){
+            builder.addParameter(MemberSearchColumns.PREFIX, memberFilterBean.getPrefix());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getLineNumber())){
+            builder.addParameter(MemberSearchColumns.LINE_NUMBER, memberFilterBean.getLineNumber());
+        }
+
+        if(!StringUtils.isEmpty(memberFilterBean.getEmailAddress())){
+            builder.addParameter(MemberSearchColumns.EMAIL_ADDRESS, memberFilterBean.getEmailAddress());
+        }
+
+        builder.setOrderByClause(MemberSearchColumns.ORDER_BY_CLAUSE);
+
+        return daoSearchUtil.search(builder.build(), getElementName(), connection, this::parseResultSet);
     }
 }

@@ -1,12 +1,15 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
+import java.util.Map;
 
 /**
  * Created by craig on 9/17/16.
  */
-public class GetMembersFilterBean {
+public class MemberFilterBean {
 
     @QueryParam("offset")
     @DefaultValue("-1")
@@ -183,5 +186,13 @@ public class GetMembersFilterBean {
         if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
             throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
         }
+    }
+
+    public boolean isSearch(){
+        return !StringUtils.isEmpty(firstName) || !StringUtils.isEmpty(middleName) || !StringUtils.isEmpty(lastName) ||
+                !StringUtils.isEmpty(gender) || !StringUtils.isEmpty(address) || !StringUtils.isEmpty(unit) ||
+                !StringUtils.isEmpty(city) || !StringUtils.isEmpty(state) || !StringUtils.isEmpty(zipCode) ||
+                !StringUtils.isEmpty(areaCode) || !StringUtils.isEmpty(prefix) || !StringUtils.isEmpty(lineNumber) ||
+                !StringUtils.isEmpty(emailAddress);
     }
 }
