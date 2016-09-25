@@ -118,6 +118,10 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
 
         builder.setOrderByClause(MemberSearchColumns.ORDER_BY_CLAUSE);
 
+        if(memberFilterBean.getOffset() >= 0 && memberFilterBean.getSize() >= 0){
+            builder.setLimit(memberFilterBean.getOffset(), memberFilterBean.getSize());
+        }
+
         return daoSearchUtil.search(builder.build(), getElementName(), connection, this::parseResultSet);
     }
 }

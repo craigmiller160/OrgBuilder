@@ -24,11 +24,6 @@ public class SearchQuery {
     private static final String IS_NULL_CLAUSE = "IS NULL ";
     private static final String LIMIT_CLAUSE = "LIMIT ?,?";
 
-    public static final int STRING_TYPE = 435;
-    public static final int NUMBER_TYPE = 436;
-    public static final int BOOLEAN_TYPE = 437;
-    public static final int DATE_TYPE = 438;
-
     private final String query;
     private final List<Pair<String,Object>> parameters;
     private final Pair<Long,Long> limit;
@@ -54,12 +49,12 @@ public class SearchQuery {
     public PreparedStatement createAndParameterizeStatement(Connection connection) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(query);
         for(int i = 0; i < parameters.size(); i++){
-            stmt.setObject(i, parameters.get(i).getRight());
+            stmt.setObject((i + 1), parameters.get(i).getRight());
         }
 
         if(limit != null){
-            stmt.setLong(parameters.size(), limit.getLeft());
-            stmt.setLong(parameters.size() + 1, limit.getRight());
+            stmt.setLong(parameters.size() + 1, limit.getLeft());
+            stmt.setLong(parameters.size() + 2, limit.getRight());
         }
 
         return stmt;
