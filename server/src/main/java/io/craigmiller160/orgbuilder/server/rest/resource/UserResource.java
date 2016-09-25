@@ -2,18 +2,10 @@ package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,8 +31,8 @@ public class UserResource {
     //TODO need to decide if this should be a sub-resource of orgs, or if it needs a separate parameter passed for the org
 
     @GET
-    public Response getAllUsers(@QueryParam("offset") @DefaultValue("-1") long offset,
-                                @QueryParam("size") @DefaultValue("-1") long size) throws OrgApiException {
+    public Response getAllUsers(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException {
+        resourceFilterBean.validateFilterParams();
         //TODO finish this
         return null;
     }

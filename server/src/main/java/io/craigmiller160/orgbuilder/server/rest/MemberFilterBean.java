@@ -9,15 +9,7 @@ import java.util.Map;
 /**
  * Created by craig on 9/17/16.
  */
-public class MemberFilterBean {
-
-    @QueryParam("offset")
-    @DefaultValue("-1")
-    private long offset;
-
-    @QueryParam("size")
-    @DefaultValue("-1")
-    private long size;
+public class MemberFilterBean extends ResourceFilterBean{
 
     @QueryParam("firstName")
     private String firstName;
@@ -57,22 +49,6 @@ public class MemberFilterBean {
 
     @QueryParam("emailAddress")
     private String emailAddress;
-
-    public long getOffset() {
-        return offset;
-    }
-
-    public void setOffset(long offset) {
-        this.offset = offset;
-    }
-
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -176,16 +152,6 @@ public class MemberFilterBean {
 
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
-    }
-
-    public boolean hasFilterParams(){
-        return (offset >= 0 && size >= 0);
-    }
-
-    public void validateFilterParams() throws OrgApiInvalidRequestException{
-        if((offset != -1 && size == -1) || (offset == -1 && size != -1)){
-            throw new OrgApiInvalidRequestException("Invalid offset/size query parameters.");
-        }
     }
 
     public boolean isSearch(){
