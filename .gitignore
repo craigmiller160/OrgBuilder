@@ -27,3 +27,7 @@ hs_err_pid*
 /lib
 /server/lib
 /client/lib
+
+# Key files
+*.jks
+*.cert
