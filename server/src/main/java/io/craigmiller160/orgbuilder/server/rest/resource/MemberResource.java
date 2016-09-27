@@ -30,7 +30,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs/{orgId}/members")
+@Path("/members")
 public class MemberResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -40,9 +40,6 @@ public class MemberResource {
 
     @Context
     private UriInfo uriInfo;
-
-    @PathParam("orgId")
-    private long orgId;
 
     //TODO need to add an additional restriction for the org related to the user
 

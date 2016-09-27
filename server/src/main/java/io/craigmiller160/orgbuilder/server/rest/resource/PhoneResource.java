@@ -23,7 +23,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs/{orgId}/members/{memberId}/phones")
+@Path("/members/{memberId}/phones")
 public class PhoneResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();

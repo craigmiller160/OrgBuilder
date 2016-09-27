@@ -23,7 +23,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/orgs/{orgId}/members/{memberId}/addresses")
+@Path("/members/{memberId}/addresses")
 public class AddressResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -33,9 +33,6 @@ public class AddressResource {
 
     @Context
     private UriInfo uriInfo;
-
-    @PathParam("orgId")
-    private long orgId;
 
     @PathParam("memberId")
     private long memberId;
