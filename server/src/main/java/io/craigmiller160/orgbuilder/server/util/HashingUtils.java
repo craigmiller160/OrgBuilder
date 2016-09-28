@@ -1,24 +1,18 @@
 package io.craigmiller160.orgbuilder.server.util;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Base64;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Created by craigmiller on 9/28/16.
  */
 public class HashingUtils {
 
-    private static String generateSalt() throws NoSuchAlgorithmException{
-        SecureRandom secureRandom = SecureRandom.getInstanceStrong();
-        byte[] bytes = new byte[32];
-        secureRandom.nextBytes(bytes);
-        return Base64.getEncoder().encodeToString(bytes);
+    public static String hashBCrypt(String password){
+        return BCrypt.hashpw(password, BCrypt.gensalt(12));
     }
 
-    public static String hashPassword(String password, String salt){
-        //TODO finish this
-        return null;
+    public static boolean verifyBCryptHash(String password, String hash){
+        return BCrypt.checkpw(password, hash);
     }
 
 }
