@@ -29,5 +29,7 @@
         <dependency org="com.github.jeffreyfalgout" name="throwing-streams" rev="2.4.0" />
 
         <dependency org="com.nimbusds" name="nimbus-jose-jwt" rev="4.26.1"/>
+        <dependency org="org.mindrot" name="jbcrypt" rev="0.3m"/>
+
     </dependencies>
 </ivy-module>
