@@ -104,7 +104,7 @@ public class UserDaoTest {
         UserDTO user = daoTestUtils.getUser1();
         daoTestMethods.testInsert(user, userDao, 1L);
         user.setElementId(1L);
-        UserDTO result = userDao.getWithName(user.getUserName());
+        UserDTO result = userDao.getWithName(user.getUserEmail());
         assertNotNull("Result is null", result);
         assertEquals("Result is invalid", user, result);
     }
@@ -112,7 +112,7 @@ public class UserDaoTest {
     private void insertManyUsers() throws Exception{
         for(int i = 0; i < 10; i++){
             UserDTO user = daoTestUtils.getUser1();
-            user.setUserName(user.getUserName() + i);
+            user.setUserEmail(user.getUserEmail() + i);
             userDao.insert(user);
         }
     }

@@ -32,7 +32,7 @@ public class UserOrgPrincipal implements Principal {
 
     @Override
     public String getName() {
-        String userName = user != null ? user.getUserName() : "NULL";
+        String userName = user != null ? user.getUserEmail() : "NULL";
         String orgName = org != null ? org.getOrgName() : "NULL";
         return String.format("%s (%s)", userName, orgName);
     }

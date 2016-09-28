@@ -14,7 +14,6 @@ import java.util.TreeSet;
 public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     private long userId;
-    private String userName;
     private String userEmail;
     private String password;
     private Set<String> roles = new TreeSet<>();
@@ -28,14 +27,6 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     @Override
     public void setElementId(Long id) {
         this.userId = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getUserEmail() {
@@ -95,7 +86,6 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
         if (userId != userDTO.userId) return false;
         if (orgId != userDTO.orgId) return false;
-        if (userName != null ? !userName.equals(userDTO.userName) : userDTO.userName != null) return false;
         if (userEmail != null ? !userEmail.equals(userDTO.userEmail) : userDTO.userEmail != null) return false;
         if (password != null ? !password.equals(userDTO.password) : userDTO.password != null) return false;
         return roles != null ? roles.equals(userDTO.roles) : userDTO.roles == null;
@@ -105,7 +95,6 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     @Override
     public int hashCode() {
         int result = (int) (userId ^ (userId >>> 32));
-        result = 31 * result + (userName != null ? userName.hashCode() : 0);
         result = 31 * result + (userEmail != null ? userEmail.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (roles != null ? roles.hashCode() : 0);
@@ -115,7 +104,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     @Override
     public String toString(){
-        return "User: " + userName;
+        return "User: " + userEmail;
     }
 
     @Override

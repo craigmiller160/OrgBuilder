@@ -182,7 +182,6 @@ public class DaoTestUtils {
 
     public UserDTO getUser1(){
         UserDTO user = new UserDTO();
-        user.setUserName("MyUser");
         user.setPassword("MyPassword");
         user.setUserEmail("MyEmail@gmail.com");
         user.convertStringToRoles("ADMIN,WRITE,READ");
@@ -193,7 +192,6 @@ public class DaoTestUtils {
 
     public UserDTO getUser2(){
         UserDTO user = new UserDTO();
-        user.setUserName("NewUser");
         user.setPassword("NewPassword");
         user.setUserEmail("NewEmail@gmail.com");
         user.convertStringToRoles("READ");

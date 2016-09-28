@@ -14,7 +14,7 @@ import java.sql.Types;
  */
 public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 7;
+    private static final int UPDATE_KEY_PARAM_INDEX = 6;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, UserDTO element) throws SQLException {
@@ -25,39 +25,32 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
             stmt.setNull(1, Types.BIGINT);
         }
 
-        if(!StringUtils.isEmpty(element.getUserName())){
-            stmt.setString(2, element.getUserName());
+        if(!StringUtils.isEmpty(element.getUserEmail())){
+            stmt.setString(2, element.getUserEmail());
         }
         else{
             stmt.setNull(2, Types.VARCHAR);
         }
 
-        if(!StringUtils.isEmpty(element.getUserEmail())){
-            stmt.setString(3, element.getUserEmail());
+        if(!StringUtils.isEmpty(element.getPassword())){
+            stmt.setString(3, element.getPassword());
         }
         else{
             stmt.setNull(3, Types.VARCHAR);
         }
 
-        if(!StringUtils.isEmpty(element.getPassword())){
-            stmt.setString(4, element.getPassword());
+        if(!StringUtils.isEmpty(element.convertRolesToString())){
+            stmt.setString(4, element.convertRolesToString());
         }
         else{
             stmt.setNull(4, Types.VARCHAR);
         }
 
-        if(!StringUtils.isEmpty(element.convertRolesToString())){
-            stmt.setString(5, element.convertRolesToString());
-        }
-        else{
-            stmt.setNull(5, Types.VARCHAR);
-        }
-
         if(element.getOrgId() > 0){
-            stmt.setLong(6, element.getOrgId());
+            stmt.setLong(5, element.getOrgId());
         }
         else{
-            stmt.setNull(6, Types.BIGINT);
+            stmt.setNull(5, Types.BIGINT);
         }
     }
 
@@ -65,7 +58,6 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
     public UserDTO parseResultSet(ResultSet resultSet) throws SQLException {
         UserDTO userDTO = new UserDTO();
         userDTO.setElementId(resultSet.getLong("user_id"));
-        userDTO.setUserName(resultSet.getString("user_name"));
         userDTO.setUserEmail(resultSet.getString("user_email"));
         userDTO.setPassword(resultSet.getString("passwd"));
         String roles = resultSet.getString("role");
