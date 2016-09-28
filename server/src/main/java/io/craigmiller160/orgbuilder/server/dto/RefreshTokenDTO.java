@@ -5,19 +5,21 @@ import java.time.LocalDateTime;
 /**
  * Created by craig on 9/27/16.
  */
-public class RefreshTokenDTO implements Comparable<RefreshTokenDTO>{
+public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
 
     private long tokenId;
     private long userId;
     private String tokenHash;
     private LocalDateTime timestamp;
 
-    public long getTokenId() {
+    @Override
+    public Long getElementId() {
         return tokenId;
     }
 
-    public void setTokenId(long tokenId) {
-        this.tokenId = tokenId;
+    @Override
+    public void setElementId(Long id) {
+        this.tokenId = id;
     }
 
     public long getUserId() {
