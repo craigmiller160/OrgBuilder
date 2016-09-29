@@ -11,8 +11,6 @@ import java.util.Base64;
  */
 public class HashingUtils {
 
-    //TODO need a JUnit test case for this, especially for the SHA 256 part
-
     public static String hashBCrypt(String value){
         return BCrypt.hashpw(value, BCrypt.gensalt(12));
     }
