@@ -10,6 +10,7 @@ import io.craigmiller160.orgbuilder.server.dto.Gender;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.rest.Role;
@@ -20,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -198,6 +200,22 @@ public class DaoTestUtils {
         user.setOrgId(2);
 
         return user;
+    }
+
+    public RefreshTokenDTO getToken1(){
+        RefreshTokenDTO token = new RefreshTokenDTO();
+        token.setUserId(1L);
+        token.setTokenHash("ThisIsTheHash");
+        token.setTimestamp(LocalDateTime.now());
+        return token;
+    }
+
+    public RefreshTokenDTO getToken2(){
+        RefreshTokenDTO token = new RefreshTokenDTO();
+        token.setUserId(1L);
+        token.setTokenHash("MyNewHash");
+        token.setTimestamp(LocalDateTime.now());
+        return token;
     }
 
 }

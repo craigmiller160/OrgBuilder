@@ -21,7 +21,7 @@ public class OrgDaoTest {
 
     private static final String TEST_SCHEMA_NAME = "test_org";
 
-    private static final String REST_AUTO_INC_SQL =
+    private static final String RESET_AUTO_INC_SQL =
             "alter table orgs " +
             "auto_increment = 1;";
 
@@ -40,7 +40,7 @@ public class OrgDaoTest {
 
     @After
     public void cleanUp() throws Exception{
-        daoTestUtils.cleanUpTest(REST_AUTO_INC_SQL);
+        daoTestUtils.cleanUpTest(RESET_AUTO_INC_SQL);
     }
 
     @AfterClass
@@ -113,7 +113,7 @@ public class OrgDaoTest {
         orgDao.insertOrUpdate(orgToUpdate);
 
         OrgDTO result = orgDao.get(1L);
-        assertNotNull("Update result member is null", result);
+        assertNotNull("Update result org is null", result);
         assertEquals("OrgDao insertOrUpdate method did not update existing org", orgToUpdate.getOrgName(), result.getOrgName());
 
         OrgDTO orgToInsert = daoTestUtils.getOrg2();

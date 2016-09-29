@@ -9,6 +9,10 @@ UPDATE tokens
 SET token_id = ?, user_id = ?, token_hash = ?, expiration = ?
 WHERE token_id = ?;
 
+-- QUERY=DELETE
+DELETE FROM tokens
+WHERE token_id = ?;
+
 -- QUERY=GET_BY_ID
 SELECT *
 FROM tokens
