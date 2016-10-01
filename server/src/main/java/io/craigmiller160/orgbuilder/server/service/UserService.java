@@ -125,6 +125,8 @@ public class UserService {
             if(list.size() > 0){
                 results = new UserListDTO(list);
             }
+
+            connection.commit();
         }
         catch (OrgApiDataException ex){
             serviceCommons.rollback(connection, ex);
@@ -144,6 +146,8 @@ public class UserService {
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
             result = (UserDTO) userDao.query(AdditionalQueries.GET_WITH_NAME, name);
+
+            connection.commit();
         }
         catch(OrgApiDataException ex){
             serviceCommons.rollback(connection, ex);

@@ -100,7 +100,6 @@ public class JWTManager {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime exp = now.plusMinutes(expMins);
 
-            //TODO still needs roles, figure out how to put a collection into it
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                     .subject(username)
                     .issueTime(LegacyDateConverter.convertLocalDateTimeToDate(now))
@@ -108,6 +107,7 @@ public class JWTManager {
                     .expirationTime(LegacyDateConverter.convertLocalDateTimeToDate(exp))
                     .jwtID("TokenId") //TODO this needs to have a better value!!!
                     .claim(SCHEMA_CLAIM_KEY, schema)
+                    .claim(ROLE_CLAIM_KEY, roles)
                     .build();
             SignedJWT jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
             JWSSigner signer = new RSASSASigner(getApiPrivateKey());
