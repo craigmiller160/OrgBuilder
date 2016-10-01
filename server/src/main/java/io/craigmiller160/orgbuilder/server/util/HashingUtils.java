@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.util;
 
+import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.MessageDigest;
@@ -20,13 +21,18 @@ public class HashingUtils {
         return BCrypt.checkpw(value, hash);
     }
 
-    public static String hashSHA256(String value) throws NoSuchAlgorithmException{
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        digest.update(value.getBytes());
-        return Base64.getEncoder().encodeToString(digest.digest());
+    public static String hashSHA256(String value) throws OrgApiSecurityException{
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            digest.update(value.getBytes());
+            return Base64.getEncoder().encodeToString(digest.digest());
+        }
+        catch(NoSuchAlgorithmException ex){
+            throw new OrgApiSecurityException("Unable to execute SHA-256 hash", ex);
+        }
     }
 
-    public static boolean verifySHA256(String value, String hash) throws NoSuchAlgorithmException{
+    public static boolean verifySHA256(String value, String hash) throws OrgApiSecurityException{
         return hashSHA256(value).equals(hash);
     }
 

@@ -10,7 +10,15 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
     private long tokenId;
     private long userId;
     private String tokenHash;
-    private LocalDateTime timestamp;
+    private LocalDateTime expiration;
+
+    public RefreshTokenDTO(){}
+
+    public RefreshTokenDTO(long userId, String tokenHash, LocalDateTime expiration){
+        this.userId = userId;
+        this.tokenHash = tokenHash;
+        this.expiration = expiration;
+    }
 
     @Override
     public Long getElementId() {
@@ -38,12 +46,12 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         this.tokenHash = tokenHash;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public LocalDateTime getExpiration() {
+        return expiration;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setExpiration(LocalDateTime expiration) {
+        this.expiration = expiration;
     }
 
     @Override
@@ -56,7 +64,7 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         if (tokenId != that.tokenId) return false;
         if (userId != that.userId) return false;
         if (tokenHash != null ? !tokenHash.equals(that.tokenHash) : that.tokenHash != null) return false;
-        return timestamp != null ? timestamp.equals(that.timestamp) : that.timestamp == null;
+        return expiration != null ? expiration.equals(that.expiration) : that.expiration == null;
 
     }
 
@@ -65,7 +73,7 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         int result = (int) (tokenId ^ (tokenId >>> 32));
         result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + (tokenHash != null ? tokenHash.hashCode() : 0);
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
+        result = 31 * result + (expiration != null ? expiration.hashCode() : 0);
         return result;
     }
 

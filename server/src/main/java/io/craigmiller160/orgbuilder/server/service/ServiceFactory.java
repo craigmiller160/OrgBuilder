@@ -43,4 +43,8 @@ public class ServiceFactory {
         return new UserService(securityContext);
     }
 
+    public TokenService newTokenService(SecurityContext securityContext){
+        return new TokenService(securityContext);
+    }
+
 }

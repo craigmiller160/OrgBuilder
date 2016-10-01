@@ -13,7 +13,6 @@ import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.State;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
-import io.craigmiller160.orgbuilder.server.rest.Role;
 import throwing.stream.ThrowingStream;
 
 import java.lang.reflect.Constructor;
@@ -206,7 +205,7 @@ public class DaoTestUtils {
         RefreshTokenDTO token = new RefreshTokenDTO();
         token.setUserId(1L);
         token.setTokenHash("ThisIsTheHash");
-        token.setTimestamp(LocalDateTime.now());
+        token.setExpiration(LocalDateTime.now());
         return token;
     }
 
@@ -214,7 +213,7 @@ public class DaoTestUtils {
         RefreshTokenDTO token = new RefreshTokenDTO();
         token.setUserId(1L);
         token.setTokenHash("MyNewHash");
-        token.setTimestamp(LocalDateTime.now());
+        token.setExpiration(LocalDateTime.now());
         return token;
     }
 

@@ -26,29 +26,7 @@ public class TokenService {
             connection = serviceCommons.newConnection();
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 
-            result = tokenDao.insert(token);
-
-            connection.commit();
-        }
-        catch(OrgApiDataException ex){
-            serviceCommons.rollback(connection, ex);
-        }
-        finally{
-            serviceCommons.closeConnection(connection);
-        }
-
-        return result;
-    }
-
-    public RefreshTokenDTO updateRefreshToken(RefreshTokenDTO token, Long tokenId) throws OrgApiDataException, OrgApiSecurityException{
-        DataConnection connection = null;
-        RefreshTokenDTO result = null;
-        try{
-            connection = serviceCommons.newConnection();
-            Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
-
-            token.setElementId(tokenId);
-            result = tokenDao.update(token, tokenId);
+            result = tokenDao.insertOrUpdate(token);
 
             connection.commit();
         }

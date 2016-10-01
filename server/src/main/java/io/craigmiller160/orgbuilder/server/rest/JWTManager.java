@@ -92,7 +92,7 @@ public class JWTManager {
         return publicKey;
     }
 
-    public String generateNewToken(String username, Set<String> roles, String schema) throws OrgApiSecurityException{
+    public String generateNewToken(long tokenId, String username, Set<String> roles, String schema) throws OrgApiSecurityException{
         String token = null;
         try{
             //If this blows up with NumberFormatException, the property is invalid
@@ -105,7 +105,7 @@ public class JWTManager {
                     .issueTime(LegacyDateConverter.convertLocalDateTimeToDate(now))
                     .issuer(ServerCore.getProperty(ServerProps.API_NAME))
                     .expirationTime(LegacyDateConverter.convertLocalDateTimeToDate(exp))
-                    .jwtID("TokenId") //TODO this needs to have a better value!!!
+                    .jwtID("" + tokenId)
                     .claim(SCHEMA_CLAIM_KEY, schema)
                     .claim(ROLE_CLAIM_KEY, roles)
                     .build();

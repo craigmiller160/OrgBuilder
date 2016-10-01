@@ -39,8 +39,8 @@ public class RefreshTokenDTOSQLConverter implements DTOSQLConverter<RefreshToken
             stmt.setNull(3, Types.VARCHAR);
         }
 
-        if(element.getTimestamp() != null){
-            stmt.setTimestamp(4, Timestamp.valueOf(element.getTimestamp()));
+        if(element.getExpiration() != null){
+            stmt.setTimestamp(4, Timestamp.valueOf(element.getExpiration()));
         }
         else{
             stmt.setNull(4, Types.TIMESTAMP);
@@ -55,7 +55,7 @@ public class RefreshTokenDTOSQLConverter implements DTOSQLConverter<RefreshToken
         token.setTokenHash(resultSet.getString("token_hash"));
         Timestamp timestamp = resultSet.getTimestamp("expiration");
         if(timestamp != null){
-            token.setTimestamp(timestamp.toLocalDateTime());
+            token.setExpiration(timestamp.toLocalDateTime());
         }
 
         return token;
