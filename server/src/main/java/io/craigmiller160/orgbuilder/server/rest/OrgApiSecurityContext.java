@@ -8,13 +8,13 @@ import java.security.Principal;
  */
 public class OrgApiSecurityContext implements SecurityContext {
 
-    private UserOrgPrincipal principal;
+    private OrgApiPrincipal principal;
 
     public OrgApiSecurityContext(){
         this(null);
     }
 
-    public OrgApiSecurityContext(UserOrgPrincipal principal){
+    public OrgApiSecurityContext(OrgApiPrincipal principal){
         this.principal = principal;
     }
 
@@ -23,17 +23,17 @@ public class OrgApiSecurityContext implements SecurityContext {
         return principal;
     }
 
-    public UserOrgPrincipal getUser(){
-        return principal;
-    }
-
-    public void setUserPrincipal(UserOrgPrincipal principal){
+    public void setUserPrincipal(OrgApiPrincipal principal) {
         this.principal = principal;
     }
 
     @Override
     public boolean isUserInRole(String role) {
         return principal != null && principal.isUserInRole(role);
+    }
+
+    public String getSchema(){
+        return principal.getSchema();
     }
 
     @Override
