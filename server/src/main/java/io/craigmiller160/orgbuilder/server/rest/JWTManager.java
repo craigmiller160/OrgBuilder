@@ -54,7 +54,7 @@ public class JWTManager {
             String keystorePass = ServerCore.getProperty(ServerProps.KEYSTORE_PASS);
 
             InputStream keystoreStream = getClass().getClassLoader().getResourceAsStream(keystorePath);
-            keyStore = KeyStore.getInstance("JKS");
+            keyStore = KeyStore.getInstance("JCEKS");
             keyStore.load(keystoreStream, keystorePass.toCharArray());
         }
         catch(KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex){
