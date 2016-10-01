@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
+import io.craigmiller160.orgbuilder.server.data.AdditionalQueries;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
@@ -133,6 +134,24 @@ public class UserService {
         }
 
         return results;
+    }
+
+    public UserDTO getUserByName(String name) throws OrgApiDataException, OrgApiSecurityException{
+        DataConnection connection = null;
+        UserDTO result = null;
+        try{
+            connection = serviceCommons.newConnection();
+            Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
+
+            result = (UserDTO) userDao.query(AdditionalQueries.GET_WITH_NAME, name);
+        }
+        catch(OrgApiDataException ex){
+            serviceCommons.rollback(connection, ex);
+        }
+        finally{
+            serviceCommons.closeConnection(connection);
+        }
+        return result;
     }
 
 }

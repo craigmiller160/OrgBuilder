@@ -11,4 +11,5 @@ public class AdditionalQueries {
     public static final String DELETE_BY_MEMBER = "deleteByMember";
     public static final String GET_BY_ID_AND_MEMBER = "getByIdAndMember";
     public static final String SEARCH = "search";
+    public static final String GET_WITH_NAME = "getWithName";
 }
