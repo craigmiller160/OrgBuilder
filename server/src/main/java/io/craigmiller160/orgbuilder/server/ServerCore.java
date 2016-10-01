@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataManager;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
+import io.craigmiller160.orgbuilder.server.rest.JWTManager;
 import io.craigmiller160.orgbuilder.server.util.ApiUncaughtExceptionHandler;
 import io.craigmiller160.orgbuilder.server.data.DataDTOMap;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +33,7 @@ public class ServerCore implements ServletContextListener{
     private static final Properties properties = new Properties();
     private static OrgDataManager orgDataManager;
     private static OrgDataSource orgDataSource;
+    private static JWTManager jwtManager;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -51,7 +53,7 @@ public class ServerCore implements ServletContextListener{
             dataDtoMap = DataDTOMap.generateDataDTOMap();
 
             try{
-                OrgApiLogger.getServerLogger().debug("Configuration database utilities");
+                OrgApiLogger.getServerLogger().debug("Configuring database utilities");
                 orgDataSource = new OrgDataSource();
                 orgDataManager = new OrgDataManager(orgDataSource);
                 orgDataManager.createDefaultAppSchema();
@@ -59,6 +61,9 @@ public class ServerCore implements ServletContextListener{
             catch(OrgApiDataException ex){
                 throw new OrgApiException("Unable to load and execute DDL scripts", ex);
             }
+
+            OrgApiLogger.getServerLogger().debug("Loading KeyStore");
+            jwtManager = new JWTManager();
         }
         catch(OrgApiException ex){
             throw new RuntimeException("CRITICAL ERROR!!! Unable to properly initialize the SeverCore", ex);
@@ -107,6 +112,10 @@ public class ServerCore implements ServletContextListener{
 
     public static Map<Class,DataDTOMap> getDataDTOMap(){
         return dataDtoMap;
+    }
+
+    public static JWTManager getJWTManager(){
+        return jwtManager;
     }
 
     @Override

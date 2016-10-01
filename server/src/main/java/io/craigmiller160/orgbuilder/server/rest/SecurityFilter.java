@@ -1,13 +1,13 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
-import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
-import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 
 import javax.annotation.Priority;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
@@ -18,19 +18,28 @@ import java.io.IOException;
 @Priority(Priorities.AUTHENTICATION)
 public class SecurityFilter implements ContainerRequestFilter{
 
+    private static final String POST_METHOD = "POST";
+    private static final String LOGIN_URI = "/orgapi/auth";
+
+    @Context
+    HttpServletRequest request;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         //TODO perform authentication... REAL authentication
-        //TODO test the URI to check the specified org_id, make sure it matches the allowed org_id for the user
-        UserDTO userDTO = new UserDTO();
-        userDTO.setElementId(1L);
-        userDTO.setUserName("Craig");
-        userDTO.setOrgId(1L);
-        userDTO.convertStringToRoles("ADMIN,WRITE,READ");
-        OrgDTO orgDTO = new OrgDTO();
-        orgDTO.setElementId(1L);
-        orgDTO.setOrgName("TestOrg");
-        orgDTO.setSchemaName("1TestO");
-        requestContext.setSecurityContext(new OrgApiSecurityContext(new UserOrgPrincipal(userDTO, orgDTO)));
+
+        String method = requestContext.getMethod();
+        String uri = request.getRequestURI();
+        if(POST_METHOD.equals(method) && LOGIN_URI.equals(uri)){
+            OrgApiSecurityContext securityContext = new OrgApiSecurityContext();
+            OrgApiPrincipal principal = new OrgApiPrincipal();
+            principal.setName("LoginPrincipal");
+            principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
+            securityContext.setUserPrincipal(principal);
+            requestContext.setSecurityContext(securityContext);
+            //Allow call to proceed to AuthResource to authenticate credentials
+            return;
+        }
+        //TODO validate the token otherwise
     }
 }

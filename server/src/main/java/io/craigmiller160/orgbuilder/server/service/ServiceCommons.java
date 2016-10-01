@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.OrgDataManager;
+import io.craigmiller160.orgbuilder.server.rest.OrgApiPrincipal;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiSecurityContext;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 
@@ -23,7 +24,7 @@ public class ServiceCommons {
         this.useAppSchema = useAppSchema;
         this.dataManager = ServerCore.getOrgDataManager();
         this.securityContext = securityContext;
-        this.schemaName = ((OrgApiSecurityContext) securityContext).getSchema();
+        this.schemaName = ((OrgApiPrincipal) securityContext.getUserPrincipal()).getSchema();
     }
 
     public final DataConnection newConnection() throws OrgApiDataException {
