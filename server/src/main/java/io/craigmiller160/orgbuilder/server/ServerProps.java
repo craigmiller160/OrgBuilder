@@ -17,9 +17,10 @@ public class ServerProps {
 
     public static final String DEV_EMAIL = "io.craigmiller160.orgbuilder.server.devEmail";
 
-    public static final String KEYSTORE_PATH = "io.craigmiller160.orgbuilder.server.keystore.path";
-    public static final String KEYSTORE_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.keyName";
-    public static final String KEYSTORE_PASS = "io.craigmiller160.orgbuilder.server.keystore.pass";
+    public static final String KEYSTORE_PATH = "io.craigmiller160.orgbuilder.server.keystore.storePath";
+    public static final String TOKEN_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.tokenKeyName";
+    public static final String DATA_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.dataKeyName";
+    public static final String KEYSTORE_PASS = "io.craigmiller160.orgbuilder.server.keystore.storePass";
 
     public static final String ACCESS_EXP_MINS = "io.craigmiller160.orgbuilder.server.token.accessExpMins";
     public static final String REFRESH_EXP_MINS = "io.craigmiller160.orgbuilder.server.token.refreshExpMins";
