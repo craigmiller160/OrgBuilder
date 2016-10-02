@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.rest.JWTUtil;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
@@ -60,10 +61,10 @@ public class AuthResource {
                 RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
                 refreshToken = tokenService.addRefreshToken(refreshToken);
 
-                String token = ServerCore.getJWTManager().generateNewToken(refreshToken.getElementId(), user.getUserEmail(), user.getRoles(), foundOrg.getSchemaName());
+                String token = JWTUtil.generateNewToken(refreshToken.getElementId(), user.getUserEmail(), user.getRoles(), foundOrg.getSchemaName());
                 return Response
                         .ok()
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) //TODO ensure that the Bearer part is formatted properly
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .build();
             }
         }
