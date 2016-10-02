@@ -11,43 +11,43 @@ import java.util.Map;
  */
 public class MemberFilterBean extends ResourceFilterBean{
 
-    @QueryParam("firstName")
+    @QueryParam(QueryParamName.FIRST_NAME)
     private String firstName;
 
-    @QueryParam("middleName")
+    @QueryParam(QueryParamName.MIDDLE_NAME)
     private String middleName;
 
-    @QueryParam("lastName")
+    @QueryParam(QueryParamName.LAST_NAME)
     private String lastName;
 
-    @QueryParam("gender")
+    @QueryParam(QueryParamName.GENDER)
     private String gender;
 
-    @QueryParam("address")
+    @QueryParam(QueryParamName.ADDRESS)
     private String address;
 
-    @QueryParam("unit")
+    @QueryParam(QueryParamName.UNIT)
     private String unit;
 
-    @QueryParam("city")
+    @QueryParam(QueryParamName.CITY)
     private String city;
 
-    @QueryParam("state")
+    @QueryParam(QueryParamName.STATE)
     private String state;
 
-    @QueryParam("zipCode")
+    @QueryParam(QueryParamName.ZIP_CODE)
     private String zipCode;
 
-    @QueryParam("areaCode")
+    @QueryParam(QueryParamName.AREA_CODE)
     private String areaCode;
 
-    @QueryParam("prefix")
+    @QueryParam(QueryParamName.PREFIX)
     private String prefix;
 
-    @QueryParam("lineNumber")
+    @QueryParam(QueryParamName.LINE_NUMBER)
     private String lineNumber;
 
-    @QueryParam("emailAddress")
+    @QueryParam(QueryParamName.EMAIL_ADDRESS)
     private String emailAddress;
 
     public String getFirstName() {

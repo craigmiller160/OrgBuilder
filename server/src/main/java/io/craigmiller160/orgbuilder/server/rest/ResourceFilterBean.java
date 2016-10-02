@@ -8,11 +8,11 @@ import javax.ws.rs.QueryParam;
  */
 public class ResourceFilterBean {
 
-    @QueryParam("offset")
+    @QueryParam(QueryParamName.OFFSET)
     @DefaultValue("-1")
     private long offset;
 
-    @QueryParam("size")
+    @QueryParam(QueryParamName.SIZE)
     @DefaultValue("-1")
     private long size;
 
