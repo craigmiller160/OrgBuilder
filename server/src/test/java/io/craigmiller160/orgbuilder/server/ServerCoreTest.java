@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server;
 
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,10 +27,17 @@ public class ServerCoreTest {
     private static final String CHECK_TABLES_SQL =
             "show tables from org_app;";
 
+    private static ServerCore serverCore;
+
     @BeforeClass
     public static void init(){
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
+    }
+
+    @AfterClass
+    public static void tearDown(){
+        serverCore.contextDestroyed(null);
     }
 
     @Test

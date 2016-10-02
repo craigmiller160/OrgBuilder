@@ -31,15 +31,21 @@ public class JdbcDataConnectionTest {
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
     private static OrgDataSource dataSource;
     private static JdbcManager jdbcManager;
+    private static ServerCore serverCore;
 
     @BeforeClass
     public static void init() throws Exception{
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
 
         ServerCore.getOrgDataManager().createOrgSchema(TEST_SCHEMA);
         dataSource = ServerTestUtils.getOrgDataSource(ServerCore.getOrgDataManager());
         jdbcManager = ServerTestUtils.getJdbcManager(ServerCore.getOrgDataManager());
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception{
+        serverCore.contextDestroyed(null);
     }
 
     @Test

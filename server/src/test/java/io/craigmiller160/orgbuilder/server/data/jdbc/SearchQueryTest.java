@@ -11,10 +11,17 @@ import static org.junit.Assert.assertEquals;
  */
 public class SearchQueryTest {
 
+    private static ServerCore serverCore;
+
     @BeforeClass
     public static void init() throws Exception{
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception{
+        serverCore.contextDestroyed(null);
     }
 
     @Test

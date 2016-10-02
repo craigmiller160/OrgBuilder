@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.rest;
 import com.nimbusds.jwt.SignedJWT;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -16,11 +17,17 @@ import static org.junit.Assert.assertTrue;
 public class RefreshTokenUtilTest {
 
     private static final String USER_AGENT = "TestUserAgent";
+    private static ServerCore core;
 
     @BeforeClass
     public static void setUp() throws Exception{
-        ServerCore core = new ServerCore();
+        core = new ServerCore();
         core.contextInitialized(null);
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception{
+        core.contextDestroyed(null);
     }
 
     @Test

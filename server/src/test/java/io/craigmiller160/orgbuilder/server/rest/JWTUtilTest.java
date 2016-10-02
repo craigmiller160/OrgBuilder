@@ -2,6 +2,7 @@ package io.craigmiller160.orgbuilder.server.rest;
 
 import com.nimbusds.jwt.SignedJWT;
 import io.craigmiller160.orgbuilder.server.ServerCore;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,10 +20,17 @@ import static io.craigmiller160.orgbuilder.server.rest.TokenTestUtils.*;
  */
 public class JWTUtilTest {
 
+    private static ServerCore serverCore;
+
     @BeforeClass
     public static void setUp(){
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
+    }
+
+    @AfterClass
+    public static void tearDown(){
+        serverCore.contextDestroyed(null);
     }
 
     @Test

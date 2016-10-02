@@ -23,10 +23,11 @@ public class SchemaManagerTest {
 
     private static SchemaManager schemaManager;
     private static Connection connection;
+    private static ServerCore serverCore;
 
     @BeforeClass
     public static void init() throws Exception{
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
         Class<?> clazz = ServerCore.getOrgDataManager().getClass();
         Method m = clazz.getDeclaredMethod("getSchemaManager");
@@ -44,6 +45,7 @@ public class SchemaManagerTest {
     public static void tearDown() throws Exception{
         schemaManager.deleteSchema(connection, SCHEMA_NAME, true);
         connection.close();
+        serverCore.contextDestroyed(null);
     }
 
     @Test

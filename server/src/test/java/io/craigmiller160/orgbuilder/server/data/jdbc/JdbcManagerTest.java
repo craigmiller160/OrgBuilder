@@ -2,7 +2,9 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.List;
@@ -16,10 +18,17 @@ import static org.junit.Assert.assertNotNull;
  */
 public class JdbcManagerTest {
 
-    @Before
-    public void setUp(){
-        ServerCore serverCore = new ServerCore();
+    private static ServerCore serverCore;
+
+    @BeforeClass
+    public static void setUp(){
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
+    }
+
+    @AfterClass
+    public static void tearDown(){
+        serverCore.contextDestroyed(null);
     }
 
     @Test

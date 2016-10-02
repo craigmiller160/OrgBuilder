@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,10 +16,17 @@ import static org.junit.Assert.assertNotNull;
  */
 public class KeyManagerTest {
 
+    private static ServerCore serverCore;
+
     @BeforeClass
     public static void setUp(){
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
+    }
+
+    @AfterClass
+    public static void tearDown(){
+        serverCore.contextDestroyed(null);
     }
 
     @Test

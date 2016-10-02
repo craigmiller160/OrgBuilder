@@ -37,9 +37,10 @@ public class DaoTestUtils {
     private JdbcManager jdbcManager;
     private Connection connection;
     private String testSchemaName;
+    private ServerCore serverCore;
 
     public void initializeTestClass(String testSchemaName, boolean isAppSchema) throws Exception{
-        ServerCore serverCore = new ServerCore();
+        serverCore = new ServerCore();
         serverCore.contextInitialized(null);
         this.testSchemaName = testSchemaName;
 
@@ -86,6 +87,7 @@ public class DaoTestUtils {
 
     public void tearDownTestClass(String testSchemaName) throws Exception{
         ServerCore.getOrgDataManager().deleteSchema(testSchemaName, true);
+        serverCore.contextDestroyed(null);
     }
 
     public AddressDTO getAddress1(){
