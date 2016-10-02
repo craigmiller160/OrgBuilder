@@ -26,6 +26,15 @@ import java.util.Set;
 /**
  * A utility class for handling the JSON Web Tokens.
  *
+ * Token Claims:
+ *
+ * IAT : Issued-At Time
+ * ISS : Issuer
+ * SUB : Subject
+ * EXP : Expiration Time
+ * SMA : Schema
+ * ROL : Roles
+ *
  * Created by craig on 10/1/16.
  */
 public class JWTUtil {
@@ -91,6 +100,20 @@ public class JWTUtil {
         }
 
         return jwt;
+    }
+
+    public static boolean isTokenIssuedByOrgApi(SignedJWT jwt) throws OrgApiSecurityException{
+        boolean result = false;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            String issuer = claimsSet.getIssuer();
+            result = ServerCore.getProperty(ServerProps.API_NAME).equals(issuer);
+        }
+        catch(ParseException ex){
+            throw new OrgApiSecurityException("Unable to validate JSON Web Token expiration", ex);
+        }
+
+        return result;
     }
 
     public static boolean isTokenExpired(SignedJWT jwt) throws OrgApiSecurityException{

@@ -57,6 +57,11 @@ public class SecurityFilter implements ContainerRequestFilter{
                     return;
                 }
 
+                if(!JWTUtil.isTokenIssuedByOrgApi(jwt)){
+                    handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token not issued by OrgBuilder API");
+                    return;
+                }
+
                 principal = new OrgApiPrincipal();
                 principal.setName(JWTUtil.getTokenSubjectClaim(jwt));
                 principal.setSchema(JWTUtil.getTokenSchemaClaim(jwt));
