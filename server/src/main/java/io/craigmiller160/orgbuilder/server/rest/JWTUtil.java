@@ -18,6 +18,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,7 +30,7 @@ import java.util.Set;
 public class JWTUtil {
 
     public static final String SCHEMA_CLAIM_KEY = "SMA";
-    public static final String ROLE_CLAIM_KEY = "ROL";
+    public static final String ROLES_CLAIM_KEY = "ROL";
 
     private JWTUtil(){}
 
@@ -51,7 +53,7 @@ public class JWTUtil {
                     .expirationTime(expiration)
                     .jwtID("" + tokenId)
                     .claim(SCHEMA_CLAIM_KEY, schema)
-                    .claim(ROLE_CLAIM_KEY, roles)
+                    .claim(ROLES_CLAIM_KEY, roles)
                     .build();
             SignedJWT jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
             JWSSigner signer = new RSASSASigner(ServerCore.getKeyManager().getTokenPrivateKey());
@@ -91,6 +93,88 @@ public class JWTUtil {
         }
         catch(ParseException ex){
             throw new OrgApiSecurityException("Unable to validate JSON Web Token expiration", ex);
+        }
+
+        return result;
+    }
+
+    public static String getTokenSchemaClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        String result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = claimsSet.getStringClaim(SCHEMA_CLAIM_KEY);
+        }
+        catch(ParseException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token schema claim", ex);
+        }
+
+        return result;
+    }
+
+    public static Set<String> getTokenRolesClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        Set<String> result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            List<String> rolesList = claimsSet.getStringListClaim(ROLES_CLAIM_KEY);
+            if(rolesList != null && rolesList.size() > 0){
+                result = new HashSet<>();
+                result.addAll(rolesList);
+            }
+        }
+        catch(ParseException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token roles claim", ex);
+        }
+
+        return result;
+    }
+
+    public static String getTokenSubjectClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        String result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = claimsSet.getSubject();
+        }
+        catch(ParseException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token roles claim", ex);
+        }
+
+        return result;
+    }
+
+    public static LocalDateTime getTokenIssuedAtClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        LocalDateTime result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = LegacyDateConverter.convertDateToLocalDateTime(claimsSet.getIssueTime());
+        }
+        catch(ParseException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token roles claim", ex);
+        }
+
+        return result;
+    }
+
+    public static LocalDateTime getTokenExpirationClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        LocalDateTime result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = LegacyDateConverter.convertDateToLocalDateTime(claimsSet.getExpirationTime());
+        }
+        catch(ParseException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token roles claim", ex);
+        }
+
+        return result;
+    }
+
+    public static long getTokenIdClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        long result = -1;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = Long.parseLong(claimsSet.getJWTID());
+        }
+        catch(ParseException | NumberFormatException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token roles claim", ex);
         }
 
         return result;
