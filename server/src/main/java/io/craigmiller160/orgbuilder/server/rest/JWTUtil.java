@@ -13,6 +13,7 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.util.LegacyDateConverter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
@@ -31,6 +32,7 @@ public class JWTUtil {
 
     public static final String SCHEMA_CLAIM_KEY = "SMA";
     public static final String ROLES_CLAIM_KEY = "ROL";
+    public static final String BEARER_PREFIX = "Bearer ";
 
     private JWTUtil(){}
 
@@ -68,6 +70,14 @@ public class JWTUtil {
     }
 
     public static SignedJWT parseAndValidateTokenSignature(String token) throws OrgApiSecurityException{
+        if(StringUtils.isEmpty(token)){
+            throw new OrgApiSecurityException("Empty token String cannot be parsed");
+        }
+
+        if(token.startsWith(BEARER_PREFIX)){
+            token = token.substring(7);
+        }
+
         SignedJWT jwt = null;
         try{
             jwt = SignedJWT.parse(token);
@@ -89,7 +99,7 @@ public class JWTUtil {
             JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
             LocalDateTime expiration = LegacyDateConverter.convertDateToLocalDateTime(claimsSet.getExpirationTime());
             LocalDateTime now = LocalDateTime.now();
-            result = now.compareTo(expiration) <= 0;
+            result = now.compareTo(expiration) >= 0;
         }
         catch(ParseException ex){
             throw new OrgApiSecurityException("Unable to validate JSON Web Token expiration", ex);

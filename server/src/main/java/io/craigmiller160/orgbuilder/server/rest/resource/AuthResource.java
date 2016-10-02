@@ -61,10 +61,10 @@ public class AuthResource {
                 RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
                 refreshToken = tokenService.addRefreshToken(refreshToken);
 
-                String token = JWTUtil.generateNewToken(refreshToken.getElementId(), user.getUserEmail(), user.getRoles(), foundOrg.getSchemaName());
+                String token = JWTUtil.generateNewToken(refreshToken.getElementId(), foundUser.getUserEmail(), foundUser.getRoles(), foundOrg.getSchemaName());
                 return Response
                         .ok()
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + token)
                         .build();
             }
         }

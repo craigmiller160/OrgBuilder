@@ -44,7 +44,7 @@ public class JWTUtilTest {
         assertNotNull("Token wasn't validated and returned", jwt);
 
         boolean result = JWTUtil.isTokenExpired(jwt);
-        assertTrue("Token shouldn't be expired", result);
+        assertFalse("Token shouldn't be expired", result);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class JWTUtilTest {
         assertNotNull("Token wasn't validated and returned", jwt);
 
         boolean result = JWTUtil.isTokenExpired(jwt);
-        assertFalse("Token should be expired", result);
+        assertTrue("Token should be expired", result);
     }
 
     @Test
