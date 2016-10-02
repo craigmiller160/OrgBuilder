@@ -31,7 +31,7 @@ public class JdbcManagerTest {
         System.out.println("TIME: " + (end - start));
         Map<Class<? extends Dao>,Map<JdbcManager.Query,String>> mappedQueries = jdbcManager.getMappedQueries();
         assertNotNull("Mapped Queries map is null", mappedQueries);
-        assertEquals("Mapped Queries map has wrong number of child maps", 6, mappedQueries.size());
+        assertEquals("Mapped Queries map has wrong number of child maps", 7, mappedQueries.size());
 
         //OrgDao query tests
         Map<JdbcManager.Query,String> orgDaoQueries = mappedQueries.get(OrgDao.class);
@@ -63,6 +63,11 @@ public class JdbcManagerTest {
         assertNotNull("userDaoQueries map is null", userDaoQueries);
         assertEquals("userDaoQueries map has wrong number of queries", 9, userDaoQueries.size());
 
+        //TokenDao query tests
+        Map<JdbcManager.Query,String> tokenDaoQueries = mappedQueries.get(RefreshTokenDao.class);
+        assertNotNull("tokenDaoQueries map is null", tokenDaoQueries);
+        assertEquals("tokenDaoQueries map has wrong number of queries", 8, tokenDaoQueries.size());
+
         //Schema Scripts tests
         Map<JdbcManager.Schema,List<String>> schemaScripts = jdbcManager.getSchemaScripts();
         List<String> orgSchema = schemaScripts.get(JdbcManager.Schema.ORG_SCHEMA);
@@ -71,7 +76,7 @@ public class JdbcManagerTest {
 
         List<String> appSchema = schemaScripts.get(JdbcManager.Schema.APP_SCHEMA);
         assertNotNull("AppSchema was not loaded", appSchema);
-        assertEquals("AppSchema has wrong number of queries", 4, appSchema.size());
+        assertEquals("AppSchema has wrong number of queries", 5, appSchema.size());
     }
 
 }

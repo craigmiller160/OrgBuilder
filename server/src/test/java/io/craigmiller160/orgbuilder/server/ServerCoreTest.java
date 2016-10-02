@@ -66,7 +66,7 @@ public class ServerCoreTest {
                     while(resultSet.next()){
                         tableCount++;
                     }
-                    assertEquals("Wrong number of tables in org_app schema", 2, tableCount);
+                    assertEquals("Wrong number of tables in org_app schema", 3, tableCount);
                 }
             }
         }

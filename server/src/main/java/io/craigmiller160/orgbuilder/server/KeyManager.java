@@ -2,8 +2,10 @@ package io.craigmiller160.orgbuilder.server;
 
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -33,13 +35,9 @@ public class KeyManager {
     private KeyStore loadKeyStore() throws OrgApiSecurityException{
         KeyStore keyStore = null;
         try{
-            String keystorePath = ServerCore.getProperty(ServerProps.KEYSTORE_PATH);
-            String keystorePass = ServerCore.getProperty(ServerProps.KEYSTORE_PASS);
-            String keystoreType = ServerCore.getProperty(ServerProps.KEYSTORE_TYPE);
-
-            InputStream keystoreStream = getClass().getClassLoader().getResourceAsStream(keystorePath);
-            keyStore = KeyStore.getInstance(keystoreType);
-            keyStore.load(keystoreStream, keystorePass.toCharArray());
+            InputStream keystoreStream = getClass().getClassLoader().getResourceAsStream(ServerCore.getProperty(ServerProps.KEYSTORE_PATH));
+            keyStore = KeyStore.getInstance(ServerCore.getProperty(ServerProps.KEYSTORE_TYPE));
+            keyStore.load(keystoreStream, ServerCore.getProperty(ServerProps.KEYSTORE_PASS).toCharArray());
         }
         catch(KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex){
             throw new OrgApiSecurityException("Unable to load KeyStore", ex);
@@ -55,9 +53,8 @@ public class KeyManager {
     public PrivateKey getTokenPrivateKey() throws OrgApiSecurityException{
         PrivateKey privateKey = null;
         try{
-            String keystorePass = ServerCore.getProperty(ServerProps.KEYSTORE_PASS);
-            String tokenKeyName = ServerCore.getProperty(ServerProps.TOKEN_KEY_NAME);
-            privateKey = (PrivateKey) keystore.getKey(tokenKeyName, keystorePass.toCharArray());
+            privateKey = (PrivateKey) keystore.getKey(ServerCore.getProperty(ServerProps.TOKEN_KEY_NAME),
+                    ServerCore.getProperty(ServerProps.KEYSTORE_PASS).toCharArray());
         }
         catch(KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex){
             throw new OrgApiSecurityException("Unable to retrieve Token PrivateKey from keystore", ex);
@@ -69,8 +66,7 @@ public class KeyManager {
     public PublicKey getTokenPublicKey() throws OrgApiSecurityException{
         PublicKey publicKey = null;
         try{
-            String keystoreKeyName = ServerCore.getProperty(ServerProps.TOKEN_KEY_NAME);
-            Certificate cert = keystore.getCertificate(keystoreKeyName);
+            Certificate cert = keystore.getCertificate(ServerCore.getProperty(ServerProps.TOKEN_KEY_NAME));
             publicKey = cert.getPublicKey();
         }
         catch(KeyStoreException ex){
@@ -80,5 +76,17 @@ public class KeyManager {
         return publicKey;
     }
 
+    public SecretKey getDataSecretKey() throws OrgApiSecurityException{
+        SecretKey secretKey = null;
+        try{
+            secretKey = (SecretKey) keystore.getKey(ServerCore.getProperty(ServerProps.DATA_KEY_NAME),
+                    ServerCore.getProperty(ServerProps.KEYSTORE_PASS).toCharArray());
+        }
+        catch(KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex){
+            throw new OrgApiSecurityException("Unable to retrieve Data SecretKey from keystore", ex);
+        }
+
+        return secretKey;
+    }
 
 }
