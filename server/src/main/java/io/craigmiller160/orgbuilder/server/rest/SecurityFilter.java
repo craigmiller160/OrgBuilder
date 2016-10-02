@@ -1,6 +1,9 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
 import com.nimbusds.jwt.SignedJWT;
+import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.ServerCore;
+import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
@@ -44,55 +47,90 @@ public class SecurityFilter implements ContainerRequestFilter{
         String uri = request.getRequestURI();
         if(POST_METHOD.equals(method) && LOGIN_URI.equals(uri)){
             //Allow call to proceed to AuthResource to authenticate credentials
-            principal = new OrgApiPrincipal();
-            principal.setName("LoginPrincipal");
-            principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
+            principal = handleLogin();
         }
         else{
-            String authString = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-            if(StringUtils.isEmpty(authString)){
-                handleAuthRejected(requestContext, OrgApiSecurityException.class, "Missing access token");
-                return;
-            }
-
-            try {
-                SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(authString);
-                if(JWTUtil.isTokenExpired(jwt)){
-                    //Check for a possible refresh of the token here
-                    TokenService service = factory.newTokenService(null);
-                    RefreshTokenDTO refreshToken = service.getRefreshToken(JWTUtil.getTokenIdClaim(jwt));
-                    String userAgent = requestContext.getHeaderString(HttpHeaders.USER_AGENT);
-                    //If a valid refreshToken exists, and it hasn't expired, re-issue the access token.
-                    if(refreshToken != null && RefreshTokenUtil.isValidRefreshToken(jwt, userAgent, refreshToken.getTokenHash()) &&
-                            refreshToken.getExpiration().compareTo(LocalDateTime.now()) <= 0){
-                        String newToken = JWTUtil.generateNewToken(jwt);
-                        requestContext.getHeaders().remove(HttpHeaders.AUTHORIZATION);
-                        requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
-                    }
-                    else{
-                        handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
-                        return;
-                    }
-                }
-
-                if(!JWTUtil.isTokenIssuedByOrgApi(jwt)){
-                    handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token not issued by OrgBuilder API");
-                    return;
-                }
-
-                principal = new OrgApiPrincipal();
-                principal.setName(JWTUtil.getTokenSubjectClaim(jwt));
-                principal.setSchema(JWTUtil.getTokenSchemaClaim(jwt));
-                principal.setRoles(JWTUtil.getTokenRolesClaim(jwt));
-            } catch (OrgApiSecurityException | OrgApiDataException e) {
-                handleAuthRejected(requestContext, e.getClass(), e.getMessage());
-            }
+            principal = handleTokenValidation(requestContext);
         }
 
+        //If principal is null, authentication was rejected
+        if(principal == null){
+            return;
+        }
 
         OrgApiSecurityContext securityContext = new OrgApiSecurityContext();
         securityContext.setUserPrincipal(principal);
         requestContext.setSecurityContext(securityContext);
+    }
+
+    private OrgApiPrincipal handleTokenValidation(ContainerRequestContext requestContext){
+        String authString = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        if(StringUtils.isEmpty(authString)){
+            handleAuthRejected(requestContext, OrgApiSecurityException.class, "Missing access token");
+            return null;
+        }
+
+        try{
+            SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(authString);
+            if(!JWTUtil.isTokenIssuedByOrgApi(jwt)){
+                handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token not issued by OrgBuilder API");
+                return null;
+            }
+
+            if(JWTUtil.isTokenExpired(jwt)){
+                if(!isRefreshAllowed(requestContext, jwt)){
+                    handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
+                    return null;
+                }
+
+                refreshToken(requestContext, jwt);
+            }
+
+            String newToken = JWTUtil.generateNewToken(jwt);
+            requestContext.getHeaders().remove(HttpHeaders.AUTHORIZATION);
+            requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
+
+            OrgApiPrincipal principal = new OrgApiPrincipal();
+            principal.setName(JWTUtil.getTokenSubjectClaim(jwt));
+            principal.setSchema(JWTUtil.getTokenSchemaClaim(jwt));
+            principal.setRoles(JWTUtil.getTokenRolesClaim(jwt));
+            return principal;
+        }
+        catch(OrgApiException ex){
+            handleAuthRejected(requestContext, ex.getClass(), ex.getMessage());
+        }
+
+        return null;
+    }
+
+    private boolean isRefreshAllowed(ContainerRequestContext requestContext, SignedJWT jwt) throws OrgApiException{
+        String userAgent = requestContext.getHeaderString(HttpHeaders.USER_AGENT);
+        TokenService service = factory.newTokenService(null);
+        RefreshTokenDTO refreshToken = service.getRefreshToken(JWTUtil.getTokenIdClaim(jwt));
+        LocalDateTime accessExpTime = JWTUtil.getTokenExpirationClaim(jwt);
+        LocalDateTime now = LocalDateTime.now();
+        //If a NumberFormatException occurs, then the property is invalid
+        int refreshExpMins = Integer.parseInt(ServerCore.getProperty(ServerProps.REFRESH_EXP_MINS));
+        LocalDateTime cantRefreshAfter = accessExpTime.plusMinutes(refreshExpMins);
+
+        //Refresh token if: token != null, token has valid hash, token max expiration hasn't passed, and the max minutes after access expires hasn't passed
+        return refreshToken != null &&
+                RefreshTokenUtil.isValidRefreshToken(jwt, userAgent, refreshToken.getTokenHash()) &&
+                refreshToken.getExpiration().compareTo(LocalDateTime.now()) <= 0 &&
+                cantRefreshAfter.compareTo(now) <= 0;
+    }
+
+    private void refreshToken(ContainerRequestContext requestContext, SignedJWT jwt) throws OrgApiException{
+        String newToken = JWTUtil.generateNewToken(jwt);
+        requestContext.getHeaders().remove(HttpHeaders.AUTHORIZATION);
+        requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
+    }
+
+    private OrgApiPrincipal handleLogin(){
+        OrgApiPrincipal principal = new OrgApiPrincipal();
+        principal.setName("LoginPrincipal");
+        principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
+        return principal;
     }
 
     private void handleAuthRejected(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage){
