@@ -18,6 +18,7 @@ public class ServerProps {
     public static final String DEV_EMAIL = "io.craigmiller160.orgbuilder.server.devEmail";
 
     public static final String KEYSTORE_PATH = "io.craigmiller160.orgbuilder.server.keystore.storePath";
+    public static final String KEYSTORE_TYPE = "io.craigmiller160.orgbuilder.server.keystore.storeType";
     public static final String TOKEN_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.tokenKeyName";
     public static final String DATA_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.dataKeyName";
     public static final String KEYSTORE_PASS = "io.craigmiller160.orgbuilder.server.keystore.storePass";
