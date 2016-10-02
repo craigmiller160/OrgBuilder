@@ -24,7 +24,16 @@ public class ServiceCommons {
         this.useAppSchema = useAppSchema;
         this.dataManager = ServerCore.getOrgDataManager();
         this.securityContext = securityContext;
-        this.schemaName = ((OrgApiPrincipal) securityContext.getUserPrincipal()).getSchema();
+        if(securityContext != null){
+            this.schemaName = ((OrgApiPrincipal) securityContext.getUserPrincipal()).getSchema();
+        }
+        else if(useAppSchema){
+            //If securityContext is null, but useAppSchema is selected, allow the schemaName to be null
+            this.schemaName = null;
+        }
+        else{
+            throw new IllegalArgumentException("Cannot access an Org schema with a null SecurityContext");
+        }
     }
 
     public final DataConnection newConnection() throws OrgApiDataException {

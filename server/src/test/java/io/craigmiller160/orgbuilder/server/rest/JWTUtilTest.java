@@ -2,13 +2,9 @@ package io.craigmiller160.orgbuilder.server.rest;
 
 import com.nimbusds.jwt.SignedJWT;
 import io.craigmiller160.orgbuilder.server.ServerCore;
-import io.craigmiller160.orgbuilder.server.util.LegacyDateConverter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -16,19 +12,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import static io.craigmiller160.orgbuilder.server.rest.TokenTestUtils.*;
+
 /**
  * Created by craig on 10/2/16.
  */
 public class JWTUtilTest {
-
-    private static final String SCHEMA_NAME = "TestSchema";
-    private static final String USER_NAME = "Bob";
-    private static final String ROLE_0 = "Me";
-    private static final String ROLE_1 = "You";
-    private static final Set<String> roles = new HashSet<String>(){{
-        add(ROLE_0);
-        add(ROLE_1);
-    }};
 
     @BeforeClass
     public static void setUp(){
@@ -107,13 +96,6 @@ public class JWTUtilTest {
         long tokenId = JWTUtil.getTokenIdClaim(jwt);
         assertTrue("Token ID claim wasn't returned", tokenId > 0);
         assertEquals("Wrong Token ID claim value returned", tokenId, 1);
-    }
-
-    private String generateToken(boolean isExpired) throws Exception{
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime exp = isExpired ? now.minusMinutes(20) : now.plusMinutes(20);
-        Date expiration = LegacyDateConverter.convertLocalDateTimeToDate(exp);
-        return JWTUtil.generateNewToken(1, USER_NAME, roles, SCHEMA_NAME, expiration);
     }
 
 }

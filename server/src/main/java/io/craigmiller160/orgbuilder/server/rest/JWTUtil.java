@@ -54,6 +54,14 @@ public class JWTUtil {
         return generateNewToken(tokenId, username, roles, schema, expiration);
     }
 
+    public static String generateNewToken(SignedJWT jwt) throws OrgApiSecurityException{
+        long tokenId = getTokenIdClaim(jwt);
+        String username = getTokenSubjectClaim(jwt);
+        Set<String> roles = getTokenRolesClaim(jwt);
+        String schema = getTokenSchemaClaim(jwt);
+        return generateNewToken(tokenId, username, roles, schema);
+    }
+
     static String generateNewToken(long tokenId, String username, Set<String> roles, String schema, Date expiration) throws OrgApiSecurityException{
         String token = null;
         try{

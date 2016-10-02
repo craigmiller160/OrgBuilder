@@ -8,6 +8,7 @@ import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.rest.JWTUtil;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
+import io.craigmiller160.orgbuilder.server.rest.RefreshTokenUtil;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
@@ -57,7 +58,7 @@ public class AuthResource {
                 //If a NumberFormatException ever happens here, the property is invalid
                 int refreshExpHrs = Integer.parseInt(ServerCore.getProperty(ServerProps.REFRESH_MAX_EXP_HRS));
                 LocalDateTime expiration = LocalDateTime.now().plusHours(refreshExpHrs);
-                String userAgentHash = HashingUtils.hashSHA256(foundUser.getElementId() + foundUser.getUserEmail() + userAgent);
+                String userAgentHash = RefreshTokenUtil.generateRefreshTokenHash(foundUser.getUserEmail(), userAgent);
                 RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
                 refreshToken = tokenService.addRefreshToken(refreshToken);
 

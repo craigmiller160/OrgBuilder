@@ -1,9 +1,13 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
 import com.nimbusds.jwt.SignedJWT;
+import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
+import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
+import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
+import io.craigmiller160.orgbuilder.server.service.TokenService;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Priority;
@@ -16,6 +20,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * Created by craig on 9/4/16.
@@ -26,6 +31,7 @@ public class SecurityFilter implements ContainerRequestFilter{
 
     private static final String POST_METHOD = "POST";
     private static final String LOGIN_URI = "/orgapi/auth";
+    private static final ServiceFactory factory = ServiceFactory.newInstance();
 
     @Context
     HttpServletRequest request;
@@ -52,9 +58,21 @@ public class SecurityFilter implements ContainerRequestFilter{
             try {
                 SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(authString);
                 if(JWTUtil.isTokenExpired(jwt)){
-                    //TODO attempt to refresh the token here
-                    handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
-                    return;
+                    //Check for a possible refresh of the token here
+                    TokenService service = factory.newTokenService(null);
+                    RefreshTokenDTO refreshToken = service.getRefreshToken(JWTUtil.getTokenIdClaim(jwt));
+                    String userAgent = requestContext.getHeaderString(HttpHeaders.USER_AGENT);
+                    //If a valid refreshToken exists, and it hasn't expired, re-issue the access token.
+                    if(refreshToken != null && RefreshTokenUtil.isValidRefreshToken(jwt, userAgent, refreshToken.getTokenHash()) &&
+                            refreshToken.getExpiration().compareTo(LocalDateTime.now()) <= 0){
+                        String newToken = JWTUtil.generateNewToken(jwt);
+                        requestContext.getHeaders().remove(HttpHeaders.AUTHORIZATION);
+                        requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
+                    }
+                    else{
+                        handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
+                        return;
+                    }
                 }
 
                 if(!JWTUtil.isTokenIssuedByOrgApi(jwt)){
@@ -66,7 +84,7 @@ public class SecurityFilter implements ContainerRequestFilter{
                 principal.setName(JWTUtil.getTokenSubjectClaim(jwt));
                 principal.setSchema(JWTUtil.getTokenSchemaClaim(jwt));
                 principal.setRoles(JWTUtil.getTokenRolesClaim(jwt));
-            } catch (OrgApiSecurityException e) {
+            } catch (OrgApiSecurityException | OrgApiDataException e) {
                 handleAuthRejected(requestContext, e.getClass(), e.getMessage());
             }
         }
