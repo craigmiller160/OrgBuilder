@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgListDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
@@ -26,6 +27,7 @@ public class OrgService {
         DataConnection connection = null;
         OrgDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Adding new org. Subject: " + serviceCommons.getSubjectName());
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
@@ -47,6 +49,8 @@ public class OrgService {
         DataConnection connection = null;
         OrgDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Updating existing org. Subject: " + serviceCommons.getSubjectName() +
+                    " | ID: " + orgId);
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
@@ -68,6 +72,8 @@ public class OrgService {
         DataConnection connection = null;
         OrgDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Deleting org. Subject: " + serviceCommons.getSubjectName() +
+                    " | ID: " + orgId);
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
@@ -89,6 +95,8 @@ public class OrgService {
         DataConnection connection = null;
         OrgDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Retrieving org by ID. Subject: " + serviceCommons.getSubjectName() +
+                    " | ID: " + orgId);
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
@@ -109,6 +117,7 @@ public class OrgService {
         DataConnection connection = null;
         OrgListDTO results = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Getting list of orgs. Subject: " + serviceCommons.getSubjectName());
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 

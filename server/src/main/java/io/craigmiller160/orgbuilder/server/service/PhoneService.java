@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.service;
 import io.craigmiller160.orgbuilder.server.data.*;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneListDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
@@ -24,6 +25,8 @@ public class PhoneService {
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Adding new phone. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
@@ -46,6 +49,8 @@ public class PhoneService {
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Updating existing phone. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + phoneId + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
@@ -66,6 +71,8 @@ public class PhoneService {
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Deleting phone. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + phoneId);
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
@@ -86,6 +93,8 @@ public class PhoneService {
         DataConnection connection = null;
         PhoneDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Retrieving phone by ID and member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + phoneId + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 
@@ -106,6 +115,8 @@ public class PhoneService {
         DataConnection connection = null;
         PhoneListDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Getting list of phones for member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
 

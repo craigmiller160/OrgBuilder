@@ -16,6 +16,7 @@ import javax.ws.rs.core.SecurityContext;
 public class ServiceCommons {
 
     private final String schemaName;
+    private final String subjectName;
     private final OrgDataManager dataManager;
     private final SecurityContext securityContext;
     private final boolean useAppSchema;
@@ -26,14 +27,19 @@ public class ServiceCommons {
         this.securityContext = securityContext;
         if(securityContext != null){
             this.schemaName = ((OrgApiPrincipal) securityContext.getUserPrincipal()).getSchema();
-        }
-        else if(useAppSchema){
-            //If securityContext is null, but useAppSchema is selected, allow the schemaName to be null
-            this.schemaName = null;
+            this.subjectName = securityContext.getUserPrincipal().getName();
         }
         else{
             throw new IllegalArgumentException("Cannot access an Org schema with a null SecurityContext");
         }
+    }
+
+    public String getSchemaName(){
+        return schemaName;
+    }
+
+    public String getSubjectName(){
+        return subjectName;
     }
 
     public final DataConnection newConnection() throws OrgApiDataException {

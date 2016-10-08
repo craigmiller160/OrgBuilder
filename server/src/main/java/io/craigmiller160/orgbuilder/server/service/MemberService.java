@@ -1,14 +1,13 @@
 package io.craigmiller160.orgbuilder.server.service;
 
-import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.*;
-import io.craigmiller160.orgbuilder.server.data.jdbc.SearchQuery;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.DTO;
 import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.rest.MemberFilterBean;
 
 import javax.ws.rs.core.SecurityContext;
@@ -67,6 +66,8 @@ public class MemberService {
         DataConnection connection = null;
         MemberDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Updating existing member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + id);
             connection = serviceCommons.newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
 
@@ -90,6 +91,8 @@ public class MemberService {
         DataConnection connection = null;
         MemberDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Adding new member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName());
             connection = serviceCommons.newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             result = memberDao.insert(member);
@@ -112,6 +115,8 @@ public class MemberService {
         DataConnection connection = null;
         MemberDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Deleting member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + memberId);
             connection = serviceCommons.newConnection();
             MemberDTO tempResult = new MemberDTO();
             deleteJoinedEntities(memberId, tempResult, connection);
@@ -139,6 +144,8 @@ public class MemberService {
         DataConnection connection = null;
         MemberDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Retrieving member by ID. Subject: " + serviceCommons.getSubjectName() +
+                    " Schema: " + serviceCommons.getSchemaName() + " | ID: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
@@ -175,9 +182,13 @@ public class MemberService {
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             List<MemberDTO> list = null;
             if(memberFilterBean.isSearch()){
+                OrgApiLogger.getServiceLogger().debug("Getting list of members that match search parameters. Subject: " + serviceCommons.getSubjectName() +
+                        " | Schema: " + serviceCommons.getSchemaName());
                 list = (List<MemberDTO>) memberDao.query(AdditionalQueries.SEARCH, memberFilterBean);
             }
             else{
+                OrgApiLogger.getServiceLogger().debug("Getting list of members. Subject: " + serviceCommons.getSubjectName() +
+                        " | Schema: " + serviceCommons.getSchemaName());
                 list = (offset >= 0 && size >= 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
             }
 

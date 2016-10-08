@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.service;
 import io.craigmiller160.orgbuilder.server.data.*;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.AddressListDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
@@ -24,6 +25,8 @@ public class AddressService {
         DataConnection connection = null;
         AddressDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Adding new address. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 
@@ -46,6 +49,8 @@ public class AddressService {
         DataConnection connection = null;
         AddressDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Updating existing address. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + addressId + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 
@@ -66,6 +71,8 @@ public class AddressService {
         DataConnection connection = null;
         AddressDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Deleting address. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + addressId);
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 
@@ -86,6 +93,8 @@ public class AddressService {
         DataConnection connection = null;
         AddressDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Retrieving address by ID and member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + addressId + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 
@@ -106,6 +115,8 @@ public class AddressService {
         DataConnection connection = null;
         AddressListDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Getting list of addresses for member. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | MemberId: " + memberId);
             connection = serviceCommons.newConnection();
             Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
 

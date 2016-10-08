@@ -57,6 +57,7 @@ public class ServerCore implements ServletContextListener{
                 orgDataSource = new OrgDataSource();
                 orgDataManager = new OrgDataManager(orgDataSource);
                 orgDataManager.createDefaultAppSchema();
+                OrgApiLogger.getServerLogger().info("Database utilities configured");
             }
             catch(OrgApiDataException ex){
                 throw new OrgApiException("Unable to load and execute DDL scripts", ex);
@@ -64,6 +65,7 @@ public class ServerCore implements ServletContextListener{
 
             OrgApiLogger.getServerLogger().debug("Loading KeyStore");
             keyManager = new KeyManager();
+            OrgApiLogger.getServerLogger().info("KeyStore loaded");
         }
         catch(OrgApiException ex){
             throw new RuntimeException("CRITICAL ERROR!!! Unable to properly initialize the SeverCore", ex);

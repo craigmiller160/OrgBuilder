@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.util.HashingUtils;
 
 import javax.ws.rs.core.SecurityContext;
@@ -16,10 +17,6 @@ import java.util.List;
  */
 
 public class UserService {
-
-    //TODO when adding a new user, must first check if that user exists... or maybe just rely on unique constraint on table... or maybe on the forthcoming search functionality...
-
-    //TODO when adding or updating a user, the password must be hashed
 
     private final ServiceCommons serviceCommons;
 
@@ -33,6 +30,7 @@ public class UserService {
         DataConnection connection = null;
         UserDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Adding new user. Subject: " + serviceCommons.getSubjectName());
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
@@ -55,6 +53,8 @@ public class UserService {
         DataConnection connection = null;
         UserDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Updating existing user. Subject: " + serviceCommons.getSubjectName() +
+                    " | ID: " + userId);
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
@@ -76,6 +76,8 @@ public class UserService {
         DataConnection connection = null;
         UserDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Deleting user. Subject: " + serviceCommons.getSubjectName() +
+                    " | ID: " + userId);
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
@@ -97,6 +99,8 @@ public class UserService {
         DataConnection connection = null;
         UserDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Retrieving user by ID. Subject: " + serviceCommons.getSubjectName() +
+                    " | ID: " + userId);
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
@@ -118,6 +122,7 @@ public class UserService {
         DataConnection connection = null;
         UserListDTO results = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Getting list of users. Subject: " + serviceCommons.getSubjectName());
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 

@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import javax.ws.rs.core.SecurityContext;
 
@@ -14,6 +15,8 @@ public class TokenService {
 
     private final ServiceCommons serviceCommons;
 
+    //TODO make sure proper access restrictions are ultimately placed on this service
+
     TokenService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, true);
     }
@@ -23,6 +26,8 @@ public class TokenService {
         DataConnection connection = null;
         RefreshTokenDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Adding new refresh token. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName());
             connection = serviceCommons.newConnection();
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 
@@ -44,6 +49,8 @@ public class TokenService {
         DataConnection connection = null;
         RefreshTokenDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Deleting refresh token. Subject: " + serviceCommons.getSubjectName() +
+                    " | Schema: " + serviceCommons.getSchemaName() + " | ID: " + tokenId);
             connection = serviceCommons.newConnection();
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 
@@ -65,6 +72,8 @@ public class TokenService {
         DataConnection connection = null;
         RefreshTokenDTO result = null;
         try{
+            OrgApiLogger.getServiceLogger().debug("Retrieving refresh token by ID. Subject: " + serviceCommons.getSubjectName() +
+                    " Schema: " + serviceCommons.getSchemaName() + " | ID: " + tokenId);
             connection = serviceCommons.newConnection();
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 

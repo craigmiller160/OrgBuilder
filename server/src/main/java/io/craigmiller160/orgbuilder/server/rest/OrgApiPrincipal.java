@@ -13,6 +13,14 @@ public class OrgApiPrincipal implements Principal {
     private String name;
     private String schema;
 
+    /**
+     * {@inheritDoc}
+     *
+     * This returns the full principal
+     * name, in the format "orgName::userName".
+     *
+     * @return the full principal name.
+     */
     @Override
     public String getName() {
         return name;

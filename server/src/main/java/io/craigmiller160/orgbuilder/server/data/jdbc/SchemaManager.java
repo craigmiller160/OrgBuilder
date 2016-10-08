@@ -55,10 +55,13 @@ public class SchemaManager {
     }
 
     public void createSchema(Connection connection, String schemaName, boolean isAppSchema, boolean failIfExists) throws OrgApiDataException{
-        OrgApiLogger.getDataLogger().debug("Creating schema. App Schema: " + isAppSchema + " Schema Name: " + schemaName);
+        OrgApiLogger.getDataLogger().debug("Trying to create schema. Is App Schema: " + isAppSchema + " | Schema Name: " + schemaName);
         if(schemaExists(connection, schemaName)){
             if(failIfExists){
-                throw new OrgApiDataException("Schema already exists. Schema Name: " + schemaName);
+                throw new OrgApiDataException("Error! Schema already exists. Is App Schema: " + isAppSchema + " | Schema Name: " + schemaName);
+            }
+            else{
+                OrgApiLogger.getDataLogger().debug("Schema already exists, skipping creation. Is App Schema: " + isAppSchema + " | Schema Name: " + schemaName);
             }
             return;
         }
@@ -77,6 +80,8 @@ public class SchemaManager {
             for(String query : schemaScript){
                 stmt.executeUpdate(query);
             }
+
+            OrgApiLogger.getDataLogger().info("Schema created successfully. Is App Schema: " + isAppSchema + " | Schema Name: " + schemaName);
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to create schema. Schema Name: " + schemaName, ex);
