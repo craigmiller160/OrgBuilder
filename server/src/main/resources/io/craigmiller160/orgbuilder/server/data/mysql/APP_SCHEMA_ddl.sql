@@ -3,7 +3,7 @@
 CREATE TABLE IF NOT EXISTS orgs (
   org_id BIGINT NOT NULL AUTO_INCREMENT,
   org_name VARCHAR(255) NOT NULL,
-  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   org_schema_name VARCHAR(50) NOT NULL,
   PRIMARY KEY (org_id)
 );
@@ -35,6 +35,8 @@ CREATE TRIGGER orgs_before_schema_name_trigger
 BEFORE INSERT ON orgs FOR EACH ROW
   BEGIN
     DECLARE next_index INT;
+    DECLARE temp_schema_name VARCHAR(6);
+
     SET next_index =
     (SELECT auto_increment
      FROM information_schema.tables
@@ -45,5 +47,6 @@ BEFORE INSERT ON orgs FOR EACH ROW
       SET next_index = 0;
     END IF;
 
-    SET NEW.org_schema_name = CONCAT(next_index, SUBSTRING(NEW.org_name,1,5));
+    SET temp_schema_name = CONCAT(next_index, SUBSTRING(NEW.org_name,1,5));
+    SET NEW.org_schema_name = REPLACE(temp_schema_name, ' ','_');
   END ;;

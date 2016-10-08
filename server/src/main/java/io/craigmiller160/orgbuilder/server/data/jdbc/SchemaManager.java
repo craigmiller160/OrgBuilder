@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,17 +24,19 @@ public class SchemaManager {
             "FROM information_schema.schemata " +
             "WHERE schema_name = ?;";
 
+    //TODO figure out if there's a way to improve these queries for SQL injection
+
     private static final String CREATE_SCHEMA_SQL =
-            "create schema %1$s;";
+            "CREATE SCHEMA %1$s;";
 
     private static final String USE_SCHEMA_SQL =
-            "use %1$s;";
+            "USE %1$s;";
 
     private static final String SHOW_TABLES_SQL =
-            "show tables from %1$s;";
+            "SHOW TABLES FROM %1$s;";
 
     private static final String DELETE_SCHEMA_SQL =
-            "drop schema if exists %1$s;";
+            "DROP SCHEMA IF EXISTS %1$s;";
 
     private final JdbcManager jdbcManager;
 

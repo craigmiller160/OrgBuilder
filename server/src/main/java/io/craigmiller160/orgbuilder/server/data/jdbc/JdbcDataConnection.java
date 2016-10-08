@@ -85,4 +85,8 @@ public class JdbcDataConnection implements DataConnection {
             throw new OrgApiDataException("Unable to close database connection", ex);
         }
     }
+
+    public Connection getConnectionObject() {
+        return connection;
+    }
 }

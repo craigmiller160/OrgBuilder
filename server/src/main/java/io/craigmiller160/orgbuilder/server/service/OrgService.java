@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgListDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
@@ -78,7 +79,10 @@ public class OrgService {
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
             result = orgDao.delete(orgId);
-            ServerCore.getOrgDataManager().deleteSchema(result.getSchemaName(), true);
+            if(result != null){
+                ServerCore.getOrgDataManager().getSchemaManager()
+                        .deleteSchema(((JdbcDataConnection) connection).getConnectionObject(), result.getSchemaName(), true);
+            }
 
             connection.commit();
         }

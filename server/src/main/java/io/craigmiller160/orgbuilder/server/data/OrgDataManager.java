@@ -23,15 +23,15 @@ public class OrgDataManager {
         this.schemaManager = new SchemaManager(jdbcManager);
     }
 
-    OrgDataSource getDataSource(){
+    public OrgDataSource getDataSource(){
         return dataSource;
     }
 
-    SchemaManager getSchemaManager(){
+    public SchemaManager getSchemaManager(){
         return schemaManager;
     }
 
-    JdbcManager getJdbcManager(){
+    public JdbcManager getJdbcManager(){
         return jdbcManager;
     }
 
