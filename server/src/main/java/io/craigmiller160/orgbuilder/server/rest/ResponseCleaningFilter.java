@@ -31,12 +31,5 @@ public class ResponseCleaningFilter implements ContainerResponseFilter{
             ((UserListDTO) entity).getUserList()
                     .forEach((e) -> e.setPassword(null));
         }
-        else if(entity instanceof OrgDTO){
-            ((OrgDTO) entity).setSchemaName(null);
-        }
-        else if(entity instanceof OrgListDTO){
-            ((OrgListDTO) entity).getOrgList()
-                    .forEach((e) -> e.setSchemaName(null));
-        }
     }
 }

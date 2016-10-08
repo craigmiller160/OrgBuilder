@@ -4,7 +4,6 @@ import com.nimbusds.jwt.SignedJWT;
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
-import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
@@ -47,7 +46,7 @@ public class SecurityFilter implements ContainerRequestFilter{
         String uri = request.getRequestURI();
         if(POST_METHOD.equals(method) && LOGIN_URI.equals(uri)){
             //Allow call to proceed to AuthResource to authenticate credentials
-            principal = handleLogin();
+            principal = createLoginPrincipal();
         }
         else{
             principal = handleTokenValidation(requestContext);
@@ -105,7 +104,7 @@ public class SecurityFilter implements ContainerRequestFilter{
 
     private boolean isRefreshAllowed(ContainerRequestContext requestContext, SignedJWT jwt) throws OrgApiException{
         String userAgent = requestContext.getHeaderString(HttpHeaders.USER_AGENT);
-        TokenService service = factory.newTokenService(null);
+        TokenService service = factory.newTokenService(createTokenSecurityContext());
         RefreshTokenDTO refreshToken = service.getRefreshToken(JWTUtil.getTokenIdClaim(jwt));
         LocalDateTime accessExpTime = JWTUtil.getTokenExpirationClaim(jwt);
         LocalDateTime now = LocalDateTime.now();
@@ -116,7 +115,7 @@ public class SecurityFilter implements ContainerRequestFilter{
         //Refresh token if: token != null, token has valid hash, token max expiration hasn't passed, and the max minutes after access expires hasn't passed
         return refreshToken != null &&
                 RefreshTokenUtil.isValidRefreshToken(jwt, userAgent, refreshToken.getTokenHash()) &&
-                refreshToken.getExpiration().compareTo(LocalDateTime.now()) <= 0 &&
+                refreshToken.getExpiration().compareTo(now) >= 0 &&
                 cantRefreshAfter.compareTo(now) <= 0;
     }
 
@@ -126,12 +125,22 @@ public class SecurityFilter implements ContainerRequestFilter{
         requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
     }
 
-    private OrgApiPrincipal handleLogin(){
+    private OrgApiPrincipal createLoginPrincipal(){
         OrgApiPrincipal principal = new OrgApiPrincipal();
         principal.setName("Login");
         principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
         principal.getRoles().add(Role.MASTER);
         return principal;
+    }
+
+    private OrgApiSecurityContext createTokenSecurityContext(){
+        OrgApiPrincipal principal = new OrgApiPrincipal();
+        principal.setName("Token");
+        principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
+        principal.getRoles().add(Role.MASTER);
+        OrgApiSecurityContext securityContext = new OrgApiSecurityContext();
+        securityContext.setUserPrincipal(principal);
+        return securityContext;
     }
 
     private void handleAuthRejected(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage){
