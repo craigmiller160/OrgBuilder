@@ -14,6 +14,9 @@ public class TokenTestUtils {
 
     public static final String SCHEMA_NAME = "TestSchema";
     public static final String USER_NAME = "Bob";
+    public static final String ORG_NAME = "TestOrg";
+    public static final long USER_ID = 101;
+    public static final long ORG_ID = 201;
     public static final String ROLE_0 = "Me";
     public static final String ROLE_1 = "You";
     public static final Set<String> roles = new HashSet<String>(){{
@@ -25,7 +28,7 @@ public class TokenTestUtils {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime exp = isExpired ? now.minusMinutes(20) : now.plusMinutes(20);
         Date expiration = LegacyDateConverter.convertLocalDateTimeToDate(exp);
-        return JWTUtil.generateNewToken(1, USER_NAME, roles, SCHEMA_NAME, expiration);
+        return JWTUtil.generateNewToken(1, JWTUtil.combineUserNameOrgName(USER_NAME, ORG_NAME), 101, 201, SCHEMA_NAME, roles, expiration);
     }
 
 }

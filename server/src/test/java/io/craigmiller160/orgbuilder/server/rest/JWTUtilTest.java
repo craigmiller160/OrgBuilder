@@ -85,13 +85,14 @@ public class JWTUtilTest {
     @Test
     public void testGetTokenSubjectClaim() throws Exception{
         String token = generateToken(false);
+        String actualSubject = JWTUtil.combineUserNameOrgName(USER_NAME, ORG_NAME);
 
         SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(token);
         assertNotNull("Token wasn't validated and returned", jwt);
 
         String subject = JWTUtil.getTokenSubjectClaim(jwt);
         assertNotNull("Token subject claim wasn't returned", subject);
-        assertEquals("Wrong subject claim value returned", USER_NAME, subject);
+        assertEquals("Wrong subject claim value returned", actualSubject, subject);
     }
 
     @Test
@@ -104,6 +105,30 @@ public class JWTUtilTest {
         long tokenId = JWTUtil.getTokenIdClaim(jwt);
         assertTrue("Token ID claim wasn't returned", tokenId > 0);
         assertEquals("Wrong Token ID claim value returned", tokenId, 1);
+    }
+
+    @Test
+    public void testGetUserIdClaim() throws Exception{
+        String token = generateToken(false);
+
+        SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(token);
+        assertNotNull("Token wasn't validated and returned", jwt);
+
+        long userId = JWTUtil.getTokenUserIdClaim(jwt);
+        assertTrue("Token userId claim wasn't returned", userId > 0);
+        assertEquals("Wrong Token userId claim value returned", userId, USER_ID);
+    }
+
+    @Test
+    public void testGetOrgIdClaim() throws Exception{
+        String token = generateToken(false);
+
+        SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(token);
+        assertNotNull("Token wasn't validated and returned", jwt);
+
+        long orgId = JWTUtil.getTokenOrgIdClaim(jwt);
+        assertTrue("Token orgId claim wasn't returned", orgId > 0);
+        assertEquals("Wrong Token orgId claim value returned", orgId, ORG_ID);
     }
 
 }

@@ -45,6 +45,7 @@ public class JdbcDataConnectionTest {
 
     @AfterClass
     public static void tearDown() throws Exception{
+        ServerCore.getOrgDataManager().deleteSchema(TEST_SCHEMA, true);
         serverCore.contextDestroyed(null);
     }
 
@@ -100,11 +101,6 @@ public class JdbcDataConnectionTest {
             assertEquals("Count after rollback invalid", 0, count);
 
         }
-    }
-
-    @AfterClass
-    public static void destroy() throws Exception{
-        ServerCore.getOrgDataManager().deleteSchema(TEST_SCHEMA, true);
     }
 
 }

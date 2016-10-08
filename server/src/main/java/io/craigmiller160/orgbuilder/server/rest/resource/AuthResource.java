@@ -62,7 +62,15 @@ public class AuthResource {
                 RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
                 refreshToken = tokenService.addRefreshToken(refreshToken);
 
-                String token = JWTUtil.generateNewToken(refreshToken.getElementId(), foundUser.getUserEmail(), foundUser.getRoles(), foundOrg.getSchemaName());
+                String token = JWTUtil.generateNewToken(
+                        refreshToken.getElementId(),
+                        foundUser.getUserEmail(),
+                        foundOrg.getOrgName(),
+                        foundUser.getElementId(),
+                        foundOrg.getElementId(),
+                        foundOrg.getSchemaName(),
+                        foundUser.getRoles()
+                );
                 return Response
                         .ok()
                         .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + token)
