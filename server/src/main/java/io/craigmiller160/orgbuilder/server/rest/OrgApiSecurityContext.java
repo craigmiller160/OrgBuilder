@@ -33,7 +33,11 @@ public class OrgApiSecurityContext implements SecurityContext {
     }
 
     public String getSchema(){
-        return principal.getSchema();
+        return principal != null ? principal.getSchema() : null;
+    }
+
+    public boolean isAuthorizedForAppSchema(){
+        return principal != null && (principal.isUserInRole(Role.MASTER) || principal.isUserInRole(Role.ADMIN));
     }
 
     @Override

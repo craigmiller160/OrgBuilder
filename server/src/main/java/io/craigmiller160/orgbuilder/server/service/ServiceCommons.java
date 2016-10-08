@@ -22,16 +22,19 @@ public class ServiceCommons {
     private final boolean useAppSchema;
 
     public ServiceCommons(SecurityContext securityContext, boolean useAppSchema){
+        if(securityContext == null){
+            throw new IllegalArgumentException("No SecurityContext provided");
+        }
+
+        if(!((OrgApiSecurityContext) securityContext).isAuthorizedForAppSchema() && useAppSchema){
+            throw new IllegalArgumentException("Not authorized to access the APP_SCHEMA");
+        }
+
         this.useAppSchema = useAppSchema;
         this.dataManager = ServerCore.getOrgDataManager();
         this.securityContext = securityContext;
-        if(securityContext != null){
-            this.schemaName = ((OrgApiPrincipal) securityContext.getUserPrincipal()).getSchema();
-            this.subjectName = securityContext.getUserPrincipal().getName();
-        }
-        else{
-            throw new IllegalArgumentException("Cannot access an Org schema with a null SecurityContext");
-        }
+        this.schemaName = ((OrgApiPrincipal) securityContext.getUserPrincipal()).getSchema();
+        this.subjectName = securityContext.getUserPrincipal().getName();
     }
 
     public String getSchemaName(){
