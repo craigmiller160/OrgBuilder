@@ -8,7 +8,9 @@ import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -37,18 +39,25 @@ public class OrgApiExceptionMapper implements ExceptionMapper<Throwable> {
         return Response
                 .status(error.getStatusCode())
                 .entity(error)
+                .type(MediaType.APPLICATION_JSON)
                 .build();
     }
 
     private int getStatusCodeForExceptionType(Throwable t){
         if(t instanceof OrgApiSecurityException){
-            return Response.Status.FORBIDDEN.getStatusCode();
+            return Response.Status.UNAUTHORIZED.getStatusCode();
         }
-        else if(t instanceof OrgApiInvalidRequestException | t instanceof ForbiddenException){
+        else if(t instanceof OrgApiInvalidRequestException){
             return Response.Status.BAD_REQUEST.getStatusCode();
         }
-        if(t instanceof OrgApiDataException || t instanceof OrgApiException){
+        else if(t instanceof OrgApiDataException || t instanceof OrgApiException){
             return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
+        }
+        else if(t instanceof ForbiddenException){
+            return Response.Status.FORBIDDEN.getStatusCode();
+        }
+        else if(t instanceof NotFoundException){
+            return Response.Status.NOT_FOUND.getStatusCode();
         }
         return Response.Status.INTERNAL_SERVER_ERROR.getStatusCode();
     }

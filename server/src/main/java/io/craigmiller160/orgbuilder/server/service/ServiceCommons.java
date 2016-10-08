@@ -8,6 +8,7 @@ import io.craigmiller160.orgbuilder.server.rest.OrgApiPrincipal;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiSecurityContext;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.SecurityContext;
 
 /**
@@ -26,8 +27,8 @@ public class ServiceCommons {
             throw new IllegalArgumentException("No SecurityContext provided");
         }
 
-        if(!((OrgApiSecurityContext) securityContext).isAuthorizedForAppSchema() && useAppSchema){
-            throw new IllegalArgumentException("Not authorized to access the APP_SCHEMA");
+        if(!((OrgApiPrincipal) securityContext.getUserPrincipal()).isAuthorizedForAppSchema() && useAppSchema){
+            throw new ForbiddenException("Not authorized to access the APP_SCHEMA");
         }
 
         this.useAppSchema = useAppSchema;

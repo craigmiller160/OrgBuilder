@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
   user_email VARCHAR(255) NOT NULL UNIQUE,
   passwd VARCHAR(255) NOT NULL,
   role VARCHAR(255) NOT NULL,
-  org_id BIGINT NOT NULL,
+  org_id BIGINT,
   PRIMARY KEY (user_id),
   FOREIGN KEY (org_id) REFERENCES orgs (org_id)
 );

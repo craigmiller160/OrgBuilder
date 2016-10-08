@@ -130,6 +130,7 @@ public class SecurityFilter implements ContainerRequestFilter{
         OrgApiPrincipal principal = new OrgApiPrincipal();
         principal.setName("Login");
         principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
+        principal.getRoles().add(Role.MASTER);
         return principal;
     }
 

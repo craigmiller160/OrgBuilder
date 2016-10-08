@@ -49,4 +49,8 @@ public class OrgApiPrincipal implements Principal {
     public void setSchema(String schema) {
         this.schema = schema;
     }
+
+    public boolean isAuthorizedForAppSchema(){
+        return isUserInRole(Role.MASTER) || isUserInRole(Role.ADMIN);
+    }
 }
