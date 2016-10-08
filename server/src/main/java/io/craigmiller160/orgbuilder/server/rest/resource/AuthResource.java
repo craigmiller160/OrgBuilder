@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.rest.JWTUtil;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.RefreshTokenUtil;
@@ -22,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -51,41 +53,43 @@ public class AuthResource {
 
         UserService userService = factory.newUserService(securityContext);
         UserDTO foundUser = userService.getUserByName(user.getUserEmail());
-        if(foundUser != null){
-            OrgService orgService = factory.newOrgService(securityContext);
-            TokenService tokenService = factory.newTokenService(securityContext);
-
-            if(HashingUtils.verifyBCryptHash(user.getPassword(), foundUser.getPassword())){
-                //If a NumberFormatException ever happens here, the property is invalid
-                int refreshExpHrs = Integer.parseInt(ServerCore.getProperty(ServerProps.REFRESH_MAX_EXP_HRS));
-                LocalDateTime expiration = LocalDateTime.now().plusHours(refreshExpHrs);
-                String userAgentHash = RefreshTokenUtil.generateRefreshTokenHash(foundUser.getUserEmail(), userAgent);
-                RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
-                refreshToken = tokenService.addRefreshToken(refreshToken);
-
-                OrgDTO foundOrg = orgService.getOrg(foundUser.getOrgId());
-                if(foundOrg == null && !foundUser.getRoles().contains(Role.MASTER)){
-                    throw new OrgApiSecurityException("User is not assigned to an org and doesn't have master access");
-                }
-
-                String token = JWTUtil.generateNewToken(
-                        refreshToken.getElementId(),
-                        foundUser.getUserEmail(),
-                        foundOrg != null ? foundOrg.getOrgName() : "",
-                        foundUser.getElementId(),
-                        foundOrg != null ? foundOrg.getElementId() : 0,
-                        foundOrg != null ? foundOrg.getSchemaName() : SchemaManager.DEFAULT_APP_SCHEMA_NAME,
-                        foundUser.getRoles()
-                );
-                return Response
-                        .ok()
-                        .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + token)
-                        .build();
-            }
+        if(foundUser == null){
+            OrgApiLogger.getRestLogger().warn("Attempted login by non-existent user: " + user.getUserEmail());
+            throw new OrgApiSecurityException("Invalid login credentials");
         }
 
+        OrgService orgService = factory.newOrgService(securityContext);
+        TokenService tokenService = factory.newTokenService(securityContext);
+
+        if(!HashingUtils.verifyBCryptHash(user.getPassword(), foundUser.getPassword())){
+            OrgApiLogger.getRestLogger().warn("Attempted login with invalid password. User: " + user.getUserEmail());
+            throw new OrgApiSecurityException("Invalid login credentials");
+        }
+
+        //If a NumberFormatException ever happens here, the property is invalid
+        int refreshExpHrs = Integer.parseInt(ServerCore.getProperty(ServerProps.REFRESH_MAX_EXP_HRS));
+        LocalDateTime expiration = LocalDateTime.now().plusHours(refreshExpHrs);
+        String userAgentHash = RefreshTokenUtil.generateRefreshTokenHash(foundUser.getUserEmail(), userAgent);
+        RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
+        refreshToken = tokenService.addRefreshToken(refreshToken);
+
+        OrgDTO foundOrg = orgService.getOrg(foundUser.getOrgId());
+        if(foundOrg == null && !foundUser.getRoles().contains(Role.MASTER)){
+            throw new OrgApiSecurityException("User is not assigned to an org and doesn't have master access");
+        }
+
+        String token = JWTUtil.generateNewToken(
+                refreshToken.getElementId(),
+                foundUser.getUserEmail(),
+                foundOrg != null ? foundOrg.getOrgName() : "",
+                foundUser.getElementId(),
+                foundOrg != null ? foundOrg.getElementId() : 0,
+                foundOrg != null ? foundOrg.getSchemaName() : SchemaManager.DEFAULT_APP_SCHEMA_NAME,
+                foundUser.getRoles()
+        );
         return Response
-                .status(Response.Status.UNAUTHORIZED)
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + token)
                 .build();
     }
 
