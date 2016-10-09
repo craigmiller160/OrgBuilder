@@ -13,4 +13,8 @@ public class AdditionalQueries {
     public static final String SEARCH = "search";
     public static final String GET_WITH_NAME = "getWithName";
     public static final String GET_WITH_HASH = "getWithHash";
+    public static final String GET_BY_ID_AND_ORG = "getByIdAndOrg";
+    public static final String COUNT_BY_ORG = "countByOrg";
+    public static final String GET_ALL_BY_ORG = "getAllByOrg";
+    public static final String GET_ALL_LIMIT_BY_ORG = "getAllLimitByOrg";
 }

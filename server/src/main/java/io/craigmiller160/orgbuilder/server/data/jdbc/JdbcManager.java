@@ -157,7 +157,11 @@ public class JdbcManager {
         GET_WITH_NAME,
         GET_BY_ID_AND_MEMBER,
         SEARCH_BASE,
-        GET_WITH_HASH;
+        GET_WITH_HASH,
+        GET_BY_ID_AND_ORG,
+        COUNT_BY_ORG,
+        GET_ALL_BY_ORG,
+        GET_ALL_LIMIT_BY_ORG;
     }
 
     public enum Schema {

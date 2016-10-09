@@ -43,3 +43,27 @@ ON DUPLICATE KEY UPDATE user_email = VALUES (user_email),
 SELECT *
 FROM users
 WHERE user_email = ?;
+
+-- QUERY=GET_BY_ID_AND_ORG
+SELECT *
+FROM users
+WHERE user_id = ?
+AND org_id = ?;
+
+-- QUERY=COUNT_BY_ORG
+SELECT COUNT(*) AS user_count
+FROM users
+WHERE org_id = ?;
+
+-- QUERY=GET_ALL_BY_ORG
+SELECT *
+FROM users
+WHERE org_id = ?
+ORDER BY user_id ASC;
+
+-- QUERY=GET_ALL_LIMIT_BY_ORG
+SELECT *
+FROM users
+WHERE org_id = ?
+ORDER BY user_id ASC
+LIMIT ?,?;

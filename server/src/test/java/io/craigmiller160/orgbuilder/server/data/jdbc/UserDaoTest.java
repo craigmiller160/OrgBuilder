@@ -8,8 +8,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by craig on 9/4/16.
@@ -90,6 +94,57 @@ public class UserDaoTest {
     @Test
     public void testGetAllLimit() throws Exception{
         daoTestMethods.testGetAllLimit(this::insertManyUsers, userDao, 3, 3, new Long[]{4L, 5L, 6L});
+    }
+
+    @Test
+    public void testGetByIdAndOrg() throws Exception{
+        UserDTO user1 = daoTestUtils.getUser1();
+        UserDTO user2 = daoTestUtils.getUser2();
+        user1 = userDao.insert(user1);
+        user2 = userDao.insert(user2);
+
+        UserDTO result1 = userDao.getByIdAndOrg(user1.getElementId(), user1.getOrgId());
+        assertNotNull("User with correct userId and orgId was not returned", result1);
+
+        UserDTO result2 = userDao.getByIdAndOrg(user1.getElementId(), user2.getOrgId());
+        assertNull("User with incorrect orgId was returned", result2);
+    }
+
+    @Test
+    public void testCountByOrg() throws Exception{
+        insertManyUsers();
+        UserDTO user1 = daoTestUtils.getUser1();
+        UserDTO user2 = daoTestUtils.getUser2();
+        user2 = userDao.insert(user2);
+
+        long result = userDao.countByOrg(user1.getOrgId());
+        assertEquals("Incorrect count of users by orgId", 10, result);
+    }
+
+    @Test
+    public void testGetAllByOrg() throws Exception{
+        insertManyUsers();
+        UserDTO user1 = daoTestUtils.getUser1();
+        UserDTO user2 = daoTestUtils.getUser2();
+        user2 = userDao.insert(user2);
+
+        List<UserDTO> result = userDao.getAllByOrg(user1.getOrgId());
+        assertNotNull("List of users by orgId not returned", result);
+        assertEquals("Incorrect size of list of users by orgId was returned", 10, result.size());
+        assertFalse("List of users by orgId contains a record it should not", result.contains(user2));
+    }
+
+    @Test
+    public void testGetAllLimitByOrg() throws Exception{
+        insertManyUsers();
+        UserDTO user1 = daoTestUtils.getUser1();
+        UserDTO user2 = daoTestUtils.getUser2();
+        user2 = userDao.insert(user2);
+
+        List<UserDTO> result = userDao.getAllLimitByOrg(user1.getOrgId(), 3, 3);
+        assertNotNull("List of users by orgId not returned", result);
+        assertEquals("Incorrect size of list of users by orgId was returned", 3, result.size());
+        assertFalse("List of users by orgId contains a record it should not", result.contains(user2));
     }
 
     @Test
