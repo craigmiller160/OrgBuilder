@@ -38,3 +38,8 @@ INSERT INTO tokens (token_id, user_id, token_hash, expiration)
 VALUES (?,?,?,?)
 ON DUPLICATE KEY UPDATE user_id = VALUES (user_id), token_hash = VALUES (token_hash),
   expiration = VALUES (expiration);
+
+-- QUERY=GET_WITH_HASH
+SELECT *
+FROM tokens
+WHERE token_hash = ?;

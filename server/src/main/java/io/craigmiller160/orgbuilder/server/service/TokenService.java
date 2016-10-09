@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.service;
 
+import io.craigmiller160.orgbuilder.server.data.AdditionalQueries;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
@@ -31,7 +32,12 @@ public class TokenService {
             connection = serviceCommons.newConnection();
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 
-            result = tokenDao.insertOrUpdate(token);
+            RefreshTokenDTO exists = (RefreshTokenDTO) tokenDao.query(AdditionalQueries.GET_WITH_HASH, token.getTokenHash());
+            if(exists != null){
+                tokenDao.delete(exists.getElementId());
+            }
+
+            result = tokenDao.insert(token);
 
             connection.commit();
         }

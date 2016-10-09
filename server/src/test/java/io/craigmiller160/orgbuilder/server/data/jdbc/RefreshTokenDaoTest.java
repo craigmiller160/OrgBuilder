@@ -144,6 +144,16 @@ public class RefreshTokenDaoTest {
         assertNotNull("Insert result token is null", result);
     }
 
+    @Test
+    public void testGetWithHash() throws Exception{
+        testInsert();
+        RefreshTokenDTO tokenToUpdate = daoTestUtils.getToken1();
+        String hash = tokenToUpdate.getTokenHash();
+
+        RefreshTokenDTO result = tokenDao.getWithHash(hash);
+        assertNotNull("Token with hash was not returned", result);
+    }
+
     private void insertManyTokens() throws Exception{
         for(int i = 0; i < 10; i++){
             RefreshTokenDTO token = daoTestUtils.getToken1();
