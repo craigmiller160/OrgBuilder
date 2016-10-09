@@ -21,10 +21,12 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS tokens (
   token_id BIGINT NOT NULL AUTO_INCREMENT,
   user_id BIGINT NOT NULL,
+  org_id BIGINT,
   token_hash VARCHAR(255) NOT NULL UNIQUE,
   expiration TIMESTAMP NOT NULL,
   PRIMARY KEY (token_id),
-  FOREIGN KEY (user_id) REFERENCES users (user_id)
+  FOREIGN KEY (user_id) REFERENCES users (user_id),
+  FOREIGN KEY (org_id) REFERENCES orgs (org_id)
 );
 
 DROP TRIGGER IF EXISTS orgs_before_schema_name_trigger;

@@ -1,12 +1,12 @@
 -- The queries used by the RefreshTokenDao
 
 -- QUERY=INSERT
-INSERT INTO tokens (token_id, user_id, token_hash, expiration)
-VALUES (?,?,?,?);
+INSERT INTO tokens (token_id, user_id, org_id, token_hash, expiration)
+VALUES (?,?,?,?,?);
 
 -- QUERY=UPDATE
 UPDATE tokens
-SET token_id = ?, user_id = ?, token_hash = ?, expiration = ?
+SET token_id = ?, user_id = ?, org_id = ?, token_hash = ?, expiration = ?
 WHERE token_id = ?;
 
 -- QUERY=DELETE
@@ -34,8 +34,8 @@ ORDER BY token_id ASC
 LIMIT ?,?;
 
 -- QUERY=INSERT_OR_UPDATE
-INSERT INTO tokens (token_id, user_id, token_hash, expiration)
-VALUES (?,?,?,?)
+INSERT INTO tokens (token_id, user_id, org_id, token_hash, expiration)
+VALUES (?,?,?,?,?)
 ON DUPLICATE KEY UPDATE user_id = VALUES (user_id), token_hash = VALUES (token_hash),
   expiration = VALUES (expiration);
 

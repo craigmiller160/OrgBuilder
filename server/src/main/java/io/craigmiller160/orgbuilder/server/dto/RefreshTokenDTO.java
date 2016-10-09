@@ -9,6 +9,7 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
 
     private long tokenId;
     private long userId;
+    private long orgId;
     private String tokenHash;
     private LocalDateTime expiration;
 
@@ -54,6 +55,14 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         this.expiration = expiration;
     }
 
+    public long getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(long orgId) {
+        this.orgId = orgId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -63,6 +72,7 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
 
         if (tokenId != that.tokenId) return false;
         if (userId != that.userId) return false;
+        if (orgId != that.orgId) return false;
         if (tokenHash != null ? !tokenHash.equals(that.tokenHash) : that.tokenHash != null) return false;
         return expiration != null ? expiration.equals(that.expiration) : that.expiration == null;
 
@@ -72,6 +82,7 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
     public int hashCode() {
         int result = (int) (tokenId ^ (tokenId >>> 32));
         result = 31 * result + (int) (userId ^ (userId >>> 32));
+        result = 31 * result + (int) (orgId ^ (orgId >>> 32));
         result = 31 * result + (tokenHash != null ? tokenHash.hashCode() : 0);
         result = 31 * result + (expiration != null ? expiration.hashCode() : 0);
         return result;

@@ -14,7 +14,7 @@ import java.sql.Types;
  */
 public class RefreshTokenDTOSQLConverter implements DTOSQLConverter<RefreshTokenDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 5;
+    private static final int UPDATE_KEY_PARAM_INDEX = 6;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, RefreshTokenDTO element) throws SQLException {
@@ -32,18 +32,25 @@ public class RefreshTokenDTOSQLConverter implements DTOSQLConverter<RefreshToken
             stmt.setNull(2, Types.BIGINT);
         }
 
-        if(!StringUtils.isEmpty(element.getTokenHash())){
-            stmt.setString(3, element.getTokenHash());
+        if(element.getOrgId() > 0){
+            stmt.setLong(3, element.getOrgId());
         }
         else{
-            stmt.setNull(3, Types.VARCHAR);
+            stmt.setNull(3, Types.BIGINT);
+        }
+
+        if(!StringUtils.isEmpty(element.getTokenHash())){
+            stmt.setString(4, element.getTokenHash());
+        }
+        else{
+            stmt.setNull(4, Types.VARCHAR);
         }
 
         if(element.getExpiration() != null){
-            stmt.setTimestamp(4, Timestamp.valueOf(element.getExpiration()));
+            stmt.setTimestamp(5, Timestamp.valueOf(element.getExpiration()));
         }
         else{
-            stmt.setNull(4, Types.TIMESTAMP);
+            stmt.setNull(5, Types.TIMESTAMP);
         }
     }
 
@@ -52,6 +59,7 @@ public class RefreshTokenDTOSQLConverter implements DTOSQLConverter<RefreshToken
         RefreshTokenDTO token = new RefreshTokenDTO();
         token.setElementId(resultSet.getLong("token_id"));
         token.setUserId(resultSet.getLong("user_id"));
+        token.setOrgId(resultSet.getLong("org_id"));
         token.setTokenHash(resultSet.getString("token_hash"));
         Timestamp timestamp = resultSet.getTimestamp("expiration");
         if(timestamp != null){
