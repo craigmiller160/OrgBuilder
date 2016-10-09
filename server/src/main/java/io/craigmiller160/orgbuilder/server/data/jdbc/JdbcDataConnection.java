@@ -27,11 +27,8 @@ public class JdbcDataConnection implements DataConnection {
             if(!schemaManager.schemaExists(connection, schemaName)){
                 throw new OrgApiDataException("Schema does not exist. Schema Name: " + schemaName);
             }
+            connection.setCatalog(schemaName);
             connection.setAutoCommit(false);
-            try(Statement stmt = connection.createStatement()){
-                stmt.executeUpdate("use " + schemaName);
-                connection.commit();
-            }
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to create new JDBC Data Transaction", ex);

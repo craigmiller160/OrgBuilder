@@ -29,9 +29,6 @@ public class SchemaManager {
     private static final String CREATE_SCHEMA_SQL =
             "CREATE SCHEMA %1$s;";
 
-    private static final String USE_SCHEMA_SQL =
-            "USE %1$s;";
-
     private static final String SHOW_TABLES_SQL =
             "SHOW TABLES FROM %1$s;";
 
@@ -69,19 +66,22 @@ public class SchemaManager {
             return;
         }
 
-        try(Statement stmt = connection.createStatement()){
-            String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
-            String useSchemaQuery = String.format(USE_SCHEMA_SQL, schemaName);
-            OrgApiLogger.getDataLogger().trace("Create Schema Query:\n" + CREATE_SCHEMA_SQL);
-            OrgApiLogger.getDataLogger().trace("Use Schema Query:\n" + USE_SCHEMA_SQL);
+        try{
+            try(Statement stmt = connection.createStatement()){
+                String createSchemaQuery = String.format(CREATE_SCHEMA_SQL, schemaName);
+                OrgApiLogger.getDataLogger().trace("Create Schema Query:\n" + CREATE_SCHEMA_SQL);
 
-            stmt.executeUpdate(createSchemaQuery);
-            stmt.executeUpdate(useSchemaQuery);
+                stmt.executeUpdate(createSchemaQuery);
+            }
 
-            List<String> schemaScript = isAppSchema ? jdbcManager.getSchemaScripts().get(JdbcManager.Schema.APP_SCHEMA) :
-                    jdbcManager.getSchemaScripts().get(JdbcManager.Schema.ORG_SCHEMA);
-            for(String query : schemaScript){
-                stmt.executeUpdate(query);
+            connection.setCatalog(schemaName);
+
+            try(Statement stmt = connection.createStatement()){
+                List<String> schemaScript = isAppSchema ? jdbcManager.getSchemaScripts().get(JdbcManager.Schema.APP_SCHEMA) :
+                        jdbcManager.getSchemaScripts().get(JdbcManager.Schema.ORG_SCHEMA);
+                for(String query : schemaScript){
+                    stmt.executeUpdate(query);
+                }
             }
 
             OrgApiLogger.getDataLogger().info("Schema created successfully. Is App Schema: " + isAppSchema + " | Schema Name: " + schemaName);
@@ -89,6 +89,7 @@ public class SchemaManager {
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to create schema. Schema Name: " + schemaName, ex);
         }
+
     }
 
     public void deleteSchema(Connection connection, String schemaName, boolean failIfNotExists) throws OrgApiDataException{
