@@ -12,6 +12,16 @@ import java.lang.annotation.Target;
  * access to a resource. It works alongside
  * the ThisOrgAllowedFilter.
  *
+ * It restricts access in the following ways:
+ *
+ * 1) Users in the same org as the targeted
+ * resource are allowed if their access role
+ * is one of the values from inOrgRolesAllowed.
+ *
+ * 2) Users not in the same org as the targeted
+ * resource are allowed if their access role
+ * is one of the values from outOfRolesAllowed.
+ *
  * Created by craig on 10/9/16.
  */
 @Retention(RetentionPolicy.RUNTIME)

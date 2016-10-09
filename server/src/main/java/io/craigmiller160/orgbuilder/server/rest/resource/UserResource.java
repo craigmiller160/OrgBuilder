@@ -38,12 +38,15 @@ public class UserResource {
 
     //TODO need to decide if this should be a sub-resource of orgs, or if it needs a separate parameter passed for the org
     //TODO need to restrict this by org, the org of the user adding/modifying the users
+    //TODO deleting a user should also delete their refresh token
+    //TODO get and update and delete should also be accessible by that user
 
     @GET
-    @RolesAllowed(Role.ADMIN)
+    @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response getAllUsers(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException {
         resourceFilterBean.validateFilterParams();
         //TODO add search for user by name
+        //TODO admin role can only get users in org
         UserService service = factory.newUserService(securityContext);
         UserListDTO results = service.getAllUsers(resourceFilterBean.getOffset(), resourceFilterBean.getSize());
 
@@ -59,9 +62,10 @@ public class UserResource {
     }
 
     @POST
-    @RolesAllowed(Role.ADMIN)
+    @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response addUser(UserDTO user) throws OrgApiException{
         validateUser(user);
+        //TODO admin role can only add user for org
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.addUser(user);
 
