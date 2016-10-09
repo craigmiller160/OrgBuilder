@@ -1,12 +1,15 @@
 package io.craigmiller160.orgbuilder.server.service;
 
 import io.craigmiller160.orgbuilder.server.ServerCore;
+import io.craigmiller160.orgbuilder.server.data.AdditionalQueries;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
 import io.craigmiller160.orgbuilder.server.data.jdbc.JdbcDataConnection;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgListDTO;
+import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
+import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 
 import javax.ws.rs.core.SecurityContext;
@@ -55,7 +58,11 @@ public class OrgService {
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
 
+            OrgDTO existingOrg = orgDao.get(orgId);
+            org.setSchemaName(existingOrg.getSchemaName());
+            org.setCreatedDate(existingOrg.getCreatedDate());
             org.setElementId(orgId);
+
             result = orgDao.update(org, orgId);
 
             connection.commit();
@@ -77,6 +84,11 @@ public class OrgService {
                     " | ID: " + orgId);
             connection = serviceCommons.newConnection();
             Dao<OrgDTO,Long> orgDao = connection.newDao(OrgDTO.class);
+            Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
+            Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
+
+            tokenDao.query(AdditionalQueries.DELETE_BY_ORG, orgId);
+            userDao.query(AdditionalQueries.DELETE_BY_ORG, orgId);
 
             result = orgDao.delete(orgId);
             if(result != null){

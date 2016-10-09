@@ -44,7 +44,7 @@ public class RefreshTokenDao extends AbstractJdbcDao<RefreshTokenDTO,Long> {
             }
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to retrieve " + getElementName() + " with hash. Hash: " + hash);
+            throw new OrgApiDataException("Unable to retrieve " + getElementName() + " with hash. Hash: " + hash, ex);
         }
         return result;
     }
@@ -58,7 +58,7 @@ public class RefreshTokenDao extends AbstractJdbcDao<RefreshTokenDTO,Long> {
             result = stmt.executeUpdate();
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with orgId. OrgId: " + orgId);
+            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with orgId. OrgId: " + orgId, ex);
         }
 
         return result;
@@ -73,7 +73,7 @@ public class RefreshTokenDao extends AbstractJdbcDao<RefreshTokenDTO,Long> {
             result = stmt.executeUpdate();
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with userId. UserId: " + userId);
+            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with userId. UserId: " + userId, ex);
         }
 
         return result;

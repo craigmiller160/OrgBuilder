@@ -68,7 +68,7 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
             }
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to get " + getElementName() + " by userId and orgId. UserId: " + userId + " | OrgId: " + orgId);
+            throw new OrgApiDataException("Unable to get " + getElementName() + " by userId and orgId. UserId: " + userId + " | OrgId: " + orgId, ex);
         }
 
         return result;
@@ -87,7 +87,7 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
             }
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to count " + getElementName() + " by orgId. OrgId: " + orgId);
+            throw new OrgApiDataException("Unable to count " + getElementName() + " by orgId. OrgId: " + orgId, ex);
         }
 
         return result;
@@ -106,7 +106,7 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
             }
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to get all " + getElementName() + " by orgId. OrgId: " + orgId);
+            throw new OrgApiDataException("Unable to get all " + getElementName() + " by orgId. OrgId: " + orgId, ex);
         }
 
         return result;
@@ -127,7 +127,7 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
             }
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to get all " + getElementName() + " within range by orgId. OrgId: " + orgId + " | Offset: " + offset + " | Size: " + size);
+            throw new OrgApiDataException("Unable to get all " + getElementName() + " within range by orgId. OrgId: " + orgId + " | Offset: " + offset + " | Size: " + size, ex);
         }
 
         return result;
@@ -142,7 +142,7 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
             result = stmt.executeUpdate();
         }
         catch(SQLException ex){
-            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with orgId. OrgId: " + orgId);
+            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with orgId. OrgId: " + orgId, ex);
         }
 
         return result;
