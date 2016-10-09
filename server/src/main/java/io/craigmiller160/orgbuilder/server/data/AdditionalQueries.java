@@ -17,4 +17,5 @@ public class AdditionalQueries {
     public static final String COUNT_BY_ORG = "countByOrg";
     public static final String GET_ALL_BY_ORG = "getAllByOrg";
     public static final String GET_ALL_LIMIT_BY_ORG = "getAllLimitByOrg";
+    public static final String DELETE_BY_ORG = "deleteByOrg";
 }

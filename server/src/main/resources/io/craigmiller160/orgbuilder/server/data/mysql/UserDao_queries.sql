@@ -67,3 +67,7 @@ FROM users
 WHERE org_id = ?
 ORDER BY user_id ASC
 LIMIT ?,?;
+
+-- QUERY=DELETE_BY_ORG
+DELETE FROM users
+WHERE org_id = ?;

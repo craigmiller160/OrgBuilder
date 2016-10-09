@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by craig on 9/4/16.
@@ -162,6 +163,18 @@ public class UserDaoTest {
         UserDTO result = userDao.getWithName(user.getUserEmail());
         assertNotNull("Result is null", result);
         assertEquals("Result is invalid", user, result);
+    }
+
+    @Test
+    public void testDeleteByOrg() throws Exception{
+        insertManyUsers();
+        UserDTO user = daoTestUtils.getUser1();
+
+        long result = userDao.deleteByOrg(user.getOrgId());
+        assertEquals("Incorrect number of records deleted", 10, result);
+
+        long count = userDao.getCount();
+        assertEquals("Some records were not deleted", 0, count);
     }
 
     private void insertManyUsers() throws Exception{

@@ -161,7 +161,8 @@ public class JdbcManager {
         GET_BY_ID_AND_ORG,
         COUNT_BY_ORG,
         GET_ALL_BY_ORG,
-        GET_ALL_LIMIT_BY_ORG;
+        GET_ALL_LIMIT_BY_ORG,
+        DELETE_BY_ORG;
     }
 
     public enum Schema {
