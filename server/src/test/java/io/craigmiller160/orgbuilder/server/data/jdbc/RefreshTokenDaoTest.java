@@ -154,6 +154,30 @@ public class RefreshTokenDaoTest {
         assertNotNull("Token with hash was not returned", result);
     }
 
+    @Test
+    public void testDeleteByOrg() throws Exception{
+        insertManyTokens();
+        RefreshTokenDTO token = daoTestUtils.getToken1();
+
+        long result = tokenDao.deleteByOrg(token.getOrgId());
+        assertEquals("Incorrect number of records deleted", 10, result);
+
+        long count = tokenDao.getCount();
+        assertEquals("Some records were not deleted", 0, count);
+    }
+
+    @Test
+    public void testDeleteByUser() throws Exception{
+        insertManyTokens();
+        RefreshTokenDTO token = daoTestUtils.getToken1();
+
+        long result = tokenDao.deleteByUser(token.getUserId());
+        assertEquals("Incorrect number of records deleted", 10, result);
+
+        long count = tokenDao.getCount();
+        assertEquals("Some records were not deleted", 0, count);
+    }
+
     private void insertManyTokens() throws Exception{
         for(int i = 0; i < 10; i++){
             RefreshTokenDTO token = daoTestUtils.getToken1();

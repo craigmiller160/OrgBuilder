@@ -206,6 +206,7 @@ public class DaoTestUtils {
     public RefreshTokenDTO getToken1(){
         RefreshTokenDTO token = new RefreshTokenDTO();
         token.setUserId(1L);
+        token.setOrgId(1L);
         token.setTokenHash("ThisIsTheHash");
         token.setExpiration(LocalDateTime.now());
         return token;
@@ -214,6 +215,7 @@ public class DaoTestUtils {
     public RefreshTokenDTO getToken2(){
         RefreshTokenDTO token = new RefreshTokenDTO();
         token.setUserId(1L);
+        token.setOrgId(1L);
         token.setTokenHash("MyNewHash");
         token.setExpiration(LocalDateTime.now());
         return token;

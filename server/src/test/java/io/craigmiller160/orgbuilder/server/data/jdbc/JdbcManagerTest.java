@@ -75,7 +75,7 @@ public class JdbcManagerTest {
         //TokenDao query tests
         Map<JdbcManager.Query,String> tokenDaoQueries = mappedQueries.get(RefreshTokenDao.class);
         assertNotNull("tokenDaoQueries map is null", tokenDaoQueries);
-        assertEquals("tokenDaoQueries map has wrong number of queries", 9, tokenDaoQueries.size());
+        assertEquals("tokenDaoQueries map has wrong number of queries", 11, tokenDaoQueries.size());
 
         //Schema Scripts tests
         Map<JdbcManager.Schema,List<String>> schemaScripts = jdbcManager.getSchemaScripts();

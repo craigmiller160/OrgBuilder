@@ -48,4 +48,34 @@ public class RefreshTokenDao extends AbstractJdbcDao<RefreshTokenDTO,Long> {
         }
         return result;
     }
+
+    public long deleteByOrg(long orgId) throws OrgApiDataException{
+        String deleteByOrgQuery = queries.get(JdbcManager.Query.DELETE_BY_ORG);
+        OrgApiLogger.getDataLogger().trace(getElementName() + " DeleteByOrgQuery Query:\n" + deleteByOrgQuery);
+        long result = -1;
+        try(PreparedStatement stmt = connection.prepareStatement(deleteByOrgQuery)){
+            stmt.setLong(1, orgId);
+            result = stmt.executeUpdate();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with orgId. OrgId: " + orgId);
+        }
+
+        return result;
+    }
+
+    public long deleteByUser(long userId) throws OrgApiDataException{
+        String deleteByUserQuery = queries.get(JdbcManager.Query.DELETE_BY_USER);
+        OrgApiLogger.getDataLogger().trace(getElementName() + " DeleteByUserQuery Query:\n" + deleteByUserQuery);
+        long result = -1;
+        try(PreparedStatement stmt = connection.prepareStatement(deleteByUserQuery)){
+            stmt.setLong(1, userId);
+            result = stmt.executeUpdate();
+        }
+        catch(SQLException ex){
+            throw new OrgApiDataException("Unable to delete all " + getElementName() + " with userId. UserId: " + userId);
+        }
+
+        return result;
+    }
 }

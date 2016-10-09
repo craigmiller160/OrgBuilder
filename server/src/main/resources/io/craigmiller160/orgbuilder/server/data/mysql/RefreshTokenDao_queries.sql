@@ -43,3 +43,11 @@ ON DUPLICATE KEY UPDATE user_id = VALUES (user_id), token_hash = VALUES (token_h
 SELECT *
 FROM tokens
 WHERE token_hash = ?;
+
+-- QUERY=DELETE_BY_ORG
+DELETE FROM tokens
+WHERE org_id = ?;
+
+-- QUERY=DELETE_BY_USER
+DELETE FROM tokens
+WHERE user_id = ?;
