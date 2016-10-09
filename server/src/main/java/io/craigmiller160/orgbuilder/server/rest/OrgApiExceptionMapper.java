@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Context;
@@ -47,7 +48,7 @@ public class OrgApiExceptionMapper implements ExceptionMapper<Throwable> {
         if(t instanceof OrgApiSecurityException){
             return Response.Status.UNAUTHORIZED.getStatusCode();
         }
-        else if(t instanceof OrgApiInvalidRequestException){
+        else if(t instanceof OrgApiInvalidRequestException | t instanceof BadRequestException){
             return Response.Status.BAD_REQUEST.getStatusCode();
         }
         else if(t instanceof OrgApiDataException || t instanceof OrgApiException){

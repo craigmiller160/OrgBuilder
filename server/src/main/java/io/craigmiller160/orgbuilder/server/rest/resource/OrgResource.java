@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.dto.OrgListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.Role;
+import io.craigmiller160.orgbuilder.server.rest.annotation.ThisOrgAllowed;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
@@ -66,9 +67,8 @@ public class OrgResource {
 
     @PUT
     @Path("/{orgId}")
-    @RolesAllowed({Role.MASTER, Role.ADMIN})
+    @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
     public Response updateOrg(@PathParam("orgId") long orgId, OrgDTO org) throws OrgApiException{
-        //TODO need an additional restriction so that only the admin of the org can do this
         OrgService orgService = factory.newOrgService(securityContext);
         org = orgService.updateOrg(org, orgId);
 
@@ -79,7 +79,7 @@ public class OrgResource {
 
     @DELETE
     @Path("/{orgId}")
-    @RolesAllowed(Role.MASTER)
+    @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
     public Response deleteOrg(@PathParam("orgId") long orgId) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.deleteOrg(orgId);
@@ -96,9 +96,8 @@ public class OrgResource {
 
     @GET
     @Path("/{orgId}")
-    @RolesAllowed({Role.MASTER, Role.ADMIN})
+    @ThisOrgAllowed(outOfOrgRolesAllowed = Role.MASTER)
     public Response getOrg(@PathParam("orgId") long orgId) throws OrgApiException{
-        //TODO need to add a restriction to only the same org
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.getOrg(orgId);
 

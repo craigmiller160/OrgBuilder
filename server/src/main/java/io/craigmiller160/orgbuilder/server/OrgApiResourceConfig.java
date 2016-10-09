@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server;
 
+import io.craigmiller160.orgbuilder.server.rest.AccessAnnotationFilterBindingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
@@ -14,5 +15,6 @@ public class OrgApiResourceConfig extends ResourceConfig {
     public OrgApiResourceConfig() {
         packages(true, "io.craigmiller160.orgbuilder.server.rest");
         register(RolesAllowedDynamicFeature.class);
+        register(AccessAnnotationFilterBindingFeature.class);
     }
 }

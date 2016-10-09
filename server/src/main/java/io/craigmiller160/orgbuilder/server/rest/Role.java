@@ -10,6 +10,10 @@ public class Role{
     public static final String WRITE = "WRITE";
     public static final String READ = "READ";
 
+    public static final String[] ALL = {
+            MASTER, ADMIN, WRITE, READ
+    };
+
     private Role(){}
 
 }
