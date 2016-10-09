@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.data.AdditionalQueries;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.DataConnection;
 import io.craigmiller160.orgbuilder.server.data.OrgApiDataException;
+import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
@@ -80,7 +81,9 @@ public class UserService {
                     " | ID: " + userId);
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
+            Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 
+            tokenDao.query(AdditionalQueries.DELETE_BY_USER, userId);
             result = userDao.delete(userId);
 
             connection.commit();
