@@ -93,6 +93,8 @@ public class SecurityFilter implements ContainerRequestFilter{
             principal.setName(JWTUtil.getTokenSubjectClaim(jwt));
             principal.setSchema(JWTUtil.getTokenSchemaClaim(jwt));
             principal.setRoles(JWTUtil.getTokenRolesClaim(jwt));
+            principal.setOrgId(JWTUtil.getTokenOrgIdClaim(jwt));
+            principal.setUserId(JWTUtil.getTokenUserIdClaim(jwt));
             return principal;
         }
         catch(OrgApiException ex){
