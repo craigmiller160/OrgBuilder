@@ -65,6 +65,11 @@ public class UserResource {
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response addUser(UserDTO user) throws OrgApiException{
         validateUser(user);
+
+        if(user.getRoles().contains(Role.MASTER) && user.getRoles().size() != 1){
+            throw new OrgApiInvalidRequestException("Cannot add a user with Master role that has other roles as well");
+        }
+
         //TODO admin role can only add user for org
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.addUser(user);
@@ -111,8 +116,19 @@ public class UserResource {
     @GET
     @Path("/{userId}")
     public Response getUser(@PathParam("userId") long userId) throws OrgApiException{
-        //TODO finish this
-        return null;
+        //TODO restrict this to either admin in org or specific user
+        UserService service = factory.newUserService(securityContext);
+        UserDTO result = service.getUser(userId);
+
+        if(result != null){
+            return Response
+                    .ok(result)
+                    .build();
+        }
+
+        return Response
+                .noContent()
+                .build();
     }
 
     private void validateUser(UserDTO user) throws OrgApiInvalidRequestException{
