@@ -20,5 +20,6 @@ public class QueryParamName {
     public static final String PREFIX = "prefix";
     public static final String LINE_NUMBER = "lineNumber";
     public static final String EMAIL_ADDRESS = "emailAddress";
+    public static final String USER_NAME = "userName";
 
 }
