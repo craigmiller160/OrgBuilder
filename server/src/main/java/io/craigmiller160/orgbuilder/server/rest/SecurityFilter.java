@@ -65,20 +65,20 @@ public class SecurityFilter implements ContainerRequestFilter{
     private OrgApiPrincipal handleTokenValidation(ContainerRequestContext requestContext){
         String authString = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if(StringUtils.isEmpty(authString)){
-            handleAuthRejected(requestContext, OrgApiSecurityException.class, "Missing access token");
+            FilterUtils.handleAccessRejected(requestContext, OrgApiSecurityException.class, "Missing access token");
             return null;
         }
 
         try{
             SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(authString);
             if(!JWTUtil.isTokenIssuedByOrgApi(jwt)){
-                handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token not issued by OrgBuilder API");
+                FilterUtils.handleAccessRejected(requestContext, OrgApiSecurityException.class, "Token not issued by OrgBuilder API");
                 return null;
             }
 
             if(JWTUtil.isTokenExpired(jwt)){
                 if(!isRefreshAllowed(requestContext, jwt)){
-                    handleAuthRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
+                    FilterUtils.handleAccessRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
                     return null;
                 }
 
@@ -98,7 +98,7 @@ public class SecurityFilter implements ContainerRequestFilter{
             return principal;
         }
         catch(OrgApiException ex){
-            handleAuthRejected(requestContext, ex.getClass(), ex.getMessage());
+            FilterUtils.handleAccessRejected(requestContext, ex.getClass(), ex.getMessage());
         }
 
         return null;
@@ -143,18 +143,5 @@ public class SecurityFilter implements ContainerRequestFilter{
         OrgApiSecurityContext securityContext = new OrgApiSecurityContext();
         securityContext.setUserPrincipal(principal);
         return securityContext;
-    }
-
-    private void handleAuthRejected(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage){
-        ErrorDTO error = new ErrorDTO();
-        error.setStatusCode(Response.Status.FORBIDDEN.getStatusCode());
-        error.setExceptionName(exceptionClass.getSimpleName());
-        error.setErrorMessage(errorMessage);
-        requestContext.abortWith(
-                Response
-                        .status(Response.Status.FORBIDDEN)
-                        .entity(error)
-                        .build()
-        );
     }
 }

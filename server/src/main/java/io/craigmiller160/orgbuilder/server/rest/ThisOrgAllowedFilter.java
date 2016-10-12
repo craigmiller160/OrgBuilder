@@ -58,20 +58,7 @@ public class ThisOrgAllowedFilter implements ContainerRequestFilter {
                 return;
             }
         }
-        handleAccessRejected(requestContext, ForbiddenException.class, "User does not have access to resource");
-    }
-
-    private void handleAccessRejected(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage){
-        ErrorDTO error = new ErrorDTO();
-        error.setStatusCode(Response.Status.FORBIDDEN.getStatusCode());
-        error.setExceptionName(exceptionClass.getSimpleName());
-        error.setErrorMessage(errorMessage);
-        requestContext.abortWith(
-                Response
-                        .status(Response.Status.FORBIDDEN)
-                        .entity(error)
-                        .build()
-        );
+        FilterUtils.handleAccessRejected(requestContext, ForbiddenException.class, "User does not have access to resource");
     }
 
     private long getOrgIdPathParam() throws BadRequestException{
