@@ -50,7 +50,7 @@ public class ServiceCommons {
         return useAppSchema ? dataManager.connectToAppSchema() : dataManager.connectToSchema(schemaName);
     }
 
-    public final void rollback(DataConnection connection, OrgApiDataException ex) throws OrgApiDataException{
+    public final void rollback(DataConnection connection, Exception ex) throws OrgApiDataException{
         if(connection != null){
             try{
                 connection.rollback();
@@ -60,7 +60,16 @@ public class ServiceCommons {
                 throw ex2;
             }
         }
-        throw ex;
+
+        if(ex instanceof OrgApiDataException){
+            throw (OrgApiDataException) ex;
+        }
+        else if(ex instanceof ForbiddenException){
+            throw (ForbiddenException) ex;
+        }
+        else{
+            throw new RuntimeException("CRITICAL ERROR! EXCEPTION IS NOT OF EXPECTED TYPE FOR CASTING: " + ex.getClass().getName(), ex);
+        }
     }
 
     public final void closeConnection(DataConnection connection) throws OrgApiDataException{

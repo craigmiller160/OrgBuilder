@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * 1) A user that is the same as the targeted
  * resource is always allowed.
  *
- * 2) A user with a role in the outOfOrgRolesAllowed
+ * 2) A user with a role in the otherUserRolesAllowed
  * array is allowed.
  *
  * NOTE: A final restriction, allowing a user with
@@ -40,6 +40,6 @@ public @interface ThisUserAllowed {
      * has, they are granted access regardless
      * of the userId.
      */
-    String[] outOfOrgRolesAllowed() default "";
+    String[] otherUserRolesAllowed() default "";
 
 }

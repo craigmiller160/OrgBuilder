@@ -8,8 +8,11 @@ import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
+import io.craigmiller160.orgbuilder.server.rest.OrgApiPrincipal;
+import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.util.HashingUtils;
 
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
@@ -20,9 +23,26 @@ import java.util.List;
 public class UserService {
 
     private final ServiceCommons serviceCommons;
+    private final SecurityContext securityContext;
 
     UserService(SecurityContext securityContext){
+        this.securityContext = securityContext;
         this.serviceCommons = new ServiceCommons(securityContext, true);
+    }
+
+    private boolean hasAccessToResource(UserDTO userResource){
+        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
+        long userResourceUserId = userResource.getElementId();
+        long userResourceOrgId = userResource.getOrgId();
+        if(principal.getUserId() == userResourceUserId){
+            return true;
+        }
+
+        if(principal.isUserInRole(Role.ADMIN)){
+            return userResourceOrgId == principal.getOrgId();
+        }
+
+        return false;
     }
 
     public UserDTO addUser(UserDTO user) throws OrgApiDataException, OrgApiSecurityException{
@@ -59,12 +79,16 @@ public class UserService {
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
+            if(!hasAccessToResource(userDao.get(userId))){
+                throw new ForbiddenException("User doesn't have access to resource");
+            }
+
             user.setElementId(userId);
             result = userDao.update(user, userId);
 
             connection.commit();
         }
-        catch (OrgApiDataException ex){
+        catch (OrgApiDataException | ForbiddenException ex){
             serviceCommons.rollback(connection, ex);
         }
         finally {
@@ -83,12 +107,16 @@ public class UserService {
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
 
+            if(!hasAccessToResource(userDao.get(userId))){
+                throw new ForbiddenException("User doesn't have access to resource");
+            }
+
             tokenDao.query(AdditionalQueries.DELETE_BY_USER, userId);
             result = userDao.delete(userId);
 
             connection.commit();
         }
-        catch (OrgApiDataException ex){
+        catch (OrgApiDataException | ForbiddenException ex){
             serviceCommons.rollback(connection, ex);
         }
         finally {
@@ -108,10 +136,13 @@ public class UserService {
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
             result = userDao.get(userId);
+            if(!hasAccessToResource(result)){
+                throw new ForbiddenException("User doesn't have access to resource");
+            }
 
             connection.commit();
         }
-        catch (OrgApiDataException ex){
+        catch (OrgApiDataException | ForbiddenException ex){
             serviceCommons.rollback(connection, ex);
         }
         finally {

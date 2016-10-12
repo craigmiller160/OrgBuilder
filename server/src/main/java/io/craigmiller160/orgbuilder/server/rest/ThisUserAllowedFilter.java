@@ -1,6 +1,5 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
-import io.craigmiller160.orgbuilder.server.rest.annotation.ThisOrgAllowed;
 import io.craigmiller160.orgbuilder.server.rest.annotation.ThisUserAllowed;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,9 +41,9 @@ public class ThisUserAllowedFilter implements ContainerRequestFilter {
 
         long principalUserId = principal.getUserId();
         if(principalUserId != userId){
-            List<String> outOfOrgRolesAllowed = Arrays.asList(annotation.outOfOrgRolesAllowed());
+            List<String> otherUserRolesAllowed = Arrays.asList(annotation.otherUserRolesAllowed());
             for(String role : principal.getRoles()){
-                if(outOfOrgRolesAllowed.contains(role)){
+                if(otherUserRolesAllowed.contains(role)){
                     return;
                 }
             }

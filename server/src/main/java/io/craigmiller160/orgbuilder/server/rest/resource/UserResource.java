@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.Role;
+import io.craigmiller160.orgbuilder.server.rest.annotation.ThisUserAllowed;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -46,8 +47,8 @@ public class UserResource {
 
     //TODO need to decide if this should be a sub-resource of orgs, or if it needs a separate parameter passed for the org
     //TODO need to restrict this by org, the org of the user adding/modifying the users
-    //TODO deleting a user should also delete their refresh token
-    //TODO get and update and delete should also be accessible by that user
+
+    //TODO test access for ThisUserAllowed annotation, and the service layer restrictions for those methods and admin accounts
 
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
@@ -90,9 +91,8 @@ public class UserResource {
 
     @PUT
     @Path("/{userId}")
-    @PermitAll
+    @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN,Role.MASTER})
     public Response updateUser(@PathParam("userId") long userId, UserDTO user) throws OrgApiException{
-        //TODO restrict this to either an admin or the specific user involved
         validateUser(user);
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.updateUser(user, userId);
@@ -104,9 +104,8 @@ public class UserResource {
 
     @DELETE
     @Path("/{userId}")
-    @PermitAll
+    @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
     public Response deleteUser(@PathParam("userId") long userId) throws OrgApiException{
-        //TODO restrict this to either an admin or the specific user involved
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.deleteUser(userId);
 
@@ -123,8 +122,8 @@ public class UserResource {
 
     @GET
     @Path("/{userId}")
+    @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
     public Response getUser(@PathParam("userId") long userId) throws OrgApiException{
-        //TODO restrict this to either admin in org or specific user
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.getUser(userId);
 
