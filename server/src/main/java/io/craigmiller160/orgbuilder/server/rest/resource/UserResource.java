@@ -21,6 +21,14 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
 /**
+ * The resource for retrieving and manipulating
+ * user records.
+ *
+ * NOTE: This resource has more complex authentication
+ * than others. Some final authentication is done in
+ * the service layer for certain methods, and ForbiddenExceptions are thrown
+ * from it.
+ *
  * Created by craig on 9/15/16.
  */
 @Produces(MediaType.APPLICATION_JSON)

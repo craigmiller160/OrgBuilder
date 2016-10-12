@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
 import io.craigmiller160.orgbuilder.server.rest.annotation.ThisOrgAllowed;
+import io.craigmiller160.orgbuilder.server.rest.annotation.ThisUserAllowed;
 
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
@@ -15,6 +16,9 @@ public class AccessAnnotationFilterBindingFeature implements DynamicFeature {
     public void configure(ResourceInfo resourceInfo, FeatureContext featureContext) {
         if(resourceInfo.getResourceMethod().isAnnotationPresent(ThisOrgAllowed.class)){
             featureContext.register(ThisOrgAllowedFilter.class);
+        }
+        else if(resourceInfo.getResourceMethod().isAnnotationPresent(ThisUserAllowed.class)){
+            featureContext.register(ThisUserAllowedFilter.class);
         }
     }
 }
