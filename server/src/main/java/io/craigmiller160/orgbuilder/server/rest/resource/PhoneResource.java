@@ -60,7 +60,7 @@ public class PhoneResource {
     }
 
     @POST
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response addPhone(PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         phone = phoneService.addPhone(phone, memberId);
@@ -73,7 +73,7 @@ public class PhoneResource {
 
     @PUT
     @Path("/{phoneId}")
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         phone = phoneService.updatePhone(phone, phoneId, memberId);
@@ -85,7 +85,7 @@ public class PhoneResource {
 
     @DELETE
     @Path("/{phoneId}")
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response deletePhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO phone = phoneService.deletePhone(phoneId);

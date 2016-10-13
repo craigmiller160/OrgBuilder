@@ -57,7 +57,7 @@ public class AddressResource {
     }
 
     @POST
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response addAddress(AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         address = addressService.addAddress(address, memberId);
@@ -70,7 +70,7 @@ public class AddressResource {
 
     @PUT
     @Path("/{addressId}")
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         address = addressService.updateAddress(address, addressId, memberId);
@@ -82,7 +82,7 @@ public class AddressResource {
 
     @DELETE
     @Path("/{addressId}")
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response deleteAddress(@PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO address = addressService.deleteAddress(addressId);

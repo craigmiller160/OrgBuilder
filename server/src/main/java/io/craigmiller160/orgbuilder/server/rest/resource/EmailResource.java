@@ -57,7 +57,7 @@ public class EmailResource {
     }
 
     @POST
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response addEmail(EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.addEmail(email, memberId);
@@ -70,7 +70,7 @@ public class EmailResource {
 
     @PUT
     @Path("/{emailId}")
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response updateEmail(@PathParam("emailId") long emailId, EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.updateEmail(email, emailId, memberId);
@@ -82,7 +82,7 @@ public class EmailResource {
 
     @DELETE
     @Path("/{emailId}")
-    @RolesAllowed(Role.WRITE)
+    @RolesAllowed({Role.READ, Role.WRITE})
     public Response deleteEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO email = emailService.deleteEmail(emailId);
