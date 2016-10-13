@@ -160,9 +160,10 @@ public class UserDaoTest {
         UserDTO user = daoTestUtils.getUser1();
         daoTestMethods.testInsert(user, userDao, 1L);
         user.setElementId(1L);
-        UserDTO result = userDao.getWithName(user.getUserEmail());
+        List<UserDTO> result = userDao.getWithName(user.getUserEmail().substring(0, 4));
         assertNotNull("Result is null", result);
-        assertEquals("Result is invalid", user, result);
+        assertEquals("Wrong number of results returned", 1, result.size());
+        assertEquals("Result is invalid", user, result.get(0));
     }
 
     @Test

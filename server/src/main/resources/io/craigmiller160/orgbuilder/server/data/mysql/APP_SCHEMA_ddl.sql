@@ -56,11 +56,13 @@ BEFORE INSERT ON orgs FOR EACH ROW
 CREATE PROCEDURE restrict_master_user_proc (IN role VARCHAR(255), IN org_id BIGINT)
   BEGIN
     IF role = 'MASTER' AND org_id IS NOT NULL THEN
-      SIGNAL SQLSTATE '4500' 'A user with a role of MASTER cannot be assigned an org_id';
+      SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'A user with a role of MASTER cannot be assigned an org_id';
     END IF;
 
     IF role <> 'MASTER' AND org_id IS NULL THEN
-      SIGNAL SQLSTATE '4500' 'A standard user must be assigned an org_id';
+      SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'A standard user must be assigned an org_id';
     END IF;
   END ;;
 

@@ -42,7 +42,7 @@ ON DUPLICATE KEY UPDATE user_email = VALUES (user_email),
 -- QUERY=GET_WITH_NAME
 SELECT *
 FROM users
-WHERE user_email = ?;
+WHERE user_email LIKE ?;
 
 -- QUERY=GET_BY_ID_AND_ORG
 SELECT *
