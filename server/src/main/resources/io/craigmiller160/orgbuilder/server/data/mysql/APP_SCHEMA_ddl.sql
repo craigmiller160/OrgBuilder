@@ -52,3 +52,26 @@ BEFORE INSERT ON orgs FOR EACH ROW
     SET temp_schema_name = CONCAT(next_index, SUBSTRING(NEW.org_name,1,5));
     SET NEW.org_schema_name = REPLACE(temp_schema_name, ' ','_');
   END ;;
+
+CREATE PROCEDURE restrict_master_user_proc (IN role VARCHAR(255), IN org_id BIGINT)
+  BEGIN
+    IF role = 'MASTER' AND org_id IS NOT NULL THEN
+      SIGNAL SQLSTATE '4500' 'A user with a role of MASTER cannot be assigned an org_id';
+    END IF;
+
+    IF role <> 'MASTER' AND org_id IS NULL THEN
+      SIGNAL SQLSTATE '4500' 'A standard user must be assigned an org_id';
+    END IF;
+  END ;;
+
+CREATE TRIGGER users_before_insert_trigger
+BEFORE INSERT ON users FOR EACH ROW
+  BEGIN
+    CALL restrict_master_user_proc(NEW.role, NEW.org_id);
+  END ;;
+
+CREATE TRIGGER users_before_update_trigger
+BEFORE UPDATE ON users FOR EACH ROW
+  BEGIN
+    CALL restrict_master_user_proc(NEW.role, NEW.org_id);
+  END ;;
