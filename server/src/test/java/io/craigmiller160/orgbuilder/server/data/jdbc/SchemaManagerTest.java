@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 public class SchemaManagerTest {
 
     private static final String SCHEMA_NAME = "test_schema";
+    private static final String APP_SCHEMA_NAME = "test_app_schema";
 
     private static SchemaManager schemaManager;
     private static Connection connection;
@@ -43,7 +44,8 @@ public class SchemaManagerTest {
     //This also tests the deleteSchema() method
     @AfterClass
     public static void tearDown() throws Exception{
-        schemaManager.deleteSchema(connection, SCHEMA_NAME, true);
+        schemaManager.deleteSchema(connection, SCHEMA_NAME, false);
+        schemaManager.deleteSchema(connection, APP_SCHEMA_NAME, false);
         connection.close();
         serverCore.contextDestroyed(null);
     }
@@ -60,6 +62,14 @@ public class SchemaManagerTest {
         String[] tableNames = schemaManager.getTableNames(connection, SCHEMA_NAME);
         assertNotNull("Table Names is null", tableNames);
         assertEquals("Table names is the wrong size", 4, tableNames.length);
+    }
+
+    @Test
+    public void testCreateAppSchema() throws Exception{
+        schemaManager.createSchema(connection, APP_SCHEMA_NAME, true, true);
+        String[] tableNames = schemaManager.getTableNames(connection, APP_SCHEMA_NAME);
+        assertNotNull("Table Names is null", tableNames);
+        assertEquals("Table names is the wrong size", 3, tableNames.length);
     }
 
 }
