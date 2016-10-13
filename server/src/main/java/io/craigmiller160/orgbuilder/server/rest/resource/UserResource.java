@@ -46,16 +46,17 @@ public class UserResource {
     private UriInfo uriInfo;
 
     //TODO need to decide if this should be a sub-resource of orgs, or if it needs a separate parameter passed for the org
-    //TODO need to restrict this by org, the org of the user adding/modifying the users
 
     //TODO test access for ThisUserAllowed annotation, and the service layer restrictions for those methods and admin accounts
+    //TODO test that admin role calling getAllUsers() can only get users in their org
+    //TODO test that admin role can only add users for their own org, and can't update users to another org
+    //TODO test new users table trigger restricting the insert of master users
 
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response getAllUsers(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException {
         resourceFilterBean.validateFilterParams();
         //TODO add search for user by name
-        //TODO admin role can only get users in org
         UserService service = factory.newUserService(securityContext);
         UserListDTO results = service.getAllUsers(resourceFilterBean.getOffset(), resourceFilterBean.getSize());
 
@@ -75,11 +76,6 @@ public class UserResource {
     public Response addUser(UserDTO user) throws OrgApiException{
         validateUser(user);
 
-        if(user.getRoles().contains(Role.MASTER) && user.getRoles().size() != 1){
-            throw new OrgApiInvalidRequestException("Cannot add a user with Master role that has other roles as well");
-        }
-
-        //TODO admin role can only add user for org
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.addUser(user);
 
