@@ -47,10 +47,6 @@ public class UserResource {
     @Context
     private UriInfo uriInfo;
 
-    //TODO need to decide if this should be a sub-resource of orgs, or if it needs a separate parameter passed for the org
-
-    //TODO test access for ThisUserAllowed annotation, and the service layer restrictions for those methods and admin accounts
-
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response getAllUsers(@BeanParam UserFilterBean userFilterBean) throws OrgApiException {

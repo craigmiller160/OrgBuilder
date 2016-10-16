@@ -27,10 +27,6 @@ public class ServiceCommons {
             throw new IllegalArgumentException("No SecurityContext provided");
         }
 
-        if(!((OrgApiPrincipal) securityContext.getUserPrincipal()).isAuthorizedForAppSchema() && useAppSchema){
-            throw new ForbiddenException("Not authorized to access the APP_SCHEMA");
-        }
-
         this.useAppSchema = useAppSchema;
         this.dataManager = ServerCore.getOrgDataManager();
         this.securityContext = securityContext;
