@@ -8,10 +8,8 @@ import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
-import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
-import io.craigmiller160.orgbuilder.server.rest.OrgApiPrincipal;
-import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.util.HashingUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.core.SecurityContext;
@@ -56,7 +54,6 @@ public class UserService {
     }
 
     public UserDTO updateUser(UserDTO user, Long userId) throws OrgApiDataException, OrgApiSecurityException{
-        user.setPassword(HashingUtils.hashBCrypt(user.getPassword()));
         DataConnection connection = null;
         UserDTO result = null;
         try{
@@ -64,6 +61,17 @@ public class UserService {
                     " | ID: " + userId);
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
+
+            if(!StringUtils.isEmpty(user.getPassword())){
+                user.setPassword(HashingUtils.hashBCrypt(user.getPassword()));
+            }
+            else{
+                UserDTO oldUser = userDao.get(userId);
+                if(oldUser == null){
+                    return null;
+                }
+                user.setPassword(oldUser.getPassword());
+            }
 
             user.setElementId(userId);
             result = userDao.update(user, userId);

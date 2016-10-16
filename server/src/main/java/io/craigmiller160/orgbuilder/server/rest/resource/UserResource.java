@@ -102,8 +102,14 @@ public class UserResource {
 
         UserDTO result = service.updateUser(user, userId);
 
+        if(result != null){
+            return Response
+                    .accepted(result)
+                    .build();
+        }
+
         return Response
-                .accepted(result)
+                .noContent()
                 .build();
     }
 
