@@ -73,10 +73,16 @@ public class AddressResource {
     @RolesAllowed({Role.READ, Role.WRITE})
     public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
-        address = addressService.updateAddress(address, addressId, memberId);
+        AddressDTO result = addressService.updateAddress(address, addressId, memberId);
+
+        if(result != null){
+            return Response
+                    .accepted(result)
+                    .build();
+        }
 
         return Response
-                .accepted(address)
+                .noContent()
                 .build();
     }
 

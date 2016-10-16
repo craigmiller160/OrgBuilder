@@ -76,10 +76,16 @@ public class PhoneResource {
     @RolesAllowed({Role.READ, Role.WRITE})
     public Response updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
-        phone = phoneService.updatePhone(phone, phoneId, memberId);
+        PhoneDTO result = phoneService.updatePhone(phone, phoneId, memberId);
+
+        if(result != null){
+            return Response
+                    .accepted(result)
+                    .build();
+        }
 
         return Response
-                .accepted(phone)
+                .noContent()
                 .build();
     }
 

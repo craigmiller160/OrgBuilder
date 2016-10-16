@@ -77,9 +77,16 @@ public class MemberResource {
     @RolesAllowed({Role.READ, Role.WRITE})
     public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
-        member = memberService.updateMember(member, memberId);
+        MemberDTO result = memberService.updateMember(member, memberId);
+
+        if(result != null){
+            return Response
+                    .accepted(result)
+                    .build();
+        }
+
         return Response
-                .accepted(member)
+                .noContent()
                 .build();
     }
 

@@ -70,10 +70,16 @@ public class OrgResource {
     @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
     public Response updateOrg(@PathParam("orgId") long orgId, OrgDTO org) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
-        org = orgService.updateOrg(org, orgId);
+        OrgDTO result = orgService.updateOrg(org, orgId);
+
+        if(result != null){
+            return Response
+                    .accepted(result)
+                    .build();
+        }
 
         return Response
-                .accepted(org)
+                .noContent()
                 .build();
     }
 

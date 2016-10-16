@@ -88,6 +88,10 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
 
     @Override
     public E update(E element, I id) throws OrgApiDataException {
+        E result = get(id);
+        if(result == null){
+            return null;
+        }
         String updateQuery = queries.get(Query.UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Update Query:\n" + updateQuery);
         try(PreparedStatement stmt = connection.prepareStatement(updateQuery)){
