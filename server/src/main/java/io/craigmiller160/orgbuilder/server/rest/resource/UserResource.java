@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.Role;
+import io.craigmiller160.orgbuilder.server.rest.UserFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.annotation.ThisUserAllowed;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.UserService;
@@ -54,8 +55,8 @@ public class UserResource {
 
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
-    public Response getAllUsers(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException {
-        resourceFilterBean.validateFilterParams();
+    public Response getAllUsers(@BeanParam UserFilterBean userFilterBean) throws OrgApiException {
+        userFilterBean.validateFilterParams();
         //TODO add search for user by name
         UserService service = factory.newUserService(securityContext);
         UserListDTO results = service.getAllUsers(resourceFilterBean.getOffset(), resourceFilterBean.getSize());

@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.ws.rs.QueryParam;
 
 /**
@@ -16,5 +18,9 @@ public class UserFilterBean extends ResourceFilterBean {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public boolean isSearch(){
+        return !StringUtils.isEmpty(userName);
     }
 }
