@@ -36,15 +36,15 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
     }
 
     //TODO modify this to return a list
-    public List<UserDTO> getWithName(String name) throws OrgApiDataException{
+    public UserDTO getWithName(String name) throws OrgApiDataException{
         String getWithNameQuery = queries.get(JdbcManager.Query.GET_WITH_NAME);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get With Name Query:\n" + getWithNameQuery);
-        List<UserDTO> result = new ArrayList<>();
+        UserDTO result = null;
         try(PreparedStatement stmt = connection.prepareStatement(getWithNameQuery)){
-            stmt.setString(1, "%" + name + "%");
+            stmt.setString(1, name);
             try(ResultSet resultSet = stmt.executeQuery()){
                 if(resultSet.next()){
-                    result.add(parseResultSet(resultSet));
+                    result = parseResultSet(resultSet);
                 }
             }
         }
