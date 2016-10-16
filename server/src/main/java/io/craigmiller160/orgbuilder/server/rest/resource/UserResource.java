@@ -59,7 +59,7 @@ public class UserResource {
         userFilterBean.validateFilterParams();
         //TODO add search for user by name
         UserService service = factory.newUserService(securityContext);
-        UserListDTO results = service.getAllUsers(resourceFilterBean.getOffset(), resourceFilterBean.getSize());
+        UserListDTO results = service.getAllUsers(userFilterBean.getOffset(), userFilterBean.getSize());
 
         if(results != null){
             return Response
