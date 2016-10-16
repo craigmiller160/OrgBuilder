@@ -89,14 +89,14 @@ public class JWTUtil {
 
     public static String generateNewToken(SignedJWT jwt) throws OrgApiSecurityException{
         long tokenId = getTokenIdClaim(jwt);
-        String subject = getTokenSubjectClaim(jwt);
-        String[] subjectSplit = splitUserNameOrgName(subject);
+        String userName = getTokenUserNameClaim(jwt);
+        String orgName = getTokenOrgNameClaim(jwt);
         Set<String> roles = getTokenRolesClaim(jwt);
         String schema = getTokenSchemaClaim(jwt);
         long orgId = getTokenOrgIdClaim(jwt);
         long userId = getTokenUserIdClaim(jwt);
         Date expiration = generateNewExpiration();
-        return generateNewToken(tokenId, subjectSplit[0], subjectSplit[1], userId, orgId, schema, roles, expiration);
+        return generateNewToken(tokenId, userName, orgName, userId, orgId, schema, roles, expiration);
     }
 
     static String generateNewToken(long tokenId, String userName, String orgName, long userId, long orgId, String schemaName,
