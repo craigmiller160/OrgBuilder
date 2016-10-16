@@ -46,6 +46,8 @@ public class JWTUtil {
     public static final String ORG_ID_CLAIM_KEY = "OID";
     public static final String USER_ID_CLAIM_KEY = "UID";
     public static final String BEARER_PREFIX = "Bearer ";
+    public static final String USER_NAME_CLAIM_KEY = "UNM";
+    public static final String ORG_NAME_CLAIM_KEY = "ONM";
 
     private JWTUtil(){}
 
@@ -54,7 +56,21 @@ public class JWTUtil {
     }
 
     public static String[] splitUserNameOrgName(String subject){
-        return subject.split("::");
+        String[] split = subject.split("::");
+        if(split.length == 0){
+            return new String[] {"", ""};
+        }
+        else if(split.length == 1){
+            int index = subject.indexOf("::");
+            if(index == 0){
+                return new String[] {"", split[0]};
+            }
+            else{
+                return new String[] {split[0], ""};
+            }
+        }
+
+        return split;
     }
 
     private static Date generateNewExpiration(){
@@ -68,26 +84,27 @@ public class JWTUtil {
     public static String generateNewToken(long tokenId, String userName, String orgName, long userId, long orgId,
                                           String schemaName, Set<String> roles) throws OrgApiSecurityException{
         Date expiration = generateNewExpiration();
-        return generateNewToken(tokenId, combineUserNameOrgName(userName, orgName), userId, orgId, schemaName, roles, expiration);
+        return generateNewToken(tokenId, userName, orgName, userId, orgId, schemaName, roles, expiration);
     }
 
     public static String generateNewToken(SignedJWT jwt) throws OrgApiSecurityException{
         long tokenId = getTokenIdClaim(jwt);
         String subject = getTokenSubjectClaim(jwt);
+        String[] subjectSplit = splitUserNameOrgName(subject);
         Set<String> roles = getTokenRolesClaim(jwt);
         String schema = getTokenSchemaClaim(jwt);
         long orgId = getTokenOrgIdClaim(jwt);
         long userId = getTokenUserIdClaim(jwt);
         Date expiration = generateNewExpiration();
-        return generateNewToken(tokenId, subject, userId, orgId, schema, roles, expiration);
+        return generateNewToken(tokenId, subjectSplit[0], subjectSplit[1], userId, orgId, schema, roles, expiration);
     }
 
-    static String generateNewToken(long tokenId, String subject, long userId, long orgId, String schemaName,
+    static String generateNewToken(long tokenId, String userName, String orgName, long userId, long orgId, String schemaName,
                                    Set<String> roles, Date expiration) throws OrgApiSecurityException{
         String token = null;
         try{
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                    .subject(subject)
+                    .subject(combineUserNameOrgName(userName, orgName))
                     .issueTime(LegacyDateConverter.convertLocalDateTimeToDate(LocalDateTime.now()))
                     .issuer(ServerCore.getProperty(ServerProps.API_NAME))
                     .expirationTime(expiration)
@@ -96,6 +113,8 @@ public class JWTUtil {
                     .claim(ROLES_CLAIM_KEY, roles)
                     .claim(ORG_ID_CLAIM_KEY, orgId)
                     .claim(USER_ID_CLAIM_KEY, userId)
+                    .claim(USER_NAME_CLAIM_KEY, userName)
+                    .claim(ORG_NAME_CLAIM_KEY, orgName)
                     .build();
             SignedJWT jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
             JWSSigner signer = new RSASSASigner(ServerCore.getKeyManager().getTokenPrivateKey());
@@ -268,6 +287,32 @@ public class JWTUtil {
             if(orgIdClaim != null){
                 result = Long.parseLong(orgIdClaim.toString());
             }
+        }
+        catch(ParseException | NumberFormatException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token orgId claim", ex);
+        }
+
+        return result;
+    }
+
+    public static String getTokenUserNameClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        String result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = claimsSet.getStringClaim(USER_NAME_CLAIM_KEY);
+        }
+        catch(ParseException | NumberFormatException ex){
+            throw new OrgApiSecurityException("Unable to retrieve token orgId claim", ex);
+        }
+
+        return result;
+    }
+
+    public static String getTokenOrgNameClaim(SignedJWT jwt) throws OrgApiSecurityException{
+        String result = null;
+        try{
+            JWTClaimsSet claimsSet = jwt.getJWTClaimsSet();
+            result = claimsSet.getStringClaim(ORG_NAME_CLAIM_KEY);
         }
         catch(ParseException | NumberFormatException ex){
             throw new OrgApiSecurityException("Unable to retrieve token orgId claim", ex);

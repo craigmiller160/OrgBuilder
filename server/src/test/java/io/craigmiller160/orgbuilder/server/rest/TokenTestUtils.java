@@ -28,7 +28,7 @@ public class TokenTestUtils {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime exp = isExpired ? now.minusMinutes(20) : now.plusMinutes(20);
         Date expiration = LegacyDateConverter.convertLocalDateTimeToDate(exp);
-        return JWTUtil.generateNewToken(1, JWTUtil.combineUserNameOrgName(USER_NAME, ORG_NAME), 101, 201, SCHEMA_NAME, roles, expiration);
+        return JWTUtil.generateNewToken(1, USER_NAME, ORG_NAME, 101, 201, SCHEMA_NAME, roles, expiration);
     }
 
 }

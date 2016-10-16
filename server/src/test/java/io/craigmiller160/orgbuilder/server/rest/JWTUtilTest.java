@@ -131,4 +131,62 @@ public class JWTUtilTest {
         assertEquals("Wrong Token orgId claim value returned", orgId, ORG_ID);
     }
 
+    @Test
+    public void testGetUserNameClaim() throws Exception{
+        String token = generateToken(false);
+
+        SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(token);
+        assertNotNull("Token wasn't validated and returned", jwt);
+
+        String userName = JWTUtil.getTokenUserNameClaim(jwt);
+        assertEquals("Wrong Token userName claim value returned", USER_NAME, userName);
+    }
+
+    @Test
+    public void testGetOrgNameClaim() throws Exception{
+        String token = generateToken(false);
+
+        SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(token);
+        assertNotNull("Token wasn't validated and returned", jwt);
+
+        String orgName = JWTUtil.getTokenOrgNameClaim(jwt);
+        assertEquals("Wrong Token orgName claim value returned", ORG_NAME, orgName);
+    }
+
+    @Test
+    public void testSplitSubject() throws Exception{
+        String user = "User";
+        String org = "Org";
+        String subject1 = user + "::" + org;
+
+        //Two valid entries
+        String[] sub1Split = JWTUtil.splitUserNameOrgName(subject1);
+        assertEquals("Subject1 split user invalid", user, sub1Split[0]);
+        assertEquals("Subject1 split org invalid", org, sub1Split[1]);
+
+        //Only user entry
+        String subject2 = user + "::";
+        String[] sub2Split = JWTUtil.splitUserNameOrgName(subject2);
+        assertEquals("Subject2 split user invalid", user, sub2Split[0]);
+        assertEquals("Subject2 split org invalid", "", sub2Split[1]);
+
+        //No valid entries
+        String subject3 = "";
+        String[] sub3Split = JWTUtil.splitUserNameOrgName(subject3);
+        assertEquals("Subject3 split user invalid", "", sub3Split[0]);
+        assertEquals("Subject3 split org invalid", "", sub3Split[1]);
+
+        //No valid entries, but with "::"
+        String subject4 = "::";
+        String[] sub4Split = JWTUtil.splitUserNameOrgName(subject4);
+        assertEquals("Subject4 split user invalid", "", sub4Split[0]);
+        assertEquals("Subject4 split org invalid", "", sub4Split[1]);
+
+        //Only org entry
+        String subject5 = "::" + org;
+        String[] sub5Split = JWTUtil.splitUserNameOrgName(subject5);
+        assertEquals("Subject5 split user invalid", "", sub5Split[0]);
+        assertEquals("Subject5 split org invalid", org, sub5Split[1]);
+    }
+
 }
