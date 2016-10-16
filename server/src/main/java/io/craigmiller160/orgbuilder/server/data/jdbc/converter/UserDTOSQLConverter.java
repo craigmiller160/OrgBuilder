@@ -65,6 +65,7 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
             userDTO.convertStringToRoles(roles);
         }
         userDTO.setOrgId(resultSet.getLong("org_id"));
+        userDTO.setOrgName(resultSet.getString("org_name"));
 
         return userDTO;
     }

@@ -18,6 +18,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     private String password;
     private Set<String> roles = new TreeSet<>();
     private long orgId;
+    private String orgName;
 
     @Override
     public Long getElementId() {
@@ -77,6 +78,14 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         this.password = password;
     }
 
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,7 +97,8 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         if (orgId != userDTO.orgId) return false;
         if (userEmail != null ? !userEmail.equals(userDTO.userEmail) : userDTO.userEmail != null) return false;
         if (password != null ? !password.equals(userDTO.password) : userDTO.password != null) return false;
-        return roles != null ? roles.equals(userDTO.roles) : userDTO.roles == null;
+        if (roles != null ? !roles.equals(userDTO.roles) : userDTO.roles != null) return false;
+        return orgName != null ? orgName.equals(userDTO.orgName) : userDTO.orgName == null;
 
     }
 
@@ -99,6 +109,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + (roles != null ? roles.hashCode() : 0);
         result = 31 * result + (int) (orgId ^ (orgId >>> 32));
+        result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
         return result;
     }
 

@@ -189,6 +189,7 @@ public class DaoTestUtils {
         user.setUserEmail("MyEmail@gmail.com");
         user.convertStringToRoles("ADMIN,WRITE,READ");
         user.setOrgId(1);
+        user.setOrgName("MyOrg");
 
         return user;
     }
@@ -199,6 +200,7 @@ public class DaoTestUtils {
         user.setUserEmail("NewEmail@gmail.com");
         user.convertStringToRoles("READ");
         user.setOrgId(2);
+        user.setOrgName("NewOrg");
 
         return user;
     }
