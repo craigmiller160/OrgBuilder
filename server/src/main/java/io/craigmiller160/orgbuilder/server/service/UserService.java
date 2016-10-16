@@ -31,34 +31,7 @@ public class UserService {
         this.serviceCommons = new ServiceCommons(securityContext, true);
     }
 
-    private boolean hasAccessToResource(UserDTO userResource){
-        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
-        long userResourceUserId = userResource.getElementId();
-        long userResourceOrgId = userResource.getOrgId();
-        if(principal.getUserId() == userResourceUserId){
-            return true;
-        }
-
-        if(isUserAdmin()){
-            return userResourceOrgId == principal.getOrgId();
-        }
-
-        return false;
-    }
-
-    private boolean isUserAdmin(){
-        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
-        return principal.isUserInRole(Role.ADMIN);
-    }
-
-    private void ensureMasterAccessRestriction(UserDTO user) throws OrgApiSecurityException{
-        if(user.getRoles().contains(Role.MASTER) && (user.getRoles().size() != 1 || user.getOrgId() > 0)){
-            throw new OrgApiSecurityException("Cannot add a user with Master role that has other roles or an Org assignment.");
-        }
-    }
-
     public UserDTO addUser(UserDTO user) throws OrgApiDataException, OrgApiSecurityException{
-        ensureMasterAccessRestriction(user);
         user.setElementId(-1L);
         user.setPassword(HashingUtils.hashBCrypt(user.getPassword()));
         DataConnection connection = null;
@@ -67,10 +40,6 @@ public class UserService {
             OrgApiLogger.getServiceLogger().debug("Adding new user. Subject: " + serviceCommons.getSubjectName());
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
-
-            if(isUserAdmin() && getOrgId() != user.getOrgId()){
-                throw new ForbiddenException("Admin user cannot add a user outside of their own org");
-            }
 
             result = userDao.insert(user);
 
@@ -87,7 +56,6 @@ public class UserService {
     }
 
     public UserDTO updateUser(UserDTO user, Long userId) throws OrgApiDataException, OrgApiSecurityException{
-        ensureMasterAccessRestriction(user);
         user.setPassword(HashingUtils.hashBCrypt(user.getPassword()));
         DataConnection connection = null;
         UserDTO result = null;
@@ -96,14 +64,6 @@ public class UserService {
                     " | ID: " + userId);
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
-
-            if(!hasAccessToResource(userDao.get(userId))){
-                throw new ForbiddenException("User doesn't have access to resource");
-            }
-
-            if(isUserAdmin() && getOrgId() != user.getOrgId()){
-                throw new ForbiddenException("Admin user cannot reassign a user outside of their own org");
-            }
 
             user.setElementId(userId);
             result = userDao.update(user, userId);
@@ -128,10 +88,6 @@ public class UserService {
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
-
-            if(!hasAccessToResource(userDao.get(userId))){
-                throw new ForbiddenException("User doesn't have access to resource");
-            }
 
             tokenDao.query(AdditionalQueries.DELETE_BY_USER, userId);
             result = userDao.delete(userId);
@@ -158,9 +114,6 @@ public class UserService {
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
             result = userDao.get(userId);
-            if(!hasAccessToResource(result)){
-                throw new ForbiddenException("User doesn't have access to resource");
-            }
 
             connection.commit();
         }
@@ -174,12 +127,7 @@ public class UserService {
         return result;
     }
 
-    private long getOrgId() throws OrgApiSecurityException{
-        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
-        return principal.getOrgId();
-    }
-
-    public UserListDTO getAllUsers(long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
+    public UserListDTO getAllUsers(long orgId, long offset, long size) throws OrgApiDataException, OrgApiSecurityException{
         DataConnection connection = null;
         UserListDTO results = null;
         try{
@@ -188,13 +136,12 @@ public class UserService {
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
             List<UserDTO> list = null;
-            long orgId = getOrgId();
             if(orgId > 0){
-                list = (offset >= 0 && size >= 0) ? userDao.getAll(offset, size) : userDao.getAll();
-            }
-            else{
                 list = (offset >= 0 && size >= 0) ? (List<UserDTO>) userDao.query(AdditionalQueries.GET_ALL_LIMIT_BY_ORG, orgId, offset, size) :
                         (List<UserDTO>) userDao.query(AdditionalQueries.GET_ALL_BY_ORG, orgId);
+            }
+            else{
+                list = (offset >= 0 && size >= 0) ? userDao.getAll(offset, size) : userDao.getAll();
             }
 
             if(list.size() > 0){

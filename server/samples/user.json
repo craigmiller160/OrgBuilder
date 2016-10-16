@@ -2,5 +2,10 @@
   "userEmail": "bob@gmail.com",
   "password": "password",
   "orgId": "1",
-  "roles": "ADMIN,READ,WRITE"
+  "elementId": "2",
+  "roles": [
+    "ADMIN",
+    "READ",
+    "WRITE"
+  ]
 }

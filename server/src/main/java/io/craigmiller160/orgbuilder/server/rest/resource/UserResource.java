@@ -4,7 +4,7 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
-import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
+import io.craigmiller160.orgbuilder.server.rest.OrgApiPrincipal;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.rest.UserFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.annotation.ThisUserAllowed;
@@ -12,7 +12,6 @@ import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -27,9 +26,11 @@ import java.net.URI;
  * user records.
  *
  * NOTE: This resource has more complex authentication
- * than others. Some final authentication is done in
- * the service layer for certain methods, and ForbiddenExceptions are thrown
- * from it.
+ * than others. In addition to the annotations, a great
+ * deal of authentication is done in this class as well.
+ * In addition, some UserService methods have their own,
+ * internal validation that affects what kind of results
+ * are returned, based on the principal's access.
  *
  * Created by craig on 9/15/16.
  */
@@ -49,9 +50,6 @@ public class UserResource {
     //TODO need to decide if this should be a sub-resource of orgs, or if it needs a separate parameter passed for the org
 
     //TODO test access for ThisUserAllowed annotation, and the service layer restrictions for those methods and admin accounts
-    //TODO test that admin role calling getAllUsers() can only get users in their org
-    //TODO test that admin role can only add users for their own org, and can't update users to another org
-    //TODO test new users table trigger restricting the insert of master users
 
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
@@ -59,7 +57,10 @@ public class UserResource {
         userFilterBean.validateFilterParams();
         //TODO add search for user by name
         UserService service = factory.newUserService(securityContext);
-        UserListDTO results = service.getAllUsers(userFilterBean.getOffset(), userFilterBean.getSize());
+
+        //If the principal has an orgId, they must have an Admin role (due to annotation restriction)
+        //The service will restrict results to only users in their org.
+        UserListDTO results = service.getAllUsers(getPrincipalOrgId(), userFilterBean.getOffset(), userFilterBean.getSize());
 
         if(results != null){
             return Response
@@ -75,7 +76,9 @@ public class UserResource {
     @POST
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response addUser(UserDTO user) throws OrgApiException{
-        validateUser(user);
+        validateUser(user, true);
+        ensureMasterCreationRestriction(user);
+        ensureAdminAccessRestriction(user);
 
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.addUser(user);
@@ -90,8 +93,13 @@ public class UserResource {
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN,Role.MASTER})
     public Response updateUser(@PathParam("userId") long userId, UserDTO user) throws OrgApiException{
-        validateUser(user);
+        validateUser(user, false);
+        ensureMasterCreationRestriction(user);
         UserService service = factory.newUserService(securityContext);
+
+        UserDTO toBeUpdated = service.getUser(userId);
+        ensureAdminAccessRestriction(toBeUpdated);
+
         UserDTO result = service.updateUser(user, userId);
 
         return Response
@@ -104,6 +112,10 @@ public class UserResource {
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
     public Response deleteUser(@PathParam("userId") long userId) throws OrgApiException{
         UserService service = factory.newUserService(securityContext);
+
+        UserDTO toBeDeleted = service.getUser(userId);
+        ensureAdminAccessRestriction(toBeDeleted);
+
         UserDTO result = service.deleteUser(userId);
 
         if(result != null){
@@ -123,6 +135,7 @@ public class UserResource {
     public Response getUser(@PathParam("userId") long userId) throws OrgApiException{
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.getUser(userId);
+        ensureAdminAccessRestriction(result);
 
         if(result != null){
             return Response
@@ -135,13 +148,52 @@ public class UserResource {
                 .build();
     }
 
-    private void validateUser(UserDTO user) throws OrgApiInvalidRequestException{
+    private void validateUser(UserDTO user, boolean requirePassword) throws OrgApiInvalidRequestException{
         if(StringUtils.isEmpty(user.getUserEmail())){
             throw new OrgApiInvalidRequestException("User is invalid, missing email field");
         }
 
-        if(StringUtils.isEmpty(user.getPassword())){
+        if(StringUtils.isEmpty(user.getPassword()) && requirePassword){
             throw new OrgApiInvalidRequestException("User is invalid, missing password field");
+        }
+
+        if(user.getRoles() == null || user.getRoles().size() == 0){
+            throw new OrgApiInvalidRequestException("User is invalid, missing roles");
+        }
+
+        if(user.getOrgId() <= 0 && !(user.getRoles() != null && user.getRoles().contains(Role.MASTER))){
+            throw new OrgApiInvalidRequestException("User is invalid, doesn't have an org assignment");
+        }
+    }
+
+    private void ensureMasterCreationRestriction(UserDTO user) {
+        if(user.getRoles().contains(Role.MASTER) && !isPrincipalMaster()){
+            throw new ForbiddenException("Only users with Master access can give a user Master access");
+        }
+
+        if(user.getRoles().contains(Role.MASTER) && (user.getRoles().size() != 1 || user.getOrgId() > 0)){
+            throw new ForbiddenException("Cannot add a user with Master role that has other roles or an Org assignment.");
+        }
+    }
+
+    private long getPrincipalOrgId(){
+        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
+        return principal.getOrgId();
+    }
+
+    private boolean isPrincipalAdmin(){
+        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
+        return principal.isUserInRole(Role.ADMIN);
+    }
+
+    private boolean isPrincipalMaster(){
+        OrgApiPrincipal principal = (OrgApiPrincipal) securityContext.getUserPrincipal();
+        return principal.isUserInRole(Role.MASTER);
+    }
+
+    private void ensureAdminAccessRestriction(UserDTO user){
+        if(isPrincipalAdmin() && getPrincipalOrgId() != user.getOrgId()){
+            throw new ForbiddenException("Admin user cannot access a user outside of their own org");
         }
     }
 
