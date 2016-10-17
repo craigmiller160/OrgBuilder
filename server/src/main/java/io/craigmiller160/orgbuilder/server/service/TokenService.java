@@ -106,6 +106,8 @@ public class TokenService {
             if(list.size() > 0){
                 results = new RefreshTokenListDTO(list);
             }
+
+            connection.commit();
         }
         catch(OrgApiDataException ex){
             serviceCommons.rollback(connection, ex);
