@@ -70,7 +70,7 @@ public class AuthResource {
         int refreshExpHrs = Integer.parseInt(ServerCore.getProperty(ServerProps.REFRESH_MAX_EXP_HRS));
         LocalDateTime expiration = LocalDateTime.now().plusHours(refreshExpHrs);
         String userAgentHash = RefreshTokenUtil.generateRefreshTokenHash(foundUser.getUserEmail(), userAgent);
-        RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), userAgentHash, expiration);
+        RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), foundUser.getOrgId(), userAgentHash, expiration);
         refreshToken = tokenService.addRefreshToken(refreshToken);
 
         OrgDTO foundOrg = orgService.getOrg(foundUser.getOrgId());

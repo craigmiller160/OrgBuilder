@@ -15,8 +15,9 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
 
     public RefreshTokenDTO(){}
 
-    public RefreshTokenDTO(long userId, String tokenHash, LocalDateTime expiration){
+    public RefreshTokenDTO(long userId, long orgId, String tokenHash, LocalDateTime expiration){
         this.userId = userId;
+        this.orgId = orgId;
         this.tokenHash = tokenHash;
         this.expiration = expiration;
     }
