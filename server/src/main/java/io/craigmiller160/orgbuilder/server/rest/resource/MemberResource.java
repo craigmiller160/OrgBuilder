@@ -41,8 +41,6 @@ public class MemberResource {
     @Context
     private UriInfo uriInfo;
 
-    //TODO need to add an additional restriction for the org related to the user
-
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllMembers(@BeanParam MemberFilterBean membersFilterBean) throws OrgApiException{

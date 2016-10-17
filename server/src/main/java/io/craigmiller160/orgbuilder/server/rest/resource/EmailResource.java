@@ -37,8 +37,6 @@ public class EmailResource {
     @PathParam("memberId")
     private long memberId;
 
-    //TODO need to add an additional restriction for the org related to the user
-
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllEmails(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{

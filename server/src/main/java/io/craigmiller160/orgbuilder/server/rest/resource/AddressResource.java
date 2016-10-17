@@ -37,8 +37,6 @@ public class AddressResource {
     @PathParam("memberId")
     private long memberId;
 
-    //TODO need to add an additional restriction for the org related to the user
-
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllAddresses(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
