@@ -19,16 +19,19 @@ import java.util.List;
  */
 public class SearchQuery {
 
+    public static int LIKE_OPERATOR = 579;
+    public static int EQUALS_OPERATOR = 580;
+
     private static final String WHERE_CLAUSE = "WHERE ";
     private static final String AND_CLAUSE = "AND ";
     private static final String IS_NULL_CLAUSE = "IS NULL ";
     private static final String LIMIT_CLAUSE = "LIMIT ?,?";
 
     private final String query;
-    private final List<Pair<String,Object>> parameters;
+    private final List<Triple<String,Object,Integer>> parameters;
     private final Pair<Long,Long> limit;
 
-    private SearchQuery(String query, List<Pair<String,Object>> parameters, Pair<Long,Long> limit){
+    private SearchQuery(String query, List<Triple<String,Object,Integer>> parameters, Pair<Long,Long> limit){
         this.query = query;
         this.parameters = parameters;
         this.limit = limit;
@@ -38,7 +41,7 @@ public class SearchQuery {
         return query;
     }
 
-    public List<Pair<String,Object>> getParameters(){
+    public List<Triple<String,Object,Integer>> getParameters(){
         return parameters;
     }
 
@@ -49,7 +52,12 @@ public class SearchQuery {
     public PreparedStatement createAndParameterizeStatement(Connection connection) throws SQLException{
         PreparedStatement stmt = connection.prepareStatement(query);
         for(int i = 0; i < parameters.size(); i++){
-            stmt.setObject((i + 1), parameters.get(i).getRight());
+            if(parameters.get(i).getRight() == LIKE_OPERATOR){
+                stmt.setObject((i + 1), "%" + parameters.get(i).getMiddle() + "%");
+            }
+            else{
+                stmt.setObject((i + 1), parameters.get(i).getMiddle());
+            }
         }
 
         if(limit != null){
@@ -62,7 +70,7 @@ public class SearchQuery {
 
     public static class Builder{
 
-        private final List<Pair<String,Object>> parameters = new ArrayList<>();
+        private final List<Triple<String,Object,Integer>> parameters = new ArrayList<>();
         private final String baseQuery;
         private String orderByClause;
         private Pair<Long,Long> limit;
@@ -81,8 +89,12 @@ public class SearchQuery {
             return this;
         }
 
-        public Builder addParameter(String columnName, Object value){
-            parameters.add(ImmutablePair.of(columnName, value));
+        public Builder addParameter(String columnName, Object value, int operator){
+            if(operator != EQUALS_OPERATOR && operator != LIKE_OPERATOR){
+                throw new IllegalArgumentException("Operator argument invalid: " + operator);
+            }
+
+            parameters.add(ImmutableTriple.of(columnName, value, operator));
             return this;
         }
 
@@ -117,13 +129,16 @@ public class SearchQuery {
             return new SearchQuery(queryBuilder.toString(), parameters, limit);
         }
 
-        private void appendParameter(StrBuilder queryBuilder, Pair<String,Object> parameter){
+        private void appendParameter(StrBuilder queryBuilder, Triple<String,Object,Integer> parameter){
             if(!queryBuilder.endsWith(WHERE_CLAUSE)){
                 queryBuilder.append(AND_CLAUSE);
             }
             queryBuilder.append(parameter.getLeft()).append(" ");
-            if(parameter.getRight() == null){
+            if(parameter.getMiddle() == null){
                 queryBuilder.appendln(IS_NULL_CLAUSE);
+            }
+            else if(parameter.getRight() == LIKE_OPERATOR){
+                queryBuilder.appendln("LIKE ?");
             }
             else{
                 queryBuilder.appendln("= ?");

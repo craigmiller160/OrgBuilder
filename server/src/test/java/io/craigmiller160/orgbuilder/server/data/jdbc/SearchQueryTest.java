@@ -28,7 +28,7 @@ public class SearchQueryTest {
     public void testSearchQueryBuilder() throws Exception{
         String baseQuery = ServerTestUtils.getJdbcManager(ServerCore.getOrgDataManager()).getMappedQueries().get(MemberDao.class).get(JdbcManager.Query.SEARCH_BASE);
         SearchQuery searchQuery = new SearchQuery.Builder(baseQuery)
-                .addParameter("a.foo", "Value")
+                .addParameter("a.foo", "Value", SearchQuery.EQUALS_OPERATOR)
                 .build();
         String resultQuery = baseQuery + "WHERE a.foo = ?";
         assertEquals("Search Query invalid", resultQuery.trim(), searchQuery.getQuery().trim());

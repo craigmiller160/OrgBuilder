@@ -65,55 +65,55 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
     public List<MemberDTO> search(MemberFilterBean memberFilterBean) throws OrgApiDataException{
         SearchQuery.Builder builder = new SearchQuery.Builder(queries.get(Query.SEARCH_BASE));
         if(!StringUtils.isEmpty(memberFilterBean.getFirstName())){
-            builder.addParameter(MemberSearchColumns.FIRST_NAME, memberFilterBean.getFirstName());
+            builder.addParameter(MemberSearchColumns.FIRST_NAME, memberFilterBean.getFirstName(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getMiddleName())){
-            builder.addParameter(MemberSearchColumns.MIDDLE_NAME, memberFilterBean.getMiddleName());
+            builder.addParameter(MemberSearchColumns.MIDDLE_NAME, memberFilterBean.getMiddleName(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getLastName())){
-            builder.addParameter(MemberSearchColumns.LAST_NAME, memberFilterBean.getLastName());
+            builder.addParameter(MemberSearchColumns.LAST_NAME, memberFilterBean.getLastName(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getGender())){
-            builder.addParameter(MemberSearchColumns.GENDER, memberFilterBean.getGender());
+            builder.addParameter(MemberSearchColumns.GENDER, memberFilterBean.getGender(), SearchQuery.EQUALS_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getAddress())){
-            builder.addParameter(MemberSearchColumns.ADDRESS, memberFilterBean.getAddress());
+            builder.addParameter(MemberSearchColumns.ADDRESS, memberFilterBean.getAddress(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getUnit())){
-            builder.addParameter(MemberSearchColumns.UNIT, memberFilterBean.getUnit());
+            builder.addParameter(MemberSearchColumns.UNIT, memberFilterBean.getUnit(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getCity())){
-            builder.addParameter(MemberSearchColumns.CITY, memberFilterBean.getCity());
+            builder.addParameter(MemberSearchColumns.CITY, memberFilterBean.getCity(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getState())){
-            builder.addParameter(MemberSearchColumns.STATE, memberFilterBean.getState());
+            builder.addParameter(MemberSearchColumns.STATE, memberFilterBean.getState(), SearchQuery.EQUALS_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getZipCode())){
-            builder.addParameter(MemberSearchColumns.ZIP_CODE, memberFilterBean.getZipCode());
+            builder.addParameter(MemberSearchColumns.ZIP_CODE, memberFilterBean.getZipCode(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getAreaCode())){
-            builder.addParameter(MemberSearchColumns.AREA_CODE, memberFilterBean.getAreaCode());
+            builder.addParameter(MemberSearchColumns.AREA_CODE, memberFilterBean.getAreaCode(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getPrefix())){
-            builder.addParameter(MemberSearchColumns.PREFIX, memberFilterBean.getPrefix());
+            builder.addParameter(MemberSearchColumns.PREFIX, memberFilterBean.getPrefix(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getLineNumber())){
-            builder.addParameter(MemberSearchColumns.LINE_NUMBER, memberFilterBean.getLineNumber());
+            builder.addParameter(MemberSearchColumns.LINE_NUMBER, memberFilterBean.getLineNumber(), SearchQuery.LIKE_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getEmailAddress())){
-            builder.addParameter(MemberSearchColumns.EMAIL_ADDRESS, memberFilterBean.getEmailAddress());
+            builder.addParameter(MemberSearchColumns.EMAIL_ADDRESS, memberFilterBean.getEmailAddress(), SearchQuery.LIKE_OPERATOR);
         }
 
         builder.setOrderByClause(MemberSearchColumns.ORDER_BY_CLAUSE);
