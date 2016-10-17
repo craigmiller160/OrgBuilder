@@ -93,11 +93,4 @@ public class AuthResource {
                 .build();
     }
 
-    @DELETE
-    @RolesAllowed(Role.MASTER)
-    public Response invalidate(){
-        //TODO finish this
-        return null;
-    }
-
 }
