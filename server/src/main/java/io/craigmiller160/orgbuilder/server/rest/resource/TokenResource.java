@@ -22,6 +22,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
 /**
+ * The resource to handle access to RefreshTokens.
+ *
+ * For security reasons, this class should NEVER
+ * add or update tokens. It simply allows tokens
+ * to be viewed or deleted by the webmaster.
+ *
  * Created by craig on 10/17/16.
  */
 @Produces(MediaType.APPLICATION_JSON)
