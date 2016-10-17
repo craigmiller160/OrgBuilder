@@ -12,6 +12,8 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
     private long orgId;
     private String tokenHash;
     private LocalDateTime expiration;
+    private String userEmail;
+    private String orgName;
 
     public RefreshTokenDTO(){}
 
@@ -64,6 +66,22 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         this.orgId = orgId;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,7 +93,9 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         if (userId != that.userId) return false;
         if (orgId != that.orgId) return false;
         if (tokenHash != null ? !tokenHash.equals(that.tokenHash) : that.tokenHash != null) return false;
-        return expiration != null ? expiration.equals(that.expiration) : that.expiration == null;
+        if (expiration != null ? !expiration.equals(that.expiration) : that.expiration != null) return false;
+        if (userEmail != null ? !userEmail.equals(that.userEmail) : that.userEmail != null) return false;
+        return orgName != null ? orgName.equals(that.orgName) : that.orgName == null;
 
     }
 
@@ -86,6 +106,8 @@ public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
         result = 31 * result + (int) (orgId ^ (orgId >>> 32));
         result = 31 * result + (tokenHash != null ? tokenHash.hashCode() : 0);
         result = 31 * result + (expiration != null ? expiration.hashCode() : 0);
+        result = 31 * result + (userEmail != null ? userEmail.hashCode() : 0);
+        result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
         return result;
     }
 

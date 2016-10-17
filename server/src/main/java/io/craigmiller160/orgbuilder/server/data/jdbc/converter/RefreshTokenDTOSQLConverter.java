@@ -65,6 +65,8 @@ public class RefreshTokenDTOSQLConverter implements DTOSQLConverter<RefreshToken
         if(timestamp != null){
             token.setExpiration(timestamp.toLocalDateTime());
         }
+        token.setUserEmail(resultSet.getString("user_email"));
+        token.setOrgName(resultSet.getString("org_name"));
 
         return token;
     }
