@@ -5,7 +5,6 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
-import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
@@ -19,7 +18,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -32,7 +30,9 @@ import java.time.LocalDateTime;
 public class SecurityFilter implements ContainerRequestFilter{
 
     private static final String POST_METHOD = "POST";
+    private static final String GET_METHOD = "GET";
     private static final String LOGIN_URI = "/orgapi/auth";
+    private static final String USER_EXISTS_URI = "/orgapi/auth/exists";
     private static final ServiceFactory factory = ServiceFactory.newInstance();
 
     @Context
@@ -44,9 +44,10 @@ public class SecurityFilter implements ContainerRequestFilter{
 
         String method = requestContext.getMethod();
         String uri = request.getRequestURI();
-        if(POST_METHOD.equals(method) && LOGIN_URI.equals(uri)){
+        if((POST_METHOD.equals(method) && LOGIN_URI.equals(uri)) ||
+                (GET_METHOD.equals(method) && USER_EXISTS_URI.equals(uri))){
             //Allow call to proceed to AuthResource to authenticate credentials
-            principal = createLoginPrincipal();
+            principal = createAuthPrincipal();
         }
         else{
             principal = handleTokenValidation(requestContext);
@@ -127,11 +128,10 @@ public class SecurityFilter implements ContainerRequestFilter{
         requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
     }
 
-    private OrgApiPrincipal createLoginPrincipal(){
+    private OrgApiPrincipal createAuthPrincipal(){
         OrgApiPrincipal principal = new OrgApiPrincipal();
-        principal.setName("Login");
+        principal.setName("Auth");
         principal.setSchema(SchemaManager.DEFAULT_APP_SCHEMA_NAME);
-        principal.getRoles().add(Role.MASTER);
         return principal;
     }
 

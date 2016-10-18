@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.rest;
 import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -19,6 +20,7 @@ public class FilterUtils {
                 Response
                         .status(Response.Status.FORBIDDEN)
                         .entity(error)
+                        .type(MediaType.APPLICATION_JSON)
                         .build()
         );
     }

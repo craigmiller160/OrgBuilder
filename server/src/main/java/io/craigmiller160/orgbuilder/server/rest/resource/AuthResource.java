@@ -22,13 +22,18 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.time.LocalDateTime;
@@ -37,6 +42,8 @@ import java.time.LocalDateTime;
  * Created by craig on 9/27/16.
  */
 @Path("/auth")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class AuthResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -90,6 +97,27 @@ public class AuthResource {
         return Response
                 .ok()
                 .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + token)
+                .build();
+    }
+
+    @GET
+    @Path("/exists")
+    @PermitAll
+    public Response userExists(@QueryParam("userName") String userName) throws OrgApiException{
+        UserService userService = factory.newUserService(securityContext);
+        UserDTO result = userService.getUserByName(userName);
+
+        if(result != null){
+            UserDTO resp = new UserDTO();
+            resp.setUserEmail(userName);
+            return Response
+                    .status(Response.Status.CONFLICT)
+                    .entity(resp)
+                    .build();
+        }
+
+        return Response
+                .ok()
                 .build();
     }
 
