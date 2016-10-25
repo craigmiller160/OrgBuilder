@@ -22,6 +22,8 @@ public class ServerProps {
     public static final String TOKEN_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.tokenKeyName";
     public static final String DATA_KEY_NAME = "io.craigmiller160.orgbuilder.server.keystore.dataKeyName";
     public static final String KEYSTORE_PASS = "io.craigmiller160.orgbuilder.server.keystore.storePass";
+    public static final String TOKEN_KEY_PASS = "io.craigmiller160.orgbuilder.server.keystore.tokenKeyPass";
+    public static final String DATA_KEY_PASS = "io.craigmiller160.orgbuilder.server.keystore.dataKeyPass";
 
     public static final String ACCESS_EXP_MINS = "io.craigmiller160.orgbuilder.server.token.accessExpMins";
     public static final String REFRESH_EXP_MINS = "io.craigmiller160.orgbuilder.server.token.refreshExpMins";
