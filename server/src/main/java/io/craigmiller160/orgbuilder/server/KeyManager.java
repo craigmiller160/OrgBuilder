@@ -89,4 +89,16 @@ public class KeyManager {
         return secretKey;
     }
 
+    public Certificate getCACertificate() throws OrgApiSecurityException{
+        Certificate certificate = null;
+        try{
+            certificate = keystore.getCertificate(ServerCore.getProperty(ServerProps.CA_CERT_NAME));
+        }
+        catch(KeyStoreException ex){
+            throw new OrgApiSecurityException("Unable to retrieve CA Certificate from keystore", ex);
+        }
+
+        return certificate;
+    }
+
 }

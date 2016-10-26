@@ -7,6 +7,7 @@ import org.junit.Test;
 import javax.crypto.SecretKey;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,6 +49,12 @@ public class KeyManagerTest {
         SecretKey secretKey = ServerCore.getKeyManager().getDataSecretKey();
         assertNotNull("SecretKey not found", secretKey);
         assertEquals("SecretKey algorithm incorrect", "AES", secretKey.getAlgorithm());
+    }
+
+    @Test
+    public void testCACertificate() throws Exception{
+        Certificate certificate = ServerCore.getKeyManager().getCACertificate();
+        assertNotNull("CA Certificate not found", certificate);
     }
 
 }
