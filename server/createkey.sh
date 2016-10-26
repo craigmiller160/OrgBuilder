@@ -180,7 +180,7 @@ function create_ca_cert {
         -storetype $KEYSTORE_TYPE \
         -storepass $KEYSTORE_PASS \
         -keypass $CA_CERT_PASS \
-        -file ca-cert.pem
+        -file $CA_CERT
 }
 
 function create_database_ssl_certs {
