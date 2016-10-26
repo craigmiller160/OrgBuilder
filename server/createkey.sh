@@ -21,7 +21,10 @@ CA_CERT_ALIAS=cacert
 KEYSTORE_PASS=orgapi
 TOKEN_KEY_PASS=orgapi
 DATA_KEY_PASS=orgapi
+CA_CERT_PASS=orgapi
 TOKEN_KEY_INFO="CN=Craig Miller, OU=Development, O=CraigMiller160, L=Tampa, S=Florida, C=US"
+CA_CERT_INFO="/C=US/ST=Florida/L=Tampa/O=CraigMiller160 CA/CN=Craig Miller CA"
+MYSQL_REQUEST_INFO="/C=US/ST=Florida/L=Tampa/O=CraigMiller160 MySQL/CN=Craig Miller MySQL"
 
 function main {
     token=false
@@ -35,7 +38,7 @@ function main {
             t) token=true ;;
             d) data=true ;;
             c) ca=true ;;
-            s) data_ssl=true ;;
+            m) data_ssl=true ;;
             *)
                 echo "Error! Invalid input"
                 exit 1
@@ -61,16 +64,16 @@ function main {
 }
 
 function create_token_key {
+    echo ""
     echo "Create the JSON Web Token RSA KeyPair"
-    read -p "Press enter to continue"
 
     if [[ -f $KEYSTORE_FILE ]]; then
         echo "Deleting existing token RSA keypair from keystore"
         keytool -delete \
-        -alias $TOKEN_KEY_ALIAS \
-        -keystore $KEYSTORE_FILE \
-        -storetype $KEYSTORE_TYPE \
-        -storepass $KEYSTORE_PASS
+            -alias $TOKEN_KEY_ALIAS \
+            -keystore $KEYSTORE_FILE \
+            -storetype $KEYSTORE_TYPE \
+            -storepass $KEYSTORE_PASS
     fi
 
     if [[ -f $TOKEN_RSA_CERT ]]; then
@@ -92,51 +95,52 @@ function create_token_key {
 
     echo "Exporting token RSA public certificate."
     keytool -exportcert \
-    -alias $TOKEN_KEY_ALIAS \
-    -file $TOKEN_RSA_CERT \
-    -keystore $KEYSTORE_FILE \
-    -storetype $KEYSTORE_TYPE \
-    -keypass $TOKEN_KEY_PASS \
-    -storepass $KEYSTORE_PASS \
-    -rfc
+        -alias $TOKEN_KEY_ALIAS \
+        -file $TOKEN_RSA_CERT \
+        -keystore $KEYSTORE_FILE \
+        -storetype $KEYSTORE_TYPE \
+        -keypass $TOKEN_KEY_PASS \
+        -storepass $KEYSTORE_PASS \
+        -rfc
 }
 
 function create_data_key {
+    echo ""
     echo "Creating the database AES encryption key"
-    read -p "Press enter to continue."
 
     if [[ -f $KEYSTORE_FILE ]]; then
         echo "Deleting existing database AES key from keystore"
         keytool -delete \
-        -alias $DATA_KEY_ALIAS \
-        -keystore $KEYSTORE_FILE \
-        -storetype $KEYSTORE_TYPE \
-        -storepass $KEYSTORE_PASS \
-        -keypass $DATA_KEY_PASS
+            -alias $DATA_KEY_ALIAS \
+            -keystore $KEYSTORE_FILE \
+            -storetype $KEYSTORE_TYPE \
+            -storepass $KEYSTORE_PASS \
+            -keypass $DATA_KEY_PASS
     fi
 
     echo "Generating database AES key"
     keytool -genseckey \
-    -alias $DATA_KEY_ALIAS \
-    -keyalg AES \
-    -keysize 128 \
-    -keystore $KEYSTORE_FILE \
-    -storetype $KEYSTORE_TYPE \
-    -storepass $KEYSTORE_PASS \
-    -keypass $DATA_KEY_PASS
+        -alias $DATA_KEY_ALIAS \
+        -keyalg AES \
+        -keysize 128 \
+        -keystore $KEYSTORE_FILE \
+        -storetype $KEYSTORE_TYPE \
+        -storepass $KEYSTORE_PASS \
+        -keypass $DATA_KEY_PASS
 }
 
 function create_ca_cert {
+    echo ""
     echo "Creating self-signed Certificate Authority certificate"
-    read -p "Press enter to continue"
 
     if [[ -f $KEYSTORE_FILE ]]; then
         echo "Deleting existing CA certificate from keystore"
         keytool -delete \
-        -alias $CA_CERT_ALIAS \
-        -keystore $KEYSTORE_FILE \
-        -storetype $KEYSTORE_TYPE \
-        -storepass $KEYSTORE_PASS
+            -alias $CA_CERT_ALIAS \
+            -keystore $KEYSTORE_FILE \
+            -storetype $KEYSTORE_TYPE \
+            -storepass $KEYSTORE_PASS \
+            -keypass $CA_CERT_PASS
     fi
 
     if [[ -f $CA_KEY ]]; then
@@ -153,12 +157,31 @@ function create_ca_cert {
     openssl genrsa 4096 > $CA_KEY
 
     echo "Generating new CA certificate"
-    openssl req -sha256 -new -x509 -nodes -days 3650 -key $CA_KEY > $CA_CERT
+    openssl req \
+        -sha256 \
+        -new \
+        -x509 \
+        -nodes \
+        -days 3650 \
+        -subj "$CA_CERT_INFO" \
+        -key $CA_KEY \
+        -out $CA_CERT
+
+    echo "Importing CA certificate into KeyStore"
+    keytool -import \
+        -noprompt \
+        -trustcacerts \
+        -alias $CA_CERT_ALIAS \
+        -keystore $KEYSTORE_FILE \
+        -storetype $KEYSTORE_TYPE \
+        -storepass $KEYSTORE_PASS \
+        -keypass $CA_CERT_PASS \
+        -file ca-cert.pem
 }
 
 function create_database_ssl_certs {
+    echo ""
     echo "Creating MySQL SSL certificates"
-    read -p "Press enter to continue."
 
     if [[ ! -f $CA_CERT ]]; then
         echo "Cannot find CA certificate, please generate it before trying to generate the MySQL SSL certificate"
@@ -181,13 +204,30 @@ function create_database_ssl_certs {
     fi
 
     echo "Generating new MySQL server private key and certificate request."
-    openssl req -sha256 -newkey rsa:4096 -days 730 -nodes -keyout $MYSQL_SERVER_KEY > $MYSQL_SERVER_REQ
+    openssl req  \
+        -sha256 \
+        -newkey rsa:4096 \
+        -days 730 \
+        -nodes \
+        -subj "$MYSQL_REQUEST_INFO" \
+        -keyout $MYSQL_SERVER_KEY \
+        -out $MYSQL_SERVER_REQ
 
     echo "Converting MySQL server private key to RSA format."
-    openssl rsa -in $MYSQL_SERVER_KEY -out $MYSQL_SERVER_KEY
+    openssl rsa \
+        -in $MYSQL_SERVER_KEY \
+        -out $MYSQL_SERVER_KEY
 
     echo "Generating new MySQL server certificate."
-    openssl x509 -sha256 -req -in $MYSQL_SERVER_REQ -days 730 -CA $CA_CERT -CAkey $CA_KEY -set_serial 01 > $MYSQL_SERVER_CERT
+    openssl x509 \
+        -sha256 \
+        -req \
+        -in $MYSQL_SERVER_REQ \
+        -days 730 \
+        -CA $CA_CERT \
+        -CAkey $CA_KEY \
+        -set_serial 01 \
+        -out $MYSQL_SERVER_CERT
 }
 
 function create_app_ssl_certs {
@@ -201,7 +241,7 @@ function script_help {
     echo "  -t  =  Create the JSON Web Token RSA KeyPair."
     echo "  -d  =  Create the database AES encryption key."
     echo "  -c  =  Create the self-signed Certificate Authority certificate."
-    echo "  -s  =  Create the database SSL certificates."
+    echo "  -m  =  Create the database SSL certificates."
 }
 
 if [[ $# -eq 0 ]]; then
