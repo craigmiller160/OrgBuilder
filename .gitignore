@@ -33,3 +33,6 @@ hs_err_pid*
 *.jceks
 *.cert
 *.pem
+
+# Confidential files, to not be stored in VCS
+/server/confidential
