@@ -33,6 +33,10 @@ function main {
     ca=false
     data_ssl=false
 
+    if [[ ! -d $KEY_PATH ]]; then
+        mkdir $KEY_PATH
+    fi
+
     for (( i=0; i < ${#1}; i++ )); do
         case ${1:$i:1} in
             -) ;;
@@ -176,7 +180,7 @@ function create_ca_cert {
         -alias $CA_CERT_ALIAS \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-        -storepass "$KEYSTORE_PASS" \
+	-storepass "$KEYSTORE_PASS" \
         -keypass "$CA_CERT_PASS" \
         -file $CA_CERT
 }
