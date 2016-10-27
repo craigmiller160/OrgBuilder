@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="OrgBuilder-Server" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="OrgBuilder-Server">
     <property file="build.properties" />
+    <property file="${server.privateProps}" />
     <path id="server.libs">
         <fileset dir="${dir.lib}" includes="**/*.jar" />
         <fileset dir="${dir.server.lib}" includes="**/*.jar" />
@@ -25,6 +26,14 @@
                classpathref="server.libs" >
             <src path="${dir.server.src}" />
         </javac>
+        <antcall target="replace" />
+    </target>
+    <target name="replace">
+        <replace file="${server.props.path}" token="$databasePassword" value="${dbPass}"/>
+        <replace file="${server.props.path}" token="$keystorePassword" value="${storePass}"/>
+        <replace file="${server.props.path}" token="$tokenPassword" value="${tokenPass}" />
+        <replace file="${server.props.path}" token="$dataPassword" value="${dataPass}" />
+        <replace file="${server.props.path}" token="$caCertPassword" value="${caCertPass}" />
     </target>
     <target name="package" depends="compile">
         <war destfile="${dir.server.build.artifact}/${ant.project.name}-${server.project.version}.war"
