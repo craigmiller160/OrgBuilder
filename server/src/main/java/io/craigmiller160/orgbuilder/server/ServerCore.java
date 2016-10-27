@@ -42,7 +42,6 @@ public class ServerCore implements ServletContextListener{
             Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());
 
             try{
-
                 OrgApiLogger.getServerLogger().debug("Loading API application properties");
                 properties.load(getClass().getClassLoader().getResourceAsStream(PROPS_PATH));
             }
@@ -50,22 +49,21 @@ public class ServerCore implements ServletContextListener{
                 throw new OrgApiException("Unable to load API application properties", ex);
             }
 
-            dataDtoMap = DataDTOMap.generateDataDTOMap();
+            OrgApiLogger.getServerLogger().debug("Loading KeyStore");
+            keyManager = new KeyManager();
+            OrgApiLogger.getServerLogger().info("KeyStore loaded");
 
             try{
                 OrgApiLogger.getServerLogger().debug("Configuring database utilities");
                 orgDataSource = new OrgDataSource();
                 orgDataManager = new OrgDataManager(orgDataSource);
                 orgDataManager.createDefaultAppSchema();
+                dataDtoMap = DataDTOMap.generateDataDTOMap();
                 OrgApiLogger.getServerLogger().info("Database utilities configured");
             }
             catch(OrgApiDataException ex){
                 throw new OrgApiException("Unable to load and execute DDL scripts", ex);
             }
-
-            OrgApiLogger.getServerLogger().debug("Loading KeyStore");
-            keyManager = new KeyManager();
-            OrgApiLogger.getServerLogger().info("KeyStore loaded");
         }
         catch(OrgApiException ex){
             throw new RuntimeException("CRITICAL ERROR!!! Unable to properly initialize the SeverCore", ex);
