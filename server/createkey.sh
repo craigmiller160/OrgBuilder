@@ -2,6 +2,7 @@
 # Script to generate RSA keypair in java keystore
 
 KEY_PATH=./src/main/resources/io/craigmiller160/orgbuilder/server/keys
+source ./confidential/private-props.txt
 
 
 TOKEN_RSA_CERT=$KEY_PATH/orgapitoken-rsa-cert.pem
@@ -18,13 +19,13 @@ DATA_KEY_ALIAS=orgapidata
 CA_CERT_ALIAS=cacert
 
 # These variables should be moved to a separate file outside of Version Control
-KEYSTORE_PASS=orgapi
-TOKEN_KEY_PASS=orgapi
-DATA_KEY_PASS=orgapi
-CA_CERT_PASS=orgapi
-TOKEN_KEY_INFO="CN=Craig Miller, OU=Development, O=CraigMiller160, L=Tampa, S=Florida, C=US"
-CA_CERT_INFO="/C=US/ST=Florida/L=Tampa/O=CraigMiller160 CA/CN=Craig Miller CA"
-MYSQL_REQUEST_INFO="/C=US/ST=Florida/L=Tampa/O=CraigMiller160 MySQL/CN=Craig Miller MySQL"
+KEYSTORE_PASS="$storePass"
+TOKEN_KEY_PASS="$tokenPass"
+DATA_KEY_PASS="$dataPass"
+CA_CERT_PASS="$caCertPass"
+TOKEN_KEY_INFO="$tokenInfo"
+CA_CERT_INFO="$caCertInfo"
+MYSQL_REQUEST_INFO="$mysqlInfo"
 
 function main {
     token=false
@@ -73,7 +74,8 @@ function create_token_key {
             -alias $TOKEN_KEY_ALIAS \
             -keystore $KEYSTORE_FILE \
             -storetype $KEYSTORE_TYPE \
-            -storepass $KEYSTORE_PASS
+            -storepass "$KEYSTORE_PASS" \
+            -keypass "$TOKEN_KEY_PASS"
     fi
 
     if [[ -f $TOKEN_RSA_CERT ]]; then
@@ -89,8 +91,8 @@ function create_token_key {
         -keysize 4096 \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-        -storepass $KEYSTORE_PASS \
-        -keypass $TOKEN_KEY_PASS
+        -storepass "$KEYSTORE_PASS" \
+        -keypass "$TOKEN_KEY_PASS"
 
 
     echo "Exporting token RSA public certificate."
@@ -99,8 +101,8 @@ function create_token_key {
         -file $TOKEN_RSA_CERT \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-        -keypass $TOKEN_KEY_PASS \
-        -storepass $KEYSTORE_PASS \
+        -keypass "$TOKEN_KEY_PASS" \
+        -storepass "$KEYSTORE_PASS" \
         -rfc
 }
 
@@ -114,8 +116,8 @@ function create_data_key {
             -alias $DATA_KEY_ALIAS \
             -keystore $KEYSTORE_FILE \
             -storetype $KEYSTORE_TYPE \
-            -storepass $KEYSTORE_PASS \
-            -keypass $DATA_KEY_PASS
+            -storepass "$KEYSTORE_PASS" \
+            -keypass "$DATA_KEY_PASS"
     fi
 
     echo "Generating database AES key"
@@ -125,8 +127,8 @@ function create_data_key {
         -keysize 128 \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-        -storepass $KEYSTORE_PASS \
-        -keypass $DATA_KEY_PASS
+        -storepass "$KEYSTORE_PASS" \
+        -keypass "$DATA_KEY_PASS"
 }
 
 function create_ca_cert {
@@ -139,8 +141,8 @@ function create_ca_cert {
             -alias $CA_CERT_ALIAS \
             -keystore $KEYSTORE_FILE \
             -storetype $KEYSTORE_TYPE \
-            -storepass $KEYSTORE_PASS \
-            -keypass $CA_CERT_PASS
+            -storepass "$KEYSTORE_PASS" \
+            -keypass "$CA_CERT_PASS"
     fi
 
     if [[ -f $CA_KEY ]]; then
@@ -174,9 +176,9 @@ function create_ca_cert {
         -alias $CA_CERT_ALIAS \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-        -storepass $KEYSTORE_PASS \
-        -keypass $CA_CERT_PASS \
-        -file ca-cert.pem
+        -storepass "$KEYSTORE_PASS" \
+        -keypass "$CA_CERT_PASS" \
+        -file $CA_CERT
 }
 
 function create_database_ssl_certs {
