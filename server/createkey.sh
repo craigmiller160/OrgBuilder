@@ -14,14 +14,14 @@ MYSQL_SERVER_CERT=$KEY_PATH/mysql-server-cert.pem
 
 MYSQL_CERT_PATH=/var/lib/mysql/cert
 
-KEYSTORE_FILE=$KEY_PATH/orgkeystore.jceks
+KEYSTORE_FILE=$KEY_PATH/orgKeyStore.jceks
 KEYSTORE_TYPE=JCEKS
 TOKEN_KEY_ALIAS=orgapitoken
 DATA_KEY_ALIAS=orgapidata
 CA_CERT_ALIAS=cacert
 
 # These variables should be moved to a separate file outside of Version Control
-KEYSTORE_PASS="$storePass"
+KEYSTORE_PASS="$keyStorePass"
 TOKEN_KEY_PASS="$tokenPass"
 DATA_KEY_PASS="$dataPass"
 CA_CERT_PASS="$caCertPass"
@@ -107,8 +107,8 @@ function create_token_key {
         -file $TOKEN_RSA_CERT \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-        -keypass "$TOKEN_KEY_PASS" \
         -storepass "$KEYSTORE_PASS" \
+        -keypass "$TOKEN_KEY_PASS" \
         -rfc
 }
 
