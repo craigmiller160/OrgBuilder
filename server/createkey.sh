@@ -2,7 +2,7 @@
 # Script to generate RSA keypair in java keystore
 
 KEY_PATH=./src/main/resources/io/craigmiller160/orgbuilder/server/keys
-source ./confidential/private-props.txt
+source confidential/private-props.properties
 
 
 TOKEN_RSA_CERT=$KEY_PATH/orgapitoken-rsa-cert.pem
@@ -11,6 +11,8 @@ CA_CERT=$KEY_PATH/ca-cert.pem
 MYSQL_SERVER_KEY=$KEY_PATH/mysql-server-key.pem
 MYSQL_SERVER_REQ=$KEY_PATH/mysql-server-req.pem
 MYSQL_SERVER_CERT=$KEY_PATH/mysql-server-cert.pem
+
+MYSQL_CERT_PATH=/var/lib/mysql/cert
 
 KEYSTORE_FILE=$KEY_PATH/orgkeystore.jceks
 KEYSTORE_TYPE=JCEKS
@@ -180,7 +182,7 @@ function create_ca_cert {
         -alias $CA_CERT_ALIAS \
         -keystore $KEYSTORE_FILE \
         -storetype $KEYSTORE_TYPE \
-	-storepass "$KEYSTORE_PASS" \
+	    -storepass "$KEYSTORE_PASS" \
         -keypass "$CA_CERT_PASS" \
         -file $CA_CERT
 }
@@ -193,6 +195,14 @@ function create_database_ssl_certs {
         echo "Cannot find CA certificate, please generate it before trying to generate the MySQL SSL certificate"
         exit 1
     fi
+
+    sudo su -c "if [[ -d $MYSQL_CERT_PATH ]]; then
+        echo 'Deleting existing MySQL cert files';
+        sudo rm $MYSQL_CERT_PATH/*;
+    else
+        echo 'Creating MySQL cert directory';
+        sudo mkdir $MYSQL_CERT_PATH;
+    fi"
 
     if [[ -f $MYSQL_SERVER_KEY ]]; then
         echo "Deleting existing MySQL server private key."
@@ -234,6 +244,18 @@ function create_database_ssl_certs {
         -CAkey $CA_KEY \
         -set_serial 01 \
         -out $MYSQL_SERVER_CERT
+
+    echo "Copying certificates to MySQL cert directory"
+    sudo cp $CA_CERT $MYSQL_CERT_PATH
+    sudo cp $CA_KEY $MYSQL_CERT_PATH
+    sudo cp $MYSQL_SERVER_CERT $MYSQL_CERT_PATH
+    sudo cp $MYSQL_SERVER_KEY $MYSQL_CERT_PATH
+
+    echo "Fixing ownership"
+    sudo chown -R mysql:mysql $MYSQL_CERT_PATH
+
+    echo "Restarting MySQL"
+    sudo service mysql restart
 }
 
 function create_app_ssl_certs {
