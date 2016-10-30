@@ -20,7 +20,7 @@ public class MemberDTOTest {
         MemberDTO person = new MemberDTO();
         LocalDate birthDate = LocalDate.of(1988, 10, 26);
         person.setDateOfBirth(birthDate);
-        LocalDate now = LocalDate.of(2016, 8, 11);
+        LocalDate now = LocalDate.now();
         assertEquals("Person has incorrect age", Period.between(birthDate, now).getYears(), person.getAge());
     }
 

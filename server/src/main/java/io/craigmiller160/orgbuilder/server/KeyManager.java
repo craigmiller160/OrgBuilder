@@ -54,7 +54,7 @@ public class KeyManager {
         PrivateKey privateKey = null;
         try{
             privateKey = (PrivateKey) keystore.getKey(ServerCore.getProperty(ServerProps.TOKEN_KEY_NAME),
-                    ServerCore.getProperty(ServerProps.KEYSTORE_PASS).toCharArray());
+                    ServerCore.getProperty(ServerProps.TOKEN_KEY_PASS).toCharArray());
         }
         catch(KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex){
             throw new OrgApiSecurityException("Unable to retrieve Token PrivateKey from keystore", ex);
@@ -80,7 +80,7 @@ public class KeyManager {
         SecretKey secretKey = null;
         try{
             secretKey = (SecretKey) keystore.getKey(ServerCore.getProperty(ServerProps.DATA_KEY_NAME),
-                    ServerCore.getProperty(ServerProps.KEYSTORE_PASS).toCharArray());
+                    ServerCore.getProperty(ServerProps.DATA_KEY_PASS).toCharArray());
         }
         catch(KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException ex){
             throw new OrgApiSecurityException("Unable to retrieve Data SecretKey from keystore", ex);

@@ -55,10 +55,10 @@ public class ServerCore implements ServletContextListener{
 
             try{
                 OrgApiLogger.getServerLogger().debug("Configuring database utilities");
+                dataDtoMap = DataDTOMap.generateDataDTOMap();
                 orgDataSource = new OrgDataSource();
                 orgDataManager = new OrgDataManager(orgDataSource);
                 orgDataManager.createDefaultAppSchema();
-                dataDtoMap = DataDTOMap.generateDataDTOMap();
                 OrgApiLogger.getServerLogger().info("Database utilities configured");
             }
             catch(OrgApiDataException ex){

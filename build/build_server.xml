@@ -26,14 +26,20 @@
                classpathref="server.libs" >
             <src path="${dir.server.src}" />
         </javac>
+        <property name="server.props.path" value="${build.server.props.path}" />
+        <antcall target="replace" />
+    </target>
+    <target name="intellij.replace">
+        <property name="server.props.path" value="${intellij.server.props.path}" />
         <antcall target="replace" />
     </target>
     <target name="replace">
         <replace file="${server.props.path}" token="$databasePassword" value="${dbPass}"/>
-        <replace file="${server.props.path}" token="$keystorePassword" value="${storePass}"/>
+        <replace file="${server.props.path}" token="$keystorePassword" value="${keyStorePass}"/>
         <replace file="${server.props.path}" token="$tokenPassword" value="${tokenPass}" />
         <replace file="${server.props.path}" token="$dataPassword" value="${dataPass}" />
         <replace file="${server.props.path}" token="$caCertPassword" value="${caCertPass}" />
+        <replace file="${server.props.path}" token="$truststorePassword" value="${trustStorePass}" />
     </target>
     <target name="package" depends="compile">
         <war destfile="${dir.server.build.artifact}/${ant.project.name}-${server.project.version}.war"
