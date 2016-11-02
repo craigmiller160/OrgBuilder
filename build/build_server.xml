@@ -67,7 +67,7 @@
         </junit>
     </target>
     <target name="package" depends="test">
-        <war destfile="${dir.server.build.artifact}/${ant.project.name}-${server.project.version}.war"
+        <war destfile="${dir.server.build.artifact}/${project.group}-${ant.project.name}-${server.project.version}.war"
              webxml="${dir.server.web}/WEB-INF/web.xml">
             <classes dir="${dir.server.build.staging}" />
             <lib dir="${dir.server.lib}" />
