@@ -60,7 +60,7 @@
             </classpath>
             <batchtest todir="${dir.server.build.testReport}">
                 <fileset dir="${dir.server.build.test}">
-                    <include name="**/*.class" />
+                    <include name="**/*Test.class" />
                 </fileset>
                 <formatter type="xml" />
             </batchtest>
