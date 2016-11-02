@@ -29,6 +29,7 @@
         <ant antfile="build_server.xml" target="package">
             <property name="dir.server" value="${dir.server}" />
         </ant>
+        <antcall target="copy.server.war" />
     </target>
     <target name="client.resolve">
     	<ant antfile="build_client.xml" target="resolve">
@@ -47,6 +48,9 @@
     <target name="package" depends="project.prepare">
         <antcall target="project.resolve" />
         <antcall target="server.package" />
+        <antcall target="copy.server.war" />
+    </target>
+    <target name="copy.server.war">
         <copy todir="${dir.build.artifact}">
             <fileset dir="${dir.server.build.artifact}">
                 <include name="*.war" />
