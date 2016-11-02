@@ -6,6 +6,10 @@
         <fileset dir="${dir.lib}" includes="**/*.jar" />
         <fileset dir="${dir.server.lib}" includes="**/*.jar" />
     </path>
+    <path id="test.compile">
+        <path refid="server.libs" />
+        <pathelement location="${dir.server.build.staging}" />
+    </path>
     <target name="resolve">
         <ant antfile="${dir.server}/ivy_build.xml" dir="${dir.server}" target="resolve" />
     </target>
@@ -15,6 +19,8 @@
     <target name="prepare" depends="clean">
         <mkdir dir="${dir.server.build.staging}" />
         <mkdir dir="${dir.server.build.artifact}" />
+        <mkdir dir="${dir.server.build.test}" />
+        <mkdir dir="${dir.server.build.testReport}" />
         <copy todir="${dir.server.build.staging}">
             <fileset dir="${dir.server.resources}" includes="**/*" />
         </copy>
@@ -25,6 +31,11 @@
                source="1.8" target="1.8"
                classpathref="server.libs" >
             <src path="${dir.server.src}" />
+        </javac>
+        <javac destdir="${dir.server.build.test}"
+               source="1.8" target="1.8"
+               classpathref="test.compile">
+            <src path="${dir.server.test}" />
         </javac>
         <property name="server.props.path" value="${build.server.props.path}" />
         <antcall target="replace" />
@@ -41,7 +52,21 @@
         <replace file="${server.props.path}" token="$caCertPassword" value="${caCertPass}" />
         <replace file="${server.props.path}" token="$truststorePassword" value="${trustStorePass}" />
     </target>
-    <target name="package" depends="compile">
+    <target name="test" depends="compile">
+        <junit fork="yes" haltonfailure="yes" printsummary="yes">
+            <classpath>
+                <path refid="test.compile" />
+                <pathelement location="${dir.server.build.test}" />
+            </classpath>
+            <batchtest todir="${dir.server.build.testReport}">
+                <fileset dir="${dir.server.build.test}">
+                    <include name="**/*.class" />
+                </fileset>
+                <formatter type="xml" />
+            </batchtest>
+        </junit>
+    </target>
+    <target name="package" depends="test">
         <war destfile="${dir.server.build.artifact}/${ant.project.name}-${server.project.version}.war"
              webxml="${dir.server.web}/WEB-INF/web.xml">
             <classes dir="${dir.server.build.staging}" />
