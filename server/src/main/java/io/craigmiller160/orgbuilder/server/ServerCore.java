@@ -36,7 +36,7 @@ public class ServerCore implements ServletContextListener{
     private static KeyManager keyManager;
 
     @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
+    public void contextInitialized(ServletContextEvent event) {
         try{
             OrgApiLogger.getServerLogger().info("Initializing API ServerCore");
             Thread.setDefaultUncaughtExceptionHandler(new ApiUncaughtExceptionHandler());

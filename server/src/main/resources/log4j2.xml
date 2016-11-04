@@ -7,19 +7,19 @@
         <Console name="OrgBuilderConsole" target="SYSTEM_OUT">
             <PatternLayout pattern="${mainPatternLayout}"/>
         </Console>
-        <!--<RollingFile name="OrgBuilderFile" fileName="logs/orgapi.log" filePattern="logs/orgapi.%i.log">-->
-            <!--<PatternLayout pattern="${mainPatternLayout}" />-->
-            <!--<Policies>-->
-                <!--<SizeBasedTriggeringPolicy size="5 MB" />-->
-            <!--</Policies>-->
-            <!--<DefaultRolloverStragety max="10" />-->
-        <!--</RollingFile>-->
+        <RollingFile name="OrgBuilderFile" fileName="${sys:user.home}/.orgapi/logs/orgapi.log" filePattern="logs/orgapi.%i.log">
+            <PatternLayout pattern="${mainPatternLayout}" />
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10" />
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="ERROR" />
         <Logger name="io.craigmiller160.orgbuilder.server" level="DEBUG">
             <AppenderRef ref="OrgBuilderConsole" />
-            <!--<AppenderRef ref="OrgBuilderFile" />-->
+            <AppenderRef ref="OrgBuilderFile" />
         </Logger>
         <Logger name="com.mysql" level="ERROR" />
     </Loggers>
