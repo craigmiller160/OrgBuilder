@@ -21,7 +21,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>OrgApiServlet</servlet-name>
-        <url-pattern>/orgapi/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
     <listener>
