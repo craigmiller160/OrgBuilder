@@ -6,6 +6,7 @@ package io.craigmiller160.orgbuilder.server;
 public class ServerProps {
 
     public static final String API_NAME = "io.craigmiller160.orgbuilder.server.apiName";
+    public static final String API_VERSION = "io.craigmiller160.orgbuilder.server.apiVersion";
 
     public static final String DB_URL_PROP = "io.craigmiller160.orgbuilder.server.data.dbUrl";
     public static final String DB_CLASS_PROP = "io.craigmiller160.orgbuilder.server.data.dbClass";

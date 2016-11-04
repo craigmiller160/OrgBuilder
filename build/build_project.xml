@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OrgBuilder" default="resolve">
     <property file="build.properties" />
+    <property file="${src.server.props.path}" />
+    <property name="server.war.filename" value="${project.server.name}-${io.craigmiller160.orgbuilder.server.apiVersion}.war" />
     <target name="project.resolve">
         <ant antfile="${dir.root}/ivy_build.xml" dir="${dir.root}" target="resolve" />
     </target>

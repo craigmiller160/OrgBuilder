@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OrgBuilder-Server">
     <property file="build.properties" />
+    <property file="${src.server.props.path}" />
     <property file="${server.privateProps}" />
+    <property name="server.war.filename" value="${project.server.name}-${io.craigmiller160.orgbuilder.server.apiVersion}.war" />
     <path id="server.libs">
         <fileset dir="${dir.lib}" includes="**/*.jar" />
         <fileset dir="${dir.server.lib}" includes="**/*.jar" />
@@ -73,7 +75,7 @@
             <lib dir="${dir.server.lib}" />
             <manifest>
                 <attribute name="Project-Name" value="${project.server.name}" />
-                <attribute name="Version" value="${project.server.version}" />
+                <attribute name="Version" value="${io.craigmiller160.orgbuilder.server.apiVersion}" />
                 <attribute name="Created-By" value="Craig Miller" />
             </manifest>
         </war>
