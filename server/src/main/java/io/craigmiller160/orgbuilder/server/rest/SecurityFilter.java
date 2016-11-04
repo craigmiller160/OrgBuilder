@@ -6,6 +6,7 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
+import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.TokenService;
@@ -47,9 +48,11 @@ public class SecurityFilter implements ContainerRequestFilter{
         if((POST_METHOD.equals(method) && LOGIN_URI.equals(uri)) ||
                 (GET_METHOD.equals(method) && USER_EXISTS_URI.equals(uri))){
             //Allow call to proceed to AuthResource to authenticate credentials
+            OrgApiLogger.getRestLogger().trace("Creating principal for authenticating login credentials");
             principal = createAuthPrincipal();
         }
         else{
+            OrgApiLogger.getRestLogger().trace("Validating token to create principal for API access");
             principal = handleTokenValidation(requestContext);
         }
 
