@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.dto.AppInfoDTO;
 import io.craigmiller160.orgbuilder.server.dto.GenderListDTO;
 import io.craigmiller160.orgbuilder.server.dto.RoleListDTO;
 import io.craigmiller160.orgbuilder.server.dto.StateListDTO;
@@ -62,6 +63,17 @@ public class InfoResource {
         RoleListDTO roleList = infoService.getRoles();
         return Response
                 .ok(roleList)
+                .build();
+    }
+
+    @GET
+    @Path("/app")
+    @PermitAll
+    public Response getAppInfo() throws OrgApiException{
+        InfoService infoService = factory.newInfoService(securityContext);
+        AppInfoDTO appInfo = infoService.getAppInfo();
+        return Response
+                .ok(appInfo)
                 .build();
     }
 

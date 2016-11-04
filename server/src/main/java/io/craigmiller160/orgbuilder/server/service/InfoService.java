@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.service;
 
+import io.craigmiller160.orgbuilder.server.ServerCore;
+import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.dto.*;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.rest.Role;
@@ -30,6 +32,11 @@ public class InfoService {
     public RoleListDTO getRoles(){
         OrgApiLogger.getServiceLogger().debug("Getting list of Role values");
         return new RoleListDTO(Role.ALL);
+    }
+
+    public AppInfoDTO getAppInfo(){
+        OrgApiLogger.getServiceLogger().debug("Getting application info");
+        return new AppInfoDTO(ServerCore.getProperty(ServerProps.API_NAME), ServerCore.getProperty(ServerProps.API_VERSION));
     }
 
 }
