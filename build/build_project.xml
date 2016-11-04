@@ -16,6 +16,7 @@
         </ant>
     </target>
     <target name="server.clean">
+        <delete file="${dir.build.artifact}/${server.war.filename}" />
         <ant antfile="build_server.xml" target="clean">
             <property name="dir.server" value="${dir.server}" />
         </ant>
@@ -30,6 +31,11 @@
             <property name="dir.server" value="${dir.server}" />
         </ant>
         <antcall target="copy.server.war" />
+    </target>
+    <target name="server.deploy" depends="server.package">
+        <antcall target="tomcat.stop" />
+        <antcall target="deploy.server.tomcat" />
+        <antcall target="tomcat.start" />
     </target>
     <target name="client.resolve">
     	<ant antfile="build_client.xml" target="resolve">
@@ -48,7 +54,30 @@
     <target name="package" depends="project.prepare">
         <antcall target="project.resolve" />
         <antcall target="server.package" />
-        <antcall target="copy.server.war" />
+    </target>
+    <target name="deploy" depends="package">
+        <antcall target="tomcat.stop" />
+        <antcall target="deploy.server.tomcat" />
+        <antcall target="tomcat.start" />
+    </target>
+    <target name="deploy.server.tomcat" depends="check.server.file">
+        <echo message="Deploying ${dir.build.artifact}/${server.war.filename} to Tomcat" />
+        <exec executable="./deploy-server.sh">
+            <arg value="${tomcat.local.webapps}" />
+            <arg value="${server.war.filename}" />
+            <arg value="${project.server.name}" />
+            <arg value="${dir.build.artifact}" />
+        </exec>
+    </target>
+    <target name="check.server.file">
+        <echo message="Checking for file to deploy: ${dir.build.artifact}/${server.war.filename}" />
+        <fail message="File to deploy not found: ${dir.build.artifact}/${server.war.filename}">
+            <condition>
+                <not>
+                    <available file="${dir.build.artifact}/${server.war.filename}" />
+                </not>
+            </condition>
+        </fail>
     </target>
     <target name="copy.server.war">
         <copy todir="${dir.build.artifact}">
@@ -56,5 +85,21 @@
                 <include name="*.war" />
             </fileset>
         </copy>
+    </target>
+    <target name="tomcat.stop">
+        <echo message="Stopping Tomcat8" />
+        <exec executable="sudo">
+            <arg value="service" />
+            <arg value="tomcat8" />
+            <arg value="stop" />
+        </exec>
+    </target>
+    <target name="tomcat.start">
+        <echo message="Starting Tomcat8" />
+        <exec executable="sudo">
+            <arg value="service" />
+            <arg value="tomcat8" />
+            <arg value="start" />
+        </exec>
     </target>
 </project>
