@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder Menu</title>
+<style>
+    .hiddenLink {
+        padding-left: 1em;
+        visibility: hidden;
+    }
+</style>
+</head>
+<body>
+    <h1>Welcome to OrgBuilder</h1>
+    <p>
+        <a href="#">Logout</a>
+    </p>
+    <h3>Main Menu</h3>
+    <div id="linksDiv">
+        <div class="linkGroupDiv">
+            <p class="parentLink">
+                <a href="#">Create</a>
+            </p>
+            <div class="hiddenLinksDiv">
+                <p class="hiddenLink">
+                    <a id="newMemberLink" href="create-member.html">New Member</a>
+                </p>
+            </div>
+        </div>
+        <div class="linkGroupDiv">
+            <p class="parentLink">
+                <a href="#">View</a>
+            </p>
+            <div class="hiddenLinksDiv">
+                <p class="hiddenLink">
+                    <a id="viewAllMembersLink" href="#">All Members</a>
+                </p>
+            </div>
+        </div>
+        <div class="linkGroupDiv">
+            <p class="parentLink">
+                <a href="#">Search</a>
+            </p>
+            <div class="hiddenLinksDiv">
+                <p class="hiddenLink">
+                    <a id="searchMembersLink" href="#">Members</a>
+                </p>
+            </div>
+        </div>
+
+    </div>
+<script src="../lib/jquery-3.1.1.js"></script>
+<script src="js/handle-errors.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".parentLink a").click(function(event){
+            //TODO figure out a better way than to use children to select a single element
+            var hiddenLinksDiv = $(event.target).parent(".parentLink").parent().children(".hiddenLinksDiv");
+            var makeVisible = $(hiddenLinksDiv).children("p").css("visibility") !== "visible";
+            $(hiddenLinksDiv).children("p").css("visibility","hidden");
+            if(makeVisible){
+                $(hiddenLinksDiv).children("p").css("visibility", "visible");
+            }
+        });
+    });
+</script>
+</body>
+</html>

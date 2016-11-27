@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder Create Member</title>
+</head>
+<body>
+    <h1>Welcome to OrgBuilder</h1>
+    <p>
+        <a href="#">Logout</a>
+    </p>
+    <h3>Create Member</h3>
+    <div>
+        <form>
+            <h5>Personal Info</h5>
+            <table>
+                <tr>
+                    <td>First Name:</td>
+                    <td>
+                        <input id="firstName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Middle Name:</td>
+                    <td>
+                        <input id="middleName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Last Name:</td>
+                    <td>
+                        <input id="lastName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Date of Birth:</td>
+                    <td>
+                        <input id="dob" type="date" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Sex:</td>
+                    <td>
+                        <!-- TODO change this to some sort of multi-option select box -->
+                        <input id="sex" type="text" />
+                    </td>
+                </tr>
+            </table>
+            <h5>Primary Address</h5>
+            <table>
+                <tr>
+                    <td>Address 1:</td>
+                    <td>
+                        <input id="address1" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Address 2:</td>
+                    <td>
+                        <input id="address2" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>City:</td>
+                    <td>
+                        <input id="city" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>State:</td>
+                    <td>
+                        <!-- TODO figure out how to make this a multi-select too -->
+                        <input id="state" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Zip Code:</td>
+                    <td>
+                        <!-- TODO validate this to ensure only numeric input is allowed -->
+                        <input id="zipCode" type="text" />
+                    </td>
+                </tr>
+            </table>
+            <h5>Phones</h5>
+            <table>
+                <!-- TODO need to add preferred marker here -->
+                <tr>
+                    <td>Home:</td>
+                    <td>
+                        <!-- TODO better field breakup for phone number components here -->
+                        <input id="homePhone" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Mobile:</td>
+                    <td>
+                        <input id="mobilePhone" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Work:</td>
+                    <td>
+                        <input id="workPhone" type="text" />
+                    </td>
+                </tr>
+            </table>
+            <h5>Emails</h5>
+            <table>
+                <!-- TODO need to add preferred marker here -->
+                <tr>
+                    <td>Personal:</td>
+                    <td>
+                        <input id="personalEmail" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Work:</td>
+                    <td>
+                        <input id="workEmail" type="text" />
+                    </td>
+                </tr>
+            </table>
+            <input id="createMemberBtn" type="submit" value="Create Member" />
+        </form>
+    </div>
+<script src="../lib/jquery-3.1.1.js"></script>
+<script>
+    $(document).ready(function () {
+        //TODO add function for submit button click to build Ajax call and handle response
+    });
+</script>
+</body>
+</html>
