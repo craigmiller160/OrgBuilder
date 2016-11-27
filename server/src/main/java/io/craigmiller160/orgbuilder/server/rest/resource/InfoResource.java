@@ -2,14 +2,13 @@ package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.AppInfoDTO;
-import io.craigmiller160.orgbuilder.server.dto.GenderListDTO;
+import io.craigmiller160.orgbuilder.server.dto.SexListDTO;
 import io.craigmiller160.orgbuilder.server.dto.RoleListDTO;
 import io.craigmiller160.orgbuilder.server.dto.StateListDTO;
 import io.craigmiller160.orgbuilder.server.service.InfoService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,12 +34,12 @@ public class InfoResource {
     @GET
     @Path("/genders")
     @PermitAll
-    public Response getGenders() throws OrgApiException{
+    public Response getSexes() throws OrgApiException{
         InfoService infoService = factory.newInfoService(securityContext);
-        GenderListDTO genderList = infoService.getGenders();
+        SexListDTO sexesList = infoService.getSexes();
 
         return Response
-                .ok(genderList)
+                .ok(sexesList)
                 .build();
     }
 

@@ -6,7 +6,7 @@ CREATE TABLE members (
   middle_name VARCHAR(255),
   last_name VARCHAR(255),
   date_of_birth DATE,
-  gender VARCHAR(20),
+  sex VARCHAR(20),
   PRIMARY KEY (member_id)
 );
 

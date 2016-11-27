@@ -21,7 +21,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
     private String lastName;
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate dateOfBirth;
-    private Gender gender;
+    private Sex sex;
 
     private List<AddressDTO> addresses = new ArrayList<>();
     private List<PhoneDTO> phones = new ArrayList<>();
@@ -29,12 +29,12 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
 
     public MemberDTO(){}
 
-    public MemberDTO(String firstName, String middleName, String lastName, LocalDate dateOfBirth, Gender gender){
+    public MemberDTO(String firstName, String middleName, String lastName, LocalDate dateOfBirth, Sex sex){
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
-        this.gender = gender;
+        this.sex = sex;
     }
 
     @Override
@@ -86,12 +86,12 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Gender getGender() {
-        return gender;
+    public Sex getSex() {
+        return sex;
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender;
+    public void setSex(Sex sex) {
+        this.sex = sex;
     }
 
     public void setAddresses(List<AddressDTO> addresses){
@@ -158,7 +158,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         if (lastName != null ? !lastName.equals(memberDTO.lastName) : memberDTO.lastName != null) return false;
         if (dateOfBirth != null ? !dateOfBirth.equals(memberDTO.dateOfBirth) : memberDTO.dateOfBirth != null)
             return false;
-        if (gender != memberDTO.gender) return false;
+        if (sex != memberDTO.sex) return false;
         if (addresses != null ? !addresses.equals(memberDTO.addresses) : memberDTO.addresses != null) return false;
         if (phones != null ? !phones.equals(memberDTO.phones) : memberDTO.phones != null) return false;
         return emails != null ? emails.equals(memberDTO.emails) : memberDTO.emails == null;
@@ -172,7 +172,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         result = 31 * result + (middleName != null ? middleName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + (sex != null ? sex.hashCode() : 0);
         result = 31 * result + (addresses != null ? addresses.hashCode() : 0);
         result = 31 * result + (phones != null ? phones.hashCode() : 0);
         result = 31 * result + (emails != null ? emails.hashCode() : 0);
