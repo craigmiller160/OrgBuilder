@@ -1,12 +1,12 @@
 -- The queries used by the AddressDao
 
 -- QUERY=INSERT
-INSERT INTO addresses (address_id, address_type, address, unit, city, state, zip_code, preferred_address, address_member_id)
+INSERT INTO addresses (address_id, address_type, address1, address2, city, state, zip_code, preferred_address, address_member_id)
 VALUES (?,?,?,?,?,?,?,?,?);
 
 -- QUERY=UPDATE
 UPDATE addresses
-SET address_id = ?, address_type = ?, address = ?, unit = ?, city = ?, state = ?, zip_code = ?, preferred_address = ?, address_member_id = ?
+SET address_id = ?, address_type = ?, address1 = ?, address2 = ?, city = ?, state = ?, zip_code = ?, preferred_address = ?, address_member_id = ?
 WHERE address_id = ?;
 
 -- QUERY=DELETE
@@ -74,8 +74,8 @@ WHERE address_id = ?
 AND address_member_id = ?;
 
 -- QUERY=INSERT_OR_UPDATE
-INSERT INTO addresses (address_id, address_type, address, unit, city, state, zip_code, preferred_address, address_member_id)
+INSERT INTO addresses (address_id, address_type, address1, address2, city, state, zip_code, preferred_address, address_member_id)
 VALUES (?,?,?,?,?,?,?,?,?)
-ON DUPLICATE KEY UPDATE address_type = VALUES (address_type), address = VALUES (address),
-  unit = VALUES (unit), city = VALUES (city), state = VALUES (state), zip_code = VALUES (zip_code),
+ON DUPLICATE KEY UPDATE address_type = VALUES (address_type), address1 = VALUES (address1),
+  address2 = VALUES (address2), city = VALUES (city), state = VALUES (state), zip_code = VALUES (zip_code),
   preferred_address = VALUES (preferred_address), address_member_id = VALUES (address_member_id);

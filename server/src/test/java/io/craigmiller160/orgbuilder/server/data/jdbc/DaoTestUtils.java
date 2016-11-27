@@ -93,8 +93,8 @@ public class DaoTestUtils {
     public AddressDTO getAddress1(){
         AddressDTO address = new AddressDTO();
         address.setAddressType(AddressDTO.AddressType.HOME);
-        address.setAddress("3 Brookside Ct");
-        address.setUnit("6");
+        address.setAddress1("3 Brookside Ct");
+        address.setAddress2("6");
         address.setCity("East Brunswick");
         address.setState(State.NJ);
         address.setZipCode("08816");
@@ -105,8 +105,8 @@ public class DaoTestUtils {
     public AddressDTO getAddress2(){
         AddressDTO address = new AddressDTO();
         address.setAddressType(AddressDTO.AddressType.WORK);
-        address.setAddress("10306 Casa Palarmo Dr");
-        address.setUnit("6");
+        address.setAddress1("10306 Casa Palarmo Dr");
+        address.setAddress2("6");
         address.setCity("Riverview");
         address.setState(State.FL);
         address.setZipCode("33578");

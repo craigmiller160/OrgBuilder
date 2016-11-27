@@ -15,8 +15,8 @@ ALTER TABLE members AUTO_INCREMENT = 1000;
 CREATE TABLE addresses (
   address_id BIGINT NOT NULL AUTO_INCREMENT,
   address_type VARCHAR(20) NOT NULL DEFAULT 'HOME',
-  address VARCHAR(255),
-  unit VARCHAR(20),
+  address1 VARCHAR(255),
+  address2 VARCHAR(255),
   city VARCHAR(255),
   state CHAR(2),
   zip_code CHAR(6),

@@ -32,15 +32,15 @@ public class AddressDTOSQLConverter implements DTOSQLConverter<AddressDTO> {
             stmt.setNull(2, Types.VARCHAR);
         }
 
-        if(element.getAddress() != null){
-            stmt.setString(3, element.getAddress());
+        if(element.getAddress1() != null){
+            stmt.setString(3, element.getAddress1());
         }
         else{
             stmt.setNull(3, Types.VARCHAR);
         }
 
-        if(element.getUnit() != null){
-            stmt.setString(4, element.getUnit());
+        if(element.getAddress2() != null){
+            stmt.setString(4, element.getAddress2());
         }
         else{
             stmt.setNull(4, Types.VARCHAR);
@@ -85,8 +85,8 @@ public class AddressDTOSQLConverter implements DTOSQLConverter<AddressDTO> {
         if(!StringUtils.isEmpty(addressType)){
             element.setAddressType(AddressDTO.AddressType.valueOf(addressType));
         }
-        element.setAddress(resultSet.getString("address"));
-        element.setUnit(resultSet.getString("unit"));
+        element.setAddress1(resultSet.getString("address1"));
+        element.setAddress2(resultSet.getString("address2"));
         element.setCity(resultSet.getString("city"));
         String state = resultSet.getString("state");
         if(!StringUtils.isEmpty(state)){
