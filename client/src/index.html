@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder</title>
+</head>
+<body>
+    <h1>Welcome to OrgBuilder</h1>
+    <div id="errorDiv" style="visibility:visible;">
+        <!-- TODO improve error message for if the server couldn't be reached and if the credentials are rejected -->
+        <h5 style="color:red;">Error! Invalid login credentials.</h5>
+    </div>
+    <div>
+        <form>
+            <table>
+                <tr>
+                    <td>Username:</td>
+                    <td>
+                        <input id="username" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input id="password" type="password" />
+                    </td>
+                </tr>
+                <tr>
+                    <td />
+                    <td>
+                        <input id="loginButton" type="submit" value="Login" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+<script src="../lib/jquery-3.1.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#loginButton").click(function () {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var jsonMsg = {
+                "userEmail": username,
+                "password": password
+            };
+            //TODO url needs to be made enviro variable
+            //TODO either in success or done function, the token returned needs to be stored in browser storage, and the next page needs to be loaded
+            $.post("http://localhost:8080/orgapi/auth", jsonMsg, function () {
+                //TODO handle success response code
+            }).done(function(){
+                //TODO handle successful return of login data
+            }).fail(function () {
+                //TODO handle a fail
+                $("#errorDiv").css("visibility", "visible");
+            }).always(function () {
+                //TODO handle the end of the operation
+            });
+            //TODO this is where the login action occurs
+        });
+    });
+</script>
+</body>
+</html>
