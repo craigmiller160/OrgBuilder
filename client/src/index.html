@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Welcome to OrgBuilder</h1>
-    <div id="errorDiv" style="visibility:visible;">
+    <div id="errorDiv" style="visibility:hidden;">
         <!-- TODO improve error message for if the server couldn't be reached and if the credentials are rejected -->
         <h5 style="color:red;">Error! Invalid login credentials.</h5>
     </div>
@@ -37,7 +37,8 @@
 <script src="../lib/jquery-3.1.1.js"></script>
 <script>
     $(document).ready(function () {
-        $("#loginButton").click(function () {
+        $("#loginButton").click(function (event) {
+            event.preventDefault();
             var username = $("#username").val();
             var password = $("#password").val();
             var jsonMsg = {
@@ -55,6 +56,7 @@
                 $("#errorDiv").css("visibility", "visible");
             }).always(function () {
                 //TODO handle the end of the operation
+                $("#password").val("");
             });
             //TODO this is where the login action occurs
         });
