@@ -12,8 +12,8 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
 
     private long addressId;
     private AddressType addressType;
-    private String address;
-    private String unit;
+    private String address1;
+    private String address2;
     private String city;
     private State state;
     private String zipCode;
@@ -22,10 +22,10 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
 
     public AddressDTO(){}
 
-    public AddressDTO(AddressType addressType, String address, String unit, String city, State state, String zipCode){
+    public AddressDTO(AddressType addressType, String address1, String address2, String city, State state, String zipCode){
         this.addressType = addressType;
-        this.address = address;
-        this.unit = unit;
+        this.address1 = address1;
+        this.address2 = address2;
         this.city = city;
         this.state = state;
         this.zipCode = zipCode;
@@ -49,20 +49,20 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
         this.addressType = addressType;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddress1() {
+        return address1;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress1(String address1) {
+        this.address1 = address1;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getAddress2() {
+        return address2;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setAddress2(String address2) {
+        this.address2 = address2;
     }
 
     public String getCity() {
@@ -110,8 +110,8 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
         if (memberId != that.memberId) return false;
         if (preferred != that.preferred) return false;
         if (addressType != that.addressType) return false;
-        if (address != null ? !address.equals(that.address) : that.address != null) return false;
-        if (unit != null ? !unit.equals(that.unit) : that.unit != null) return false;
+        if (address1 != null ? !address1.equals(that.address1) : that.address1 != null) return false;
+        if (address2 != null ? !address2.equals(that.address2) : that.address2 != null) return false;
         if (city != null ? !city.equals(that.city) : that.city != null) return false;
         if (state != that.state) return false;
         return zipCode != null ? zipCode.equals(that.zipCode) : that.zipCode == null;
@@ -122,8 +122,8 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
     public int hashCode() {
         int result = (int) (addressId ^ (addressId >>> 32));
         result = 31 * result + (addressType != null ? addressType.hashCode() : 0);
-        result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + (unit != null ? unit.hashCode() : 0);
+        result = 31 * result + (address1 != null ? address1.hashCode() : 0);
+        result = 31 * result + (address2 != null ? address2.hashCode() : 0);
         result = 31 * result + (city != null ? city.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
         result = 31 * result + (zipCode != null ? zipCode.hashCode() : 0);
@@ -144,7 +144,7 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
 
     @Override
     public String toString(){
-        return String.format("%s: %s %s %s, %s %s", addressType, address, (unit != null ? unit : ""), city, state, zipCode);
+        return String.format("%s: %s %s %s, %s %s", addressType, address1, (address2 != null ? address2 : ""), city, state, zipCode);
     }
 
     @Override

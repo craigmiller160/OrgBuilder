@@ -1,6 +1,6 @@
 package io.craigmiller160.orgbuilder.server.data.jdbc.converter;
 
-import io.craigmiller160.orgbuilder.server.dto.Gender;
+import io.craigmiller160.orgbuilder.server.dto.Sex;
 import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,8 +54,8 @@ public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
             stmt.setNull(5, Types.DATE);
         }
 
-        if(element.getGender() != null){
-            stmt.setString(6, element.getGender().toString());
+        if(element.getSex() != null){
+            stmt.setString(6, element.getSex().toString());
         }
         else{
             stmt.setNull(6, Types.VARCHAR);
@@ -73,9 +73,9 @@ public class MemberDTOSQLConverter implements DTOSQLConverter<MemberDTO> {
         if(dateOfBirth != null){
             element.setDateOfBirth(dateOfBirth.toLocalDate());
         }
-        String gender = resultSet.getString("gender");
-        if(!StringUtils.isEmpty(gender)){
-            element.setGender(Gender.valueOf(gender));
+        String sex = resultSet.getString("sex");
+        if(!StringUtils.isEmpty(sex)){
+            element.setSex(Sex.valueOf(sex));
         }
 
         return element;

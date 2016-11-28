@@ -19,9 +19,9 @@ public class InfoService {
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
-    public GenderListDTO getGenders(){
+    public SexListDTO getSexes(){
         OrgApiLogger.getServiceLogger().debug("Getting list of Gender values");
-        return new GenderListDTO(Gender.values());
+        return new SexListDTO(Sex.values());
     }
 
     public StateListDTO getStates(){

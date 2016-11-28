@@ -4,15 +4,8 @@ import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerTestUtils;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.data.OrgDataSource;
-import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
-import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
-import io.craigmiller160.orgbuilder.server.dto.Gender;
-import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
-import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
-import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
-import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
-import io.craigmiller160.orgbuilder.server.dto.State;
-import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.dto.*;
+import io.craigmiller160.orgbuilder.server.dto.Sex;
 import throwing.stream.ThrowingStream;
 
 import java.lang.reflect.Constructor;
@@ -93,8 +86,8 @@ public class DaoTestUtils {
     public AddressDTO getAddress1(){
         AddressDTO address = new AddressDTO();
         address.setAddressType(AddressDTO.AddressType.HOME);
-        address.setAddress("3 Brookside Ct");
-        address.setUnit("6");
+        address.setAddress1("3 Brookside Ct");
+        address.setAddress2("6");
         address.setCity("East Brunswick");
         address.setState(State.NJ);
         address.setZipCode("08816");
@@ -105,8 +98,8 @@ public class DaoTestUtils {
     public AddressDTO getAddress2(){
         AddressDTO address = new AddressDTO();
         address.setAddressType(AddressDTO.AddressType.WORK);
-        address.setAddress("10306 Casa Palarmo Dr");
-        address.setUnit("6");
+        address.setAddress1("10306 Casa Palarmo Dr");
+        address.setAddress2("6");
         address.setCity("Riverview");
         address.setState(State.FL);
         address.setZipCode("33578");
@@ -119,7 +112,7 @@ public class DaoTestUtils {
         memberDTO.setFirstName("Craig");
         memberDTO.setMiddleName("Evan");
         memberDTO.setLastName("Miller");
-        memberDTO.setGender(Gender.MALE);
+        memberDTO.setSex(Sex.MALE);
         memberDTO.setDateOfBirth(LocalDate.of(1988, 10, 26));
         return memberDTO;
     }
@@ -129,7 +122,7 @@ public class DaoTestUtils {
         memberDTO.setFirstName("Gary");
         memberDTO.setMiddleName("Brian");
         memberDTO.setLastName("Miller");
-        memberDTO.setGender(Gender.MALE);
+        memberDTO.setSex(Sex.MALE);
         memberDTO.setDateOfBirth(LocalDate.of(1959, 4, 29));
 
         return memberDTO;
