@@ -60,23 +60,27 @@
 <script src="js/handle-errors.js"></script>
 <script>
     $(document).ready(function () {
-        var allLinks = $("#linksDiv"); //TODO might want to secure this in a private scope
-        $(".parentLink a").click(function(event){
-            var linkGroup = $(event.target).parents(".linkGroupDiv")[0];
-            var innerLinks = $(linkGroup).children(".innerLinksDiv")[0];
+        $(".parentLink a").click((function(){
+            var allLinks = $("#linksDiv");
+            function showHideLinks (event){
+                var linkGroup = $(event.target).parents(".linkGroupDiv")[0];
+                var innerLinks = $(linkGroup).children(".innerLinksDiv")[0];
 
-            //Determine if contents of this div are currently visible
-            var isVisible = $(innerLinks).hasClass("visible");
+                //Determine if contents of this div are currently visible
+                var isVisible = $(innerLinks).hasClass("visible");
 
-            //Hide all inner links
-            $(allLinks).find(".innerLinksDiv").removeClass("visible");
-            $(allLinks).find(".innerLinksDiv").addClass("hidden");
+                //Hide all inner links
+                $(allLinks).find(".innerLinksDiv").removeClass("visible");
+                $(allLinks).find(".innerLinksDiv").addClass("hidden");
 
-            if(!isVisible){
-                $(innerLinks).removeClass("hidden");
-                $(innerLinks).addClass("visible");
+                if(!isVisible){
+                    $(innerLinks).removeClass("hidden");
+                    $(innerLinks).addClass("visible");
+                }
             }
-        });
+
+            return showHideLinks;
+        })());
     });
 </script>
 </body>
