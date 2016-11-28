@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <title>OrgBuilder Menu</title>
 <style>
-    .hiddenLink {
+    .innerLink {
         padding-left: 1em;
+    }
+    .hidden {
         visibility: hidden;
+        display: none;
+    }
+    .visible {
+        visibility: visible;
+        display: block;
     }
 </style>
 </head>
@@ -21,8 +28,8 @@
             <p class="parentLink">
                 <a href="#">Create</a>
             </p>
-            <div class="hiddenLinksDiv">
-                <p class="hiddenLink">
+            <div id="temp" class="innerLinksDiv hidden">
+                <p class="innerLink">
                     <a id="newMemberLink" href="create-member.html">New Member</a>
                 </p>
             </div>
@@ -31,8 +38,8 @@
             <p class="parentLink">
                 <a href="#">View</a>
             </p>
-            <div class="hiddenLinksDiv">
-                <p class="hiddenLink">
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
                     <a id="viewAllMembersLink" href="#">All Members</a>
                 </p>
             </div>
@@ -41,8 +48,8 @@
             <p class="parentLink">
                 <a href="#">Search</a>
             </p>
-            <div class="hiddenLinksDiv">
-                <p class="hiddenLink">
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
                     <a id="searchMembersLink" href="#">Members</a>
                 </p>
             </div>
@@ -53,13 +60,21 @@
 <script src="js/handle-errors.js"></script>
 <script>
     $(document).ready(function () {
+        var allLinks = $("#linksDiv"); //TODO might want to secure this in a private scope
         $(".parentLink a").click(function(event){
-            //TODO figure out a better way than to use children to select a single element
-            var hiddenLinksDiv = $(event.target).parent(".parentLink").parent().children(".hiddenLinksDiv");
-            var makeVisible = $(hiddenLinksDiv).children("p").css("visibility") !== "visible";
-            $(hiddenLinksDiv).children("p").css("visibility","hidden");
-            if(makeVisible){
-                $(hiddenLinksDiv).children("p").css("visibility", "visible");
+            var linkGroup = $(event.target).parents(".linkGroupDiv")[0];
+            var innerLinks = $(linkGroup).children(".innerLinksDiv")[0];
+
+            //Determine if contents of this div are currently visible
+            var isVisible = $(innerLinks).hasClass("visible");
+
+            //Hide all inner links
+            $(allLinks).find(".innerLinksDiv").removeClass("visible");
+            $(allLinks).find(".innerLinksDiv").addClass("hidden");
+
+            if(!isVisible){
+                $(innerLinks).removeClass("hidden");
+                $(innerLinks).addClass("visible");
             }
         });
     });
