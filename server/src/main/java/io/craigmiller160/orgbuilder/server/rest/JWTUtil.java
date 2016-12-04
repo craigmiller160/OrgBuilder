@@ -45,14 +45,14 @@ public class JWTUtil {
     public static final String ROLES_CLAIM_KEY = "ROL";
     public static final String ORG_ID_CLAIM_KEY = "OID";
     public static final String USER_ID_CLAIM_KEY = "UID";
-    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String BEARER_PREFIX = "Bearer";
     public static final String USER_NAME_CLAIM_KEY = "UNM";
     public static final String ORG_NAME_CLAIM_KEY = "ONM";
 
     private JWTUtil(){}
 
     public static String combineUserNameOrgName(String userName, String orgName){
-        return userName + "::" + orgName;
+        return userName + "::" + (!StringUtils.isEmpty(orgName) ? orgName : "NONE");
     }
 
     public static String[] splitUserNameOrgName(String subject){
@@ -134,7 +134,7 @@ public class JWTUtil {
         }
 
         if(token.startsWith(BEARER_PREFIX)){
-            token = token.substring(7);
+            token = token.substring(6).trim();
         }
 
         SignedJWT jwt = null;

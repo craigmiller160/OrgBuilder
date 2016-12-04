@@ -32,6 +32,7 @@ public class SecurityFilter implements ContainerRequestFilter{
 
     private static final String POST_METHOD = "POST";
     private static final String GET_METHOD = "GET";
+    private static final String OPTIONS_METHOD = "OPTIONS";
     private static final String LOGIN_URI = "/orgapi/auth";
     private static final String USER_EXISTS_URI = "/orgapi/auth/exists";
     private static final ServiceFactory factory = ServiceFactory.newInstance();
@@ -51,12 +52,16 @@ public class SecurityFilter implements ContainerRequestFilter{
             OrgApiLogger.getRestLogger().trace("Creating principal for authenticating login credentials");
             principal = createAuthPrincipal();
         }
+        else if(OPTIONS_METHOD.equals(method)){
+            //Do nothing and return
+            return;
+        }
         else{
             OrgApiLogger.getRestLogger().trace("Validating token to create principal for API access");
             principal = handleTokenValidation(requestContext);
         }
 
-        //If principal is null, authentication was rejected
+        //If principal is null, authentication was rejected or it is an options request
         if(principal == null){
             return;
         }
@@ -89,16 +94,13 @@ public class SecurityFilter implements ContainerRequestFilter{
                 refreshToken(requestContext, jwt);
             }
 
-            String newToken = JWTUtil.generateNewToken(jwt);
-            requestContext.getHeaders().remove(HttpHeaders.AUTHORIZATION);
-            requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
-
             OrgApiPrincipal principal = new OrgApiPrincipal();
             principal.setName(JWTUtil.getTokenSubjectClaim(jwt));
             principal.setSchema(JWTUtil.getTokenSchemaClaim(jwt));
             principal.setRoles(JWTUtil.getTokenRolesClaim(jwt));
             principal.setOrgId(JWTUtil.getTokenOrgIdClaim(jwt));
             principal.setUserId(JWTUtil.getTokenUserIdClaim(jwt));
+
             return principal;
         }
         catch(OrgApiException ex){
@@ -128,7 +130,7 @@ public class SecurityFilter implements ContainerRequestFilter{
     private void refreshToken(ContainerRequestContext requestContext, SignedJWT jwt) throws OrgApiException{
         String newToken = JWTUtil.generateNewToken(jwt);
         requestContext.getHeaders().remove(HttpHeaders.AUTHORIZATION);
-        requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, newToken);
+        requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + " " + newToken);
     }
 
     private OrgApiPrincipal createAuthPrincipal(){
