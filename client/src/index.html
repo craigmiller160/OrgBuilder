@@ -34,7 +34,10 @@
             </table>
         </form>
     </div>
+    <!-- TODO have dev vs prod versions of these libraries, local vs web URL -->
 <script src="../lib/jquery-3.1.1.js"></script>
+<script src="js/org-props.js"></script>
+<script src="https://kjur.github.io/jsrsasign/jsrsasign-latest-all-min.js"></script>
 <script>
     $(document).ready(function () {
         $("#loginButton").click(function (event) {
@@ -45,21 +48,46 @@
                 "userEmail": username,
                 "password": password
             };
-            //TODO url needs to be made enviro variable
-            //TODO either in success or done function, the token returned needs to be stored in browser storage, and the next page needs to be loaded
-            $.post("http://localhost:8080/orgapi/auth", jsonMsg, function () {
-                //TODO handle success response code
-            }).done(function(){
-                //TODO handle successful return of login data
-            }).fail(function () {
-                //TODO handle a fail
-                $("#errorDiv").css("visibility", "visible");
-            }).always(function () {
-                //TODO handle the end of the operation
-                $("#password").val("");
-            });
-            //TODO this is where the login action occurs
+            $.ajax({
+                url: orgProps.serverOrigin + "/orgapi/auth",
+                type: "POST",
+                headers: {
+                    "Access-Control-Request-Headers": "X-Requested-With",
+                    "Access-Control-Request-Method": "POST"
+                },
+                data: JSON.stringify(jsonMsg),
+                contentType: "application/json; charset=utf-8",
+//                dataType: "json"
+            })
+                .done(function (data, status, jqXHR){
+                    console.log("Login Success");
+                    //TODO token has the "Bearer" prefix here
+                    var token = jqXHR.getResponseHeader("Authorization");
+                    token = stripBearerPrefix(token);
+                    localStorage.setItem("orgapiToken", token);
+                    window.location = "main.html";
+                })
+                .fail(function (jqXHR, status){
+                    console.log("Login Failed: " + jqXHR.status + " " + jqXHR.statusText);
+                    $("#errorDiv").css("visibility", "visible");
+                })
+                .always(function () {
+                    $("#password").val("");
+                });
         });
+
+        function stripBearerPrefix(token){
+            if(typeof token === "string" && token.startsWith("Bearer")){
+                return token.substring(6).trim();
+            }
+            return token;
+        }
+
+        /*
+            atob() function to decode base64
+            split(".")[1] to get the payload of the token
+            JSON.parse(atob(payloadB64)); gets it as a JS object, might need try-catch for parsing fail
+         */
     });
 </script>
 </body>
