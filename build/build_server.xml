@@ -3,6 +3,7 @@
     <property file="build.properties" />
     <property file="${src.server.props.path}" />
     <property file="${server.privateProps}" />
+    <property file="${origin.props}" />
     <property name="server.war.filename" value="${project.server.name}-${io.craigmiller160.orgbuilder.server.apiVersion}.war" />
     <path id="server.libs">
         <fileset dir="${dir.lib}" includes="**/*.jar" />
@@ -39,12 +40,19 @@
                classpathref="test.compile">
             <src path="${dir.server.test}" />
         </javac>
+        <antcall target="dev.replace" />
+    </target>
+    <target name="dev.replace">
+        <property name="server.props.path" value="${dev.server.props.path}" />
+        <antcall target="replace" />
+        <replace file="${server.props.path}" token="$serverOrigin" value="${io.craigmiller160.orgbuilder.server.origin.dev}"/>
+        <replace file="${server.props.path}" token="$clientOrigin" value="${io.craigmiller160.orgbuilder.client.origin.dev}"/>
+    </target>
+    <target name="prod.replace">
         <property name="server.props.path" value="${build.server.props.path}" />
         <antcall target="replace" />
-    </target>
-    <target name="intellij.replace">
-        <property name="server.props.path" value="${intellij.server.props.path}" />
-        <antcall target="replace" />
+        <replace file="${server.props.path}" token="$serverOrigin" value="${io.craigmiller160.orgbuilder.server.origin.prod}"/>
+        <replace file="${server.props.path}" token="$clientOrigin" value="${io.craigmiller160.orgbuilder.client.origin.prod}"/>
     </target>
     <target name="replace">
         <replace file="${server.props.path}" token="$databasePassword" value="${dbPass}"/>

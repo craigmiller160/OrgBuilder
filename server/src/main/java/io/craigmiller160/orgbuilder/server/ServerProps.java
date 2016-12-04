@@ -32,4 +32,7 @@ public class ServerProps {
     public static final String REFRESH_EXP_MINS = "io.craigmiller160.orgbuilder.server.token.refreshExpMins";
     public static final String REFRESH_MAX_EXP_HRS = "io.craigmiller160.orgbuilder.server.token.refreshMaxExpHrs";
 
+    public static final String SERVER_ORIGIN = "io.craigmiller160.orgbuilder.server.origin";
+    public static final String CLIENT_ORIGIN = "io.craigmiller160.orgbuilder.client.origin";
+
 }
