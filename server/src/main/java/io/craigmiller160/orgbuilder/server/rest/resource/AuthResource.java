@@ -21,10 +21,7 @@ import io.craigmiller160.orgbuilder.server.util.HashingUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -96,7 +93,7 @@ public class AuthResource {
         );
         return Response
                 .ok()
-                .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + token)
+                .header(HttpHeaders.AUTHORIZATION, JWTUtil.BEARER_PREFIX + " " + token)
                 .build();
     }
 
