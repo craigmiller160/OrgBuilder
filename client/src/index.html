@@ -37,6 +37,7 @@
     <!-- TODO have dev vs prod versions of these libraries, local vs web URL -->
 <script src="../lib/jquery-3.1.1.js"></script>
 <script src="js/org-props.js"></script>
+<script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function () {
         $("#loginButton").click(function (event) {
@@ -61,8 +62,7 @@
                 .done(function (data, status, jqXHR){
                     console.log("Login Success");
                     var token = jqXHR.getResponseHeader("Authorization");
-                    token = stripBearerPrefix(token);
-                    localStorage.setItem("orgapiToken", token);
+                    orgbuilder.jwt.storeToken(token);
                     window.location = "main.html";
                 })
                 .fail(function (jqXHR, status){
@@ -73,19 +73,6 @@
                     $("#password").val("");
                 });
         });
-
-        function stripBearerPrefix(token){
-            if(typeof token === "string" && token.startsWith("Bearer")){
-                return token.substring(6).trim();
-            }
-            return token;
-        }
-
-        /*
-            atob() function to decode base64
-            split(".")[1] to get the payload of the token
-            JSON.parse(atob(payloadB64)); gets it as a JS object, might need try-catch for parsing fail
-         */
     });
 </script>
 </body>
