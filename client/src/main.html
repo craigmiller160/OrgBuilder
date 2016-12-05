@@ -24,7 +24,7 @@
     </p>
     <h3>Main Menu</h3>
     <div id="linksDiv">
-        <div class="linkGroupDiv">
+        <div id="createDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
                 <a href="#">Create</a>
             </p>
@@ -34,7 +34,7 @@
                 </p>
             </div>
         </div>
-        <div class="linkGroupDiv">
+        <div id="viewDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
                 <a href="#">View</a>
             </p>
@@ -47,7 +47,7 @@
                 </p>
             </div>
         </div>
-        <div class="linkGroupDiv">
+        <div id="searchDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
                 <a href="#">Search</a>
             </p>
@@ -57,7 +57,7 @@
                 </p>
             </div>
         </div>
-        <div class="linkGroupDiv">
+        <div id="adminDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
                 <a href="#">Admin</a>
             </p>
@@ -70,7 +70,7 @@
                 </p>
             </div>
         </div>
-        <div class="linkGroupDiv">
+        <div id="masterDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
                 <a href="#">Master</a>
             </p>
@@ -89,6 +89,26 @@
 <script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function () {
+        //Determine which links are visible based on access level
+        var payload = orgbuilder.jwt.getTokenPayload();
+        if($.inArray(orgbuilder.jwt.roles.master,payload)){
+            $("#masterDiv").removeClass("hidden");
+        }
+        else{
+            if($.inArray(orgbuilder.jwt.roles.admin, payload)){
+                $("#adminDiv").removeClass("hidden");
+            }
+
+            if($.inArray(orgbuilder.jwt.roles.write, payload)){
+                $("#createDiv").removeClass("hidden");
+            }
+
+            if($.inArray(orgbuilder.jwt.roles.read, payload)){
+                $("#viewDiv").removeClass("hidden");
+                $("#searchDiv").removeClass("hidden");
+            }
+        }
+
         $(".parentLink a").click((function(){
             var allLinks = $("#linksDiv");
             function showHideLinks (event){

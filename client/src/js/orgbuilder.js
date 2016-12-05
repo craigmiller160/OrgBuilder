@@ -3,6 +3,12 @@ var orgbuilder = (function(){
     var BEARER_PREFIX = "Bearer";
 
     var jwt = {
+        roles: {
+            master: 'MASTER',
+            admin: 'ADMIN',
+            write: 'WRITE',
+            read: 'READ'
+        },
         stripBearerPrefix: function(token){
             if(typeof token === "string" && token.startsWith(BEARER_PREFIX)){
                 return token.substring(6).trim();
