@@ -20,7 +20,7 @@
 <body>
     <h1>Welcome to OrgBuilder</h1>
     <p>
-        <a href="#">Logout</a>
+        <a id="logoutButton" href="index.html">Logout</a>
     </p>
     <h3>Main Menu</h3>
     <div id="linksDiv">
@@ -42,6 +42,9 @@
                 <p class="innerLink">
                     <a id="viewAllMembersLink" href="#">All Members</a>
                 </p>
+                <p class="innerLink">
+                    <a id="selectMembersLink" href="#">Select Members</a>
+                </p>
             </div>
         </div>
         <div class="linkGroupDiv">
@@ -54,12 +57,40 @@
                 </p>
             </div>
         </div>
+        <div class="linkGroupDiv">
+            <p class="parentLink">
+                <a href="#">Admin</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a id="orgInfoLink" href="#">Org Info</a>
+                </p>
+                <p class="innerLink">
+                    <a id="usersLink" href="#">Users</a>
+                </p>
+            </div>
+        </div>
+        <div class="linkGroupDiv">
+            <p class="parentLink">
+                <a href="#">Master</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a id="orgsLink" href="#">Orgs</a>
+                </p>
+                <p class="innerLink">
+                    <a id="usersLink" href="#">Users</a>
+                </p>
+            </div>
+        </div>
 
     </div>
 <script src="../lib/jquery-3.1.1.js"></script>
 <script src="js/handle-errors.js"></script>
 <script>
     $(document).ready(function () {
+        localStorage.orgapiToken = "FooBar";
+
         $(".parentLink a").click((function(){
             var allLinks = $("#linksDiv");
             function showHideLinks (event){
@@ -81,6 +112,10 @@
 
             return showHideLinks;
         })());
+
+        $("#logoutButton").click(function(){
+            delete localStorage.orgapiToken
+        });
     });
 </script>
 </body>
