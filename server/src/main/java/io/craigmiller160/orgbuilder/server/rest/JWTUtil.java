@@ -41,13 +41,13 @@ import java.util.Set;
  */
 public class JWTUtil {
 
-    public static final String SCHEMA_CLAIM_KEY = "SMA";
-    public static final String ROLES_CLAIM_KEY = "ROL";
-    public static final String ORG_ID_CLAIM_KEY = "OID";
-    public static final String USER_ID_CLAIM_KEY = "UID";
+    public static final String SCHEMA_CLAIM_KEY = "sma";
+    public static final String ROLES_CLAIM_KEY = "rol";
+    public static final String ORG_ID_CLAIM_KEY = "oid";
+    public static final String USER_ID_CLAIM_KEY = "uid";
     public static final String BEARER_PREFIX = "Bearer";
-    public static final String USER_NAME_CLAIM_KEY = "UNM";
-    public static final String ORG_NAME_CLAIM_KEY = "ONM";
+    public static final String USER_NAME_CLAIM_KEY = "unm";
+    public static final String ORG_NAME_CLAIM_KEY = "onm";
 
     private JWTUtil(){}
 
