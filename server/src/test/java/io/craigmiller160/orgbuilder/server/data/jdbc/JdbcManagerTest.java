@@ -85,7 +85,7 @@ public class JdbcManagerTest {
 
         List<String> appSchema = schemaScripts.get(JdbcManager.Schema.APP_SCHEMA);
         assertNotNull("AppSchema was not loaded", appSchema);
-        assertEquals("AppSchema has wrong number of queries", 8, appSchema.size());
+        assertEquals("AppSchema has wrong number of queries", 13, appSchema.size());
     }
 
 }
