@@ -40,7 +40,7 @@
                classpathref="test.compile">
             <src path="${dir.server.test}" />
         </javac>
-        <antcall target="dev.replace" />
+        <antcall target="prod.replace" />
     </target>
     <target name="dev.replace">
         <property name="server.props.path" value="${dev.server.props.path}" />
