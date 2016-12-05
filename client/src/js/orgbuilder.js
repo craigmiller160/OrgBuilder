@@ -32,6 +32,9 @@ var orgbuilder = (function(){
         },
         clearToken: function(){
             delete localStorage[TOKEN_STORAGE_KEY];
+        },
+        tokenExists: function(){
+            return localStorage.getItem(TOKEN_STORAGE_KEY) !== undefined;
         }
     };
 
