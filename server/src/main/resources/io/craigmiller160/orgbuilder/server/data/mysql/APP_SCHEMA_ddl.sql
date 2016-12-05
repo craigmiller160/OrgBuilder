@@ -53,7 +53,7 @@ BEFORE INSERT ON orgs FOR EACH ROW
     SET NEW.org_schema_name = REPLACE(temp_schema_name, ' ','_');
   END ;;
 
-CREATE PROCEDURE restrict_master_user_proc (IN role VARCHAR(255), IN org_id BIGINT)
+CREATE PROCEDURE restrict_master_orgid_proc (IN role VARCHAR(255), IN org_id BIGINT)
   BEGIN
     IF role = 'MASTER' AND org_id IS NOT NULL THEN
       SIGNAL SQLSTATE '45000'
@@ -66,14 +66,26 @@ CREATE PROCEDURE restrict_master_user_proc (IN role VARCHAR(255), IN org_id BIGI
     END IF;
   END ;;
 
+/* TODO restrict master roles in SQL as well as application code */
+CREATE PROCEDURE restrict_master_role_proc (IN role VARCHAR(255))
+  BEGIN
+    IF role LIKE '%MASTER%' AND role <> 'MASTER' THEN
+      SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Users with MASTER role cannot have other roles';
+    END IF;
+  END ;;
+
 CREATE TRIGGER users_before_insert_trigger
 BEFORE INSERT ON users FOR EACH ROW
   BEGIN
-    CALL restrict_master_user_proc(NEW.role, NEW.org_id);
+    CALL restrict_master_role_proc(NEW.role);
+    CALL restrict_master_orgid_proc(NEW.role, NEW.org_id);
   END ;;
 
+/* TODO figure out how this is handled if a new value isn't provided for those fields */
 CREATE TRIGGER users_before_update_trigger
 BEFORE UPDATE ON users FOR EACH ROW
   BEGIN
-    CALL restrict_master_user_proc(NEW.role, NEW.org_id);
+    CALL restrict_master_role_proc(NEW.role);
+    CALL restrict_master_orgid_proc(NEW.role, NEW.org_id);
   END ;;
