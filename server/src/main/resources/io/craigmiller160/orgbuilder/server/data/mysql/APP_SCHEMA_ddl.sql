@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS tokens (
 );
 
 DROP TRIGGER IF EXISTS orgs_before_schema_name_trigger;
+DROP PROCEDURE IF EXISTS restrict_master_orgid_proc;
+DROP PROCEDURE IF EXISTS restrict_master_role_proc;
+DROP TRIGGER IF EXISTS users_before_insert_trigger;
+DROP TRIGGER IF EXISTS users_before_update_trigger;
 
 DELIMITER ;;
 
@@ -66,7 +70,6 @@ CREATE PROCEDURE restrict_master_orgid_proc (IN role VARCHAR(255), IN org_id BIG
     END IF;
   END ;;
 
-/* TODO restrict master roles in SQL as well as application code */
 CREATE PROCEDURE restrict_master_role_proc (IN role VARCHAR(255))
   BEGIN
     IF role LIKE '%MASTER%' AND role <> 'MASTER' THEN
@@ -82,7 +85,6 @@ BEFORE INSERT ON users FOR EACH ROW
     CALL restrict_master_orgid_proc(NEW.role, NEW.org_id);
   END ;;
 
-/* TODO figure out how this is handled if a new value isn't provided for those fields */
 CREATE TRIGGER users_before_update_trigger
 BEFORE UPDATE ON users FOR EACH ROW
   BEGIN
