@@ -30,7 +30,7 @@
             </p>
             <div id="temp" class="innerLinksDiv hidden">
                 <p class="innerLink">
-                    <a id="newMemberLink" href="create-member.html">New Member</a>
+                    <a id="newMemberLink" href="member/create.html">New Member</a>
                 </p>
             </div>
         </div>
@@ -89,21 +89,26 @@
 <script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function () {
+        if(orgbuilder.jwt.getToken() === null){
+            console.log("No token");
+            //TODO re-route to unauthorized page
+        }
+
         //Determine which links are visible based on access level
         var payload = orgbuilder.jwt.getTokenPayload();
-        if($.inArray(orgbuilder.jwt.roles.master,payload)){
+        if($.inArray(orgbuilder.jwt.roles.master,payload) !== -1){
             $("#masterDiv").removeClass("hidden");
         }
         else{
-            if($.inArray(orgbuilder.jwt.roles.admin, payload)){
+            if($.inArray(orgbuilder.jwt.roles.admin, payload) !== -1){
                 $("#adminDiv").removeClass("hidden");
             }
 
-            if($.inArray(orgbuilder.jwt.roles.write, payload)){
+            if($.inArray(orgbuilder.jwt.roles.write, payload) !== -1){
                 $("#createDiv").removeClass("hidden");
             }
 
-            if($.inArray(orgbuilder.jwt.roles.read, payload)){
+            if($.inArray(orgbuilder.jwt.roles.read, payload) !== -1){
                 $("#viewDiv").removeClass("hidden");
                 $("#searchDiv").removeClass("hidden");
             }
