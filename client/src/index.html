@@ -60,6 +60,7 @@
 //                dataType: "json"
             })
                 .done(function (data, status, jqXHR){
+                    //TODO having some login troubles here
                     console.log("Login Success");
                     var token = jqXHR.getResponseHeader("Authorization");
                     orgbuilder.jwt.storeToken(token);

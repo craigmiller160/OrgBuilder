@@ -3,19 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>OrgBuilder Menu</title>
-<style>
-    .innerLink {
-        padding-left: 1em;
-    }
-    .hidden {
-        visibility: hidden;
-        display: none;
-    }
-    .visible {
-        visibility: visible;
-        display: block;
-    }
-</style>
+<link rel="stylesheet" type="text/css" href="css/org-styles.css" />
 </head>
 <body>
     <h1>Welcome to OrgBuilder</h1>
@@ -91,7 +79,7 @@
     $(document).ready(function () {
         if(orgbuilder.jwt.getToken() === null){
             console.log("No token");
-            //TODO re-route to unauthorized page
+            window.location = "access-denied.html";
         }
 
         //Determine which links are visible based on access level

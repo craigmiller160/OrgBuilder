@@ -1,0 +1,17 @@
+.visible {
+    visibility: visible;
+    display: block;
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+
+.innerLink {
+    padding-left: 1em;
+}
+
+.error {
+    color: red;
+}
