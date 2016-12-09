@@ -2,6 +2,8 @@ package io.craigmiller160.orgbuilder.server.dto;
 
 import io.craigmiller160.orgbuilder.server.rest.LocalDateAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
@@ -13,6 +15,7 @@ import java.util.List;
  * Created by craigmiller on 8/12/16.
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
 
     private long memberId;
