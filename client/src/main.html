@@ -73,30 +73,30 @@
         </div>
 
     </div>
-<script src="../lib/jquery-3.1.1.js"></script>
+<script src="jquery-3.1.1.js"></script>
 <script src="js/orgbuilder.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function(){
         if(orgbuilder.jwt.getToken() === null){
-            console.log("No token");
+            console.log("No access token");
             window.location = "access-denied.html";
         }
 
         //Determine which links are visible based on access level
         var payload = orgbuilder.jwt.getTokenPayload();
-        if($.inArray(orgbuilder.jwt.roles.master,payload) !== -1){
+        if($.inArray(orgbuilder.jwt.roles.master, payload.rol) !== -1){
             $("#masterDiv").removeClass("hidden");
         }
         else{
-            if($.inArray(orgbuilder.jwt.roles.admin, payload) !== -1){
+            if($.inArray(orgbuilder.jwt.roles.admin, payload.rol) !== -1){
                 $("#adminDiv").removeClass("hidden");
             }
 
-            if($.inArray(orgbuilder.jwt.roles.write, payload) !== -1){
+            if($.inArray(orgbuilder.jwt.roles.write, payload.rol) !== -1){
                 $("#createDiv").removeClass("hidden");
             }
 
-            if($.inArray(orgbuilder.jwt.roles.read, payload) !== -1){
+            if($.inArray(orgbuilder.jwt.roles.read, payload.rol) !== -1){
                 $("#viewDiv").removeClass("hidden");
                 $("#searchDiv").removeClass("hidden");
             }
@@ -124,7 +124,7 @@
             return showHideLinks;
         })());
 
-        $("#logoutButton").click(orgbuilder.jwt.clearToken());
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
     });
 </script>
 </body>
