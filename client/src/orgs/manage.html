@@ -27,6 +27,8 @@
         <tbody></tbody>
     </table>
 
+    <button type="button" title="Add new Org">A</button>
+
 <script src="../jquery-3.1.1.js"></script>
 <script src="../js/org-props.js"></script>
 <script src="../js/orgbuilder.js"></script>
@@ -59,6 +61,9 @@
                     tableBody.append(newRow);
                 });
                 //TODO also add the ability to open the users page for the org
+            })
+            .fail(function(jqXHR){
+                console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
             });
     });
 </script>
