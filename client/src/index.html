@@ -49,7 +49,7 @@
                 "password": password
             };
 
-            orgbuilder.api.call("orgapi/auth", orgbuilder.methods.post, jsonMsg)
+            orgbuilder.api.call("auth", orgbuilder.methods.post, jsonMsg)
                 .done(function (data, status, jqXHR) {
                     console.log("Login Success");
                     var token = jqXHR.getResponseHeader("Authorization");
