@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
   user_id BIGINT NOT NULL AUTO_INCREMENT,
   user_email VARCHAR(255) NOT NULL UNIQUE,
   passwd VARCHAR(255) NOT NULL,
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
   role VARCHAR(255) NOT NULL,
   org_id BIGINT,
   PRIMARY KEY (user_id),

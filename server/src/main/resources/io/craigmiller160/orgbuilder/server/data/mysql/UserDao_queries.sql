@@ -1,12 +1,12 @@
 -- The queries used by the UserDao
 
 -- QUERY=INSERT
-INSERT INTO users (user_id, user_email, passwd, role, org_id)
-VALUES (?,?,?,?,?);
+INSERT INTO users (user_id, user_email, passwd, first_name, last_name, role, org_id)
+VALUES (?,?,?,?,?, ?, ?);
 
 -- QUERY=UPDATE
 UPDATE users
-SET user_id = ?, user_email = ?, passwd = ?, role = ?, org_id = ?
+SET user_id = ?, user_email = ?, passwd = ?, first_name = ?, last_name = ?, role = ?, org_id = ?
 WHERE user_id = ?;
 
 -- QUERY=DELETE
@@ -37,10 +37,11 @@ ORDER BY u.user_id ASC
 LIMIT ?,?;
 
 -- QUERY=INSERT_OR_UPDATE
-INSERT INTO users (user_id, user_email, passwd, role, org_id)
-VALUES (?,?,?,?,?)
+INSERT INTO users (user_id, user_email, passwd, first_name, last_name, role, org_id)
+VALUES (?,?,?,?,?,?,?)
 ON DUPLICATE KEY UPDATE user_email = VALUES (user_email),
-  passwd = VALUES (passwd), role = VALUES (role), org_id = VALUES (org_id);
+  passwd = VALUES (passwd), first_name = VALUES (first_name), last_name = VALUES (last_name),
+  role = VALUES (role), org_id = VALUES (org_id);
 
 -- QUERY=GET_WITH_NAME
 SELECT u.*, o.org_name
