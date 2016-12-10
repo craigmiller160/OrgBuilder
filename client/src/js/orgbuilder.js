@@ -2,13 +2,21 @@ var orgbuilder = (function(){
     var TOKEN_STORAGE_KEY = "orgapiToken";
     var BEARER_PREFIX = "Bearer";
 
+    var roles = {
+        master: 'MASTER',
+        admin: 'ADMIN',
+        write: 'WRITE',
+        read: 'READ'
+    };
+
+    var methods = {
+        get: "GET",
+        post: "POST",
+        put: "PUT",
+        delete: "DELETE"
+    };
+
     var jwt = {
-        roles: {
-            master: 'MASTER',
-            admin: 'ADMIN',
-            write: 'WRITE',
-            read: 'READ'
-        },
         stripBearerPrefix: function(token){
             if(typeof token === "string" && token.startsWith(BEARER_PREFIX)){
                 return token.substring(6).trim();
@@ -45,12 +53,6 @@ var orgbuilder = (function(){
     };
 
     var api = {
-        methods: {
-            get: "GET",
-            post: "POST",
-            put: "PUT",
-            delete: "DELETE"
-        },
         call: function(uri, method, json){
             return $.ajax({
                 url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
@@ -78,6 +80,8 @@ var orgbuilder = (function(){
     }
 
     return{
+        roles: roles,
+        methods: methods,
         jwt: jwt,
         api: api
     }

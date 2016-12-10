@@ -58,16 +58,16 @@
 
         //Determine which links are visible based on access level
         var payload = orgbuilder.jwt.getTokenPayload();
-        if($.inArray(orgbuilder.jwt.roles.master, payload.rol) !== -1){
+        if($.inArray(orgbuilder.roles.master, payload.rol) !== -1){
             $("#orgsDiv").removeClass("hidden");
             $("#usersDiv").removeClass("hidden");
         }
         else{
-            if($.inArray(orgbuilder.jwt.roles.admin, payload.rol) !== -1){
+            if($.inArray(orgbuilder.roles.admin, payload.rol) !== -1){
                 $("#usersDiv").removeClass("hidden");
             }
 
-            if($.inArray(orgbuilder.jwt.roles.read, payload.rol) !== -1){
+            if($.inArray(orgbuilder.roles.read, payload.rol) !== -1){
                 $("#membersDiv").removeClass("hidden");
             }
         }
