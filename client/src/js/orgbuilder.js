@@ -52,17 +52,22 @@ var orgbuilder = (function(){
             return $.ajax({
                 url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
                 type: method,
-                headers: {
-                    "Access-Control-Request-Headers": "X-Requested-With",
-                    "Access-Control-Request-Method": method,
-                    "Authorization": (function(){
-                        var token = jwt.getToken();
-                        if(token !== undefined && token !== null){
-                            return restoreBearerPrefix(token);
-                        }
-                        return null;
-                    })()
-                },
+                headers: (function(){
+                    var result = {
+                        "Access-Control-Request-Headers": [
+                            "X-Requested-With",
+                            "Authorization"
+                        ],
+                        "Access-Control-Request-Method": method
+                    };
+
+                    var token = jwt.getToken();
+                    if(token !== undefined && token !== null){
+                        result.Authorization = restoreBearerPrefix(token);
+                    }
+
+                    return result;
+                })(),
                 contentType: "application/json; charset=utf-8",
                 data: (function(){
                     if(json !== undefined){
