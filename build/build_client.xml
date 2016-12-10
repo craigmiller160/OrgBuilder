@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OrgBuilder-Client" xmlns:ivy="antlib:org.apache.ivy.ant">
-    <target name="resolve">
-    	<ant antfile="${dir.client}/ivy_build.xml" dir="${dir.client}" target="resolve" />
-    </target>
+    <property file="build.properties" />
+    <!--<target name="resolve">-->
+    	<!--<ant antfile="${dir.client}/ivy_build.xml" dir="${dir.client}" target="resolve" />-->
+    <!--</target>-->
 </project>
