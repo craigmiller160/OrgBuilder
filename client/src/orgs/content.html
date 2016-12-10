@@ -17,6 +17,38 @@
 
     <h3>Content</h3>
 
+    <form>
+        <h5>Org Info</h5>
+        <table>
+            <tr>
+                <td>Org Name:</td>
+                <td>
+                    <input id="orgNameField" type="text" />
+                </td>
+            </tr>
+        </table>
+    </form>
+<script src="../jquery-3.1.1.js"></script>
+<script src="../URI.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+        if(orgbuilder.jwt.getToken() === null){
+            console.log("No access token");
+            window.location = "access-denied.html";
+        }
 
+        //Check OrgId to retrieve existing values
+        var url = URI(window.location.href);
+        if(url.hasQuery("orgid")){
+            var orgid = url.search(true).orgid;
+            orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.get)
+                .done(function(orgData){
+                    $("#orgNameField").val(orgData.orgName);
+                });
+        }
+    });
+</script>
 </body>
 </html>

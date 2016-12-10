@@ -27,7 +27,7 @@
         <tbody></tbody>
     </table>
 
-    <button type="button" title="Add new Org">A</button>
+    <button id="addOrgBtn" type="button" title="Add new Org">A</button>
 
 <script src="../jquery-3.1.1.js"></script>
 <script src="../js/org-props.js"></script>
@@ -38,8 +38,6 @@
             console.log("No access token");
             window.location = "access-denied.html";
         }
-
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
 
         var tableBody = $("#orgsTable tbody");
 
@@ -53,18 +51,34 @@
                     newRow.append($("<td></td>").text(org.createdDate));
 
                     var options = $("<td></td>");
-                    options.append($("<button type='button' title='Edit Org'></button>").text("E"));
-                    options.append($("<button type='button' title='Delete Org'></button>").text("D"));
+                    options.append($("<button class='editOrgBtn' type='button' title='Edit Org'></button>").text("E"));
+                    options.append($("<button class='deleteOrgBtn' type='button' title='Delete Org'></button>").text("D"));
 
 
                     newRow.append(options);
                     tableBody.append(newRow);
                 });
+
+                $(".editOrgBtn").click(function(event){
+                    var orgid = $(event.target).parents("tr[orgid]").attr("orgid");
+                    window.location = "content.html?orgid=" + orgid;
+                });
+
+                $(".deleteOrgBtn").click(function(event){
+                    //TODO finish this
+                });
+
                 //TODO also add the ability to open the users page for the org
             })
             .fail(function(jqXHR){
+                //TODO improve fail handling
                 console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
             });
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $("#addOrgBtn").click(function(event){
+            window.location = "content.html";
+        });
     });
 </script>
 </body>
