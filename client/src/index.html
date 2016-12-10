@@ -48,31 +48,22 @@
                 "userEmail": username,
                 "password": password
             };
-            $.ajax({
-                url: orgProps.serverOrigin + "/orgapi/auth",
-                type: "POST",
-                headers: {
-                    "Access-Control-Request-Headers": "X-Requested-With",
-                    "Access-Control-Request-Method": "POST"
-                },
-                data: JSON.stringify(jsonMsg),
-                contentType: "application/json; charset=utf-8",
-//                dataType: "json"
-            })
-                .done(function (data, status, jqXHR){
-                    //TODO having some login troubles here
+
+            orgbuilder.api.call("orgapi/auth", orgbuilder.api.methods.post, jsonMsg)
+                .done(function (data, status, jqXHR) {
                     console.log("Login Success");
                     var token = jqXHR.getResponseHeader("Authorization");
                     orgbuilder.jwt.storeToken(token);
                     window.location = "main.html";
                 })
-                .fail(function (jqXHR, status){
+                .fail(function (jqXHR, status) {
                     console.log("Login Failed: " + jqXHR.status + " " + jqXHR.statusText);
                     $("#errorDiv").css("visibility", "visible");
                 })
                 .always(function () {
                     $("#password").val("");
                 });
+
         });
     });
 </script>

@@ -44,8 +44,42 @@ var orgbuilder = (function(){
         }
     };
 
+    var api = {
+        methods: {
+            get: "GET",
+            post: "POST",
+            put: "PUT",
+            delete: "DELETE"
+        },
+        call: function(uri, method, json){
+            return $.ajax({
+                url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
+                type: method,
+                headers: {
+                    "Access-Control-Request-Headers": "X-Requested-With",
+                    "Access-Control-Request-Method": method
+                },
+                contentType: "application/json; charset=utf-8",
+                data: (function(){
+                    if(json !== undefined){
+                        return JSON.stringify(json);
+                    }
+                    return null;
+                })()
+            });
+        }
+    };
+
+    function ensurePrecedingSlash(uri){
+        if(uri.startsWith("/")){
+            return uri;
+        }
+        return "/" + uri;
+    }
+
     return{
-        jwt: jwt
+        jwt: jwt,
+        api: api
     }
 })();
 
