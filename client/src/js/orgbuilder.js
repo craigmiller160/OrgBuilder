@@ -17,14 +17,8 @@ var orgbuilder = (function(){
     };
 
     var jwt = {
-        stripBearerPrefix: function(token){
-            if(typeof token === "string" && token.startsWith(BEARER_PREFIX)){
-                return token.substring(6).trim();
-            }
-            return token;
-        },
         storeToken: function(token){
-            token = this.stripBearerPrefix(token);
+            token = stripBearerPrefix(token);
             localStorage.setItem(TOKEN_STORAGE_KEY, token);
         },
         getToken: function(){
@@ -59,7 +53,14 @@ var orgbuilder = (function(){
                 type: method,
                 headers: {
                     "Access-Control-Request-Headers": "X-Requested-With",
-                    "Access-Control-Request-Method": method
+                    "Access-Control-Request-Method": method,
+                    "Authorization": (function(){
+                        var token = jwt.getToken();
+                        if(token !== undefined && token !== null){
+                            return restoreBearerPrefix(token);
+                        }
+                        return null;
+                    })()
                 },
                 contentType: "application/json; charset=utf-8",
                 data: (function(){
@@ -68,7 +69,11 @@ var orgbuilder = (function(){
                     }
                     return null;
                 })()
-            });
+            })
+                .done(function(data, status, jqXHR){
+                    var token = jqXHR.getResponseHeader("Authorization");
+                    jwt.storeToken(token);
+                });
         }
     };
 
@@ -77,6 +82,20 @@ var orgbuilder = (function(){
             return uri;
         }
         return "/" + uri;
+    }
+
+    function stripBearerPrefix (token){
+        if(typeof token === "string" && token.startsWith(BEARER_PREFIX)){
+            return token.substring(6).trim();
+        }
+        return token;
+    }
+
+    function restoreBearerPrefix (token){
+        if(typeof token === "string" && !token.startsWith(BEARER_PREFIX)){
+            return BEARER_PREFIX + " " + token;
+        }
+        return token;
     }
 
     return{

@@ -50,13 +50,11 @@
             };
 
             orgbuilder.api.call("auth", orgbuilder.methods.post, jsonMsg)
-                .done(function (data, status, jqXHR) {
+                .done(function () {
                     console.log("Login Success");
-                    var token = jqXHR.getResponseHeader("Authorization");
-                    orgbuilder.jwt.storeToken(token);
                     window.location = "main.html";
                 })
-                .fail(function (jqXHR, status) {
+                .fail(function (jqXHR) {
                     console.log("Login Failed: " + jqXHR.status + " " + jqXHR.statusText);
                     $("#errorDiv").css("visibility", "visible");
                 })
