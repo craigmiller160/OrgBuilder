@@ -48,7 +48,7 @@
             .done(function(data,status,jqXHR){
                 //TODO need to be able to test that the data has the right contents
                 $.each(data.orgList, function(index, org){
-                    var newRow = $("<tr index='" + index + "'></tr>");
+                    var newRow = $("<tr index='" + index + "' orgid='" + org.orgId + "'></tr>");
                     newRow.append($("<td></td>").text(org.orgName));
                     newRow.append($("<td></td>").text(org.createdDate));
 
