@@ -19,6 +19,8 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     private Set<String> roles = new TreeSet<>();
     private long orgId;
     private String orgName;
+    private String firstName;
+    private String lastName;
 
     @Override
     public Long getElementId() {
@@ -86,6 +88,22 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         this.orgName = orgName;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -98,8 +116,9 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         if (userEmail != null ? !userEmail.equals(userDTO.userEmail) : userDTO.userEmail != null) return false;
         if (password != null ? !password.equals(userDTO.password) : userDTO.password != null) return false;
         if (roles != null ? !roles.equals(userDTO.roles) : userDTO.roles != null) return false;
-        return orgName != null ? orgName.equals(userDTO.orgName) : userDTO.orgName == null;
-
+        if (orgName != null ? !orgName.equals(userDTO.orgName) : userDTO.orgName != null) return false;
+        if (firstName != null ? !firstName.equals(userDTO.firstName) : userDTO.firstName != null) return false;
+        return lastName != null ? lastName.equals(userDTO.lastName) : userDTO.lastName == null;
     }
 
     @Override
@@ -110,6 +129,8 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         result = 31 * result + (roles != null ? roles.hashCode() : 0);
         result = 31 * result + (int) (orgId ^ (orgId >>> 32));
         result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         return result;
     }
 

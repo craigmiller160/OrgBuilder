@@ -14,7 +14,7 @@ import java.sql.Types;
  */
 public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 6;
+    private static final int UPDATE_KEY_PARAM_INDEX = 8;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, UserDTO element) throws SQLException {
@@ -39,18 +39,32 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
             stmt.setNull(3, Types.VARCHAR);
         }
 
-        if(!StringUtils.isEmpty(element.convertRolesToString())){
-            stmt.setString(4, element.convertRolesToString());
+        if(!StringUtils.isEmpty(element.getFirstName())){
+            stmt.setString(4, element.getFirstName());
         }
         else{
             stmt.setNull(4, Types.VARCHAR);
         }
 
-        if(element.getOrgId() > 0){
-            stmt.setLong(5, element.getOrgId());
+        if(!StringUtils.isEmpty(element.getLastName())){
+            stmt.setString(5, element.getLastName());
         }
         else{
-            stmt.setNull(5, Types.BIGINT);
+            stmt.setNull(5, Types.VARCHAR);
+        }
+
+        if(!StringUtils.isEmpty(element.convertRolesToString())){
+            stmt.setString(6, element.convertRolesToString());
+        }
+        else{
+            stmt.setNull(6, Types.VARCHAR);
+        }
+
+        if(element.getOrgId() > 0){
+            stmt.setLong(7, element.getOrgId());
+        }
+        else{
+            stmt.setNull(7, Types.BIGINT);
         }
     }
 
