@@ -39,15 +39,15 @@
         <antcall target="deploy.server.tomcat" />
         <antcall target="tomcat.start" />
     </target>
-    <target name="client.resolve">
-    	<ant antfile="build_client.xml" target="resolve">
-            <property name="dir.client" value="${dir.client}" />
-        </ant>
-    </target>
+    <!--<target name="client.resolve">-->
+    	<!--<ant antfile="build_client.xml" target="resolve">-->
+            <!--<property name="dir.client" value="${dir.client}" />-->
+        <!--</ant>-->
+    <!--</target>-->
     <target name="resolve">
     	<antcall target="project.resolve" />
     	<antcall target="server.resolve" />
-    	<antcall target="client.resolve" />
+    	<!--<antcall target="client.resolve" />-->
     </target>
     <target name="clean">
         <antcall target="project.clean" />
