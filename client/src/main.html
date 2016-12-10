@@ -12,66 +12,39 @@
     </p>
     <h3>Main Menu</h3>
     <div id="linksDiv">
-        <div id="createDiv" class="linkGroupDiv hidden">
+        <div id="membersDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
-                <a href="#">Create</a>
-            </p>
-            <div id="temp" class="innerLinksDiv hidden">
-                <p class="innerLink">
-                    <a id="newMemberLink" href="member/create.html">New Member</a>
-                </p>
-            </div>
-        </div>
-        <div id="viewDiv" class="linkGroupDiv hidden">
-            <p class="parentLink">
-                <a href="#">View</a>
+                <a href="#">Members</a>
             </p>
             <div class="innerLinksDiv hidden">
                 <p class="innerLink">
-                    <a id="viewAllMembersLink" href="#">All Members</a>
+                    <a href="#">Manage</a>
                 </p>
                 <p class="innerLink">
-                    <a id="selectMembersLink" href="#">Select Members</a>
+                    <a href="#">Search</a>
                 </p>
             </div>
         </div>
-        <div id="searchDiv" class="linkGroupDiv hidden">
+        <div id="orgsDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
-                <a href="#">Search</a>
+                <a href="#">Orgs</a>
             </p>
             <div class="innerLinksDiv hidden">
                 <p class="innerLink">
-                    <a id="searchMembersLink" href="#">Members</a>
+                    <a href="#">Manage</a>
                 </p>
             </div>
         </div>
-        <div id="adminDiv" class="linkGroupDiv hidden">
+        <div id="usersDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
-                <a href="#">Admin</a>
+                <a href="#">Users</a>
             </p>
             <div class="innerLinksDiv hidden">
                 <p class="innerLink">
-                    <a id="orgInfoLink" href="#">Org Info</a>
-                </p>
-                <p class="innerLink">
-                    <a id="adminUsersLink" href="#">Users</a>
+                    <a href="#">Manage</a>
                 </p>
             </div>
         </div>
-        <div id="masterDiv" class="linkGroupDiv hidden">
-            <p class="parentLink">
-                <a href="#">Master</a>
-            </p>
-            <div class="innerLinksDiv hidden">
-                <p class="innerLink">
-                    <a id="orgsLink" href="#">Orgs</a>
-                </p>
-                <p class="innerLink">
-                    <a id="masterUsersLink" href="#">Users</a>
-                </p>
-            </div>
-        </div>
-
     </div>
 <script src="jquery-3.1.1.js"></script>
 <script src="js/orgbuilder.js"></script>
@@ -85,20 +58,16 @@
         //Determine which links are visible based on access level
         var payload = orgbuilder.jwt.getTokenPayload();
         if($.inArray(orgbuilder.jwt.roles.master, payload.rol) !== -1){
-            $("#masterDiv").removeClass("hidden");
+            $("#orgsDiv").removeClass("hidden");
+            $("#usersDiv").removeClass("hidden");
         }
         else{
             if($.inArray(orgbuilder.jwt.roles.admin, payload.rol) !== -1){
-                $("#adminDiv").removeClass("hidden");
-            }
-
-            if($.inArray(orgbuilder.jwt.roles.write, payload.rol) !== -1){
-                $("#createDiv").removeClass("hidden");
+                $("#usersDiv").removeClass("hidden");
             }
 
             if($.inArray(orgbuilder.jwt.roles.read, payload.rol) !== -1){
-                $("#viewDiv").removeClass("hidden");
-                $("#searchDiv").removeClass("hidden");
+                $("#membersDiv").removeClass("hidden");
             }
         }
 
