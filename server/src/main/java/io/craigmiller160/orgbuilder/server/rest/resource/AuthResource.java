@@ -51,7 +51,7 @@ public class AuthResource {
     @POST
     @PermitAll
     public Response authenticate(@HeaderParam("user-agent") String userAgent, UserDTO user) throws OrgApiException{
-        if(StringUtils.isEmpty(user.getUserEmail()) || StringUtils.isEmpty(user.getPassword())){
+        if(user == null || StringUtils.isEmpty(user.getUserEmail()) || StringUtils.isEmpty(user.getPassword())){
             throw new OrgApiInvalidRequestException("Authentication request has incomplete credentials");
         }
 
