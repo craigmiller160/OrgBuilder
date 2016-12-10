@@ -23,7 +23,7 @@ public class CrossOriginHeaderFilter implements ContainerResponseFilter{
         MultivaluedMap<String,Object> headers = responseContext.getHeaders();
         headers.add("Access-Control-Allow-Origin", origin);
         headers.add("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS");
-        headers.add("Access-Control-Allow-Headers", "X-Requested-With, Origin, Content-Type, Accept");
+        headers.add("Access-Control-Allow-Headers", "X-Requested-With, Origin, Content-Type, Accept, Authorization");
         headers.add("Access-Control-Expose-Headers", "Content-Type, Authorization");
         headers.add("Access-Control-Allow-Credentials", true);
 
