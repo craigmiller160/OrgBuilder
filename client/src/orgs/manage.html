@@ -21,6 +21,7 @@
             <tr>
                 <th>Org Name</th>
                 <th>Created Date</th>
+                <th>Options</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -38,15 +39,26 @@
 
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
 
+        var tableBody = $("#orgsTable tbody");
+
         //TODO need to add pagination
         orgbuilder.api.call("orgs", orgbuilder.methods.get)
             .done(function(data,status,jqXHR){
                 //TODO need to be able to test that the data has the right contents
                 $.each(data.orgList, function(index, org){
-                    var orgname = org.orgName;
-                    var createdDate = org.createdDate;
-                    $("#orgsTable tbody").append("<tr><td>" + org.orgName + "</td><td>" + org.createdDate + "</td></tr>");
+                    var newRow = $("<tr index='" + index + "'></tr>");
+                    newRow.append($("<td></td>").text(org.orgName));
+                    newRow.append($("<td></td>").text(org.createdDate));
+
+                    var options = $("<td></td>");
+                    options.append($("<button type='button' title='Edit Org'></button>").text("E"));
+                    options.append($("<button type='button' title='Delete Org'></button>").text("D"));
+
+
+                    newRow.append(options);
+                    tableBody.append(newRow);
                 });
+                //TODO also add the ability to open the users page for the org
             });
     });
 </script>
