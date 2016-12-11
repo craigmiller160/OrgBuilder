@@ -57,6 +57,7 @@
         if(orgbuilder.jwt.getToken() === null){
             console.log("No access token");
             window.location = "access-denied.html";
+            return;
         }
 
         //Determine which links are visible based on access level

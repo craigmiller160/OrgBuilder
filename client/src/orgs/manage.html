@@ -34,9 +34,11 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
+        //TODO need to check if user has master access for each page with master actions
         if(orgbuilder.jwt.getToken() === null){
             console.log("No access token");
             window.location = "access-denied.html";
+            return;
         }
 
         var tableBody = $("#orgsTable tbody");
@@ -59,13 +61,27 @@
                     tableBody.append(newRow);
                 });
 
+                function getOrgId(event){
+                    return $(event.target).parents("tr[orgid]").attr("orgid");
+                }
+
                 $(".editOrgBtn").click(function(event){
-                    var orgid = $(event.target).parents("tr[orgid]").attr("orgid");
+                    var orgid = getOrgId(event);
                     window.location = "content.html?orgid=" + orgid;
                 });
 
                 $(".deleteOrgBtn").click(function(event){
-                    //TODO finish this
+                    //TODO this needs a prompt warning of the effects of deleting an org
+                    var orgid = getOrgId(event);
+                    orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.delete)
+                        .done(function(){
+                            console.log("Org successfully deleted");
+                            location.reload(true);
+                        })
+                        .fail(function(){
+                            //TODO need better fail functionality
+                            console.log("Org delete FAILED");
+                        });
                 });
 
                 //TODO also add the ability to open the users page for the org

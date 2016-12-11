@@ -5,6 +5,11 @@
     <title>OrgBuilder - Org Content</title>
     <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
 </head>
+<style>
+    #buttonDiv {
+        padding-top: 1em;
+    }
+</style>
 <body>
     <h1>Org Content</h1>
 
@@ -19,14 +24,20 @@
 
     <form>
         <h5>Org Info</h5>
-        <table>
-            <tr>
-                <td>Org Name:</td>
-                <td>
-                    <input id="orgNameField" type="text" />
-                </td>
-            </tr>
-        </table>
+        <div>
+            <table>
+                <tr>
+                    <td>Org Name:</td>
+                    <td>
+                        <input id="orgNameField" type="text" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="buttonDiv">
+            <a id="cancelBtn" type="button" title="Cancel changes and return to Manage Orgs page.">Cancel</a>
+            <button id="saveBtn" type="button" title="Save changes and return to Manage Orgs page.">Save</button>
+        </div>
     </form>
 <script src="../jquery-3.1.1.js"></script>
 <script src="../URI.js"></script>
@@ -37,6 +48,7 @@
         if(orgbuilder.jwt.getToken() === null){
             console.log("No access token");
             window.location = "access-denied.html";
+            return;
         }
 
         //Check OrgId to retrieve existing values
@@ -48,6 +60,38 @@
                     $("#orgNameField").val(orgData.orgName);
                 });
         }
+
+        $("#cancelBtn").click(function(event){
+            //TODO prompt if the user is sure they want to cancel
+            console.log("Cancelling changes to Org");
+            window.location = "manage.html";
+        });
+
+        $("#saveBtn").click(function(event){
+            console.log("Saving changes to Org");
+            var doneFn = function(){
+                window.location = "manage.html";
+            };
+
+            var failFn = function(){
+                //TODO need some sort of fail behavior
+                console.log("Save FAILED");
+            };
+
+            var jsonMsg = {
+                orgName: $("#orgNameField").val()
+            };
+
+            if(orgid){
+                orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
+                    .done(doneFn).fail(failFn);
+            }
+            else{
+                orgbuilder.api.call("orgs", orgbuilder.methods.post, jsonMsg)
+                    .done(doneFn).fail(failFn);
+            }
+        });
+
     });
 </script>
 </body>
