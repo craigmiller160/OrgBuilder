@@ -42,7 +42,10 @@ var orgbuilder = (function(){
             delete localStorage[TOKEN_STORAGE_KEY];
         },
         tokenExists: function(){
-            return localStorage.getItem(TOKEN_STORAGE_KEY) !== undefined;
+            return localStorage.getItem(TOKEN_STORAGE_KEY) !== undefined && localStorage.getItem(TOKEN_STORAGE_KEY) !== null;
+        },
+        hasRole: function(role){
+            return $.inArray(role, this.getTokenPayload().rol) !== -1;
         }
     };
 
@@ -77,11 +80,32 @@ var orgbuilder = (function(){
                 })()
             })
                 .done(function(data, status, jqXHR){
+                    //TODO ensure that, if a token is not returned, reference to it is removed from localStorage. Better yet, add fail functionality for a request with this result.
                     var token = jqXHR.getResponseHeader("Authorization");
                     jwt.storeToken(token);
                 });
         }
     };
+
+    //This function accepts arguments, each representing a single role to validate
+    function validateAccess(){
+        if(jwt.tokenExists()){
+            var valid = true;
+            if(arguments){
+                $.each(arguments, function(index,role){
+                    if(!jwt.hasRole(role)){
+                        valid = false;
+                        return false;
+                    }
+                });
+            }
+
+            if(valid){
+                return true;
+            }
+        }
+        return false;
+    }
 
     function ensurePrecedingSlash(uri){
         if(uri.startsWith("/")){
@@ -108,7 +132,8 @@ var orgbuilder = (function(){
         roles: roles,
         methods: methods,
         jwt: jwt,
-        api: api
+        api: api,
+        validateAccess: validateAccess
     }
 })();
 

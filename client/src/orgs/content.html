@@ -45,9 +45,9 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        if(orgbuilder.jwt.getToken() === null){
-            console.log("No access token");
-            window.location = "access-denied.html";
+        if(!orgbuilder.validateAccess(orgbuilder.roles.master)){
+            console.log("Invalid credentials to access org content editor!");
+            window.location = "../access-denied.html";
             return;
         }
 
