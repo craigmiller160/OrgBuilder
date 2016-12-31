@@ -4,6 +4,7 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
+import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
@@ -12,7 +13,6 @@ import io.craigmiller160.orgbuilder.server.rest.JWTUtil;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.RefreshTokenUtil;
 import io.craigmiller160.orgbuilder.server.rest.Role;
-import io.craigmiller160.orgbuilder.server.service.OrgApiSecurityException;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.TokenService;
@@ -48,6 +48,22 @@ public class AuthResource {
     @Context
     private SecurityContext securityContext;
 
+    private Response handleInvalidLogin(String errorMessage){
+        ErrorDTO error = new ErrorDTO();
+        error.setStatusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+        if(!StringUtils.isEmpty(errorMessage)){
+            error.setErrorMessage(errorMessage);
+        }
+        return Response
+                .status(Response.Status.UNAUTHORIZED)
+                .entity(error)
+                .build();
+    }
+
+    private Response handleInvalidLogin(){
+        return handleInvalidLogin(null);
+    }
+
     @POST
     @PermitAll
     public Response authenticate(@HeaderParam("user-agent") String userAgent, UserDTO user) throws OrgApiException{
@@ -59,7 +75,7 @@ public class AuthResource {
         UserDTO foundUser = userService.getUserByName(user.getUserEmail());
         if(foundUser == null){
             OrgApiLogger.getRestLogger().warn("Attempted login by non-existent user: " + user.getUserEmail());
-            throw new OrgApiSecurityException("Invalid login credentials");
+            return handleInvalidLogin();
         }
 
         OrgService orgService = factory.newOrgService(securityContext);
@@ -67,7 +83,7 @@ public class AuthResource {
 
         if(!HashingUtils.verifyBCryptHash(user.getPassword(), foundUser.getPassword())){
             OrgApiLogger.getRestLogger().warn("Attempted login with invalid password. User: " + user.getUserEmail());
-            throw new OrgApiSecurityException("Invalid login credentials");
+            return handleInvalidLogin();
         }
 
         //If a NumberFormatException ever happens here, the property is invalid
@@ -79,7 +95,8 @@ public class AuthResource {
 
         OrgDTO foundOrg = orgService.getOrg(foundUser.getOrgId());
         if(foundOrg == null && !foundUser.getRoles().contains(Role.MASTER)){
-            throw new OrgApiSecurityException("User is not assigned to an org and doesn't have master access");
+            OrgApiLogger.getRestLogger().error("User is not assigned to an org and doesn't have master access. UserID: " + foundUser.getElementId() + " UserName: " + foundUser.getUserEmail());
+            return handleInvalidLogin("User is improperly configured on server.");
         }
 
         String token = JWTUtil.generateNewToken(

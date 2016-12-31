@@ -85,8 +85,12 @@ var orgbuilder = (function(){
                 })
                 .fail(function(jqXHR){
                     var status = jqXHR.status;
-                    if(status === 401 || status === 403){
+                    console.log("API Request Failed. Status: " + status);
+                    if(status === 403){
                         window.location = orgProps.clientOrigin + "/access-denied.html";
+                    }
+                    else if(status === 0){
+                        window.location = orgProps.clientOrigin + "/server-error.html";
                     }
                 });
         }
