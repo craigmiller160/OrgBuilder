@@ -10,6 +10,9 @@
     <p>
         <a id="logoutButton" href="index.html">Logout</a>
     </p>
+    <p>
+        <a id="myAccountButton" href="#content">My Account</a>
+    </p>
     <h3>Main Menu</h3>
     <div id="linksDiv">
         <div id="membersDiv" class="linkGroupDiv hidden">
@@ -61,8 +64,10 @@
             return;
         }
 
-        //Determine which links are visible based on access level
         var payload = orgbuilder.jwt.getTokenPayload();
+        $("#myAccountButton").attr("href", "users/content.html?userId=" + payload.uid);
+
+        //Determine which links are visible based on access level
         if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
             $("#orgsDiv").removeClass("hidden");
             $("#usersDiv").removeClass("hidden");

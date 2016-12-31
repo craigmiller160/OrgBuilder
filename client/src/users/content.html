@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - User Content</title>
+    <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
+</head>
+<body>
+    <h1>User Content</h1>
+
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+
+    <h3>Content</h3>
+
+    <form id="userDetailsForm" action="javascript:void(0)">
+        <div id="infoDiv">
+            <h5>User Info</h5>
+            <table>
+                <tr>
+                    <td field="label">Email</td>
+                    <td field="input">
+                        <input id="userEmailField" name="userEmail" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label">First Name</td>
+                    <td field="input">
+                        <input id="firstNameField" name="firstName" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td field="label">Last Name</td>
+                    <td field="input">
+                        <input id="lastNameField" name="lastName" type="text" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="passwordDiv">
+            <h5>Password</h5>
+            <p>THIS IS WHERE CHANGE/CREATE PASSWORD STUFF GOES</p>
+        </div>
+        <div id="accessDiv">
+            <h5>Access</h5>
+        </div>
+        <div id="orgDiv">
+            <h5>Org</h5>
+        </div>
+        <div class="buttonDiv">
+            <button id="cancelBtn" type="button" title="Cancel changes and return to Manage Users page.">Cancel</button>
+            <button id="saveBtn" type="button" title="Save changes and return to Manage Users page.">Save</button>
+        </div>
+    </form>
+<script src="../jquery-3.1.1.js"></script>
+<script src="../URI.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        //TODO need special kind of access validation. Master and Admin access, plus the individual user access to their own page
+    });
+</script>
+</body>
+</html>
