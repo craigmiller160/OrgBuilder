@@ -38,7 +38,10 @@ public class RefreshTokenUtilTest {
         SignedJWT jwt = JWTUtil.parseAndValidateTokenSignature(token);
         assertNotNull("Access Token wasn't validated and returned", jwt);
 
-        String tokenHash = RefreshTokenUtil.generateRefreshTokenHash(JWTUtil.getTokenSubjectClaim(jwt), USER_AGENT);
+        String subject = JWTUtil.getTokenSubjectClaim(jwt);
+        String userName = JWTUtil.splitUserNameOrgName(subject)[0];
+
+        String tokenHash = RefreshTokenUtil.generateRefreshTokenHash(userName, USER_AGENT);
         boolean result = RefreshTokenUtil.isValidRefreshToken(jwt, USER_AGENT, tokenHash);
         assertTrue("Refresh token validation failed", result);
     }
