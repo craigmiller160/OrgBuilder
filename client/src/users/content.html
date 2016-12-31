@@ -64,6 +64,33 @@
 <script>
     $(document).ready(function(){
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        var url = URI(window.location.href);
+        if(url.hasQuery("userid")){
+            var userid = url.search(true).userid;
+        }
+
+        function invalidCredentialsFn(){
+            console.log("Invalid credentials to access user content editor.");
+            window.location = "../access-denied.html";
+        }
+
+        var payload = orgbuilder.jwt.getTokenPayload();
+        if(payload === null){
+            invalidCredentialsFn();
+            return;
+        }
+
+        console.log(userid != payload.uid); //TODO delete this
+
+        if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin) &&
+            userid != payload.uid){
+            //TODO finish the conditions above
+            invalidCredentialsFn();
+            return;
+        }
+
+
         //TODO need special kind of access validation. Master and Admin access, plus the individual user access to their own page
     });
 </script>

@@ -54,13 +54,21 @@
             var orgid = url.search(true).orgid;
         }
 
+        function invalidCredentialsFn(){
+            console.log("Invalid credentials to access org content editor!");
+            window.location = "../access-denied.html";
+        }
+
         var payload = orgbuilder.jwt.getTokenPayload();
+        if(payload === null){
+            invalidCredentialsFn();
+            return;
+        }
 
         //Deliberate usage of == here to use type coercion
         if(!orgbuilder.validateAccess.allRoles(orgbuilder.roles.master) &&
-            !(orgbuilder.validateAccess.allRoles(orgbuilder.roles.admin) && (orgbuilder.jwt.tokenExists() && payload.oid == orgid))){
-            console.log("Invalid credentials to access org content editor!");
-            window.location = "../access-denied.html";
+            !(orgbuilder.validateAccess.allRoles(orgbuilder.roles.admin) && payload.oid == orgid)){
+            invalidCredentialsFn();
             return;
         }
 
