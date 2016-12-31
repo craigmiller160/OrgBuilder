@@ -48,10 +48,10 @@
                 //TODO need to be able to test that the data has the right contents
                 $.each(data.orgList, function(index, org){
                     var newRow = $("<tr index='" + index + "' orgid='" + org.orgId + "'></tr>");
-                    newRow.append($("<td></td>").text(org.orgName));
-                    newRow.append($("<td></td>").text(org.createdDate));
+                    newRow.append($("<td field='orgName'></td>").text(org.orgName));
+                    newRow.append($("<td field='createdDate'></td>").text(org.createdDate));
 
-                    var options = $("<td></td>");
+                    var options = $("<td field='options'></td>");
                     options.append($("<button class='editOrgBtn' type='button' title='Edit Org'></button>").text("E"));
                     options.append($("<button class='deleteOrgBtn' type='button' title='Delete Org'></button>").text("D"));
 
@@ -60,27 +60,25 @@
                     tableBody.append(newRow);
                 });
 
-                function getOrgId(event){
-                    return $(event.target).parents("tr[orgid]").attr("orgid");
-                }
-
                 $(".editOrgBtn").click(function(event){
                     var orgid = getOrgId(event);
                     window.location = "content.html?orgid=" + orgid;
                 });
 
                 $(".deleteOrgBtn").click(function(event){
-                    //TODO this needs a prompt warning of the effects of deleting an org
-                    var orgid = getOrgId(event);
-                    orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.delete)
-                        .done(function(){
-                            console.log("Org successfully deleted");
-                            location.reload(true);
-                        })
-                        .fail(function(){
-                            //TODO need better fail functionality
-                            console.log("Org delete FAILED");
-                        });
+                    var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
+                    if(choice){
+                        var orgid = getOrgId(event);
+                        orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.delete)
+                            .done(function(){
+                                console.log("Org successfully deleted");
+                                location.reload(true);
+                            })
+                            .fail(function(){
+                                //TODO need better fail functionality
+                                console.log("Org delete FAILED");
+                            });
+                    }
                 });
 
                 //TODO also add the ability to open the users page for the org
@@ -89,6 +87,14 @@
                 //TODO improve fail handling
                 console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
             });
+
+        function getOrgId(event){
+            return $(event.target).parents("tr[orgid]").attr("orgid");
+        }
+
+        function getOrgName(event){
+            return $(event.target).parents("tr").children("td[field = 'orgName']").text();
+        }
 
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $("#addOrgBtn").click(function(event){
