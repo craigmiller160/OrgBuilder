@@ -1,11 +1,13 @@
 {
-  "userEmail": "bob@gmail.com",
-  "password": "password",
-  "orgId": "1",
-  "elementId": "2",
+  "userEmail": "craig@gmail.com",
+  "password": null,
   "roles": [
-    "ADMIN",
     "READ",
     "WRITE"
-  ]
+  ],
+  "orgId": 0,
+  "orgName": null,
+  "firstName": "Craig",
+  "lastName": "Smith",
+  "elementId": 1
 }
