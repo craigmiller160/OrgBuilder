@@ -51,7 +51,7 @@
         orgbuilder.api.call("orgs", orgbuilder.methods.get)
             .done(function(data,status,jqXHR){
                 if(!validateData(data)){
-                    //TODO consider better error handling here
+                    console.log("Error! Data returned from server for orgList does not contain the orgList.");
                     window.location = "../server-error.html";
                     return;
                 }
