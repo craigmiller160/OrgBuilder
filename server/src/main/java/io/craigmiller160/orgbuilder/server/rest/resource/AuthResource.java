@@ -73,8 +73,8 @@ public class AuthResource {
         //If a NumberFormatException ever happens here, the property is invalid
         int refreshExpHrs = Integer.parseInt(ServerCore.getProperty(ServerProps.REFRESH_MAX_EXP_HRS));
         LocalDateTime expiration = LocalDateTime.now().plusHours(refreshExpHrs);
-        String userAgentHash = RefreshTokenUtil.generateRefreshTokenHash(foundUser.getUserEmail(), userAgent);
-        RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), foundUser.getOrgId(), userAgentHash, expiration);
+        String tokenHash = RefreshTokenUtil.generateRefreshTokenHash(foundUser.getUserEmail(), userAgent);
+        RefreshTokenDTO refreshToken = new RefreshTokenDTO(foundUser.getElementId(), foundUser.getOrgId(), tokenHash, expiration);
         refreshToken = tokenService.addRefreshToken(refreshToken);
 
         OrgDTO foundOrg = orgService.getOrg(foundUser.getOrgId());

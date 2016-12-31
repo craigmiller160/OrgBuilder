@@ -124,7 +124,7 @@ public class SecurityFilter implements ContainerRequestFilter{
         return refreshToken != null &&
                 RefreshTokenUtil.isValidRefreshToken(jwt, userAgent, refreshToken.getTokenHash()) &&
                 refreshToken.getExpiration().compareTo(now) >= 0 &&
-                cantRefreshAfter.compareTo(now) <= 0;
+                cantRefreshAfter.compareTo(now) >= 0;
     }
 
     private void refreshToken(ContainerRequestContext requestContext, SignedJWT jwt) throws OrgApiException{
