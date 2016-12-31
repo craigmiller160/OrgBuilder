@@ -7,17 +7,17 @@
           "address": "10509 Casa Wallo Dr",
           "addressType": "HOME",
           "city": "Tampa",
-          "elementId": 2,
+          "addressId": 2,
           "memberId": 1000,
           "preferred": true,
           "state": "FL",
           "zipCode": "33578"
         }
       ],
-      "elementId": 1000,
+      "memberId": 1000,
       "emails": [
         {
-          "elementId": 2,
+          "emailId": 2,
           "emailAddress": "cmiller@gmail.com",
           "emailType": "OTHER",
           "memberId": 1000,
@@ -31,7 +31,7 @@
       "phones": [
         {
           "areaCode": "908",
-          "elementId": 2,
+          "phoneId": 2,
           "lineNumber": "4040",
           "memberId": 1000,
           "phoneType": "HOME",
@@ -43,7 +43,7 @@
     {
       "dateOfBirth": "1970-05-17",
       "addresses": [],
-      "elementId": 1002,
+      "memberId": 1002,
       "emails": [],
       "firstName": "Bob",
       "gender": "MALE",

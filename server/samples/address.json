@@ -2,7 +2,7 @@
   "address": "123 Hart Ct",
   "addressType": "HOME",
   "city": "Hometown",
-  "elementId": 1,
+  "addressId": 1,
   "memberId": 1000,
   "preferred": false,
   "state": "NJ",

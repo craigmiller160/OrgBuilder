@@ -5,7 +5,7 @@
       "address": "123 Hart Ct",
       "addressType": "HOME",
       "city": "Hometown",
-      "elementId": 1,
+      "addressId": 1,
       "memberId": 1000,
       "preferred": false,
       "state": "NJ",
@@ -15,17 +15,17 @@
       "address": "10509 Casa Wallo Dr",
       "addressType": "HOME",
       "city": "Tampa",
-      "elementId": 2,
+      "addressId": 2,
       "memberId": 1000,
       "preferred": true,
       "state": "FL",
       "zipCode": "33578"
     }
   ],
-  "elementId": 1000,
+  "memberId": 1000,
   "emails": [
     {
-      "elementId": 1,
+      "emailId": 1,
       "emailAddress": "craigmiller160@gmail.com",
       "emailType": "PERSONAL",
       "memberId": 1000,
@@ -46,7 +46,7 @@
   "phones": [
     {
       "areaCode": "732",
-      "elementId": 1,
+      "phoneId": 1,
       "lineNumber": "7826",
       "memberId": 1000,
       "phoneType": "HOME",
