@@ -106,26 +106,44 @@ var orgbuilder = (function(){
                 });
         }
     };
+    //The functions in this object accept arguments, each representing a single role to validate
+    var validateAccess = {
+        allRoles: function(){
+            if(jwt.tokenExists()){
+                var valid = true;
+                if(arguments){
+                    $.each(arguments, function(index,role){
+                        if(!jwt.hasRole(role)){
+                            valid = false;
+                            return false;
+                        }
+                    });
+                }
 
-    //This function accepts arguments, each representing a single role to validate
-    function validateAccess(){
-        if(jwt.tokenExists()){
-            var valid = true;
-            if(arguments){
-                $.each(arguments, function(index,role){
-                    if(!jwt.hasRole(role)){
-                        valid = false;
-                        return false;
-                    }
-                });
+                if(valid){
+                    return true;
+                }
             }
+            return false;
+        },
+        anyRole: function(){
+            if(jwt.tokenExists()){
+                var valid = false;
+                if(arguments){
+                    $.each(arguments, function(index,role){
+                        if(jwt.hasRole(role)){
+                            return true;
+                        }
+                    });
+                }
 
-            if(valid){
-                return true;
+                if(valid){
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
-    }
+    };
 
     function ensurePrecedingSlash(uri){
         if(uri.startsWith("/")){

@@ -55,7 +55,7 @@
 <script>
     $(document).ready(function(){
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
-        if(!orgbuilder.validateAccess()){
+        if(!orgbuilder.jwt.tokenExists()){
             console.log("Invalid credentials to access main menu!");
             window.location = "access-denied.html";
             return;
