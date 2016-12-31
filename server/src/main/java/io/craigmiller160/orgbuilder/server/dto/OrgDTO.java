@@ -17,6 +17,7 @@ public class OrgDTO implements Comparable<OrgDTO>, DTO<Long>{
 
     private long orgId;
     private String orgName;
+    private String orgDescription;
     @XmlJavaTypeAdapter(LocalDateAdapter.class)
     private LocalDate createdDate;
     private String schemaName;
@@ -48,6 +49,14 @@ public class OrgDTO implements Comparable<OrgDTO>, DTO<Long>{
         this.orgName = orgName;
     }
 
+    public String getOrgDescription() {
+        return orgDescription;
+    }
+
+    public void setOrgDescription(String orgDescription) {
+        this.orgDescription = orgDescription;
+    }
+
     public LocalDate getCreatedDate() {
         return createdDate;
     }
@@ -73,15 +82,17 @@ public class OrgDTO implements Comparable<OrgDTO>, DTO<Long>{
 
         if (orgId != orgDTO.orgId) return false;
         if (orgName != null ? !orgName.equals(orgDTO.orgName) : orgDTO.orgName != null) return false;
+        if (orgDescription != null ? !orgDescription.equals(orgDTO.orgDescription) : orgDTO.orgDescription != null)
+            return false;
         if (createdDate != null ? !createdDate.equals(orgDTO.createdDate) : orgDTO.createdDate != null) return false;
         return schemaName != null ? schemaName.equals(orgDTO.schemaName) : orgDTO.schemaName == null;
-
     }
 
     @Override
     public int hashCode() {
         int result = (int) (orgId ^ (orgId >>> 32));
         result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
+        result = 31 * result + (orgDescription != null ? orgDescription.hashCode() : 0);
         result = 31 * result + (createdDate != null ? createdDate.hashCode() : 0);
         result = 31 * result + (schemaName != null ? schemaName.hashCode() : 0);
         return result;

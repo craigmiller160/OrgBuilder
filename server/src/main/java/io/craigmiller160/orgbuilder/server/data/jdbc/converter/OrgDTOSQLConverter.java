@@ -13,7 +13,7 @@ import java.sql.Types;
  */
 public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
 
-    private static final int UPDATE_KEY_PARAM_INDEX = 3;
+    private static final int UPDATE_KEY_PARAM_INDEX = 4;
 
     @Override
     public void parameterizeElement(PreparedStatement stmt, OrgDTO element) throws SQLException {
@@ -30,6 +30,13 @@ public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
         else{
             stmt.setNull(2, Types.VARCHAR);
         }
+
+        if(element.getOrgDescription() != null){
+            stmt.setString(3, element.getOrgDescription());
+        }
+        else{
+            stmt.setNull(3, Types.VARCHAR);
+        }
     }
 
     @Override
@@ -37,6 +44,7 @@ public class OrgDTOSQLConverter implements DTOSQLConverter<OrgDTO> {
         OrgDTO element = new OrgDTO();
         element.setElementId(resultSet.getLong("org_id"));
         element.setOrgName(resultSet.getString("org_name"));
+        element.setOrgDescription(resultSet.getString("org_description"));
         Date createdDate = resultSet.getDate("created_date");
         if(createdDate != null){
             element.setCreatedDate(createdDate.toLocalDate());

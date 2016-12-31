@@ -1,12 +1,12 @@
 -- The queries used by the OrgDao
 
 -- QUERY=INSERT
-INSERT INTO orgs (org_id, org_name)
-VALUES (?,?);
+INSERT INTO orgs (org_id, org_name, org_description)
+VALUES (?,?,?);
 
 -- QUERY=UPDATE
 UPDATE orgs
-SET org_id = ?, org_name = ?
+SET org_id = ?, org_name = ?, org_description = ?
 WHERE org_id = ?;
 
 -- QUERY=DELETE
@@ -34,6 +34,6 @@ ORDER BY org_id ASC
 LIMIT ?,?;
 
 -- QUERY=INSERT_OR_UPDATE
-INSERT INTO orgs (org_id, org_name)
-VALUES (?,?)
-ON DUPLICATE KEY UPDATE org_name = VALUES (org_name);
+INSERT INTO orgs (org_id, org_name, org_description)
+VALUES (?,?,?)
+ON DUPLICATE KEY UPDATE org_name = VALUES (org_name), org_description = VALUES(org_description);
