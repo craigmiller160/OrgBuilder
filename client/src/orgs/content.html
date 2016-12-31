@@ -38,8 +38,8 @@
             <p>* indicates required field</p>
         </div>
         <div class="buttonDiv">
-            <button id="cancelBtn" type="button" title="Cancel changes and return to Manage Orgs page.">Cancel</button>
-            <button id="saveBtn" type="button" title="Save changes and return to Manage Orgs page.">Save</button>
+            <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
+            <button id="saveBtn" type="button" title="Save changes">Save</button>
         </div>
     </form>
 <script src="../jquery-3.1.1.js"></script>
@@ -49,7 +49,16 @@
 <script>
     $(document).ready(function(){
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
-        if(!orgbuilder.validateAccess.allRoles(orgbuilder.roles.master)){
+        var url = URI(window.location.href);
+        if(url.hasQuery("orgid")){
+            var orgid = url.search(true).orgid;
+        }
+
+        var payload = orgbuilder.jwt.getTokenPayload();
+
+        //Deliberate usage of == here to use type coercion
+        if(!orgbuilder.validateAccess.allRoles(orgbuilder.roles.master) &&
+            !(orgbuilder.validateAccess.allRoles(orgbuilder.roles.admin) && (orgbuilder.jwt.tokenExists() && payload.oid == orgid))){
             console.log("Invalid credentials to access org content editor!");
             window.location = "../access-denied.html";
             return;
@@ -86,10 +95,7 @@
 
         $("#mainMenuButton").click(cancelCheckFn);
 
-        //Check OrgId to retrieve existing values
-        var url = URI(window.location.href);
-        if(url.hasQuery("orgid")){
-            var orgid = url.search(true).orgid;
+        if(orgid){
             orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData){
                     $("#orgNameField").val(orgData.orgName);
@@ -99,7 +105,12 @@
         $("#cancelBtn").click(function(event){
             var choice = cancelCheckFn();
             if(choice){
-                window.location = "manage.html";
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                    window.location = "manage.html";
+                }
+                else{
+                    window.location = "../main.html";
+                }
             }
         });
 

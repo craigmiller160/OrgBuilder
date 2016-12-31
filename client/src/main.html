@@ -41,6 +41,16 @@
                 </p>
             </div>
         </div>
+        <div id="currentOrgDiv" class="linkGroupDiv hidden">
+            <p class="parentLink">
+                <a href="#">Org</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a id="currentOrgContent" href="#content">Org Content</a>
+                </p>
+            </div>
+        </div>
         <div id="usersDiv" class="linkGroupDiv hidden">
             <p class="parentLink">
                 <a href="#">Users</a>
@@ -65,7 +75,7 @@
         }
 
         var payload = orgbuilder.jwt.getTokenPayload();
-        $("#myAccountButton").attr("href", "users/content.html?userId=" + payload.uid);
+        $("#myAccountButton").attr("href", "users/content.html?userid=" + payload.uid);
 
         //Determine which links are visible based on access level
         if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
@@ -75,6 +85,8 @@
         else{
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
                 $("#usersDiv").removeClass("hidden");
+                $("#currentOrgDiv").removeClass("hidden");
+                $("#currentOrgContent").attr("href", "orgs/content.html?orgid=" + payload.oid);
             }
 
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.read)){
