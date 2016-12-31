@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Manage Users</title>
+    <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
+</head>
+<body>
+    <h1>Manage Orgs</h1>
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+
+    <div>
+        <!-- TODO need to add org filter to table -->
+        <table id="usersTable" border="1">
+            <thead>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Roles</th>
+            <th>Options</th>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button id="addUserBtn" type="button" title="Add new User">A</button>
+    </div>
+
+</body>
+<script src="../jquery-3.1.1.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin)){
+            console.log("Invalid credentials to access user manager!");
+            window.location = "../access-denied.html";
+            return;
+        }
+
+        function validateData(data){
+            return data.userList !== undefined && data.userList !== null;
+        }
+
+        var tableBody = $("#usersTable tbody");
+
+        orgbuilder.api.call("users", orgbuilder.methods.get)
+            .done(function(data, status, jqXHR){
+                if(!validateData(data)){
+                    console.log("Error! Data returned from server for userList does not contain the userList");
+                    window.location = "../server-error.html";
+                    return;
+                }
+
+                $.each(data.userList, function(index, user){
+                    var newRow = $("<tr index='" + index + "' userid='" + user.userId + "'></tr>");
+                    newRow.append($("<td field='email'></td>").text(user.userEmail));
+                    newRow.append($("<td field='firstName'></td>").text(user.firstName));
+                    newRow.append($("<td field='lastName'></td>").text(user.lastName));
+                    newRow.append($("<td field='roles'></td>").text(user.roles.toString()));
+
+                    var options = $("<td field='options'></td>");
+                    options.append($("<button class='editUserBtn' type='button' title='Edit User'></button>").text("E"));
+                    options.append($("<button class='deleteUserBtn' type='button' title='Delete User'></button>").text("D"));
+
+
+                    newRow.append(options);
+                    tableBody.append(newRow);
+                });
+
+                $(".editUserBtn").click(function(event){
+                    var userId = getUserId(event);
+                    console.log(userId);
+                    //TODO link to content.html goes here
+                });
+
+                $(".deleteUserBtn").click(function(event){
+                    var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
+                    //TODO delete logic goes here... need to add dummy users first lol
+                });
+            });
+
+        function getUserId(event){
+            return $(event.target).parents("tr[userId]").attr("userId");
+        }
+
+        function getUserEmail(event){
+            return $(event.target).parents("tr").children("td[field = 'email']").text();
+        }
+
+        $("#addUserBtn").click(function(){
+            //TODO send to content.html
+        });
+    });
+</script>
+</html>
