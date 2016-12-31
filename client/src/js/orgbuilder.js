@@ -132,7 +132,8 @@ var orgbuilder = (function(){
                 if(arguments){
                     $.each(arguments, function(index,role){
                         if(jwt.hasRole(role)){
-                            return true;
+                            valid = true;
+                            return false;
                         }
                     });
                 }
