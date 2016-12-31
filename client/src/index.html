@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>OrgBuilder</title>
+    <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
 </head>
 <body>
     <h1>Welcome to OrgBuilder</h1>
-    <div id="errorDiv" style="visibility:hidden;">
-        <!-- TODO improve error message for if the server couldn't be reached and if the credentials are rejected -->
-        <h5 style="color:red;">Error! Invalid login credentials.</h5>
+    <div id="errorDiv" class="hidden">
+        <h5 class="error">Error! Invalid login credentials.</h5>
+        <h5 id="errorDetails" class="error hidden"></h5>
     </div>
     <div>
-        <form>
+        <form id="loginForm" action="javascript:void(0)">
             <table>
                 <tr>
                     <td>Username:</td>
@@ -40,7 +41,16 @@
 <script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function () {
-        $("#loginButton").click(function (event) {
+        $("#loginForm input").keypress(function(event){
+            if(event.which && event.which === 13){
+                loginFn(event);
+                event.stopPropagation();
+            }
+        });
+
+        $("#loginButton").click(loginFn);
+
+        function loginFn(event){
             event.preventDefault();
             var username = $("#username").val();
             var password = $("#password").val();
@@ -56,13 +66,21 @@
                 })
                 .fail(function (jqXHR) {
                     console.log("Login Failed: " + jqXHR.status + " " + jqXHR.statusText);
-                    $("#errorDiv").css("visibility", "visible");
+                    var errorJson = jqXHR.responseJSON;
+                    $("#errorDiv").removeClass("hidden");
+                    if(errorJson && errorJson.errorMessage){
+                        $("#errorDetails").removeClass("hidden");
+                        $("#errorDetails").text("Details: " + errorJson.errorMessage);
+                    }
+                    else{
+                        $("#errorDetails").addClass("hidden");
+                        $("#errorDetails").text("");
+                    }
                 })
                 .always(function () {
                     $("#password").val("");
                 });
-
-        });
+        }
     });
 </script>
 </body>
