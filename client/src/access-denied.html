@@ -7,10 +7,18 @@
 </head>
 <body>
     <h1 class="error">Access Denied!</h1>
-    <h4 class="error">You do not have access to this page.</h4>
+    <h4 class="error">You do not have access to this page, or your access has expired.</h4>
 
     <p>
-        <a href="index.html">Back to Login</a>
+        <a id="backToLogin" href="index.html">Back to Login</a>
     </p>
 </body>
+<script src="jquery-3.1.1.js"></script>
+<script src="js/org-props.js"></script>
+<script src="js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#backToLogin").click(orgbuilder.jwt.clearToken);
+    });
+</script>
 </html>

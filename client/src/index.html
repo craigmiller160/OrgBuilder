@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>OrgBuilder</title>
     <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
+    <script>
+        //IMPORTANT: This JavaScript doesn't use any of the application API so that it can be super-lightweight and run before page load. This means changes to the client API will not affect this
+        //Send the user to the main.html page if the access token already exists.
+        if(localStorage.getItem("orgapiToken") !== undefined && localStorage.getItem("orgapiToken") !== null){
+            window.location = "main.html";
+        }
+    </script>
 </head>
 <body>
     <h1>Welcome to OrgBuilder</h1>
