@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -8,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by craig on 8/13/16.
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<Long>, DTO<Long>{
 
     private long addressId;

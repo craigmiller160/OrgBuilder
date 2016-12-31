@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import java.util.List;
  * Created by craig on 10/17/16.
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RefreshTokenListDTO {
 
     private List<RefreshTokenDTO> tokenList;

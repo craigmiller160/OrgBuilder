@@ -2,6 +2,8 @@ package io.craigmiller160.orgbuilder.server.dto;
 
 import org.apache.commons.lang3.text.StrBuilder;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Arrays;
 import java.util.Set;
@@ -11,6 +13,7 @@ import java.util.TreeSet;
  * Created by craig on 9/4/16.
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     private long userId;
