@@ -45,6 +45,7 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
         if(!orgbuilder.validateAccess(orgbuilder.roles.master)){
             console.log("Invalid credentials to access org content editor!");
             window.location = "../access-denied.html";

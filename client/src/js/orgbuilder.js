@@ -2,6 +2,10 @@ var orgbuilder = (function(){
     var TOKEN_STORAGE_KEY = "orgapiToken";
     var BEARER_PREFIX = "Bearer";
 
+    window.onerror = function(message, source, lineno, colno, error){
+        alert("Error on page! Cause: " + message);
+    };
+
     var roles = {
         master: 'MASTER',
         admin: 'ADMIN',
@@ -35,7 +39,8 @@ var orgbuilder = (function(){
                 return JSON.parse(atob(token.split(".")[1]));
             }
             catch(e){
-                console.log("Error! Unable to parse JSON payload in token. Cause: " + e.message);
+                console.log("Error! Unable to parse JSON payload in token.");
+                throw e;
             }
         },
         clearToken: function(){
@@ -45,7 +50,13 @@ var orgbuilder = (function(){
             return localStorage.getItem(TOKEN_STORAGE_KEY) !== undefined && localStorage.getItem(TOKEN_STORAGE_KEY) !== null;
         },
         hasRole: function(role){
-            return $.inArray(role, this.getTokenPayload().rol) !== -1;
+            try{
+                return $.inArray(role, this.getTokenPayload().rol) !== -1;
+            }
+            catch(e){
+                console.log("Error! Unable to check the role in the token payload");
+                throw e;
+            }
         }
     };
 

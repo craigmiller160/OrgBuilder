@@ -34,6 +34,7 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
         if(!orgbuilder.validateAccess(orgbuilder.roles.master)){
             console.log("Invalid credentials to access org manager!");
             window.location = "../access-denied.html";
@@ -104,7 +105,6 @@
             return $(event.target).parents("tr").children("td[field = 'orgName']").text();
         }
 
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $("#addOrgBtn").click(function(event){
             window.location = "content.html";
         });

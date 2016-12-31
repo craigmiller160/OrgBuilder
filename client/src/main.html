@@ -54,6 +54,7 @@
 <script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
         if(!orgbuilder.validateAccess()){
             console.log("Invalid credentials to access main menu!");
             window.location = "access-denied.html";
@@ -97,8 +98,6 @@
 
             return showHideLinks;
         })());
-
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
     });
 </script>
 </body>
