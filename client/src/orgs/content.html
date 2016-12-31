@@ -22,20 +22,20 @@
 
     <h3>Content</h3>
 
-    <form>
+    <form id="orgDetailsForm" action="javascript:void(0)">
         <h5>Org Info</h5>
         <div>
             <table>
                 <tr>
                     <td>Org Name:</td>
                     <td>
-                        <input id="orgNameField" type="text" />
+                        <input id="orgNameField" name="orgName" type="text" />
                     </td>
                 </tr>
             </table>
         </div>
         <div id="buttonDiv">
-            <a id="cancelBtn" type="button" title="Cancel changes and return to Manage Orgs page.">Cancel</a>
+            <button id="cancelBtn" type="button" title="Cancel changes and return to Manage Orgs page.">Cancel</button>
             <button id="saveBtn" type="button" title="Save changes and return to Manage Orgs page.">Save</button>
         </div>
     </form>
@@ -50,6 +50,13 @@
             window.location = "../access-denied.html";
             return;
         }
+
+        $("#orgDetailsForm input").keypress(function(event){
+            if(event.which && event.which === 13){
+                saveFn(event);
+                event.stopPropagation();
+            }
+        });
 
         //Check OrgId to retrieve existing values
         var url = URI(window.location.href);
@@ -69,7 +76,7 @@
             }
         });
 
-        $("#saveBtn").click(function(event){
+        function saveFn(event){
             console.log("Saving changes to Org");
             var doneFn = function(){
                 window.location = "manage.html";
@@ -85,14 +92,18 @@
             };
 
             if(orgid){
+                console.log("Updating existing Org");
                 orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
             else{
+                console.log("Creating new Org");
                 orgbuilder.api.call("orgs", orgbuilder.methods.post, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
-        });
+        }
+
+        $("#saveBtn").click(saveFn);
 
     });
 </script>
