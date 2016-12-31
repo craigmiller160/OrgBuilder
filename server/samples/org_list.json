@@ -3,12 +3,16 @@
     {
       "createdDate": "2016-09-12",
       "orgId": 1,
-      "orgName": "TestOrg"
+      "orgName": "TestOrg",
+      "orgDescription": "A test Org",
+      "schemaName": "1TestO"
     },
     {
       "createdDate": "2016-09-13",
       "orgId": 2,
-      "orgName": "NewOrg"
+      "orgName": "NewOrg",
+      "orgDescription": "A new Org",
+      "schemaName": "2NewOr"
     }
   ]
 }
