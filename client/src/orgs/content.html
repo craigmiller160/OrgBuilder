@@ -107,6 +107,7 @@
             orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData){
                     $("#orgNameField").val(orgData.orgName);
+                    $("#orgDescriptionField").val(orgData.orgDescription);
                 });
         }
 
@@ -141,7 +142,8 @@
             };
 
             var jsonMsg = {
-                orgName: $("#orgNameField").val()
+                orgName: $("#orgNameField").val(),
+                orgDescription: $("#orgDescriptionField").val()
             };
 
             if(orgid){
