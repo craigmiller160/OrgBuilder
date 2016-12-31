@@ -62,9 +62,11 @@
         }
 
         $("#cancelBtn").click(function(event){
-            //TODO prompt if the user is sure they want to cancel
-            console.log("Cancelling changes to Org");
-            window.location = "manage.html";
+            var choice = confirm("Are you sure you want to cancel? All changes will be lost.");
+            if(choice){
+                console.log("Cancelling changes to Org");
+                window.location = "manage.html";
+            }
         });
 
         $("#saveBtn").click(function(event){
