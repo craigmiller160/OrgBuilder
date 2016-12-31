@@ -103,6 +103,12 @@ var orgbuilder = (function(){
                     else if(status === 0){
                         window.location = orgProps.clientOrigin + "/server-error.html";
                     }
+                    else if(status >= 500){
+                        var error = jqXHR.responseJSON;
+                        console.log("Critical error server-side, please check server logs for details");
+                        console.log("Error Message: " + error.errorMessage);
+                        window.location = orgProps.clientOrigin + "/server-error.html";
+                    }
                 });
         }
     };
