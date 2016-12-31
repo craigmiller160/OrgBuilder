@@ -42,10 +42,18 @@
 
         var tableBody = $("#orgsTable tbody");
 
+        function validateData(data){
+            return data.orgList !== undefined && data.orgList !== null;
+        }
+
         //TODO need to add pagination
         orgbuilder.api.call("orgs", orgbuilder.methods.get)
             .done(function(data,status,jqXHR){
-                //TODO need to be able to test that the data has the right contents
+                if(!validateData(data)){
+                    //TODO consider better error handling here
+                    window.location = "../server-error.html";
+                    return;
+                }
                 $.each(data.orgList, function(index, org){
                     var newRow = $("<tr index='" + index + "' orgid='" + org.orgId + "'></tr>");
                     newRow.append($("<td field='orgName'></td>").text(org.orgName));
