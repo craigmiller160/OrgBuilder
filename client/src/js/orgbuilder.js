@@ -80,9 +80,14 @@ var orgbuilder = (function(){
                 })()
             })
                 .done(function(data, status, jqXHR){
-                    //TODO ensure that, if a token is not returned, reference to it is removed from localStorage. Better yet, add fail functionality for a request with this result.
                     var token = jqXHR.getResponseHeader("Authorization");
                     jwt.storeToken(token);
+                })
+                .fail(function(jqXHR){
+                    var status = jqXHR.status;
+                    if(status === 401 || status === 403){
+                        window.location = orgProps.clientOrigin + "/access-denied.html";
+                    }
                 });
         }
     };
