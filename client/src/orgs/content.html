@@ -52,12 +52,22 @@
             return;
         }
 
+        function cancelCheckFn(){
+            var choice = confirm("Are you sure you want to cancel? All changes will be lost.");
+            if(choice){
+                console.log("Cancelling changes to Org");
+            }
+            return choice;
+        }
+
         $("#orgDetailsForm input").keypress(function(event){
             if(event.which && event.which === 13){
                 saveFn(event);
                 event.stopPropagation();
             }
         });
+
+        $("#mainMenuButton").click(cancelCheckFn);
 
         //Check OrgId to retrieve existing values
         var url = URI(window.location.href);
@@ -70,9 +80,8 @@
         }
 
         $("#cancelBtn").click(function(event){
-            var choice = confirm("Are you sure you want to cancel? All changes will be lost.");
+            var choice = cancelCheckFn();
             if(choice){
-                console.log("Cancelling changes to Org");
                 window.location = "manage.html";
             }
         });
