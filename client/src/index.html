@@ -66,7 +66,7 @@
                 "password": password
             };
 
-            orgbuilder.api.call("auth", orgbuilder.methods.post, jsonMsg)
+            orgbuilder.api.send("auth", orgbuilder.methods.post, jsonMsg)
                 .done(function () {
                     console.log("Login Success");
                     window.location = "main.html";

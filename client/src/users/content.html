@@ -150,7 +150,7 @@
         if(userid){
             $("#editPasswordBtnDiv").removeClass("hidden");
 
-            orgbuilder.api.call("users/" + userid, orgbuilder.methods.get)
+            orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
                 .done(function(userData){
                     $("#userEmailField").val(userData.userEmail);
                     $("#firstNameField").val(userData.firstName);

@@ -48,7 +48,7 @@
 
         var tableBody = $("#usersTable tbody");
 
-        orgbuilder.api.call("users", orgbuilder.methods.get)
+        orgbuilder.api.send("users", orgbuilder.methods.get)
             .done(function(data, status, jqXHR){
                 if(!validateData(data)){
                     console.log("Error! Data returned from server for userList does not contain the userList");

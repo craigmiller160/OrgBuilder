@@ -62,7 +62,7 @@ var orgbuilder = (function(){
 
     //TODO need a rejection if the token has timed out. All other callbacks need to be blocked in that case, and re-routed to access denied or something similar
     var api = {
-        call: function(uri, method, json){
+        send: function(uri, method, json){
             return $.ajax({
                 url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
                 type: method,

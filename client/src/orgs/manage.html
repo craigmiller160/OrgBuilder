@@ -50,7 +50,7 @@
         }
 
         //TODO need to add pagination
-        orgbuilder.api.call("orgs", orgbuilder.methods.get)
+        orgbuilder.api.send("orgs", orgbuilder.methods.get)
             .done(function(data,status,jqXHR){
                 if(!validateData(data)){
                     console.log("Error! Data returned from server for orgList does not contain the orgList.");
@@ -80,7 +80,7 @@
                     var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
                     if(choice){
                         var orgid = getOrgId(event);
-                        orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.delete)
+                        orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
                             .done(function(){
                                 console.log("Org successfully deleted");
                                 location.reload(true);

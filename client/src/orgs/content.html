@@ -83,7 +83,7 @@
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
 
         if(orgid){
-            orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.get)
+            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData){
                     $("#orgNameField").val(orgData.orgName);
                     $("#orgDescriptionField").val(orgData.orgDescription);
@@ -133,12 +133,12 @@
 
             if(orgid){
                 console.log("Updating existing Org");
-                orgbuilder.api.call("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
+                orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
             else{
                 console.log("Creating new Org");
-                orgbuilder.api.call("orgs", orgbuilder.methods.post, jsonMsg)
+                orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
         }
