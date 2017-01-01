@@ -109,6 +109,8 @@
             window.location = "../access-denied.html";
         }
 
+        $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
+
         var payload = orgbuilder.jwt.getTokenPayload();
         if(payload === null){
             invalidCredentialsFn();
@@ -175,6 +177,19 @@
             $("#editPasswordDiv").addClass("hidden");
         });
 
+        $("#cancelBtn").click(function(event){
+            event.preventDefault();
+            if(orgbuilder.cancelChangesCheck()){
+                console.log("Cancelling changes to User details");
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+                    window.location = "manage.html";
+                }
+                else{
+                    window.location = "../main.html";
+                }
+            }
+        });
+
         $("#saveBtn").click(function(event){
             event.preventDefault();
             console.log("Saving changes to User");
@@ -224,6 +239,14 @@
                     return roles;
                 })()
             };
+
+            if(userid){
+                console.log("Updating existing User");
+            }
+            else{
+                //TODO the password fields need to be mandatory for this one. plus FINISH THIS
+                console.log("Creating new User");
+            }
 
             //TODO need a good redirect URL when everything else is finished.
 

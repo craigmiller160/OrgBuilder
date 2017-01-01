@@ -173,6 +173,10 @@ var orgbuilder = (function(){
         return token;
     }
 
+    function cancelChangesCheck(){
+        return confirm("Are you sure you want to cancel? All changes will be lost.");
+    }
+
     var checkRequiredFields = function(formId){
         var parsedFormId = formId.startsWith("#") ? formId : "#" + formId;
 
@@ -196,7 +200,8 @@ var orgbuilder = (function(){
         jwt: jwt,
         api: api,
         validateAccess: validateAccess,
-        checkRequiredFields: checkRequiredFields
+        checkRequiredFields: checkRequiredFields,
+        cancelChangesCheck: cancelChangesCheck
     }
 })();
 
