@@ -74,8 +74,7 @@
 
                 $(".editUserBtn").click(function(event){
                     var userId = getUserId(event);
-                    console.log(userId);
-                    //TODO link to content.html goes here
+                    window.location = "content.html?userid=" + userId;
                 });
 
                 $(".deleteUserBtn").click(function(event){

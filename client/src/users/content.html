@@ -242,6 +242,8 @@
 
             if(userid){
                 console.log("Updating existing User");
+                orgbuilder.api.send("users/" + userid, orgbuilder.methods.put, jsonMsg)
+                    .done(doneFn).fail(failFn);
             }
             else{
                 //TODO the password fields need to be mandatory for this one. plus FINISH THIS
