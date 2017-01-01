@@ -53,7 +53,7 @@ public class UserService {
         return result;
     }
 
-    public UserDTO updateUser(UserDTO user, Long userId) throws OrgApiDataException, OrgApiSecurityException{
+    public UserDTO updateUser(UserDTO updatedUser, UserDTO existingUser, Long userId) throws OrgApiDataException, OrgApiSecurityException{
         DataConnection connection = null;
         UserDTO result = null;
         try{
@@ -62,19 +62,21 @@ public class UserService {
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
-            if(!StringUtils.isEmpty(user.getPassword())){
-                user.setPassword(HashingUtils.hashBCrypt(user.getPassword()));
+            if(!StringUtils.isEmpty(updatedUser.getPassword())){
+                updatedUser.setPassword(HashingUtils.hashBCrypt(updatedUser.getPassword()));
             }
             else{
-                UserDTO oldUser = userDao.get(userId);
-                if(oldUser == null){
-                    return null;
+                if(existingUser == null){
+                    existingUser = userDao.get(userId);
+                    if(existingUser == null){
+                        return null;
+                    }
                 }
-                user.setPassword(oldUser.getPassword());
+                updatedUser.setPassword(existingUser.getPassword());
             }
 
-            user.setElementId(userId);
-            result = userDao.update(user, userId);
+            updatedUser.setElementId(userId);
+            result = userDao.update(updatedUser, userId);
 
             connection.commit();
         }
