@@ -51,7 +51,6 @@
             <div id="editPasswordDiv" class="hidden">
                 <button id="cancelEditPasswordBtn" type="button" title="Cancel the change to the password for this user, and maintain the existing password.">Cancel Password Change</button>
                 <table>
-                    <!-- TODO need special required field logic for the password stuff. If one field is filled out, both need to be -->
                     <tr>
                         <td field="label">Password</td>
                         <td field="input">
@@ -129,23 +128,19 @@
         function appendCheckboxFn(role, isDisabled){
             var disabled = isDisabled ? "disabled" : "";
             var id = "select" + role;
-            $(accessCheckboxes).append("<input id='" + id + "' name='" + role + "' type='checkbox' " + disabled + "/>");
+            var inputCheckbox = $("<input id='" + id + "' name='" + role + "' type='checkbox' " + disabled + "/>");
+            $(accessCheckboxes).append(inputCheckbox);
             $(accessCheckboxes).append($("<label for='" + id + "'></label>").text(role));
             $(accessCheckboxes).append("<br />");
+
+            return inputCheckbox;
         }
 
-        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-            appendCheckboxFn(orgbuilder.roles.master, true);
-        }
-        else{
-            $.each(orgbuilder.roles, function(index,role){
-                //TODO this needs to be tested with a regular user viewing their details
-                if(role !== orgbuilder.roles.master){
-                    var isDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin);
-                    appendCheckboxFn(role, isDisabled);
-                }
-            });
-        }
+        //TODO need to add a check to warn the user if they try and save changes with no roles selected
+
+        //TODO this also needs to be changed for adding a new user. 1) all roles should be displayed, 2) Master role should only be displayed if principal is master, 3) if master role is chosen, all other options get deselected/disabled
+
+        var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
 
         if(userid){
             $("#editPasswordBtnDiv").removeClass("hidden");
@@ -157,14 +152,35 @@
                     $("#lastNameField").val(userData.lastName);
                     $("#orgNameField").val(userData.orgName);
 
-                    $.each(userData.roles, function(index,role){
-                        var checkbox = $("#accessCheckboxes").children("input[name = '" + role + "']")[0];
-                        $(checkbox).prop("checked", true);
-                    });
+
+
+                    if(userData.roles.includes(orgbuilder.roles.master)){
+                        appendCheckboxFn(orgbuilder.roles.master, true).prop("checked", true);
+                    }
+                    else{
+                        $.each(orgbuilder.roles, function(index,role){
+                            if(role !== orgbuilder.roles.master){
+                                var inputCheckbox = appendCheckboxFn(role, rolesDisabled);
+                                if(userData.roles.includes(role)){
+                                    $(inputCheckbox).prop("checked", true);
+                                }
+                            }
+                        });
+                    }
                 });
         }
         else{
             $("#editPasswordDiv").removeClass("hidden");
+            $("#cancelEditPasswordBtn").addClass("hidden");
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                appendCheckboxFn(orgbuilder.roles.master, rolesDisabled);
+            }
+
+            $.each(orgbuilder.roles, function(index,role){
+                if(role !== orgbuilder.roles.master){
+                    appendCheckboxFn(role, rolesDisabled);
+                }
+            });
         }
 
         $("#editPasswordBtn").click(function(){
@@ -246,13 +262,10 @@
                     .done(doneFn).fail(failFn);
             }
             else{
-                //TODO the password fields need to be mandatory for this one. plus FINISH THIS
                 console.log("Creating new User");
+                orgbuilder.api.send("users", orgbuilder.methods.post, jsonMsg)
+                    .done(doneFn).fail(failFn);
             }
-
-            //TODO need a good redirect URL when everything else is finished.
-
-            //TODO send the message conditionally with the method determined by whether it's an add or edit operation
         });
     });
 </script>
