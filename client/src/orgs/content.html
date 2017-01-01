@@ -88,20 +88,6 @@
             }
         });
 
-        function checkRequiredFields(){
-            var allComplete = true;
-            $("#orgDetailsForm input[required]").each(function(index,input){
-                //IMPORTANT: At the moment, this only works for text input fields
-                if($(input).val() === null || $(input).val() === ""){
-                    var label = $(input).parent().siblings("td[field = 'label']")[0];
-                    alert("Missing required field: " + $(label).text());
-                    allComplete = false;
-                    return false;
-                }
-            });
-            return allComplete;
-        }
-
         $("#mainMenuButton").click(cancelCheckFn);
 
         if(orgid){
@@ -128,7 +114,7 @@
             event.preventDefault();
             console.log("Saving changes to Org");
 
-            var allComplete = checkRequiredFields();
+            var allComplete = orgbuilder.checkRequiredFields("orgDetailsForm");
             if(!allComplete){
                 return;
             }
