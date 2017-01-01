@@ -44,17 +44,51 @@
         </div>
         <div id="passwordDiv">
             <h5>Password</h5>
-            <p>THIS IS WHERE CHANGE/CREATE PASSWORD STUFF GOES</p>
+            <!-- TODO in the long run, need a much better system for changing passwords. Emails with temporary codes, etc -->
+            <div id="editPasswordBtnDiv" class="hidden">
+                <button id="editPasswordBtn" type="button" title="Change the existing password for this user.">Change Password</button>
+            </div>
+            <div id="editPasswordDiv" class="hidden">
+                <button id="cancelEditPasswordBtn" type="button" title="Cancel the change to the password for this user, and maintain the existing password.">Cancel Password Change</button>
+                <table>
+                    <!-- TODO need special required field logic for the password stuff. If one field is filled out, both need to be -->
+                    <tr>
+                        <td field="label">Password</td>
+                        <td field="input">
+                            <input id="firstPassField" name="firstPass" type="text" required />
+                        </td>
+                        <td>*</td>
+                    </tr>
+                    <tr>
+                        <td field="label">Repeat Password</td>
+                        <td field="input">
+                            <input id="secondPassField" name="secondPass" type="text" required />
+                        </td>
+                        <td>*</td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div id="accessDiv">
             <h5>Access</h5>
+            <div id="accessCheckboxes">
+                <!-- This is where the checkboxes for the roles will go -->
+            </div>
         </div>
         <div id="orgDiv">
             <h5>Org</h5>
+            <table>
+                <tr>
+                    <td field="label">Org Name</td>
+                    <td field="input">
+                        <input id="orgNameField" name="orgName" type="text" disabled />
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="buttonDiv">
-            <button id="cancelBtn" type="button" title="Cancel changes and return to Manage Users page.">Cancel</button>
-            <button id="saveBtn" type="button" title="Save changes and return to Manage Users page.">Save</button>
+            <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
+            <button id="saveBtn" type="button" title="Save changes">Save</button>
         </div>
     </form>
 <script src="../jquery-3.1.1.js"></script>
@@ -81,17 +115,100 @@
             return;
         }
 
-        console.log(userid != payload.uid); //TODO delete this
-
         if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin) &&
             userid != payload.uid){
-            //TODO finish the conditions above
+            //TODO this needs to be tested with an individual non-admin non-master user accessing their own account
             invalidCredentialsFn();
             return;
         }
 
+        var accessCheckboxes = $("#accessCheckboxes");
 
-        //TODO need special kind of access validation. Master and Admin access, plus the individual user access to their own page
+        function appendCheckboxFn(role, isDisabled){
+            var disabled = isDisabled ? "disabled" : "";
+            var id = "select" + role;
+            $(accessCheckboxes).append("<input id='" + id + "' name='" + role + "' type='checkbox' " + disabled + "/>");
+            $(accessCheckboxes).append($("<label for='" + id + "'></label>").text(role));
+            $(accessCheckboxes).append("<br />");
+        }
+
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            appendCheckboxFn(orgbuilder.roles.master, true);
+        }
+        else{
+            $.each(orgbuilder.roles, function(index,role){
+                //TODO this needs to be tested with a regular user viewing their details
+                if(role !== orgbuilder.roles.master){
+                    var isDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin);
+                    appendCheckboxFn(role, isDisabled);
+                }
+            });
+        }
+
+        if(userid){
+            $("#editPasswordBtnDiv").removeClass("hidden");
+
+            orgbuilder.api.call("users/" + userid, orgbuilder.methods.get)
+                .done(function(userData){
+                    $("#userEmailField").val(userData.userEmail);
+                    $("#firstNameField").val(userData.firstName);
+                    $("#lastNameField").val(userData.lastName);
+                    $("#orgNameField").val(userData.orgName);
+
+                    $.each(userData.roles, function(index,role){
+                        var checkbox = $("#accessCheckboxes").children("input[name = '" + role + "']")[0];
+                        $(checkbox).prop("checked", true);
+                    });
+                });
+        }
+        else{
+            $("#editPasswordDiv").removeClass("hidden");
+        }
+
+        $("#editPasswordBtn").click(function(){
+            $("#editPasswordBtnDiv").addClass("hidden");
+            $("#editPasswordDiv").removeClass("hidden");
+        });
+
+        $("#cancelEditPasswordBtn").click(function(){
+            $("#editPasswordBtnDiv").removeClass("hidden");
+            $("#editPasswordDiv").addClass("hidden");
+        });
+
+        $("#saveBtn").click(function(event){
+            event.preventDefault();
+            console.log("Saving changes to User");
+
+            var allComplete = orgbuilder.checkRequiredFields("userDetailsForm");
+            if(!allComplete){
+                return;
+            }
+
+            //TODO validate the password fields are identical
+            //TODO figure out how to do an update with the password fields optional
+
+            var doneFn = function(){
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+                    window.location = "manage.html";
+                }
+                else{
+                    window.location = "../main.html";
+                }
+            };
+
+            var failFn = function(){
+                //TODO need some sort of fail behavior
+                console.log("Save FAILED");
+            };
+
+            var jsonMsg = {
+                userEmail: $("#userEmailField").val(),
+                firstName: $("#firstNameField").val(),
+                lastName: $("#lastNameField").val()
+            };
+
+            //TODO send the message conditionally with the method determined by whether it's an add or edit operation
+        });
     });
 </script>
 </body>
