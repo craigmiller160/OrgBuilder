@@ -76,14 +76,29 @@
         </div>
         <div id="orgDiv">
             <h5>Org</h5>
-            <table>
-                <tr>
-                    <td field="label">Org Name</td>
-                    <td field="input">
-                        <input id="orgNameField" name="orgName" type="text" disabled />
-                    </td>
-                </tr>
-            </table>
+            <input id="orgIdField" name="orgId" type="hidden" />
+            <div id="orgDisplayDiv">
+                <table>
+                    <tr>
+                        <td field="label">Org Name</td>
+                        <td field="input">
+                            <input id="orgNameField" name="orgName" type="text" disabled />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="orgSelectDiv" class="hidden">
+                <table>
+                    <tr>
+                        <td field="label">Org Name</td>
+                        <td field="input">
+                            <select id="orgSelectBox">
+                            </select>
+                        </td>
+                        <td>*</td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div class="buttonDiv">
             <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
@@ -96,7 +111,11 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
+        //TODO the Org Name fields needs to be filled in for the add user page, using the user from the admin principal
+        //TODO if a master principal, an option to select the org the user belongs to should be provided only for add user.
+        //TODO need to assign an orgId, for both admin and master principals, and that orgId should be submitted for both add and edit operations
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
 
         var url = URI(window.location.href);
         if(url.hasQuery("userid")){
@@ -107,8 +126,6 @@
             console.log("Invalid credentials to access user content editor.");
             window.location = "../access-denied.html";
         }
-
-        $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
 
         var payload = orgbuilder.jwt.getTokenPayload();
         if(payload === null){
@@ -138,21 +155,34 @@
 
         //TODO need to add a check to warn the user if they try and save changes with no roles selected
 
-        //TODO this also needs to be changed for adding a new user. 1) all roles should be displayed, 2) Master role should only be displayed if principal is master, 3) if master role is chosen, all other options get deselected/disabled
-
         var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
 
+        function validateUserData(userData){
+            return userData.userEmail !== undefined && userData.roles !== undefined && userData.password !== undefined &&
+                    userData.orgId !== undefined && userData.orgName !== undefined && userData.firstName !== undefined &&
+                    userData.lastName !== undefined && userData.userId !== undefined;
+        }
+
+        function validateOrgData(orgData){
+            return orgData.orgList !== undefined && orgData.orgList !== null;
+        }
+
         if(userid){
+            //Configure for an Edit User page
             $("#editPasswordBtnDiv").removeClass("hidden");
 
             orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
                 .done(function(userData){
+                    if(!validateUserData(userData)){
+                        console.log("Error! Data returned from server for User does not contain the User.");
+                        window.location = "../server-error.html";
+                        return;
+                    }
                     $("#userEmailField").val(userData.userEmail);
                     $("#firstNameField").val(userData.firstName);
                     $("#lastNameField").val(userData.lastName);
                     $("#orgNameField").val(userData.orgName);
-
-
+                    $("#orgIdField").val(userData.orgId);
 
                     if(userData.roles.includes(orgbuilder.roles.master)){
                         appendCheckboxFn(orgbuilder.roles.master, true).prop("checked", true);
@@ -167,13 +197,45 @@
                             }
                         });
                     }
+                })
+                .fail(function(){
+                    //TODO need better fail behavior
+                    console.log("FAILED TO RETRIEVE USER DETAILS");
                 });
         }
         else{
+            //Configure for an add user page
             $("#editPasswordDiv").removeClass("hidden");
             $("#cancelEditPasswordBtn").addClass("hidden");
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
                 appendCheckboxFn(orgbuilder.roles.master, rolesDisabled);
+                var orgSelectBox = $("#orgSelectBox");
+                $("#orgSelectDiv").removeClass("hidden");
+                $("#orgDisplayDiv").addClass("hidden");
+
+                orgbuilder.api.send("orgs", orgbuilder.methods.get)
+                    .done(function(orgData){
+                        if(!validateOrgData(orgData)){
+                            console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
+                            window.location = "../server-error.html";
+                            return;
+                        }
+
+                        $.each(orgData.orgList, function(index, org){
+                            var option = $("<option></option>").attr("value", org.orgId).text(org.orgName);
+                            $(orgSelectBox).append(option);
+                        });
+
+                        setOrgIdFromSelect();
+                    })
+                    .fail(function(){
+                        //TODO need better fail behavior
+                        console.log("FAILED TO RETRIEVE LIST OF ORGS");
+                    });
+            }
+            else{
+                $("#orgNameField").val(payload.onm);
+                $("#orgIdField").val(payload.oid);
             }
 
             $.each(orgbuilder.roles, function(index,role){
@@ -182,6 +244,30 @@
                 }
             });
         }
+
+        $("#select" + orgbuilder.roles.master).change(function(){
+            var checked = this.checked;
+            $(accessCheckboxes).children("input[type = 'checkbox']").each(function(index,input){
+                if($(input).attr("id") !== "select" + orgbuilder.roles.master){
+                    $(input).prop("checked", false);
+                    $(input).prop("disabled", checked);
+                }
+            });
+
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) && checked){
+                $("#orgSelectDiv").addClass("hidden");
+            }
+            else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                $("#orgSelectDiv").removeClass("hidden");
+            }
+        });
+
+        function setOrgIdFromSelect(){
+            var selected = $("#orgSelectBox :selected");
+            $("#orgIdField").val($(selected).val());
+        }
+
+        $("#orgSelectBox").change(setOrgIdFromSelect);
 
         $("#editPasswordBtn").click(function(){
             $("#editPasswordBtnDiv").addClass("hidden");
@@ -206,6 +292,7 @@
             }
         });
 
+        //Perform the save operation
         $("#saveBtn").click(function(event){
             event.preventDefault();
             console.log("Saving changes to User");
@@ -253,6 +340,13 @@
                         }
                     });
                     return roles;
+                })(),
+                orgId: (function(){
+                    var selectMaster = $("#select" + orgbuilder.roles.master);
+                    if($(selectMaster).length > 0 && $($(selectMaster)[0]).is(":checked")){
+                        return null;
+                    }
+                    return $("#orgIdField").val();
                 })()
             };
 
