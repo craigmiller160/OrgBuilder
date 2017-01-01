@@ -120,7 +120,12 @@
             }
 
             var doneFn = function(){
-                window.location = "manage.html";
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                    window.location = "manage.html";
+                }
+                else{
+                    window.location = "../main.html";
+                }
             };
 
             var failFn = function(){
