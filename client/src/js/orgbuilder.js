@@ -109,6 +109,10 @@ var orgbuilder = (function(){
                         console.log("Error Message: " + error.errorMessage);
                         window.location = orgProps.clientOrigin + "/server-error.html";
                     }
+                    else{
+                        alert("Error communicating with server. Status: " + status);
+                        //TODO more detailed response is ultimately preferred here
+                    }
                 });
         }
     };
