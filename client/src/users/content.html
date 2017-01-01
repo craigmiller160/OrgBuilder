@@ -55,14 +55,14 @@
                     <tr>
                         <td field="label">Password</td>
                         <td field="input">
-                            <input id="firstPassField" name="firstPass" type="text" required />
+                            <input id="firstPassField" name="firstPass" type="password" required />
                         </td>
                         <td>*</td>
                     </tr>
                     <tr>
                         <td field="label">Repeat Password</td>
                         <td field="input">
-                            <input id="secondPassField" name="secondPass" type="text" required />
+                            <input id="secondPassField" name="secondPass" type="password" required />
                         </td>
                         <td>*</td>
                     </tr>
@@ -184,8 +184,11 @@
                 return;
             }
 
-            //TODO validate the password fields are identical
-            //TODO figure out how to do an update with the password fields optional
+            //Need to check that the two password fields match each other
+            if($("#editPasswordDiv").is(":visible") && $("#firstPassField").val() !== $("#secondPassField").val()){
+                alert("Passwords do not match");
+                return;
+            }
 
             var doneFn = function(){
                 if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
@@ -204,8 +207,25 @@
             var jsonMsg = {
                 userEmail: $("#userEmailField").val(),
                 firstName: $("#firstNameField").val(),
-                lastName: $("#lastNameField").val()
+                lastName: $("#lastNameField").val(),
+                password: (function(){
+                    if($("#editPasswordDiv").is(":visible")){
+                        return $("#firstPassField").val();
+                    }
+                    return null;
+                })(),
+                roles: (function(){
+                    var roles = [];
+                    $("#accessCheckboxes input[type = 'checkbox']").each(function(index,input){
+                        if($(input).is(":checked")){
+                            roles.push($(input).attr("name"));
+                        }
+                    });
+                    return roles;
+                })()
             };
+
+            //TODO need a good redirect URL when everything else is finished.
 
             //TODO send the message conditionally with the method determined by whether it's an add or edit operation
         });

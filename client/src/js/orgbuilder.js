@@ -177,9 +177,9 @@ var orgbuilder = (function(){
         var parsedFormId = formId.startsWith("#") ? formId : "#" + formId;
 
         var allComplete = true;
-        //IMPORTANT: At the moment, this only works for text input fields
+        //IMPORTANT: At the moment, this only works for text and password input fields
         $(parsedFormId + " input[required]").filter(":visible").each(function(index,input){
-            if($(input).attr("type") === "text" && ($(input).val() === null || $(input).val() === "")){
+            if(($(input).attr("type") === "text" || $(input).attr("type") === "password") && ($(input).val() === null || $(input).val() === "")){
                 var label = $(input).parent().siblings("td[field = 'label']")[0];
                 alert("Missing required field: " + $(label).text());
                 allComplete = false;
