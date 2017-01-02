@@ -156,6 +156,58 @@ var orgbuilder = (function(){
         }
     };
 
+    var validateData = {
+        user: function(userData){
+            return userData !== null &&
+                userData.userEmail !== undefined &&
+                userData.roles !== undefined &&
+                userData.password !== undefined &&
+                userData.orgId !== undefined &&
+                userData.orgName !== undefined &&
+                userData.firstName !== undefined &&
+                userData.lastName !== undefined &&
+                userData.userId !== undefined;
+        },
+        org: function(orgData){
+            return orgData !== null &&
+                orgData.createdDate !== undefined &&
+                orgData.orgId !== undefined &&
+                orgData.orgName !== undefined &&
+                orgData.orgDescription !== undefined &&
+                orgData.schemaName !== undefined;
+        },
+        orgList: function(orgListData){
+            var orgFn = this.org;
+            return orgListData !== null &&
+                    orgListData.orgList !== undefined && orgListData.orgList !== null &&
+                    (function(){
+                        var valid = true;
+                        $.each(orgListData.orgList, function (index,org){
+                            if(!orgFn(org)){
+                                valid = false;
+                                return false;
+                            }
+                        });
+                        return valid;
+                    })()
+        },
+        userList: function(userListData){
+            var userFn = this.user;
+            return userListData !== null &&
+                    userListData.userList !== undefined && userListData !== null &&
+                    (function(){
+                        var valid = true;
+                        $.each(userListData.userList, function(index,user){
+                            if(!userFn(user)){
+                                valid = false;
+                                return false;
+                            }
+                        });
+                        return valid;
+                    })()
+        }
+    };
+
     function ensurePrecedingSlash(uri){
         if(uri.startsWith("/")){
             return uri;
@@ -205,7 +257,8 @@ var orgbuilder = (function(){
         api: api,
         validateAccess: validateAccess,
         checkRequiredFields: checkRequiredFields,
-        cancelChangesCheck: cancelChangesCheck
+        cancelChangesCheck: cancelChangesCheck,
+        validateData: validateData
     }
 })();
 

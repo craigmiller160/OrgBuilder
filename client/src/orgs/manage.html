@@ -45,14 +45,10 @@
 
         var tableBody = $("#orgsTable tbody");
 
-        function validateData(data){
-            return data.orgList !== undefined && data.orgList !== null;
-        }
-
         //TODO need to add pagination
         orgbuilder.api.send("orgs", orgbuilder.methods.get)
             .done(function(data,status,jqXHR){
-                if(!validateData(data)){
+                if(!orgbuilder.validateData.orgList(data)){
                     console.log("Error! Data returned from server for orgList does not contain the orgList.");
                     window.location = "../server-error.html";
                     return;

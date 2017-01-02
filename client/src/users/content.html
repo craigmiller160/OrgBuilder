@@ -157,23 +157,13 @@
 
         var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
 
-        function validateUserData(userData){
-            return userData.userEmail !== undefined && userData.roles !== undefined && userData.password !== undefined &&
-                    userData.orgId !== undefined && userData.orgName !== undefined && userData.firstName !== undefined &&
-                    userData.lastName !== undefined && userData.userId !== undefined;
-        }
-
-        function validateOrgData(orgData){
-            return orgData.orgList !== undefined && orgData.orgList !== null;
-        }
-
         if(userid){
             //Configure for an Edit User page
             $("#editPasswordBtnDiv").removeClass("hidden");
 
             orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
                 .done(function(userData){
-                    if(!validateUserData(userData)){
+                    if(!orgbuilder.validateData.user(userData)){
                         console.log("Error! Data returned from server for User does not contain the User.");
                         window.location = "../server-error.html";
                         return;
@@ -215,7 +205,7 @@
 
                 orgbuilder.api.send("orgs", orgbuilder.methods.get)
                     .done(function(orgData){
-                        if(!validateOrgData(orgData)){
+                        if(!orgbuilder.validateData.orgList(orgData)){
                             console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
                             window.location = "../server-error.html";
                             return;

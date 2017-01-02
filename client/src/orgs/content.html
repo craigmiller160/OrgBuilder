@@ -82,16 +82,10 @@
 
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
 
-        function validateData(orgData){
-            return orgData.createdDate !== undefined && orgData.orgId !== undefined &&
-                    orgData.orgName !== undefined && orgData.orgDescription !== undefined &&
-                    orgData.schemaName !== undefined;
-        }
-
         if(orgid){
             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData){
-                    if(!validateData(orgData)){
+                    if(!orgbuilder.validateData.org(orgData)){
                         console.log("Error! Data returned from server for Org does not contain the Org.");
                         window.location = "../server-error.html";
                         return;

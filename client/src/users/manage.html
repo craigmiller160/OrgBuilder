@@ -42,16 +42,12 @@
             return;
         }
 
-        function validateData(data){
-            return data.userList !== undefined && data.userList !== null;
-        }
-
         var tableBody = $("#usersTable tbody");
 
         //TODO need to add pagination
         orgbuilder.api.send("users", orgbuilder.methods.get)
             .done(function(data, status, jqXHR){
-                if(!validateData(data)){
+                if(!orgbuilder.validateData.userList(data)){
                     console.log("Error! Data returned from server for userList does not contain the userList");
                     window.location = "../server-error.html";
                     return;
