@@ -48,6 +48,7 @@
 
         var tableBody = $("#usersTable tbody");
 
+        //TODO need to add pagination
         orgbuilder.api.send("users", orgbuilder.methods.get)
             .done(function(data, status, jqXHR){
                 if(!validateData(data)){
@@ -79,7 +80,18 @@
 
                 $(".deleteUserBtn").click(function(event){
                     var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
-                    //TODO delete logic goes here... need to add dummy users first lol
+                    if(choice){
+                        var userid = getUserId(event);
+                        orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                            .done(function(){
+                                console.log("User successfully deleted");
+                                location.reload(true);
+                            })
+                            .fail(function(){
+                                //TODO need better fail functionality
+                                console.log("User delete FAILED");
+                            });
+                    }
                 });
             });
 
