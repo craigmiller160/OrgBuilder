@@ -383,8 +383,8 @@
                         return null;
                     }
                     return $("#orgIdField").val();
-                })()
-//                userId: userid ? userid : null //TODO restore and test this addition here
+                })(),
+                userId: userid ? userid : null
             };
 
             if(jsonMsg.roles.length === 0){
