@@ -2,10 +2,12 @@ var orgbuilder = (function(){
     var TOKEN_STORAGE_KEY = "orgapiToken";
     var BEARER_PREFIX = "Bearer";
 
+    //Global error handling method
     window.onerror = function(message, source, lineno, colno, error){
         alert("Error on page! Cause: " + message);
     };
 
+    //Constants for the access roles for the application
     var roles = {
         master: 'MASTER',
         admin: 'ADMIN',
@@ -13,6 +15,7 @@ var orgbuilder = (function(){
         read: 'READ'
     };
 
+    //Contants for the HTTP methods
     var methods = {
         get: "GET",
         post: "POST",
@@ -20,6 +23,7 @@ var orgbuilder = (function(){
         delete: "DELETE"
     };
 
+    //Utility methods for working with the JWT
     var jwt = {
         storeToken: function(token){
             token = stripBearerPrefix(token);
@@ -60,7 +64,7 @@ var orgbuilder = (function(){
         }
     };
 
-    //TODO need a rejection if the token has timed out. All other callbacks need to be blocked in that case, and re-routed to access denied or something similar
+    //Utility methods for communicating with the OrgBuilder API
     var api = {
         send: function(uri, method, json){
             return $.ajax({
@@ -116,6 +120,8 @@ var orgbuilder = (function(){
                 });
         }
     };
+
+    //Utility methods for validating access to content
     //The functions in this object accept arguments, each representing a single role to validate
     var validateAccess = {
         allRoles: function(){
@@ -156,6 +162,7 @@ var orgbuilder = (function(){
         }
     };
 
+    //Utility methods for validating data returned by the API.
     var validateData = {
         user: function(userData){
             return userData !== null &&
