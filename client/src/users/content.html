@@ -101,8 +101,23 @@
             </div>
         </div>
         <div class="buttonDiv">
-            <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
-            <button id="saveBtn" type="button" title="Save changes">Save</button>
+            <table>
+                <tr>
+                    <td>
+                        <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
+                    </td>
+                    <td>
+                        <button id="saveBtn" type="button" title="Save changes">Save</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button id="deleteBtn" type="button"></button>
+                    </td>
+                </tr>
+            </table>
+
+
         </div>
     </form>
 <script src="../jquery-3.1.1.js"></script>
@@ -130,11 +145,48 @@
             return;
         }
 
+        //Deliberately using != here
         if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin) &&
             userid != payload.uid){
             invalidCredentialsFn();
             return;
         }
+
+        var deleteBtn = $("#deleteBtn");
+        //Deliberately using == here
+        if(userid == payload.uid){
+            $(deleteBtn).attr("title", "Delete your user account");
+            $(deleteBtn).text("Delete Your Account");
+        }
+        else if(userid){
+            $(deleteBtn).attr("title", "Delete user");
+            $(deleteBtn).text("Delete User");
+        }
+        else{
+            $(deleteBtn).addClass("hidden");
+        }
+
+        $(deleteBtn).click(function(event){
+            var confirmMsg = "Are you sure you want to delete " +
+                (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
+            var choice = confirm(confirmMsg);
+            if(choice){
+                orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                    .done(function(){
+                        if(userid == payload.uid){
+                            orgbuilder.jwt.clearToken();
+                            window.location = "../index.html";
+                        }
+                        else{
+                            window.location = "manage.html";
+                        }
+                    })
+                    .fail(function(){
+                        //TODO need better fail behavior
+                        console.log("DELETE FAILED");
+                    });
+            }
+        });
 
         var accessCheckboxes = $("#accessCheckboxes");
 
@@ -332,6 +384,7 @@
                     }
                     return $("#orgIdField").val();
                 })()
+//                userId: userid ? userid : null //TODO restore and test this addition here
             };
 
             if(jsonMsg.roles.length === 0){
