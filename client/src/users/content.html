@@ -111,9 +111,6 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        //TODO the Org Name fields needs to be filled in for the add user page, using the user from the admin principal
-        //TODO if a master principal, an option to select the org the user belongs to should be provided only for add user.
-        //TODO need to assign an orgId, for both admin and master principals, and that orgId should be submitted for both add and edit operations
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
 
@@ -135,7 +132,6 @@
 
         if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin) &&
             userid != payload.uid){
-            //TODO this needs to be tested with an individual non-admin non-master user accessing their own account
             invalidCredentialsFn();
             return;
         }
@@ -152,8 +148,6 @@
 
             return inputCheckbox;
         }
-
-        //TODO need to add a check to warn the user if they try and save changes with no roles selected
 
         var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
 
@@ -339,6 +333,13 @@
                     return $("#orgIdField").val();
                 })()
             };
+
+            if(jsonMsg.roles.length === 0){
+                var choice = confirm("User has no access roles selected, which will prohibit them from using this application. Are you sure you want to continue?");
+                if(!choice){
+                    return;
+                }
+            }
 
             if(userid){
                 console.log("Updating existing User");
