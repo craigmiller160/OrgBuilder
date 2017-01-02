@@ -68,9 +68,7 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
             }
         }
 
-        element = get(id);
-
-        return element;
+        return get(id);
     }
 
     @Override
@@ -88,22 +86,23 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
 
     @Override
     public E update(E element, I id) throws OrgApiDataException {
-        E result = get(id);
-        if(result == null){
-            return null;
-        }
         String updateQuery = queries.get(Query.UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Update Query:\n" + updateQuery);
         try(PreparedStatement stmt = connection.prepareStatement(updateQuery)){
             converter.parameterizeElement(stmt, element);
             stmt.setObject(converter.getUpdateKeyParamIndex(), id);
-            stmt.executeUpdate();
+            int result = stmt.executeUpdate();
+            //If the update returned 0, that means nothing was updated, and nothing should be returned
+            if(result == 0){
+                return null;
+            }
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to update " + getElementName() + ":" + element.toString(), ex);
         }
 
-        return element;
+        //Otherwise, get the fully updated value from the database and return it
+        return get(id);
     }
 
     @Override
