@@ -155,10 +155,6 @@ public class UserResource {
             throw new OrgApiInvalidRequestException("User is invalid, missing password field");
         }
 
-        if(user.getRoles() == null || user.getRoles().size() == 0){
-            throw new OrgApiInvalidRequestException("User is invalid, missing roles");
-        }
-
         if(user.getOrgId() <= 0 && !(user.getRoles() != null && user.getRoles().contains(Role.MASTER))){
             throw new OrgApiInvalidRequestException("User is invalid, doesn't have an org assignment");
         }

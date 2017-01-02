@@ -55,11 +55,13 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     }
 
     public String convertRolesToString(){
-        StrBuilder builder = new StrBuilder();
-        roles.forEach((r) -> builder.append(r).append(","));
-        builder.replace(builder.length() - 1, builder.length(), "");
-
-        return builder.toString();
+        if(roles.size() > 0){
+            StrBuilder builder = new StrBuilder();
+            roles.forEach((r) -> builder.append(r).append(","));
+            builder.replace(builder.length() - 1, builder.length(), "");
+            return builder.toString();
+        }
+        return "";
     }
 
     public void convertStringToRoles(String rolesString){
