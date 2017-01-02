@@ -107,6 +107,9 @@ var orgbuilder = (function(){
                     else if(status === 0){
                         window.location = orgProps.clientOrigin + "/server-error.html";
                     }
+                    else if(status === 401){
+                        //Do nothing, this comes up during a bad login
+                    }
                     else if(status >= 500){
                         var error = jqXHR.responseJSON;
                         console.log("Critical error server-side, please check server logs for details");
