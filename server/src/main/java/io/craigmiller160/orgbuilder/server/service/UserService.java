@@ -53,7 +53,7 @@ public class UserService {
         return result;
     }
 
-    public UserDTO updateUser(UserDTO updatedUser, UserDTO existingUser, Long userId) throws OrgApiDataException, OrgApiSecurityException{
+    public UserDTO updateUser(UserDTO updatedUser, Long userId) throws OrgApiDataException, OrgApiSecurityException{
         DataConnection connection = null;
         UserDTO result = null;
         try{
@@ -66,11 +66,9 @@ public class UserService {
                 updatedUser.setPassword(HashingUtils.hashBCrypt(updatedUser.getPassword()));
             }
             else{
+                UserDTO existingUser = userDao.get(userId);
                 if(existingUser == null){
-                    existingUser = userDao.get(userId);
-                    if(existingUser == null){
-                        return null;
-                    }
+                    return null;
                 }
                 updatedUser.setPassword(existingUser.getPassword());
             }

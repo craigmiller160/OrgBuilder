@@ -93,10 +93,9 @@ public class UserResource {
         ensureMasterCreationRestriction(user);
         UserService service = factory.newUserService(securityContext);
 
-        UserDTO existingUser = service.getUser(userId);
-        ensureAdminAccessRestriction(existingUser);
+        ensureAdminAccessRestriction(user);
 
-        UserDTO result = service.updateUser(user, existingUser, userId);
+        UserDTO result = service.updateUser(user, userId);
 
         if(result != null){
             return Response
