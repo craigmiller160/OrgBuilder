@@ -153,7 +153,11 @@ public abstract class AbstractJdbcMemberJoinDao<E extends JoinedWithMemberDTO<I>
             result = getAllByMember(memberId);
             try(PreparedStatement stmt = connection.prepareStatement(deleteByMemberQuery, Statement.RETURN_GENERATED_KEYS)){
                 stmt.setLong(1, memberId);
-                stmt.executeUpdate();
+                int sqlResult = stmt.executeUpdate();
+                //If sqlResult is 0, then nothing was changed and null should be returned
+                if(sqlResult == 0){
+                    return null;
+                }
             }
         }
         catch(SQLException ex){

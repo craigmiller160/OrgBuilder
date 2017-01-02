@@ -58,7 +58,12 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         I id = null;
         try(PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             converter.parameterizeElement(stmt, element);
-            stmt.executeUpdate();
+            int result = stmt.executeUpdate();
+            //If result is 0, nothing was changed, return null
+            if(result == 0){
+                return null;
+            }
+
             try(ResultSet resultSet = stmt.getGeneratedKeys()){
                 if(!resultSet.next()){
                     throw new SQLException("Unable to retrieve ID from inserted " + getElementName() + ": " + element.toString());
@@ -113,7 +118,11 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         try{
             try(PreparedStatement stmt = connection.prepareStatement(deleteQuery)){
                 stmt.setObject(1, id);
-                stmt.executeUpdate();
+                int result = stmt.executeUpdate();
+                //If result is 0, nothing was changed, return null
+                if(result == 0){
+                    return null;
+                }
             }
         }
         catch(SQLException ex){
