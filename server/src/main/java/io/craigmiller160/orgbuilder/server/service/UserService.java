@@ -87,7 +87,7 @@ public class UserService {
         return result;
     }
 
-    public UserDTO deleteUser(Long userId) throws OrgApiDataException, OrgApiSecurityException{
+    public UserDTO deleteUser(Long userId, ExtraFilter extraFilter) throws OrgApiDataException, OrgApiSecurityException{
         DataConnection connection = null;
         UserDTO result = null;
         try{
@@ -96,6 +96,10 @@ public class UserService {
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
             Dao<RefreshTokenDTO,Long> tokenDao = connection.newDao(RefreshTokenDTO.class);
+
+            UserDTO existingUser = userDao.get(userId);
+            //If it passes this filter without an exception, it can safely proceed. The filter is provided via a lambda from the calling class
+            extraFilter.extraFilter(existingUser);
 
             tokenDao.query(AdditionalQueries.DELETE_BY_USER, userId);
             result = userDao.delete(userId);
@@ -186,6 +190,11 @@ public class UserService {
             serviceCommons.closeConnection(connection);
         }
         return result;
+    }
+
+    @FunctionalInterface
+    public interface ExtraFilter{
+        void extraFilter(UserDTO user);
     }
 
 }

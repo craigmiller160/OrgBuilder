@@ -114,10 +114,7 @@ public class UserResource {
     public Response deleteUser(@PathParam("userId") long userId) throws OrgApiException{
         UserService service = factory.newUserService(securityContext);
 
-        UserDTO toBeDeleted = service.getUser(userId);
-        ensureAdminAccessRestriction(toBeDeleted);
-
-        UserDTO result = service.deleteUser(userId);
+        UserDTO result = service.deleteUser(userId, this::ensureAdminAccessRestriction);
 
         if(result != null){
             return Response
