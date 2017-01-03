@@ -49,19 +49,24 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
-        var url = URI(window.location.href);
-        if(url.hasQuery("orgid")){
-            var orgid = url.search(true).orgid;
-        }
 
-        function invalidCredentialsFn(){
-            console.log("Invalid credentials to access org content editor!");
-            window.location = "../access-denied.html";
-        }
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
 
+        var orgid = (function(){
+                var url = URI(window.location.href);
+                if(url.hasQuery("orgid")){
+                    return url.search(true).orgid;
+                }
+            })();
         var payload = orgbuilder.jwt.getTokenPayload();
-        if(payload === null){
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        if(!orgbuilder.jwt.tokenExists()){
             invalidCredentialsFn();
             return;
         }
@@ -73,6 +78,11 @@
             return;
         }
 
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $("#orgDetailsForm input").keypress(function(event){
             if(event.which && event.which === 13){
                 saveFn(event);
@@ -81,25 +91,14 @@
         });
 
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
+        $("#cancelBtn").click(cancelFn);
+        $("#saveBtn").click(saveFn);
 
-        if(orgid){
-            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
-                .done(function(orgData){
-                    if(!orgbuilder.validateData.org(orgData)){
-                        console.log("Error! Data returned from server for Org does not contain the Org.");
-                        window.location = "../server-error.html";
-                        return;
-                    }
-                    $("#orgNameField").val(orgData.orgName);
-                    $("#orgDescriptionField").val(orgData.orgDescription);
-                })
-                .fail(function(){
-                    //TODO need better fail behavior
-                    console.log("FAILED TO RETRIEVE ORG DETAILS");
-                });
-        }
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
 
-        $("#cancelBtn").click(function(event){
+        function cancelFn(event){
             event.preventDefault();
             if(orgbuilder.cancelChangesCheck()){
                 console.log("Cancelling changes to Org details");
@@ -110,7 +109,7 @@
                     window.location = "../main.html";
                 }
             }
-        });
+        }
 
         function saveFn(event){
             event.preventDefault();
@@ -152,7 +151,39 @@
             }
         }
 
-        $("#saveBtn").click(saveFn);
+        function loadOrg(){
+            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
+                .done(function(orgData){
+                    if(!orgbuilder.validateData.org(orgData)){
+                        console.log("Error! Data returned from server for Org does not contain the Org.");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+                    $("#orgNameField").val(orgData.orgName);
+                    $("#orgDescriptionField").val(orgData.orgDescription);
+                })
+                .fail(function(){
+                    //TODO need better fail behavior
+                    console.log("FAILED TO RETRIEVE ORG DETAILS");
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function invalidCredentialsFn(){
+            console.log("Invalid credentials to access org content editor!");
+            window.location = "../access-denied.html";
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        if(orgid){
+            loadOrg();
+        }
 
     });
 </script>

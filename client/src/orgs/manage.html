@@ -36,64 +36,91 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var tableBody = $("#orgsTable tbody");
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
         if(!orgbuilder.validateAccess.allRoles(orgbuilder.roles.master)){
             console.log("Invalid credentials to access org manager!");
             window.location = "../access-denied.html";
             return;
         }
 
-        var tableBody = $("#orgsTable tbody");
+        /****************
+         * 3) UI Actions
+         ****************/
 
-        //TODO need to add pagination
-        orgbuilder.api.send("orgs", orgbuilder.methods.get)
-            .done(function(data,status,jqXHR){
-                if(!orgbuilder.validateData.orgList(data)){
-                    console.log("Error! Data returned from server for orgList does not contain the orgList.");
-                    window.location = "../server-error.html";
-                    return;
-                }
-                $.each(data.orgList, function(index, org){
-                    var newRow = $("<tr index='" + index + "' orgid='" + org.orgId + "'></tr>");
-                    newRow.append($("<td field='orgName'></td>").text(org.orgName));
-                    newRow.append($("<td field='createdDate'></td>").text(org.createdDate));
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $("#addOrgBtn").click(function(){
+            window.location = "content.html";
+        });
 
-                    var options = $("<td field='options'></td>");
-                    options.append($("<button class='editOrgBtn' type='button' title='Edit Org'></button>").text("E"));
-                    options.append($("<button class='deleteOrgBtn' type='button' title='Delete Org'></button>").text("D"));
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
 
-
-                    newRow.append(options);
-                    tableBody.append(newRow);
-                });
-
-                $(".editOrgBtn").click(function(event){
-                    var orgid = getOrgId(event);
-                    window.location = "content.html?orgid=" + orgid;
-                });
-
-                $(".deleteOrgBtn").click(function(event){
-                    var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
-                    if(choice){
-                        var orgid = getOrgId(event);
-                        orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
-                            .done(function(){
-                                console.log("Org successfully deleted");
-                                location.reload(true);
-                            })
-                            .fail(function(){
-                                //TODO need better fail functionality
-                                console.log("Org delete FAILED");
-                            });
+        function loadOrgList(){
+            //TODO need to add pagination
+            orgbuilder.api.send("orgs", orgbuilder.methods.get)
+                .done(function(data,status,jqXHR){
+                    if(!orgbuilder.validateData.orgList(data)){
+                        console.log("Error! Data returned from server for orgList does not contain the orgList.");
+                        window.location = "../server-error.html";
+                        return;
                     }
-                });
+                    $.each(data.orgList, function(index, org){
+                        var newRow = $("<tr index='" + index + "' orgid='" + org.orgId + "'></tr>");
+                        newRow.append($("<td field='orgName'></td>").text(org.orgName));
+                        newRow.append($("<td field='createdDate'></td>").text(org.createdDate));
 
-                //TODO also add the ability to open the users page for the org
-            })
-            .fail(function(jqXHR){
-                //TODO improve fail handling
-                console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
-            });
+                        var options = $("<td field='options'></td>");
+                        options.append($("<button class='editOrgBtn' type='button' title='Edit Org'></button>").text("E"));
+                        options.append($("<button class='deleteOrgBtn' type='button' title='Delete Org'></button>").text("D"));
+
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+
+                    $(".editOrgBtn").click(function(event){
+                        var orgid = getOrgId(event);
+                        window.location = "content.html?orgid=" + orgid;
+                    });
+
+                    $(".deleteOrgBtn").click(function(event){
+                        var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
+                        if(choice){
+                            var orgid = getOrgId(event);
+                            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("Org successfully deleted");
+                                    location.reload(true);
+                                })
+                                .fail(function(){
+                                    //TODO need better fail functionality
+                                    console.log("Org delete FAILED");
+                                });
+                        }
+                    });
+
+                    //TODO also add the ability to open the users page for the org
+                })
+                .fail(function(jqXHR){
+                    //TODO improve fail handling
+                    console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
 
         function getOrgId(event){
             return $(event.target).parents("tr[orgid]").attr("orgid");
@@ -103,9 +130,11 @@
             return $(event.target).parents("tr").children("td[field = 'orgName']").text();
         }
 
-        $("#addOrgBtn").click(function(event){
-            window.location = "content.html";
-        });
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        loadOrgList();
     });
 </script>
 </body>
