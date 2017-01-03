@@ -36,61 +36,93 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var tableBody = $("#usersTable tbody");
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
         if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin)){
             console.log("Invalid credentials to access user manager!");
             window.location = "../access-denied.html";
             return;
         }
 
-        var tableBody = $("#usersTable tbody");
+        /****************
+         * 3) UI Actions
+         ****************/
 
-        //TODO need to add pagination
-        orgbuilder.api.send("users", orgbuilder.methods.get)
-            .done(function(data, status, jqXHR){
-                if(!orgbuilder.validateData.userList(data)){
-                    console.log("Error! Data returned from server for userList does not contain the userList");
-                    window.location = "../server-error.html";
-                    return;
-                }
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
 
-                $.each(data.userList, function(index, user){
-                    var newRow = $("<tr index='" + index + "' userid='" + user.userId + "'></tr>");
-                    newRow.append($("<td field='email'></td>").text(user.userEmail));
-                    newRow.append($("<td field='firstName'></td>").text(user.firstName));
-                    newRow.append($("<td field='lastName'></td>").text(user.lastName));
-                    newRow.append($("<td field='roles'></td>").text(user.roles.toString()));
+        $("#addUserBtn").click(function(){
+            window.location = "content.html";
+        });
 
-                    var options = $("<td field='options'></td>");
-                    options.append($("<button class='editUserBtn' type='button' title='Edit User'></button>").text("E"));
-                    options.append($("<button class='deleteUserBtn' type='button' title='Delete User'></button>").text("D"));
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
 
-
-                    newRow.append(options);
-                    tableBody.append(newRow);
-                });
-
-                $(".editUserBtn").click(function(event){
-                    var userId = getUserId(event);
-                    window.location = "content.html?userid=" + userId;
-                });
-
-                $(".deleteUserBtn").click(function(event){
-                    var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
-                    if(choice){
-                        var userid = getUserId(event);
-                        orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
-                            .done(function(){
-                                console.log("User successfully deleted");
-                                location.reload(true);
-                            })
-                            .fail(function(){
-                                //TODO need better fail functionality
-                                console.log("User delete FAILED");
-                            });
+        function loadUserList(){
+            //TODO need to add pagination
+            orgbuilder.api.send("users", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(!orgbuilder.validateData.userList(data)){
+                        console.log("Error! Data returned from server for userList does not contain the userList");
+                        window.location = "../server-error.html";
+                        return;
                     }
+
+                    $.each(data.userList, function(index, user){
+                        var newRow = $("<tr index='" + index + "' userid='" + user.userId + "'></tr>");
+                        newRow.append($("<td field='email'></td>").text(user.userEmail));
+                        newRow.append($("<td field='firstName'></td>").text(user.firstName));
+                        newRow.append($("<td field='lastName'></td>").text(user.lastName));
+                        newRow.append($("<td field='roles'></td>").text(user.roles.toString()));
+
+                        var options = $("<td field='options'></td>");
+                        options.append($("<button class='editUserBtn' type='button' title='Edit User'></button>").text("E"));
+                        options.append($("<button class='deleteUserBtn' type='button' title='Delete User'></button>").text("D"));
+
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+
+                    $(".editUserBtn").click(function(event){
+                        var userId = getUserId(event);
+                        window.location = "content.html?userid=" + userId;
+                    });
+
+                    $(".deleteUserBtn").click(function(event){
+                        var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
+                        if(choice){
+                            var userid = getUserId(event);
+                            orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("User successfully deleted");
+                                    location.reload(true);
+                                })
+                                .fail(function(){
+                                    //TODO need better fail functionality
+                                    console.log("User delete FAILED");
+                                });
+                        }
+                    });
+                })
+                .fail(function(){
+                    //TODO need better fail functionality
+                    console.log("LOADING USER LIST FAILED!!!");
                 });
-            });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
 
         function getUserId(event){
             return $(event.target).parents("tr[userId]").attr("userId");
@@ -100,9 +132,11 @@
             return $(event.target).parents("tr").children("td[field = 'email']").text();
         }
 
-        $("#addUserBtn").click(function(){
-            window.location = "content.html";
-        });
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        loadUserList();
     });
 </script>
 </body>

@@ -48,6 +48,19 @@
 <script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function () {
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
         $("#loginForm input").keypress(function(event){
             if(event.which && event.which === 13){
                 loginFn(event);
@@ -56,6 +69,10 @@
         });
 
         $("#loginButton").click(loginFn);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
 
         function loginFn(event){
             event.preventDefault();
@@ -88,6 +105,14 @@
                     $("#password").val("");
                 });
         }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
     });
 </script>
 </body>

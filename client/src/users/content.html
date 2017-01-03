@@ -126,21 +126,28 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
-        $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
 
-        var url = URI(window.location.href);
-        if(url.hasQuery("userid")){
-            var userid = url.search(true).userid;
-        }
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
 
-        function invalidCredentialsFn(){
-            console.log("Invalid credentials to access user content editor.");
-            window.location = "../access-denied.html";
-        }
+        var userid = (function(){
+                var url = URI(window.location.href);
+                if(url.hasQuery("userid")){
+                    return url.search(true).userid;
+                }
+            })();
 
+        //If the tokenExists() check below fails, then it won't matter that this would be null
         var payload = orgbuilder.jwt.getTokenPayload();
-        if(payload === null){
+        var deleteBtn = $("#deleteBtn");
+        var accessCheckboxes = $("#accessCheckboxes");
+        var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+        if(!orgbuilder.jwt.tokenExists()){
             invalidCredentialsFn();
             return;
         }
@@ -152,21 +159,13 @@
             return;
         }
 
-        var deleteBtn = $("#deleteBtn");
-        //Deliberately using == here
-        if(userid == payload.uid){
-            $(deleteBtn).attr("title", "Delete your user account");
-            $(deleteBtn).text("Delete Your Account");
-        }
-        else if(userid){
-            $(deleteBtn).attr("title", "Delete user");
-            $(deleteBtn).text("Delete User");
-        }
-        else{
-            $(deleteBtn).addClass("hidden");
-        }
+        /****************
+         * 3) UI Actions
+         ****************/
 
-        $(deleteBtn).click(function(event){
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
+        $(deleteBtn).click(function(){
             var confirmMsg = "Are you sure you want to delete " +
                 (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
             var choice = confirm(confirmMsg);
@@ -188,25 +187,43 @@
             }
         });
 
-        var accessCheckboxes = $("#accessCheckboxes");
+        $("#select" + orgbuilder.roles.master).change(function(){
+            var checked = this.checked;
+            $(accessCheckboxes).children("input[type = 'checkbox']").each(function(index,input){
+                if($(input).attr("id") !== "select" + orgbuilder.roles.master){
+                    $(input).prop("checked", false);
+                    $(input).prop("disabled", checked);
+                }
+            });
 
-        function appendCheckboxFn(role, isDisabled){
-            var disabled = isDisabled ? "disabled" : "";
-            var id = "select" + role;
-            var inputCheckbox = $("<input id='" + id + "' name='" + role + "' type='checkbox' " + disabled + "/>");
-            $(accessCheckboxes).append(inputCheckbox);
-            $(accessCheckboxes).append($("<label for='" + id + "'></label>").text(role));
-            $(accessCheckboxes).append("<br />");
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) && checked){
+                $("#orgSelectDiv").addClass("hidden");
+            }
+            else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                $("#orgSelectDiv").removeClass("hidden");
+            }
+        });
 
-            return inputCheckbox;
-        }
+        $("#orgSelectBox").change(setOrgIdFromSelect);
 
-        var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
+        $("#editPasswordBtn").click(function(){
+            $("#editPasswordBtnDiv").addClass("hidden");
+            $("#editPasswordDiv").removeClass("hidden");
+        });
 
-        if(userid){
-            //Configure for an Edit User page
+        $("#cancelEditPasswordBtn").click(function(){
             $("#editPasswordBtnDiv").removeClass("hidden");
+            $("#editPasswordDiv").addClass("hidden");
+        });
 
+        $("#cancelBtn").click(cancelFn);
+        $("#saveBtn").click(saveFn);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function loadExistingUser(){
             orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
                 .done(function(userData){
                     if(!orgbuilder.validateData.user(userData)){
@@ -239,83 +256,31 @@
                     console.log("FAILED TO RETRIEVE USER DETAILS");
                 });
         }
-        else{
-            //Configure for an add user page
-            $("#editPasswordDiv").removeClass("hidden");
-            $("#cancelEditPasswordBtn").addClass("hidden");
-            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                appendCheckboxFn(orgbuilder.roles.master, rolesDisabled);
-                var orgSelectBox = $("#orgSelectBox");
-                $("#orgSelectDiv").removeClass("hidden");
-                $("#orgDisplayDiv").addClass("hidden");
 
-                orgbuilder.api.send("orgs", orgbuilder.methods.get)
-                    .done(function(orgData){
-                        if(!orgbuilder.validateData.orgList(orgData)){
-                            console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
-                            window.location = "../server-error.html";
-                            return;
-                        }
 
-                        $.each(orgData.orgList, function(index, org){
-                            var option = $("<option></option>").attr("value", org.orgId).text(org.orgName);
-                            $(orgSelectBox).append(option);
-                        });
+        function loadOrgList(){
+            orgbuilder.api.send("orgs", orgbuilder.methods.get)
+                .done(function(orgData){
+                    if(!orgbuilder.validateData.orgList(orgData)){
+                        console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
+                        window.location = "../server-error.html";
+                        return;
+                    }
 
-                        setOrgIdFromSelect();
-                    })
-                    .fail(function(){
-                        //TODO need better fail behavior
-                        console.log("FAILED TO RETRIEVE LIST OF ORGS");
+                    $.each(orgData.orgList, function(index, org){
+                        var option = $("<option></option>").attr("value", org.orgId).text(org.orgName);
+                        $(orgSelectBox).append(option);
                     });
-            }
-            else{
-                $("#orgNameField").val(payload.onm);
-                $("#orgIdField").val(payload.oid);
-            }
 
-            $.each(orgbuilder.roles, function(index,role){
-                if(role !== orgbuilder.roles.master){
-                    appendCheckboxFn(role, rolesDisabled);
-                }
-            });
+                    setOrgIdFromSelect();
+                })
+                .fail(function(){
+                    //TODO need better fail behavior
+                    console.log("FAILED TO RETRIEVE LIST OF ORGS");
+                });
         }
 
-        $("#select" + orgbuilder.roles.master).change(function(){
-            var checked = this.checked;
-            $(accessCheckboxes).children("input[type = 'checkbox']").each(function(index,input){
-                if($(input).attr("id") !== "select" + orgbuilder.roles.master){
-                    $(input).prop("checked", false);
-                    $(input).prop("disabled", checked);
-                }
-            });
-
-            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) && checked){
-                $("#orgSelectDiv").addClass("hidden");
-            }
-            else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                $("#orgSelectDiv").removeClass("hidden");
-            }
-        });
-
-        function setOrgIdFromSelect(){
-            var selected = $("#orgSelectBox :selected");
-            $("#orgIdField").val($(selected).val());
-        }
-
-        $("#orgSelectBox").change(setOrgIdFromSelect);
-
-        $("#editPasswordBtn").click(function(){
-            $("#editPasswordBtnDiv").addClass("hidden");
-            $("#editPasswordDiv").removeClass("hidden");
-        });
-
-        $("#cancelEditPasswordBtn").click(function(){
-            $("#editPasswordBtnDiv").removeClass("hidden");
-            $("#editPasswordDiv").addClass("hidden");
-        });
-
-        $("#cancelBtn").click(function(event){
+        function cancelFn(event){
             event.preventDefault();
             if(orgbuilder.cancelChangesCheck()){
                 console.log("Cancelling changes to User details");
@@ -326,10 +291,9 @@
                     window.location = "../main.html";
                 }
             }
-        });
+        }
 
-        //Perform the save operation
-        $("#saveBtn").click(function(event){
+        function saveFn(event){
             event.preventDefault();
             console.log("Saving changes to User");
 
@@ -404,7 +368,81 @@
                 orgbuilder.api.send("users", orgbuilder.methods.post, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
-        });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function invalidCredentialsFn(){
+            console.log("Invalid credentials to access user content editor.");
+            window.location = "../access-denied.html";
+        }
+
+        function appendCheckboxFn(role, isDisabled){
+            var disabled = isDisabled ? "disabled" : "";
+            var id = "select" + role;
+            var inputCheckbox = $("<input id='" + id + "' name='" + role + "' type='checkbox' " + disabled + "/>");
+            $(accessCheckboxes).append(inputCheckbox);
+            $(accessCheckboxes).append($("<label for='" + id + "'></label>").text(role));
+            $(accessCheckboxes).append("<br />");
+
+            return inputCheckbox;
+        }
+
+        function setOrgIdFromSelect(){
+            var selected = $("#orgSelectBox :selected");
+            $("#orgIdField").val($(selected).val());
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        //Configuring the content of the delete button based on whetether or not the user is viewing their own account
+        //Deliberately using == here
+        if(userid == payload.uid){
+            $(deleteBtn).attr("title", "Delete your user account");
+            $(deleteBtn).text("Delete Your Account");
+        }
+        else if(userid){
+            $(deleteBtn).attr("title", "Delete user");
+            $(deleteBtn).text("Delete User");
+        }
+        else{
+            $(deleteBtn).addClass("hidden");
+        }
+
+        if(userid){
+            //Configure for an Edit User page
+            $("#editPasswordBtnDiv").removeClass("hidden");
+
+            loadExistingUser();
+        }
+        else{
+            //Configure for an add user page
+            $("#editPasswordDiv").removeClass("hidden");
+            $("#cancelEditPasswordBtn").addClass("hidden");
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                appendCheckboxFn(orgbuilder.roles.master, rolesDisabled);
+                var orgSelectBox = $("#orgSelectBox");
+                $("#orgSelectDiv").removeClass("hidden");
+                $("#orgDisplayDiv").addClass("hidden");
+
+                loadOrgList();
+            }
+            else{
+                $("#orgNameField").val(payload.onm);
+                $("#orgIdField").val(payload.oid);
+            }
+
+            $.each(orgbuilder.roles, function(index,role){
+                if(role !== orgbuilder.roles.master){
+                    appendCheckboxFn(role, rolesDisabled);
+                }
+            });
+        }
+
     });
 </script>
 </body>

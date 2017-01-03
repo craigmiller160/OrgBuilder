@@ -67,32 +67,29 @@
 <script src="js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        //If the tokenExists() check below fails, it won't matter that this would be null
+        var payload = orgbuilder.jwt.getTokenPayload();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
         if(!orgbuilder.jwt.tokenExists()){
             console.log("Invalid credentials to access main menu!");
             window.location = "access-denied.html";
             return;
         }
 
-        var payload = orgbuilder.jwt.getTokenPayload();
-        $("#myAccountButton").attr("href", "users/content.html?userid=" + payload.uid);
+        /****************
+         * 3) UI Actions
+         ****************/
 
-        //Determine which links are visible based on access level
-        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-            $("#orgsDiv").removeClass("hidden");
-            $("#usersDiv").removeClass("hidden");
-        }
-        else{
-            if(orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
-                $("#usersDiv").removeClass("hidden");
-                $("#currentOrgDiv").removeClass("hidden");
-                $("#currentOrgContent").attr("href", "orgs/content.html?orgid=" + payload.oid);
-            }
-
-            if(orgbuilder.jwt.hasRole(orgbuilder.roles.read)){
-                $("#membersDiv").removeClass("hidden");
-            }
-        }
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
 
         $(".parentLink a").click((function(){
             var allLinks = $("#linksDiv");
@@ -115,6 +112,37 @@
 
             return showHideLinks;
         })());
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        $("#myAccountButton").attr("href", "users/content.html?userid=" + payload.uid);
+
+        //Determine which links are visible based on access level
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            $("#orgsDiv").removeClass("hidden");
+            $("#usersDiv").removeClass("hidden");
+        }
+        else{
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+                $("#usersDiv").removeClass("hidden");
+                $("#currentOrgDiv").removeClass("hidden");
+                $("#currentOrgContent").attr("href", "orgs/content.html?orgid=" + payload.oid);
+            }
+
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.read)){
+                $("#membersDiv").removeClass("hidden");
+            }
+        }
     });
 </script>
 </body>
