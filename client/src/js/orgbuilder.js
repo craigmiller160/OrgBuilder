@@ -131,7 +131,7 @@ var orgbuilder = (function(){
         }
         Validator.prototype = {
             constructor: Validator,
-            validateToken: function(){
+            hasToken: function(){
                 //Only do this test if valid is still true
                 if(this.valid){
                     //If there is no token, it's invalid
@@ -149,9 +149,57 @@ var orgbuilder = (function(){
                 //Return this with the current state of valid
                 return this;
             },
+            hasAllRoles: function(){
+                //Only do this test if valid is still true
+                if(this.valid){
+                    var hasAllRoles = true;
+                    //If arguments are provided, test each argument as a role to see if the token has that role
+                    if(arguments){
+                        $.each(arguments, function(index,role){
+                            if(!jwt.hasRole(role)){
+                                hasAllRoles = false;
+                                return false;
+                            }
+                        });
+                    }
+
+                    //If it doesn't have all roles, set valid to false
+                    if(!hasAllRoles){
+                        this.valid = false;
+                    }
+                }
+
+                //Return this with the current state of valid
+                return this;
+            },
+            hasAnyRole: function(){
+                //Only do this test if valid is still true
+                if(this.valid){
+                    var hasAnyRole = false;
+                    //If arguments are provided, test each argument as a role to see if the token has that role
+                    if(arguments){
+                        $.each(arguments, function(index,role){
+                            if(jwt.hasRole(role)){
+                                hasAnyRole = true;
+                                return false;
+                            }
+                        });
+                    }
+
+                    if(!hasAnyRole){
+                        this.valid = false;
+                    }
+                }
+
+                //Return this with the current state of valid
+            },
             isValidated: function(){
                 return this.valid;
             }
+        };
+
+        return function(){
+            return new Validator();
         }
     })();
 
