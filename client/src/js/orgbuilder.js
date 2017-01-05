@@ -124,46 +124,77 @@ var orgbuilder = (function(){
         }
     };
 
+    //TODO document and finish this. Also figure out JS builder pattern
+    var validateAccess = (function(){
+        function Validator(){
+            this.valid = true;
+        }
+        Validator.prototype = {
+            constructor: Validator,
+            validateToken: function(){
+                //Only do this test if valid is still true
+                if(this.valid){
+                    //If there is no token, it's invalid
+                    if(!jwt.tokenExists()){
+                        this.valid = false;
+                    }
+
+                    //Otherwise, check the token's expiration
+                    var payload = jwt.getTokenPayload();
+                    if(payload.exp < Date.now()){
+                        this.valid = false;
+                    }
+                }
+
+                //Return this with the current state of valid
+                return this;
+            },
+            isValidated: function(){
+                return this.valid;
+            }
+        }
+    })();
+
     //Utility methods for validating access to content
     //The functions in this object accept arguments, each representing a single role to validate
-    var validateAccess = {
-        allRoles: function(){
-            if(jwt.tokenExists()){
-                var valid = true;
-                if(arguments){
-                    $.each(arguments, function(index,role){
-                        if(!jwt.hasRole(role)){
-                            valid = false;
-                            return false;
-                        }
-                    });
-                }
-
-                if(valid){
-                    return true;
-                }
-            }
-            return false;
-        },
-        anyRole: function(){
-            if(jwt.tokenExists()){
-                var valid = false;
-                if(arguments){
-                    $.each(arguments, function(index,role){
-                        if(jwt.hasRole(role)){
-                            valid = true;
-                            return false;
-                        }
-                    });
-                }
-
-                if(valid){
-                    return true;
-                }
-            }
-            return false;
-        }
-    };
+    // var validateAccess = {
+    //     allRoles: function(){
+    //         if(jwt.tokenExists()){
+    //             var valid = true;
+    //             if(arguments){
+    //                 $.each(arguments, function(index,role){
+    //                     if(!jwt.hasRole(role)){
+    //                         valid = false;
+    //                         return false;
+    //                     }
+    //                 });
+    //             }
+    //
+    //             if(valid){
+    //                 return true;
+    //             }
+    //         }
+    //         return false;
+    //     },
+    //     anyRole: function(){
+    //         if(jwt.tokenExists()){
+    //             var valid = false;
+    //             if(arguments){
+    //                 $.each(arguments, function(index,role){
+    //                     if(jwt.hasRole(role)){
+    //                         valid = true;
+    //                         return false;
+    //                     }
+    //                 });
+    //             }
+    //
+    //             if(valid){
+    //                 return true;
+    //             }
+    //         }
+    //         return false;
+    //     }
+    // };
 
     //Utility methods for validating data returned by the API.
     var validateData = {
