@@ -138,12 +138,6 @@ var orgbuilder = (function(){
                     if(!jwt.tokenExists()){
                         this.valid = false;
                     }
-
-                    //Otherwise, check the token's expiration. The expiration is in seconds, not milliseconds, for some weird reason
-                    var payload = jwt.getTokenPayload();
-                    if((payload.exp * 1000) < Date.now()){
-                        this.valid = false;
-                    }
                 }
 
                 //Return this with the current state of valid
