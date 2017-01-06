@@ -47,7 +47,7 @@
          * 2) Access to Page Validation
          *******************************/
 
-        if(!orgbuilder.validateAccess.allRoles(orgbuilder.roles.master)){
+        if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid()){
             console.log("Invalid credentials to access org manager!");
             window.location = "../access-denied.html";
             return;

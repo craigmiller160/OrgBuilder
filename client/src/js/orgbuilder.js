@@ -124,7 +124,7 @@ var orgbuilder = (function(){
         }
     };
 
-    //TODO document and finish this. Also figure out JS builder pattern
+    //A utility using a builder pattern to validate whether or not a user has access to a given part of the application
     var validateAccess = (function(){
         function Validator(){
             this.valid = true;
@@ -139,9 +139,9 @@ var orgbuilder = (function(){
                         this.valid = false;
                     }
 
-                    //Otherwise, check the token's expiration
+                    //Otherwise, check the token's expiration. The expiration is in seconds, not milliseconds, for some weird reason
                     var payload = jwt.getTokenPayload();
-                    if(payload.exp < Date.now()){
+                    if((payload.exp * 1000) < Date.now()){
                         this.valid = false;
                     }
                 }
@@ -192,8 +192,9 @@ var orgbuilder = (function(){
                 }
 
                 //Return this with the current state of valid
+                return this;
             },
-            isValidated: function(){
+            isValid: function(){
                 return this.valid;
             }
         };
@@ -202,47 +203,6 @@ var orgbuilder = (function(){
             return new Validator();
         }
     })();
-
-    //Utility methods for validating access to content
-    //The functions in this object accept arguments, each representing a single role to validate
-    // var validateAccess = {
-    //     allRoles: function(){
-    //         if(jwt.tokenExists()){
-    //             var valid = true;
-    //             if(arguments){
-    //                 $.each(arguments, function(index,role){
-    //                     if(!jwt.hasRole(role)){
-    //                         valid = false;
-    //                         return false;
-    //                     }
-    //                 });
-    //             }
-    //
-    //             if(valid){
-    //                 return true;
-    //             }
-    //         }
-    //         return false;
-    //     },
-    //     anyRole: function(){
-    //         if(jwt.tokenExists()){
-    //             var valid = false;
-    //             if(arguments){
-    //                 $.each(arguments, function(index,role){
-    //                     if(jwt.hasRole(role)){
-    //                         valid = true;
-    //                         return false;
-    //                     }
-    //                 });
-    //             }
-    //
-    //             if(valid){
-    //                 return true;
-    //             }
-    //         }
-    //         return false;
-    //     }
-    // };
 
     //Utility methods for validating data returned by the API.
     var validateData = {

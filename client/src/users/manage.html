@@ -47,7 +47,7 @@
          * 2) Access to Page Validation
          *******************************/
 
-        if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin)){
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid()){
             console.log("Invalid credentials to access user manager!");
             window.location = "../access-denied.html";
             return;

@@ -79,7 +79,7 @@
          * 2) Access to Page Validation
          *******************************/
 
-        if(!orgbuilder.jwt.tokenExists()){
+        if(!orgbuilder.validateAccess().hasToken().isValid()){
             console.log("Invalid credentials to access main menu!");
             window.location = "access-denied.html";
             return;

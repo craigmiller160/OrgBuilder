@@ -66,14 +66,9 @@
          * 2) Access to Page Validation
          *******************************/
 
-        if(!orgbuilder.jwt.tokenExists()){
-            invalidCredentialsFn();
-            return;
-        }
-
         //Deliberate usage of == here to use type coercion
-        if(!orgbuilder.validateAccess.allRoles(orgbuilder.roles.master) &&
-            !(orgbuilder.validateAccess.allRoles(orgbuilder.roles.admin) && payload.oid == orgid)){
+        if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid() &&
+            !(orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.admin).isValid() && payload.oid == orgid)){
             invalidCredentialsFn();
             return;
         }

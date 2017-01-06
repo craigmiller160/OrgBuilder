@@ -147,14 +147,10 @@
         /*******************************
          * 2) Access to Page Validation
          *******************************/
-        if(!orgbuilder.jwt.tokenExists()){
-            invalidCredentialsFn();
-            return;
-        }
 
         //Deliberately using != here
-        if(!orgbuilder.validateAccess.anyRole(orgbuilder.roles.master, orgbuilder.roles.admin) &&
-            userid != payload.uid){
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid() &&
+            userid != payload.uid){ //TODO move check on userid and orgid into this Validator object
             invalidCredentialsFn();
             return;
         }

@@ -13,6 +13,8 @@ import java.util.Date;
  */
 public class LegacyDateConverter {
 
+    //TODO consider if this will screw things up if the server is accessed from a totally different time zone... given that the client side logic is checking the timestamp...
+
     public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime){
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
