@@ -194,6 +194,24 @@ var orgbuilder = (function(){
                 //Return this with the current state of valid
                 return this;
             },
+            isUser: function(userid){
+                //Only do this test if valid is still true
+                if(this.valid){
+                    this.valid = jwt.getTokenPayload().uid == userid;
+                }
+
+                //Return this with the current state of valid
+                return this;
+            },
+            isOrg: function(orgid){
+                //Only do this test if valid is still true
+                if(this.valid){
+                    this.valid = jwt.getTokenPayload().oid == orgid;
+                }
+
+                //Return this with the current state of valid
+                return this;
+            },
             isValid: function(){
                 return this.valid;
             }

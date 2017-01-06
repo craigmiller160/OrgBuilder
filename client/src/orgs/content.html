@@ -68,7 +68,7 @@
 
         //Deliberate usage of == here to use type coercion
         if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid() &&
-            !(orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.admin).isValid() && payload.oid == orgid)){
+            !(orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.admin).isOrg(orgid).isValid())){
             invalidCredentialsFn();
             return;
         }

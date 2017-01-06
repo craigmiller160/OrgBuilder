@@ -150,7 +150,7 @@
 
         //Deliberately using != here
         if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid() &&
-            userid != payload.uid){ //TODO move check on userid and orgid into this Validator object
+                !orgbuilder.validateAccess().hasToken().isUser(userid).isValid()){
             invalidCredentialsFn();
             return;
         }
