@@ -125,6 +125,8 @@
          * 6) Page Initialization
          *************************/
 
+        orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
+
         $("#myAccountButton").attr("href", "users/content.html?userid=" + payload.uid);
 
         //Determine which links are visible based on access level

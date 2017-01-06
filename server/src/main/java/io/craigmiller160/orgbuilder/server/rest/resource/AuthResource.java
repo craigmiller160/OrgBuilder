@@ -114,6 +114,16 @@ public class AuthResource {
                 .build();
     }
 
+    //This endpoint is special, it allows for checking if a Token is still valid even if the page needs no other data
+    @GET
+    @Path("/check")
+    @PermitAll
+    public Response checkStillValid() throws OrgApiException{
+        return Response
+                .ok()
+                .build();
+    }
+
     @GET
     @Path("/exists")
     @PermitAll
