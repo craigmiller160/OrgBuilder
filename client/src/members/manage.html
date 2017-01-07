@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Manage Members</title>
+</head>
+<body>
+    <h1>Manage Members</h1>
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+
+    <h3 id="membersHeader">Members</h3>
+
+<script src="../jquery-3.1.1.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function setHeader(){
+            $("#membersHeader").text(orgbuilder.jwt.getTokenPayload().onm + " Members");
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        setHeader();
+
+    });
+</script>
+</body>
+</html>
