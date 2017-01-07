@@ -81,11 +81,11 @@
                         return;
                     }
                     $.each(data.orgList, function(index, org){
-                        var newRow = $("<tr index='" + index + "' orgid='" + org.orgId + "'></tr>");
-                        newRow.append($("<td field='orgName'></td>").text(org.orgName));
-                        newRow.append($("<td field='createdDate'></td>").text(org.createdDate));
+                        var newRow = $("<tr></tr>").attr("index", index).attr("orgid",org.orgId);
+                        newRow.append($("<td></td>").attr("field","orgName").text(org.orgName));
+                        newRow.append($("<td></td>").attr("field","createdDate").text(org.createdDate));
 
-                        var options = $("<td field='options'></td>");
+                        var options = $("<td></td>").attr("field","options");
                         options.append($("<button class='editOrgBtn' type='button' title='Edit Org'></button>").text("E"));
                         options.append($("<button class='deleteOrgBtn' type='button' title='Delete Org'></button>").text("D"));
 

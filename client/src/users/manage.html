@@ -87,13 +87,14 @@
                     }
 
                     $.each(data.userList, function(index, user){
-                        var newRow = $("<tr index='" + index + "' userid='" + user.userId + "'></tr>");
-                        newRow.append($("<td field='email'></td>").text(user.userEmail));
-                        newRow.append($("<td field='firstName'></td>").text(user.firstName));
-                        newRow.append($("<td field='lastName'></td>").text(user.lastName));
-                        newRow.append($("<td field='roles'></td>").text(user.roles.toString()));
+                        var newRow = $("<tr></tr>").attr("index", index).attr("userid", user.userId);
 
-                        var options = $("<td field='options'></td>");
+                        newRow.append($("<td></td>").attr("field", "email").text(user.userEmail));
+                        newRow.append($("<td></td>").attr("field", "firstName").text(user.firstName));
+                        newRow.append($("<td></td>").attr("field", "lastName").text(user.lastName));
+                        newRow.append($("<td></td>").attr("field", "roles").text(user.roles.toString()));
+
+                        var options = $("<td></td>").attr("field","options");
                         options.append($("<button class='editUserBtn' type='button' title='Edit User'></button>").text("E"));
                         options.append($("<button class='deleteUserBtn' type='button' title='Delete User'></button>").text("D"));
 
