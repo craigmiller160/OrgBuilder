@@ -274,7 +274,7 @@ var orgbuilder = (function(){
                     memberData.firstName !== undefined &&
                     memberData.middleName !== undefined &&
                     memberData.lastName !== undefined &&
-                    memberData.gender !== undefined;
+                    memberData.sex !== undefined;
         },
         memberList: function(memberListData){
             var memberFn = this.member;
