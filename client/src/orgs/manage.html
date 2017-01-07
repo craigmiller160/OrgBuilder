@@ -70,6 +70,11 @@
             //TODO need to add pagination
             orgbuilder.api.send("orgs", orgbuilder.methods.get)
                 .done(function(data,status,jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("No orgs found on server");
+                        return;
+                    }
+
                     if(!orgbuilder.validateData.orgList(data)){
                         console.log("Error! Data returned from server for orgList does not contain the orgList.");
                         window.location = "../server-error.html";

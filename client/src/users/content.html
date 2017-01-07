@@ -222,6 +222,11 @@
         function loadExistingUser(){
             orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
                 .done(function(userData){
+                    if(jqXHR.status === 204){
+                        console.log("User not found on server");
+                        return;
+                    }
+
                     if(!orgbuilder.validateData.user(userData)){
                         console.log("Error! Data returned from server for User does not contain the User.");
                         window.location = "../server-error.html";
