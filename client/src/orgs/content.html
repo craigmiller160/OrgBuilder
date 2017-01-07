@@ -148,7 +148,7 @@
 
         function loadOrg(){
             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
-                .done(function(orgData){
+                .done(function(orgData, status, jqXHR){
                     if(jqXHR.status === 204){
                         console.log("Org not found on server");
                         return;
