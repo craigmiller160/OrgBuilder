@@ -14,6 +14,8 @@
         <a id="mainMenuButton" href="../main.html">Main Menu</a>
     </p>
 
+    <h3 id="usersHeader"></h3>
+
     <div>
         <!-- TODO need to add org filter to table -->
         <!-- TODO need to add role filter to table -->
@@ -120,6 +122,15 @@
                 });
         }
 
+        function setHeader(){
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                $("#usersHeader").text("All Users");
+            }
+            else{
+                $("#usersHeader").text(orgbuilder.jwt.getTokenPayload().onm + " Users");
+            }
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
@@ -136,6 +147,7 @@
          * 6) Page Initialization
          *************************/
 
+        setHeader();
         loadUserList();
     });
 </script>
