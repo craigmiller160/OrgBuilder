@@ -255,11 +255,35 @@ var orgbuilder = (function(){
         userList: function(userListData){
             var userFn = this.user;
             return userListData !== null &&
-                    userListData.userList !== undefined && userListData !== null &&
+                    userListData.userList !== undefined && userListData.userList !== null &&
                     (function(){
                         var valid = true;
                         $.each(userListData.userList, function(index,user){
                             if(!userFn(user)){
+                                valid = false;
+                                return false;
+                            }
+                        });
+                        return valid;
+                    })()
+        },
+        member: function(memberData){
+            return memberData != null &&
+                    memberData.dateOfBirth !== undefined &&
+                    memberData.memberId !== undefined &&
+                    memberData.firstName !== undefined &&
+                    memberData.middleName !== undefined &&
+                    memberData.lastName !== undefined &&
+                    memberData.gender !== undefined;
+        },
+        memberList: function(memberListData){
+            var memberFn = this.member;
+            return memberListData !== null &&
+                    memberListData.memberList !== undefined && memberListData.memberList !== null &&
+                    (function(){
+                        var valid = true;
+                        $.each(memberListData.memberList, function(index, member){
+                            if(!memberFn(member)){
                                 valid = false;
                                 return false;
                             }
