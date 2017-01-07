@@ -15,6 +15,22 @@
 
     <h3 id="membersHeader">Members</h3>
 
+    <div>
+        <table id="membersTable" border="1">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
 <script src="../jquery-3.1.1.js"></script>
 <script src="../js/org-props.js"></script>
 <script src="../js/orgbuilder.js"></script>
@@ -25,9 +41,18 @@
          * 1) Top Scope Variables
          *************************/
 
+        var tableBody = $("#membersTable");
+
         /*******************************
          * 2) Access to Page Validation
          *******************************/
+
+        //Access is invalid if there is no valid token or if the user role has MASTER access
+        if(!orgbuilder.validateAccess().hasToken() || orgbuilder.validateAccess().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access member manager");
+            window.location = "../access-denied.html";
+            return;
+        }
 
         /****************
          * 3) UI Actions
@@ -43,6 +68,54 @@
             $("#membersHeader").text(orgbuilder.jwt.getTokenPayload().onm + " Members");
         }
 
+        function loadMemberList(){
+            //TODO need to add pagination
+            orgbuilder.api.send("members", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("No members found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.memberList(data)){
+                        console.log("Error! Data returned from server for memberList does not contain the memberList");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    var now = Date.now();
+
+                    $.each(data.memberList, function(index, member){
+                        var newRow = $("<tr></tr>").attr("index",index).attr("memberid", member.memberId);
+
+                        newRow.append($("<td></td>").attr("field","firstName").text(member.firstName));
+                        newRow.append($("<td></td>").attr("field","lastName").text(member.lastName));
+
+                        var ageDiff = now - new Date(member.dateOfBirth).getTime();
+                        var age = Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+                        newRow.append($("<td></td>").attr("field","age").text(age));
+
+                        var city = $("<td></td>").attr("field","city");
+                        var state = $("<td></td>").attr("field","state");
+                        if(member.addresses.length > 0){
+                            $(city).text(member.addresses[0].city);
+                            $(state).text(member.addresses[0].state);
+                        }
+                        newRow.append(city);
+                        newRow.append(state);
+
+                        var options = $("<td></td>").attr("field","options");
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+                })
+                .fail(function(jqXHR){
+                    //TODO need better fail functionality
+                    console.log("LOADING MEMBER LIST FAILED");
+                });
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
@@ -52,6 +125,7 @@
          *************************/
 
         setHeader();
+        loadMemberList();
 
     });
 </script>
