@@ -14,6 +14,9 @@
     <p>
         <a id="mainMenuButton" href="../main.html">Main Menu</a>
     </p>
+    <p class="hidden">
+        <a id="manageUsersButton" href="manage.html">Manage Users</a>
+    </p>
 
     <h2 id="userNameHeader">Content</h2> <!-- TODO have the User Email included in this header -->
 
@@ -176,6 +179,7 @@
 
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
+        $("#manageUsersButton").click(orgbuilder.cancelChangesCheck);
         $(deleteBtn).click(function(){
             var confirmMsg = "Are you sure you want to delete " +
                 (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
@@ -217,15 +221,15 @@
 
         $("#orgSelectBox").change(setOrgIdFromSelect);
 
-        $("#editPasswordBtn").click(function(){
-            $("#editPasswordCmd").addClass("hidden");
-            $("#editPasswordDiv").removeClass("hidden");
-        });
-
-        $("#cancelEditPasswordBtn").click(function(){
-            $("#editPasswordCmd").removeClass("hidden");
-            $("#editPasswordDiv").addClass("hidden");
-        });
+//        $("#editPasswordBtn").click(function(){
+//            $("#editPasswordCmd").addClass("hidden");
+//            $("#editPasswordDiv").removeClass("hidden");
+//        });
+//
+//        $("#cancelEditPasswordBtn").click(function(){
+//            $("#editPasswordCmd").removeClass("hidden");
+//            $("#editPasswordDiv").addClass("hidden");
+//        });
 
         $("#cancelBtn").click(cancelFn);
         $("#saveBtn").click(saveFn);
@@ -252,17 +256,17 @@
 
             }
             else{
-                $(inputs).prop("disabled", true);
+                if(saveFn()){
+                    $(inputs).prop("disabled", true);
 
-                //TODO need to save changes here too, before scrambling password contents
+                    if(sectionId === "passwordDiv"){
+                        $(inputs).val("ABCDEFGHIJKLMNOP");
+                    }
 
-                if(sectionId === "passwordDiv"){
-                    $(inputs).val("ABCDEFGHIJKLMNOP");
+                    $("#" + sectionId + " .editFieldsLink").removeClass("hidden");
+                    $("#" + sectionId + " .saveFieldsLink").addClass("hidden");
+                    $("#" + sectionId).attr("status", "view");
                 }
-
-                $("#" + sectionId + " .editFieldsLink").removeClass("hidden");
-                $("#" + sectionId + " .saveFieldsLink").addClass("hidden");
-                $("#" + sectionId).attr("status", "view");
             }
         }
 
@@ -345,44 +349,29 @@
         }
 
         function saveFn(event){
-            event.preventDefault();
+            if(event){
+                event.preventDefault();
+            }
+
             console.log("Saving changes to User");
 
             var allComplete = orgbuilder.checkRequiredFields("userDetailsForm");
             if(!allComplete){
-                return;
+                return false;
             }
 
-            //TODO need to be able to only save individual fields
-            //TODO need to make sure that partial updates server-side don't break anything... probably need to fill in fields that are missing server-side with existing data during updates
-            //TODO might need a check for whether or not the section is set to "edit"
-            //TODO do we return to the manage screen after save-all? definitely don't after save, so might need separate behavior
+            //Determine if the password is being changed during this save operation
+            var usePassword = $("#passwordDiv").attr("status") === "edit";
+            console.log("Saving changes with password: " + usePassword);
 
-
-
-
-
-
-
-
-
-
-
-
-
-            //Need to check that the two password fields match each other
-            if($("#editPasswordDiv").is(":visible") && $("#firstPassField").val() !== $("#secondPassField").val()){
+            //Need to check that the two password fields match each other, if they are needed
+            if(usePassword && $("#firstPassField").val() !== $("#secondPassField").val()){
                 alert("Passwords do not match");
-                return;
+                return false;
             }
 
             var doneFn = function(){
-                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
-                    window.location = "manage.html";
-                }
-                else{
-                    window.location = "../main.html";
-                }
+                window.location.reload(true);
             };
 
             var failFn = function(){
@@ -395,14 +384,14 @@
                 firstName: $("#firstNameField").val(),
                 lastName: $("#lastNameField").val(),
                 password: (function(){
-                    if($("#editPasswordDiv").is(":visible")){
+                    if(usePassword){
                         return $("#firstPassField").val();
                     }
                     return null;
                 })(),
                 roles: (function(){
                     var roles = [];
-                    $("#accessCheckboxes input[type = 'checkbox']").each(function(index,input){
+                    $("#accessDiv input[type = 'checkbox']").each(function(index,input){
                         if($(input).is(":checked")){
                             roles.push($(input).attr("name"));
                         }
@@ -422,7 +411,7 @@
             if(jsonMsg.roles.length === 0){
                 var choice = confirm("User has no access roles selected, which will prohibit them from using this application. Are you sure you want to continue?");
                 if(!choice){
-                    return;
+                    return false;
                 }
             }
 
@@ -436,6 +425,8 @@
                 orgbuilder.api.send("users", orgbuilder.methods.post, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
+
+            return true;
         }
 
         /***********************
@@ -471,6 +462,10 @@
          * 6) Page Initialization
          *************************/
 
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+            $("#manageUsersButton").parent().removeClass("hidden");
+        }
+
         //Configuring the content of the delete button based on whetether or not the user is viewing their own account
         //Deliberately using == here
         if(userid == payload.uid){
@@ -496,7 +491,7 @@
         else{
             //Configure for an add user page
             $("#editPasswordDiv").removeClass("hidden");
-            $("#cancelEditPasswordBtn").addClass("hidden");
+//            $("#cancelEditPasswordBtn").addClass("hidden");
             $("#userNameHeader").text("New User"); //TODO make sure this works in the new user page
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
                 appendCheckboxFn(orgbuilder.roles.master, rolesDisabled);

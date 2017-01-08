@@ -315,7 +315,10 @@ var orgbuilder = (function(){
     }
 
     function cancelChangesCheck(){
-        return confirm("Are you sure you want to cancel? All changes will be lost.");
+        if($(".formSection[status = 'edit']").length > 0){
+            return confirm("Are you sure you want to cancel? All changes will be lost.");
+        }
+        return true;
     }
 
     var checkRequiredFields = function(formId){
