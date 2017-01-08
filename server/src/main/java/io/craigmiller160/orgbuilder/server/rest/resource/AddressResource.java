@@ -78,7 +78,7 @@ public class AddressResource {
      *
      * PURPOSE: Create a new address for a member.
      *
-     * ACCESS: Users with both the READ and WRITE roles.
+     * ACCESS: Users with the WRITE role.
      *
      * BODY: The address to create.
      *
@@ -89,7 +89,7 @@ public class AddressResource {
      * @throws OrgApiException if an error occurs.
      */
     @POST
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response addAddress(AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         address = addressService.addAddress(address, memberId);
@@ -105,7 +105,7 @@ public class AddressResource {
      *
      * PURPOSE: To update an existing address for a member.
      *
-     * ACCESS: Only users with READ and WRITE roles.
+     * ACCESS: Users with the WRITE role.
      *
      * BODY: The address to be updated.
      *
@@ -119,7 +119,7 @@ public class AddressResource {
      */
     @PUT
     @Path("/{addressId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO result = addressService.updateAddress(address, addressId, memberId);
@@ -140,7 +140,7 @@ public class AddressResource {
      *
      * PURPOSE: Delete an existing address from a member.
      *
-     * ACCESS: Only users with READ and WRITE roles.
+     * ACCESS: Users with the WRITE role.
      *
      * BODY: NONE
      *
@@ -153,7 +153,7 @@ public class AddressResource {
      */
     @DELETE
     @Path("/{addressId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response deleteAddress(@PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO address = addressService.deleteAddress(addressId);

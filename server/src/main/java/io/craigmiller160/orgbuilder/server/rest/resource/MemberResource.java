@@ -59,7 +59,7 @@ public class MemberResource {
     }
 
     @POST
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response addMember(MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         member = memberService.addMember(member);
@@ -72,7 +72,7 @@ public class MemberResource {
 
     @PUT
     @Path("/{memberId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO result = memberService.updateMember(member, memberId);
@@ -90,7 +90,7 @@ public class MemberResource {
 
     @DELETE
     @Path("/{memberId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.deleteMember(memberId);
