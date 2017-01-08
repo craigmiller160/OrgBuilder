@@ -36,6 +36,8 @@ import javax.ws.rs.core.SecurityContext;
 import java.time.LocalDateTime;
 
 /**
+ * RESTful API for handling the authentication of users.
+ *
  * Created by craig on 9/27/16.
  */
 @Path("/auth")
@@ -64,6 +66,24 @@ public class AuthResource {
         return handleInvalidLogin(null);
     }
 
+    /**
+     * RESOURCE: POST /auth
+     *
+     * PURPOSE: Authenticate user credentials and return an
+     *          access token if they are accepted.
+     *
+     * ACCESS: All Users.
+     *
+     * BODY: The user name and password to use for authentication.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param userAgent the user agent header from the request.
+     * @param user the user credentials.
+     * @return a Response containing no body and the access token
+     *          as a header if the authentication was successful.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
     @PermitAll
     public Response authenticate(@HeaderParam("user-agent") String userAgent, UserDTO user) throws OrgApiException{
@@ -114,16 +134,24 @@ public class AuthResource {
                 .build();
     }
 
-    //This endpoint is special, it allows for checking if a Token is still valid even if the page needs no other data
-    @GET
-    @Path("/check")
-    @PermitAll
-    public Response checkStillValid() throws OrgApiException{
-        return Response
-                .ok()
-                .build();
-    }
-
+    /**
+     * RESOURCE: GET /auth/exists
+     *
+     * PURPOSE: Check if the provided user name already exists
+     *          in the system.
+     *
+     * ACCESS: All Users.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * userName: the user name to check the existence of.
+     *
+     * @param userName the user name to check the existence of.
+     * @return a Response that either indicates the user name is OK
+     *          or in CONFLICT.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/exists")
     @PermitAll

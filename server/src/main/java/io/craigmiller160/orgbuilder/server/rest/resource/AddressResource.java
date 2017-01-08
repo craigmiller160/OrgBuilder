@@ -19,6 +19,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
 /**
+ * RESTful API for handling the Address resource.
+ *
  * Created by craig on 8/23/16.
  */
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,6 +39,23 @@ public class AddressResource {
     @PathParam("memberId")
     private long memberId;
 
+    /**
+     * RESOURCE: GET /members/{memberId}/addresses
+     *
+     * PURPOSE: Retrieve all addresses for a specific member.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     *
+     * @param resourceFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the Addresses retrieved by the request.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllAddresses(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -54,6 +73,21 @@ public class AddressResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: POST /members/{memberId}/addresses
+     *
+     * PURPOSE: Create a new address for a member.
+     *
+     * ACCESS: Users with both the READ and WRITE roles.
+     *
+     * BODY: The address to create.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param address the address to create.
+     * @return a Response with the newly created address.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
     @RolesAllowed({Role.READ, Role.WRITE})
     public Response addAddress(AddressDTO address) throws OrgApiException{
@@ -66,6 +100,23 @@ public class AddressResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: PUT /members/{memberId}/addresses/{addressId}
+     *
+     * PURPOSE: To update an existing address for a member.
+     *
+     * ACCESS: Only users with READ and WRITE roles.
+     *
+     * BODY: The address to be updated.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param addressId the ID of the address to be updated.
+     * @param address the address to be updated.
+     * @return a Response containing the new state of the address that was updated,
+     *          or nothing if no address existed with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @PUT
     @Path("/{addressId}")
     @RolesAllowed({Role.READ, Role.WRITE})
@@ -84,6 +135,22 @@ public class AddressResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /members/{memberId}/addresses/{addressId}
+     *
+     * PURPOSE: Delete an existing address from a member.
+     *
+     * ACCESS: Only users with READ and WRITE roles.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param addressId the ID of the address to be deleted.
+     * @return the Response, containing the address that was deleted,
+     *          or nothing if no address matching the ID existed.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{addressId}")
     @RolesAllowed({Role.READ, Role.WRITE})
@@ -101,6 +168,22 @@ public class AddressResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /members/{memberId}/addresses/{addressId}
+     *
+     * PURPOSE: Retrieve a single address for a member.
+     *
+     * ACCESS: Any user with READ access
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param addressId the ID of the address to retrieve.
+     * @return the Response, containing the address that was retrieved,
+     *          or nothing if no address existed with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{addressId}")
     @RolesAllowed(Role.READ)
