@@ -40,6 +40,23 @@ public class TokenResource {
     @Context
     private SecurityContext securityContext;
 
+    /**
+     * RESOURCE: GET /tokens
+     *
+     * PURPOSE: Retrieve all refresh tokens currently stored in the server.
+     *
+     * ACCESS: Users with the MASTER role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     *
+     * @param resourceFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the tokens retrieved by the request.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed(Role.MASTER)
     public Response getAllTokens(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -57,6 +74,22 @@ public class TokenResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /tokens/{tokenId}
+     *
+     * PURPOSE: Retrieve a single refresh token from the server.
+     *
+     * ACCESS: Users with the MASTER role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param tokenId the ID of the token to retrieve.
+     * @return the Response, containing the retrieved token, or
+     *          nothing if there's no token with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{tokenId}")
     @RolesAllowed(Role.MASTER)
@@ -74,6 +107,22 @@ public class TokenResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /tokens/{tokenId}
+     *
+     * PURPOSE: Delete the specified refresh token.
+     *
+     * ACCESS: Users with the MASTER role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param tokenId the ID of the token to delete.
+     * @return the Response, containing the deleted token, or
+     *          nothing if there was no token with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{tokenId}")
     @RolesAllowed(Role.MASTER)

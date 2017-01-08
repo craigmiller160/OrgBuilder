@@ -47,6 +47,26 @@ public class UserResource {
     @Context
     private UriInfo uriInfo;
 
+    /**
+     * RESOURCE: GET /users
+     *
+     * PURPOSE: Get all users in the system, restricted based on
+     *          their Org if a non-MASTER user calls this.
+     *
+     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
+     *          users will only access users in their own Org.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     * {search}: additional params for performing a search function.
+     *
+     * @param userFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the users retrieved.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response getAllUsers(@BeanParam UserFilterBean userFilterBean) throws OrgApiException {
@@ -69,6 +89,23 @@ public class UserResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: POST /users
+     *
+     * PURPOSE: Create a new user. If done by an ADMIN user, that user
+     *          will be restricted to the creating user's Org.
+     *
+     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
+     *          users will only access users in their own Org.
+     *
+     * BODY: The user to create.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param user the user to create.
+     * @return the Response, containing the created user.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response addUser(UserDTO user) throws OrgApiException{
@@ -85,6 +122,26 @@ public class UserResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: PUT /users/{userId}
+     *
+     * PURPOSE: Update an existing user.
+     *
+     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
+     *          users will only access users in their own Org.
+     *          In addition, if the user calling this resource is
+     *          the same as the user being retrieved, they can access it.
+     *
+     * BODY: The updated user.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param userId the ID of the user to update.
+     * @param user the updated user.
+     * @return the Response, containing the updated user, or
+     *          nothing if there was no user with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @PUT
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN,Role.MASTER})
@@ -108,6 +165,25 @@ public class UserResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /users/{userId}
+     *
+     * PURPOSE: Delete an existing user.
+     *
+     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
+     *          users will only access users in their own Org.
+     *          In addition, if the user calling this resource is
+     *          the same as the user being retrieved, they can access it.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param userId the ID of the user to delete.
+     * @return the Response, containing the deleted user, or
+     *          nothing if there was no user with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
@@ -127,6 +203,25 @@ public class UserResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /users/{userId}
+     *
+     * PURPOSE: Retrieve the specified user.
+     *
+     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
+     *          users will only access users in their own Org.
+     *          In addition, if the user calling this resource is
+     *          the same as the user being retrieved, they can access it.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param userId the ID of the user to retrieve.
+     * @return the Response, containing the user that was retrieved, or
+     *          nothing if there was no user with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
