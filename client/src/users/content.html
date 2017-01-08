@@ -22,7 +22,7 @@
 
     <form id="userDetailsForm" action="javascript:void(0)">
         <table>
-            <tbody id="infoDiv" status="view" class="formSection">
+            <tbody id="infoSection" status="view" class="formSection">
             <tr>
                 <td>
                     <h4>User Info</h4>
@@ -52,7 +52,7 @@
                 </td>
             </tr>
             </tbody>
-            <tbody id="passwordDiv" status="view" class="formSection">
+            <tbody id="passwordSection" status="view" class="formSection">
                 <!-- TODO in the long run, need a much better system for changing passwords. Emails with temporary codes, etc -->
                 <tr>
                     <td>
@@ -78,7 +78,7 @@
                     <td>*</td>
                 </tr>
             </tbody>
-            <tbody id="accessDiv" status="view" class="formSection">
+            <tbody id="accessSection" status="view" class="formSection">
                 <tr>
                     <td>
                         <h4>Access</h4>
@@ -90,13 +90,13 @@
                 </tr>
                 <!-- This is where the checkboxes for the roles will go -->
             </tbody>
-            <tbody id="orgDiv" status="view" class="formSection">
+            <tbody id="orgSection" status="view" class="formSection">
                 <tr>
                     <td>
                         <h4>Org</h4>
                     </td>
                 </tr>
-                <tr> <!-- TODO if this takes up too much space on the page, hide it -->
+                <tr>
                     <td>
                         <input id="orgIdField" name="orgId" type="hidden" />
                     </td>
@@ -107,7 +107,7 @@
                         <input id="orgNameField" name="orgName" type="text" disabled />
                     </td>
                 </tr>
-                <tr id="orgSelectDiv" class="hidden"> <!-- TODO make sure this still appears for the add Org page -->
+                <tr id="orgSelectDiv" class="hidden">
                     <td field="label">Org Name</td>
                     <td field="input">
                         <select id="orgSelectBox">
@@ -159,8 +159,8 @@
         //If the tokenExists() check below fails, then it won't matter that this would be null
         var payload = orgbuilder.jwt.getTokenPayload();
         var deleteBtn = $("#deleteBtn");
-        var accessCheckboxes = $("#accessDiv");
-        var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master); //TODO replace this with a better check for whether or not a field is editable... or rather, this is necessary for regular users accessing their own account
+        var accessCheckboxes = $("#accessSection");
+        var rolesDisabled = !orgbuilder.jwt.hasRole(orgbuilder.roles.admin) && !orgbuilder.jwt.hasRole(orgbuilder.roles.master);
 
         /*******************************
          * 2) Access to Page Validation
@@ -221,16 +221,6 @@
 
         $("#orgSelectBox").change(setOrgIdFromSelect);
 
-//        $("#editPasswordBtn").click(function(){
-//            $("#editPasswordCmd").addClass("hidden");
-//            $("#editPasswordDiv").removeClass("hidden");
-//        });
-//
-//        $("#cancelEditPasswordBtn").click(function(){
-//            $("#editPasswordCmd").removeClass("hidden");
-//            $("#editPasswordDiv").addClass("hidden");
-//        });
-
         $("#cancelBtn").click(cancelFn);
         $("#saveBtn").click(saveFn);
         $(".editFieldsLink").click(toggleEditAndSave);
@@ -246,7 +236,7 @@
             if($(event.target).hasClass("editFieldsLink")){
                 $(inputs).prop("disabled", false);
 
-                if(sectionId === "passwordDiv"){
+                if(sectionId === "passwordSection"){
                     $(inputs).val("");
                 }
 
@@ -259,7 +249,7 @@
                 if(saveFn()){
                     $(inputs).prop("disabled", true);
 
-                    if(sectionId === "passwordDiv"){
+                    if(sectionId === "passwordSection"){
                         $(inputs).val("ABCDEFGHIJKLMNOP");
                     }
 
@@ -361,7 +351,7 @@
             }
 
             //Determine if the password is being changed during this save operation
-            var usePassword = $("#passwordDiv").attr("status") === "edit";
+            var usePassword = $("#passwordSection").attr("status") === "edit";
             console.log("Saving changes with password: " + usePassword);
 
             //Need to check that the two password fields match each other, if they are needed
@@ -391,7 +381,7 @@
                 })(),
                 roles: (function(){
                     var roles = [];
-                    $("#accessDiv input[type = 'checkbox']").each(function(index,input){
+                    $("#accessSection input[type = 'checkbox']").each(function(index,input){
                         if($(input).is(":checked")){
                             roles.push($(input).attr("name"));
                         }
@@ -440,7 +430,8 @@
 
         function appendCheckboxFn(role){
             var id = "select" + role;
-            var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").prop("disabled", true);
+            var disabled = userid ? true : false;
+            var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").prop("disabled", disabled);
             var checkboxLabel = $("<label></label>").attr("for",id).text(role);
 
             var tableCell = $("<td></td>");
@@ -482,19 +473,21 @@
 
         if(userid){
             //Configure for an Edit User page
-            $("#editPasswordCmd").removeClass("hidden");
             $("input").prop("disabled", true);
-            $("#passwordDiv input").val("ABCDEFGHIJKLMNOP");
+            $("#passwordSection input").val("ABCDEFGHIJKLMNOP");
+            if(rolesDisabled){
+                $("#accessSection .editFieldsLink").addClass("hidden");
+            }
 
             loadExistingUser();
         }
         else{
             //Configure for an add user page
-            $("#editPasswordDiv").removeClass("hidden");
-//            $("#cancelEditPasswordBtn").addClass("hidden");
-            $("#userNameHeader").text("New User"); //TODO make sure this works in the new user page
+            $("#userNameHeader").text("New User");
+            $(".editFieldsLink").addClass("hidden");
+            $(".formSection").attr("status", "edit");
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                appendCheckboxFn(orgbuilder.roles.master, rolesDisabled);
+                appendCheckboxFn(orgbuilder.roles.master);
                 var orgSelectBox = $("#orgSelectBox");
                 $("#orgSelectDiv").removeClass("hidden");
                 $("#orgDisplayDiv").addClass("hidden");
@@ -508,7 +501,7 @@
 
             $.each(orgbuilder.roles, function(index,role){
                 if(role !== orgbuilder.roles.master){
-                    appendCheckboxFn(role, rolesDisabled);
+                    appendCheckboxFn(role);
                 }
             });
         }
