@@ -135,6 +135,24 @@ public class AuthResource {
     }
 
     /**
+     * RESOURCE: GET /auth/check
+     *
+     * PURPOSE: Access the API without retrieving specific data
+     *          so the token is tested for its validity.
+     *
+     * @return the Response.
+     * @throws OrgApiException if an error occurs.
+     */
+    @GET
+    @Path("/check")
+    @PermitAll
+    public Response checkStillValid() throws OrgApiException{
+        return Response
+                .ok()
+                .build();
+    }
+
+    /**
      * RESOURCE: GET /auth/exists
      *
      * PURPOSE: Check if the provided user name already exists
