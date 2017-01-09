@@ -11,6 +11,7 @@
  *
  * 200 OK
  * - Request was executed successfully by the server.
+ * - Used by many different requests.
  * - Usually includes a return payload.
  * - The only case where nothing is returned is /authenticate, where this indicates a successful login.
  *
@@ -18,6 +19,10 @@
  * - Used only for POST requests that create new resources.
  * - Returns the URI for the created resource.
  * - Returns a payload containing the contents currently on the server.
+ *
+ * 202 ACCEPTED
+ * - Used only for PUT requests that update existing resources and DELETE requests that remove existing resources.
+ * - Returns a payload containing the updated contents of the resource.
  *
  * 204 NO CONTENT
  * - Request was valid, but no data on the server matches the request to be returned.
