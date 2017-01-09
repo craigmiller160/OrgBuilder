@@ -150,9 +150,10 @@ public class UserResource {
         ensureMasterCreationRestriction(user);
         UserService service = factory.newUserService(securityContext);
 
-        ensureAdminAccessRestriction(user);
-
-        UserDTO result = service.updateUser(user, userId);
+        UserDTO result = service.updateUser(user, userId, (u) -> {
+            ensureAdminAccessRestriction(u);
+            blockRegularUserRoleChanging(user, u);
+        });
 
         if(result != null){
             return Response
@@ -283,6 +284,12 @@ public class UserResource {
     private void ensureAdminAccessRestriction(UserDTO user){
         if(isPrincipalAdmin() && getPrincipalOrgId() != user.getOrgId()){
             throw new ForbiddenException("Admin user cannot access a user outside of their own org");
+        }
+    }
+
+    private void blockRegularUserRoleChanging(UserDTO newUser, UserDTO existingUser){
+        if((!isPrincipalAdmin() && !isPrincipalMaster()) && !newUser.getRoles().equals(existingUser.getRoles())){
+            throw new ForbiddenException("Non-Admin user cannot change user roles");
         }
     }
 
