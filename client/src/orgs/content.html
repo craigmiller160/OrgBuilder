@@ -14,13 +14,24 @@
     <p>
         <a id="mainMenuButton" href="../main.html">Main Menu</a>
     </p>
+    <p class="hidden">
+        <a id="manageOrgsButton" href="manage.html">Manage Orgs</a>
+    </p>
 
-    <h3>Content</h3>
+    <h2>Content</h2>
 
     <form id="orgDetailsForm" action="javascript:void(0)">
-        <div>
-            <h5>Org Info</h5>
-            <table>
+        <table>
+            <tbody id="infoSection" status="view" class="formSection">
+                <tr>
+                    <td>
+                        <h4>Org Info</h4>
+                    </td>
+                    <td class="right-text">
+                        <a class="editFieldsLink" href="#">Edit</a>
+                        <a class="saveFieldsLink hidden" href="#">Save</a>
+                    </td>
+                </tr>
                 <tr>
                     <td field="label">Org Name</td>
                     <td field="input">
@@ -35,9 +46,9 @@
                     </td>
                     <td>(Limit 255 characters)</td>
                 </tr>
-            </table>
-            <p>* indicates required field</p>
-        </div>
+            </tbody>
+        </table>
+        <p>* indicates required field</p>
         <div class="buttonDiv">
             <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
             <button id="saveBtn" type="button" title="Save changes">Save</button>
@@ -78,6 +89,7 @@
          ****************/
 
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        //TODO consider whether or not to keep this press-enter action here. If so, replicate it for other forms
         $("#orgDetailsForm input").keypress(function(event){
             if(event.which && event.which === 13){
                 saveFn(event);
@@ -86,12 +98,37 @@
         });
 
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
+        $("#manageUsersButton").click(orgbuilder.cancelChangesCheck);
         $("#cancelBtn").click(cancelFn);
         $("#saveBtn").click(saveFn);
+        $(".editFieldsLink").click(toggleEditAndSave);
+        $(".saveFieldsLink").click(toggleEditAndSave);
 
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        function toggleEditAndSave(event){
+            var sectionId = $(event.target).parents(".formSection").attr("id");
+            sectionId = sectionId.startsWith("#") ? sectionId : "#" + sectionId;
+            var inputs = $(sectionId + " input, " + sectionId + " textarea");
+            if($(event.target).hasClass("editFieldsLink")){
+                $(inputs).prop("disabled", false);
+
+                $(sectionId + " .editFieldsLink").addClass("hidden");
+                $(sectionId + " .saveFieldsLink").removeClass("hidden");
+                $(sectionId).attr("status", "edit");
+            }
+            else{
+                if(saveFn()){
+                    $(inputs).prop("disabled", true);
+
+                    $(sectionId + " .editFieldsLink").removeClass("hidden");
+                    $(sectionId + " .saveFieldsLink").addClass("hidden");
+                    $(sectionId).attr("status", "view");
+                }
+            }
+        }
 
         function cancelFn(event){
             event.preventDefault();
@@ -107,21 +144,19 @@
         }
 
         function saveFn(event){
-            event.preventDefault();
+            if(event){
+                event.preventDefault();
+            }
+
             console.log("Saving changes to Org");
 
             var allComplete = orgbuilder.checkRequiredFields("orgDetailsForm");
             if(!allComplete){
-                return;
+                return false;
             }
 
             var doneFn = function(){
-                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                    window.location = "manage.html";
-                }
-                else{
-                    window.location = "../main.html";
-                }
+                window.location.reload(true);
             };
 
             var failFn = function(){
@@ -144,6 +179,8 @@
                 orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
                     .done(doneFn).fail(failFn);
             }
+
+            return true;
         }
 
         function loadOrg(){
@@ -181,9 +218,16 @@
          * 6) Page Initialization
          *************************/
 
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            $("#manageOrgsButton").parent().removeClass("hidden");
+        }
+
         if(orgid){
             loadOrg();
         }
+
+        $("input").prop("disabled", true);
+        $("textarea").prop("disabled", true);
 
     });
 </script>
