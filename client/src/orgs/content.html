@@ -168,8 +168,19 @@
                 return false;
             }
 
-            var doneFn = function(){
-                window.location.reload(true);
+            var doneFn = function(orgData,status,jqXHR){
+                if(orgid){
+                    window.location.reload(true);
+                }
+                else{
+                    if(!orgbuilder.validateData.org(orgData)){
+                        //TODO handle this error
+                        console.log("BAD DATA RETURNED FROM SERVER");
+                        return;
+                    }
+
+                    window.location = URI(window.location.href).addSearch("orgid", orgData.orgId).toString();
+                }
             };
 
             var failFn = function(){
@@ -277,14 +288,14 @@
 
         if(orgid){
             loadOrg();
+            $("input").prop("disabled", true);
+            $("textarea").prop("disabled", true);
         }
         else{
             $("#orgNameHeader").text("New Org");
+            $(".editFieldsLink").addClass("hidden");
+            $(".formSection").attr("status", "edit");
         }
-
-        $("input").prop("disabled", true);
-        $("textarea").prop("disabled", true);
-
     });
 </script>
 </body>
