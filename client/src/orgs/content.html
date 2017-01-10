@@ -18,7 +18,7 @@
         <a id="manageOrgsButton" href="manage.html">Manage Orgs</a>
     </p>
 
-    <h2>Content</h2>
+    <h2 id="orgNameHeader">Content</h2>
 
     <form id="orgDetailsForm" action="javascript:void(0)">
         <table>
@@ -196,6 +196,9 @@
                         window.location = "../server-error.html";
                         return;
                     }
+
+                    $("#orgNameHeader").text("Org: " + orgData.orgName);
+
                     $("#orgNameField").val(orgData.orgName);
                     $("#orgDescriptionField").val(orgData.orgDescription);
                 })
@@ -224,6 +227,9 @@
 
         if(orgid){
             loadOrg();
+        }
+        else{
+            $("#orgNameHeader").text("New Org");
         }
 
         $("input").prop("disabled", true);
