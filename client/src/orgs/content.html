@@ -77,9 +77,8 @@
          * 2) Access to Page Validation
          *******************************/
 
-        //Deliberate usage of == here to use type coercion
         if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid() &&
-            !(orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.admin).isOrg(orgid).isValid())){
+            !orgbuilder.validateAccess().hasToken().isOrg(orgid).isValid()){
             invalidCredentialsFn();
             return;
         }
@@ -224,6 +223,10 @@
 
         if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
             $("#manageOrgsButton").parent().removeClass("hidden");
+        }
+
+        if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master) && !orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+            $(".editFieldsLink").addClass("hidden");
         }
 
         if(orgid){
