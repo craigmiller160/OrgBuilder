@@ -50,8 +50,21 @@
         </table>
         <p>* indicates required field</p>
         <div class="buttonDiv">
-            <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
-            <button id="saveBtn" type="button" title="Save changes">Save</button>
+            <table>
+                <tr>
+                    <td>
+                        <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
+                    </td>
+                    <td>
+                        <button id="saveBtn" type="button" title="Save changes">Save</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button id="deleteBtn" type="button" title="Delete Org">Delete Org</button>
+                    </td>
+                </tr>
+            </table>
         </div>
     </form>
 <script src="../jquery-3.1.1.js"></script>
@@ -102,6 +115,7 @@
         $("#saveBtn").click(saveFn);
         $(".editFieldsLink").click(toggleEditAndSave);
         $(".saveFieldsLink").click(toggleEditAndSave);
+        $("#deleteBtn").click(deleteOrg);
 
         /***********************************
          * 4) Core Business Logic Functions
@@ -208,6 +222,35 @@
                 });
         }
 
+        function deleteOrg(event){
+            if(event){
+                event.preventDefault();
+            }
+
+            var confirmMsg = "Are you sure you want to delete " +
+                (orgid == payload.oid ? "your" : "this") + " Org? This action cannot be undone";
+            var choice = confirm(confirmMsg);
+            if(choice){
+                orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
+                    .done(function(){
+                        if(orgid == payload.oid){
+                            orgbuilder.jwt.clearToken();
+                            window.location = "../index.html";
+                        }
+                        else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                            window.location = "manage.html";
+                        }
+                        else{
+                            window.location = "main.html";
+                        }
+                    })
+                    .fail(function(){
+                        //TODO need better fail behavior
+                        console.log("DELETE FAILED");
+                    });
+            }
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
@@ -227,6 +270,9 @@
 
         if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master) && !orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
             $(".editFieldsLink").addClass("hidden");
+            $("#deleteBtn").addClass("hidden");
+            $("#saveBtn").addClass("hidden");
+            $("#cancelBtn").addClass("hidden");
         }
 
         if(orgid){

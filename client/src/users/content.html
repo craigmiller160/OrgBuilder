@@ -180,27 +180,7 @@
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $("#mainMenuButton").click(orgbuilder.cancelChangesCheck);
         $("#manageUsersButton").click(orgbuilder.cancelChangesCheck);
-        $(deleteBtn).click(function(){
-            var confirmMsg = "Are you sure you want to delete " +
-                (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
-            var choice = confirm(confirmMsg);
-            if(choice){
-                orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
-                    .done(function(){
-                        if(userid == payload.uid){
-                            orgbuilder.jwt.clearToken();
-                            window.location = "../index.html";
-                        }
-                        else{
-                            window.location = "manage.html";
-                        }
-                    })
-                    .fail(function(){
-                        //TODO need better fail behavior
-                        console.log("DELETE FAILED");
-                    });
-            }
-        });
+        $(deleteBtn).click(deleteUser);
 
         $("#select" + orgbuilder.roles.master).change(function(){
             var checked = this.checked;
@@ -229,6 +209,32 @@
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        function deleteUser(event){
+            if(event){
+                event.preventDefault();
+            }
+
+            var confirmMsg = "Are you sure you want to delete " +
+                (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
+            var choice = confirm(confirmMsg);
+            if(choice){
+                orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                    .done(function(){
+                        if(userid == payload.uid){
+                            orgbuilder.jwt.clearToken();
+                            window.location = "../index.html";
+                        }
+                        else{
+                            window.location = "manage.html";
+                        }
+                    })
+                    .fail(function(){
+                        //TODO need better fail behavior
+                        console.log("DELETE FAILED");
+                    });
+            }
+        }
 
         function toggleEditAndSave(event){
             var sectionId = $(event.target).parents(".formSection").attr("id");
