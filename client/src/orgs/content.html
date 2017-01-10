@@ -187,6 +187,7 @@
             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData, status, jqXHR){
                     if(jqXHR.status === 204){
+                        //TODO treat this as some sort of error, with a response in the UI
                         console.log("Org not found on server");
                         return;
                     }

@@ -76,6 +76,7 @@
             orgbuilder.api.send("users", orgbuilder.methods.get)
                 .done(function(data, status, jqXHR){
                     if(jqXHR.status === 204){
+                        //TODO treat this as some sort of error condition, with a response in the UI
                         console.log("No users found on server");
                         return;
                     }

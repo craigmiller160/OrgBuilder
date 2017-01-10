@@ -264,6 +264,7 @@
             orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
                 .done(function(userData, status, jqXHR){
                     if(jqXHR.status === 204){
+                        //TODO treat this as some sort of error condition, with a response in the UI
                         console.log("User not found on server");
                         return;
                     }
@@ -305,7 +306,13 @@
 
         function loadOrgList(){
             orgbuilder.api.send("orgs", orgbuilder.methods.get)
-                .done(function(orgData){
+                .done(function(orgData,status,jqXHR){
+                    if(jqXHR.status === 204){
+                        //TODO treat this as some sort of error condition, with a response in the UI
+                        console.log("Could not load org list");
+                        return;
+                    }
+
                     if(!orgbuilder.validateData.orgList(orgData)){
                         console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
                         window.location = "../server-error.html";
