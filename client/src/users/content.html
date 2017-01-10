@@ -302,6 +302,8 @@
                             }
                         });
                     }
+
+                    $("#accessSection input[type='checkbox']").click(disableCheckboxesOnMasterSelect);
                 })
                 .fail(function(){
                     //TODO need better fail behavior
@@ -347,6 +349,30 @@
                 }
                 else{
                     window.location = "../main.html";
+                }
+            }
+        }
+
+        //TODO this needs to 1) disable all other checkboxes on master select, and 2) clear any selections in them
+        function disableCheckboxesOnMasterSelect(){
+            if($(this).attr("name") === orgbuilder.roles.master){
+                var otherCheckboxes = $("#accessSection input[type='checkbox'][name!='" + orgbuilder.roles.master + "']");
+                if($(this).is(":checked")){
+                    $(otherCheckboxes).prop("checked", false);
+                    $(otherCheckboxes).prop("disabled", true);
+                }
+                else{
+                    $(otherCheckboxes).prop("disabled", false);
+                }
+            }
+            else{
+                var masterCheckbox = $("#accessSection input[type='checkbox'][name='" + orgbuilder.roles.master + "']");
+                if($(this).is(":checked")){
+                    $(masterCheckbox).prop("checked", false);
+                    $(masterCheckbox).prop("disabled", true);
+                }
+                else{
+                    $(masterCheckbox).prop("disabled", false);
                 }
             }
         }
@@ -528,6 +554,8 @@
                     appendCheckboxFn(role);
                 }
             });
+
+            $("#accessSection input[type='checkbox']").click(disableCheckboxesOnMasterSelect);
         }
 
     });
