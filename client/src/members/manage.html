@@ -30,6 +30,8 @@
             </thead>
             <tbody></tbody>
         </table>
+
+        <button id="addMemberBtn" type="button" title="Add new Member">A</button>
     </div>
 
 <script src="../jquery-3.1.1.js"></script>
@@ -106,6 +108,8 @@
                         newRow.append(state);
 
                         var options = $("<td></td>").attr("field","options");
+                        options.append($("<button class='editMemberBtn' type='button' title='Edit Member'></button>").text("E"));
+                        options.append($("<button class='deleteMemberBtn' type='button' title='Delete Member'></button>").text("D"));
 
                         newRow.append(options);
                         tableBody.append(newRow);
