@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Member Content</title>
+    <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
+</head>
+<body>
+    <h1>Org Content</h1>
+
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+    <p>
+        <a id="manageMembersButton" href="manage.html">Manage Members</a>
+    </p>
+
+    <h2 id="memberNameHeader">Content</h2>
+
+    <form id="memberDetailsForm" action="javascript:void(0)">
+        <table>
+            <tbody id="personalInfoSection" status="view" class="formSection">
+                <tr>
+                    <td>
+                        <h4>Personal Info</h4>
+                    </td>
+                    <td class="right-text">
+                        <a class="editFieldsLink" href="#">Edit</a>
+                        <a class="saveFieldsLink hidden" href="#">Save</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td field="label">First Name</td>
+                    <td field="input">
+                        <input id="firstNameField" name="firstName" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label">Middle Name</td>
+                    <td field="input">
+                        <input id="middleNameField" name="middleName" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label">Last Name</td>
+                    <td field="input">
+                        <input id="lastNameField" name="lastName" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr> <!-- TODO need an age field along with this too, that is calculated based on the DOB and is not editable -->
+                    <td field="label">Date of Birth:</td>
+                    <td field="input">
+                        <input id="dob" name="dateOfBirth" type="date" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label">Sex</td>
+                    <td field="input">
+                        <!-- TODO change this to some sort of multi-option select box -->
+                        <input id="sex" name="sex" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+<script src="../jquery-3.1.1.js"></script>
+<script src="../URI.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var memberid = (function(){
+            var url = URI(window.location.href);
+            if(url.hasQuery("memberid")){
+                return url.search(true).memberid;
+            }
+        })();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        if(memberid){
+
+        }
+        else{
+            $("#memberNameHeader").text("New Member");
+        }
+
+    });
+</script>
+</body>
+</html>
