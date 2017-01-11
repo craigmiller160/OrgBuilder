@@ -69,7 +69,45 @@
                     <td>*</td>
                 </tr>
             </tbody>
+            <tbody id="addressSection" status="view" class="formSection">
+                <tr>
+                    <td>
+                        <h4>Addresses</h4>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody id="phoneSection" status="view" class="formSection">
+                <tr>
+                    <td>
+                        <h4>Phones</h4>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody id="emailSection" status="view" class="formSection">
+                <tr>
+                    <td>
+                        <h4>Emails</h4>
+                    </td>
+                </tr>
+            </tbody>
         </table>
+        <div class="buttonDiv">
+            <table>
+                <tr> <!-- TODO hide certain buttons if user only has READ access -->
+                    <td>
+                        <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
+                    </td>
+                    <td>
+                        <button id="saveBtn" type="button" title="Save changes">Save</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button id="deleteBtn" type="button" title="Delete Member">Delete Member</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </form>
 
 <script src="../jquery-3.1.1.js"></script>
