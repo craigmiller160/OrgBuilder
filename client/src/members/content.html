@@ -150,10 +150,34 @@
          ****************/
 
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $(".editFieldsLink").click(toggleEditAndSave);
+        $(".saveFieldsLink").click(toggleEditAndSave);
 
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        function toggleEditAndSave(event){
+            var sectionId = $(event.target).parents(".formSection").attr("id");
+            sectionId = sectionId.startsWith("#") ? sectionId : "#" + sectionId;
+            var inputs = $(sectionId + " input, " + sectionId + " textarea");
+            if($(event.target).hasClass("editFieldsLink")){
+                $(inputs).prop("disabled", false);
+
+                $(sectionId + " .editFieldsLink").addClass("hidden");
+                $(sectionId + " .saveFieldsLink").removeClass("hidden");
+                $(sectionId).attr("status", "edit");
+            }
+            else{
+//                if(saveFn()){
+                    $(inputs).prop("disabled", true);
+
+                    $(sectionId + " .editFieldsLink").removeClass("hidden");
+                    $(sectionId + " .saveFieldsLink").addClass("hidden");
+                    $(sectionId).attr("status", "view");
+//                }
+            }
+        }
 
         function buildAddressesList(addresses){
             $.each(addresses, function(index, address){
@@ -285,6 +309,7 @@
 
         if(memberid){
             loadMemberData();
+            $("input").prop("disabled", true);
         }
         else{
             $("#memberNameHeader").text("New Member");
