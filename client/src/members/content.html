@@ -174,10 +174,43 @@
         $("#logoutButton").click(orgbuilder.jwt.clearToken);
         $(".editFieldsLink").click(toggleEditAndSave);
         $(".saveFieldsLink").click(toggleEditAndSave);
+        $("#addAddressLink").click(showAddressFields);
 
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        function showAddressFields(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            $("#addAddressLink").addClass("hidden");
+            $(".editAddressLink").addClass("hidden");
+            $("#addressFields").load("fields/address-fields.html", function(){
+                $("#saveAddressBtn").click(function(event){
+                    event.preventDefault();
+                    //TODO save the address here
+                    hideAddressFields(event);
+                });
+
+                $("#cancelAddressBtn").click(function(event){
+                    event.preventDefault();
+                    //TODO need cancellation warning
+                    hideAddressFields(event);
+                });
+            });
+        }
+
+        function hideAddressFields(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            $("#addressFields").empty();
+            $("#addAddressLink").removeClass("hidden");
+            $(".editAddressLink").removeClass("hidden");
+        }
 
         function toggleEditAndSave(event){
             var sectionId = $(event.target).parents(".formSection").attr("id");
@@ -224,6 +257,7 @@
                 $(addressRow).append(addressCell);
 
                 var editAddressLink = $("<a></a>").attr("href", "#").attr("addressId", address.addressId).addClass("editAddressLink").text("Edit");
+                $(editAddressLink).click(showAddressFields);
                 var editCell = $("<td></td>");
                 $(editCell).append(editAddressLink);
                 $(addressRow).append(editCell);
