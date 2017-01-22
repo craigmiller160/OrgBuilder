@@ -2,7 +2,8 @@
   "dateOfBirth": "1958-04-29",
   "addresses": [
     {
-      "address": "123 Hart Ct",
+      "address1": "123 Hart Ct",
+      "address2": null,
       "addressType": "HOME",
       "city": "Hometown",
       "addressId": 1,
@@ -12,7 +13,8 @@
       "zipCode": "08895"
     },
     {
-      "address": "10509 Casa Wallo Dr",
+      "address1": "10509 Casa Wallo Dr",
+      "address2": null,
       "addressType": "HOME",
       "city": "Tampa",
       "addressId": 2,

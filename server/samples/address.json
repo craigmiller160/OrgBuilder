@@ -1,10 +1,11 @@
 {
-  "address": "123 Hart Ct",
-  "addressType": "HOME",
-  "city": "Hometown",
   "addressId": 1,
-  "memberId": 1000,
-  "preferred": false,
-  "state": "NJ",
-  "zipCode": "08895"
+  "addressType": "HOME",
+  "address1": "123 Harper Ln",
+  "address2": null,
+  "city": "Los Angeles",
+  "state": "CA",
+  "zipCode": "86753",
+  "memberId": 1,
+  "preferred": true
 }
