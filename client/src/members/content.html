@@ -121,6 +121,7 @@
         //TODO need to handle the addresses/phones/emails specially, with view/edit changes
         //TODO need warning for cancelling changes, and that warning will probably need special handling for addresses/phones/emails
         //TODO disable edit links if user accessing this page only has read rights.
+        //TODO test that nothing breaks if a user without addresses/phones/emails is loaded
 
         /*************************
          * 1) Top Scope Variables
@@ -147,9 +148,9 @@
          * 4) Core Business Logic Functions
          ***********************************/
 
-        function buildAddressTable(addresses){
+        function buildAddressesList(addresses){
             $.each(addresses, function(index, address){
-                var addressRow = $("<tr></tr>");
+                var addressRow = $("<tr></tr>").attr("addressId", address.addressId);
 
                 var preferredCell = $("<td></td>");
                 if(address.preferred){
@@ -158,7 +159,7 @@
 
                 $(addressRow).append(preferredCell);
 
-                addressRow.append($("<td></td>").text(address.addressType));
+                $(addressRow).append($("<td></td>").text(address.addressType));
 
                 var addressLine1 = address.address1 + (address.address2 !== null ? " " + address.address2 : "");
                 var addressLine2 = address.city + " " + address.state + " " + address.zipCode;
@@ -175,6 +176,54 @@
                 $(addressRow).append(editCell);
 
                 $("#addressSection").append(addressRow);
+            });
+        }
+
+        function buildPhonesList(phones){
+            $.each(phones, function(index, phone){
+                var phoneRow = $("<tr></tr>").attr("phoneId", phone.phoneId);
+
+                var preferredCell = $("<td></td>");
+                if(phone.preferred){
+                    $(preferredCell).text("*");
+                }
+                $(phoneRow).append(preferredCell);
+
+                $(phoneRow).append($("<td></td>").text(phone.phoneType));
+
+                var phoneNumber = "(" + phone.areaCode + ") " + phone.prefix + "-" + phone.lineNumber +
+                    (phone.extension !== null ? " x" + phone.extension : "");
+                $(phoneRow).append($("<td></td>").text(phoneNumber));
+
+                var editPhoneLink = $("<a></a>").attr("href", "#").attr("phoneId", phone.phoneId).addClass("editPhoneLink").text("Edit");
+                var editCell = $("<td></td>");
+                $(editCell).append(editPhoneLink);
+                $(phoneRow).append(editCell);
+
+                $("#phoneSection").append(phoneRow);
+            });
+        }
+
+        function buildEmailsList(emails){
+            $.each(emails, function(index, email){
+                var emailRow = $("<tr></tr>").attr("emailId", email.emailId);
+
+                var preferredCell = $("<td></td>");
+                if(email.preferred){
+                    $(preferredCell).text("*");
+                }
+                $(emailRow).append(preferredCell);
+
+                $(emailRow).append($("<td></td>").text(email.emailType));
+
+                $(emailRow).append($("<td></td>").text(email.emailAddress));
+
+                var editEmailLink = $("<a></a>").attr("href", "#").attr("emailId", email.emailId).addClass("editEmailLink").text("Edit");
+                var editCell = $("<td></td>");
+                $(editCell).append(editEmailLink);
+                $(emailRow).append(editCell);
+
+                $("#emailSection").append(emailRow);
             });
         }
 
@@ -200,7 +249,9 @@
                     $("#dobField").val(convertResponseToDateString(memberData.dateOfBirth));
                     $("#sexField").val(memberData.sex);
 
-                    buildAddressTable(memberData.addresses);
+                    buildAddressesList(memberData.addresses);
+                    buildPhonesList(memberData.phones);
+                    buildEmailsList(memberData.emails);
                 })
                 .fail(function(){
                     //TODO need better fail behavior
