@@ -34,7 +34,7 @@
       "preferred": false
     },
     {
-      "elementId": 2,
+      "emailId": 2,
       "emailAddress": "cmiller@gmail.com",
       "emailType": "OTHER",
       "memberId": 1000,
@@ -58,7 +58,7 @@
     },
     {
       "areaCode": "908",
-      "elementId": 2,
+      "phoneId": 2,
       "lineNumber": "4040",
       "memberId": 1000,
       "phoneType": "HOME",
@@ -68,7 +68,7 @@
     },
     {
       "areaCode": "908",
-      "elementId": 3,
+      "phoneId": 3,
       "lineNumber": "5555",
       "memberId": 1000,
       "phoneType": "HOME",
