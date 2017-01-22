@@ -75,6 +75,13 @@
                         <h4>Addresses</h4>
                     </td>
                 </tr>
+                <tr id="addressFields"></tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" id="addAddressLink">Add</a>
+                    </td>
+                </tr>
             </tbody>
             <tbody id="phoneSection" status="view" class="formSection">
                 <tr>
@@ -82,11 +89,25 @@
                         <h4>Phones</h4>
                     </td>
                 </tr>
+                <tr id="phoneFields"></tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" id="addPhoneLink">Add</a>
+                    </td>
+                </tr>
             </tbody>
             <tbody id="emailSection" status="view" class="formSection">
                 <tr>
                     <td colspan="2">
                         <h4>Emails</h4>
+                    </td>
+                </tr>
+                <tr id="emailFields"></tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" id="addEmailLink">Add</a>
                     </td>
                 </tr>
             </tbody>
@@ -118,6 +139,7 @@
     $(document).ready(function(){
 
         //TODO individual save options are disabled for add member page, only available for edit member page
+        //TODO for add member page, a single edit address/phone/email slot is available
         //TODO need to handle the addresses/phones/emails specially, with view/edit changes
         //TODO need warning for cancelling changes, and that warning will probably need special handling for addresses/phones/emails
         //TODO disable edit links if user accessing this page only has read rights.
@@ -206,7 +228,7 @@
                 $(editCell).append(editAddressLink);
                 $(addressRow).append(editCell);
 
-                $("#addressSection").append(addressRow);
+                $("#addressFields").before(addressRow);
             });
         }
 
@@ -231,7 +253,7 @@
                 $(editCell).append(editPhoneLink);
                 $(phoneRow).append(editCell);
 
-                $("#phoneSection").append(phoneRow);
+                $("#phoneFields").before(phoneRow);
             });
         }
 
@@ -254,7 +276,7 @@
                 $(editCell).append(editEmailLink);
                 $(emailRow).append(editCell);
 
-                $("#emailSection").append(emailRow);
+                $("#emailFields").before(emailRow);
             });
         }
 
