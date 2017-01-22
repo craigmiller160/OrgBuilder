@@ -117,6 +117,15 @@
                         newRow.append(options);
                         tableBody.append(newRow);
                     });
+
+                    $(".editMemberBtn").click(function(event){
+                        var memberId = getMemberId(event);
+                        window.location = "content.html?memberid=" + memberId;
+                    });
+
+                    $(".deleteMemberBtn").click(function(event){
+                        //TODO finish delete functionality
+                    });
                 })
                 .fail(function(jqXHR){
                     //TODO need better fail functionality
@@ -127,6 +136,10 @@
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        function getMemberId(event){
+            return $(event.target).parents("tr[memberId]").attr("memberId");
+        }
 
         /*************************
          * 6) Page Initialization
