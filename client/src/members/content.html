@@ -138,6 +138,13 @@
          * 2) Access to Page Validation
          *******************************/
 
+        //Access is invalid if there is no valid token or if the user role has MASTER access
+        if(!orgbuilder.validateAccess().hasToken() || orgbuilder.validateAccess().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access member manager");
+            window.location = "../access-denied.html";
+            return;
+        }
+
         /****************
          * 3) UI Actions
          ****************/
