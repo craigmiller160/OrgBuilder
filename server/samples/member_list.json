@@ -37,6 +37,7 @@
           "memberId": 1000,
           "phoneType": "HOME",
           "preferred": true,
+          "extension": null,
           "prefix": "619"
         }
       ]
