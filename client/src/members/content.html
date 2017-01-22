@@ -24,7 +24,7 @@
         <table>
             <tbody id="personalInfoSection" status="view" class="formSection">
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <h4>Personal Info</h4>
                     </td>
                     <td class="right-text">
@@ -33,59 +33,59 @@
                     </td>
                 </tr>
                 <tr>
-                    <td field="label">First Name</td>
+                    <td field="label" colspan="2">First Name</td>
                     <td field="input">
                         <input id="firstNameField" name="firstName" type="text" required />
                     </td>
                     <td>*</td>
                 </tr>
                 <tr>
-                    <td field="label">Middle Name</td>
+                    <td field="label" colspan="2">Middle Name</td>
                     <td field="input">
                         <input id="middleNameField" name="middleName" type="text" required />
                     </td>
                     <td>*</td>
                 </tr>
                 <tr>
-                    <td field="label">Last Name</td>
+                    <td field="label" colspan="2">Last Name</td>
                     <td field="input">
                         <input id="lastNameField" name="lastName" type="text" required />
                     </td>
                     <td>*</td>
                 </tr>
                 <tr> <!-- TODO need an age field along with this too, that is calculated based on the DOB and is not editable -->
-                    <td field="label">Date of Birth:</td>
+                    <td field="label" colspan="2">Date of Birth:</td>
                     <td field="input">
-                        <input id="dob" name="dateOfBirth" type="date" required />
+                        <input id="dobField" name="dateOfBirth" type="date" required />
                     </td>
                     <td>*</td>
                 </tr>
                 <tr>
-                    <td field="label">Sex</td>
+                    <td field="label" colspan="2">Sex</td>
                     <td field="input">
                         <!-- TODO change this to some sort of multi-option select box -->
-                        <input id="sex" name="sex" type="text" required />
+                        <input id="sexField" name="sex" type="text" required />
                     </td>
                     <td>*</td>
                 </tr>
             </tbody>
             <tbody id="addressSection" status="view" class="formSection">
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <h4>Addresses</h4>
                     </td>
                 </tr>
             </tbody>
             <tbody id="phoneSection" status="view" class="formSection">
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <h4>Phones</h4>
                     </td>
                 </tr>
             </tbody>
             <tbody id="emailSection" status="view" class="formSection">
                 <tr>
-                    <td>
+                    <td colspan="2">
                         <h4>Emails</h4>
                     </td>
                 </tr>
@@ -117,6 +117,11 @@
 <script>
     $(document).ready(function(){
 
+        //TODO individual save options are disabled for add member page, only available for edit member page
+        //TODO need to handle the addresses/phones/emails specially, with view/edit changes
+        //TODO need warning for cancelling changes, and that warning will probably need special handling for addresses/phones/emails
+        //TODO disable edit links if user accessing this page only has read rights.
+
         /*************************
          * 1) Top Scope Variables
          *************************/
@@ -142,19 +147,91 @@
          * 4) Core Business Logic Functions
          ***********************************/
 
+        function buildAddressTable(addresses){
+            $.each(addresses, function(index, address){
+                var addressRow = $("<tr></tr>");
+
+                var preferredCell = $("<td></td>");
+                if(address.preferred){
+                    $(preferredCell).text("*");
+                }
+
+                $(addressRow).append(preferredCell);
+
+                addressRow.append($("<td></td>").text(address.addressType));
+
+                var addressLine1 = address.address1 + (address.address2 !== null ? " " + address.address2 : "");
+                var addressLine2 = address.city + " " + address.state + " " + address.zipCode;
+
+                var addressCell = $("<td></td>").addClass("close-text");
+                addressCell.append($("<p></p>").text(addressLine1));
+                addressCell.append($("<p></p>").text(addressLine2));
+
+                $(addressRow).append(addressCell);
+
+                var editAddressLink = $("<a></a>").attr("href", "#").attr("addressId", address.addressId).addClass("editAddressLink").text("Edit");
+                var editCell = $("<td></td>");
+                $(editCell).append(editAddressLink);
+                $(addressRow).append(editCell);
+
+                $("#addressSection").append(addressRow);
+            });
+        }
+
+        function loadMemberData(){
+            orgbuilder.api.send("members/" + memberid, orgbuilder.methods.get)
+                .done(function(memberData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        //TODO treat this as some sort of error, with a response in the UI
+                        console.log("Member not found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.member(memberData)){
+                        console.log("Error! Data returned from server for Member does not contain the Member.");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    $("#memberNameHeader").text("Member: " + memberData.firstName + " " + memberData.lastName);
+                    $("#firstNameField").val(memberData.firstName);
+                    $("#middleNameField").val(memberData.middleName);
+                    $("#lastNameField").val(memberData.lastName);
+                    $("#dobField").val(convertResponseToDateString(memberData.dateOfBirth));
+                    $("#sexField").val(memberData.sex);
+
+                    buildAddressTable(memberData.addresses);
+                })
+                .fail(function(){
+                    //TODO need better fail behavior
+                    console.log("FAILED TO LOAD MEMBER");
+                });
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        //Convert the date format in the JSON response (MM-dd-yyyy) to the format needed for the date input field (yyyy-MM-dd)
+        function convertResponseToDateString(responseDate){
+            var date = new Date(Date.parse(responseDate));
+            var month = date.getMonth() + 1;
+            month = ("" + month).length === 1 ? "0" + month : month;
+            var day = ("" + date.getDate()).length === 1 ? "0" + date.getDate() : date.getDate();
+            return date.getFullYear() + "-" + month + "-" + day;
+        }
 
         /*************************
          * 6) Page Initialization
          *************************/
 
         if(memberid){
-
+            loadMemberData();
         }
         else{
             $("#memberNameHeader").text("New Member");
+            $("#deleteBtn").addClass("hidden");
+            $(".editFieldsLink").addClass("hidden");
         }
 
     });

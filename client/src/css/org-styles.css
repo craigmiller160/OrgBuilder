@@ -23,3 +23,7 @@
 .right-text {
     text-align: right;
 }
+
+.close-text {
+    line-height: 0;
+}
