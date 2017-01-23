@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder</title>
+    <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <style>
+        .form-signin .heading {
+            text-align: center;
+        }
+
+        #signin-box {
+            margin-top: 8em;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">OrgBuilder</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3 col-lg-4"></div>
+            <div id="signin-box" class="col-sm-6 col-lg-4 ">
+                <div id="loginFailedAlert" class="invisible alert alert-danger fade in">
+                    <!--<a href="#" class="close" data-dismiss="alert">&times;</a>-->
+                    <strong>Error!</strong> Invalid email or password.
+                </div>
+                <div class="well well-lg">
+                    <form class="form-signin">
+                        <h2 class="heading">Sign in</h2>
+                        <div class="form-group">
+                            <label for="emailField" class="sr-only">Email address</label>
+                            <input type="email" id="emailField" class="form-control" title="User email address" placeholder="Email address" required autofocus />
+                            <label for="passwordField" class="sr-only">Password</label>
+                            <input type="password" id="passwordField" class="form-control" title="User password" placeholder="Password" required />
+                        </div>
+                        <button id="signinBtn" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="jquery-3.1.1.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="js/org-props.js"></script>
+<script src="js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function () {
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $(".form-signin").submit(signin);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function signin(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            var email = $("#emailField").val();
+            var password = $("#passwordField").val();
+            var jsonMsg = {
+                "userEmail": email,
+                "password": password
+            };
+
+            orgbuilder.api.send("auth", orgbuilder.methods.post, jsonMsg)
+                .done(function(){
+                    console.log("Login Success");
+                    //TODO redirect somewhere
+                })
+                .fail(function(jqXHR){
+                    console.log("Login failed: " + jqXHR.status + " " + jqXHR.statusText);
+                    $("#loginFailedAlert").removeClass("invisible");
+                    $("#passwordField").val("");
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+    });
+</script>
+</body>
+</html>
