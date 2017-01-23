@@ -23,7 +23,7 @@ public class UserDaoTest {
 
     private static final String TEST_SCHEMA_NAME = "test_user";
     private static final String RESET_USER_AUTO_INC_SQL =
-            "alter table users " +
+            "alter table old.users " +
             "auto_increment = 1;";
     private static final String RESET_ORG_AUTO_INC_SQL =
             "alter table orgs " +
@@ -119,7 +119,7 @@ public class UserDaoTest {
         user2 = userDao.insert(user2);
 
         long result = userDao.countByOrg(user1.getOrgId());
-        assertEquals("Incorrect count of users by orgId", 10, result);
+        assertEquals("Incorrect count of old.users by orgId", 10, result);
     }
 
     @Test
@@ -130,9 +130,9 @@ public class UserDaoTest {
         user2 = userDao.insert(user2);
 
         List<UserDTO> result = userDao.getAllByOrg(user1.getOrgId());
-        assertNotNull("List of users by orgId not returned", result);
-        assertEquals("Incorrect size of list of users by orgId was returned", 10, result.size());
-        assertFalse("List of users by orgId contains a record it should not", result.contains(user2));
+        assertNotNull("List of old.users by orgId not returned", result);
+        assertEquals("Incorrect size of list of old.users by orgId was returned", 10, result.size());
+        assertFalse("List of old.users by orgId contains a record it should not", result.contains(user2));
     }
 
     @Test
@@ -143,9 +143,9 @@ public class UserDaoTest {
         user2 = userDao.insert(user2);
 
         List<UserDTO> result = userDao.getAllLimitByOrg(user1.getOrgId(), 3, 3);
-        assertNotNull("List of users by orgId not returned", result);
-        assertEquals("Incorrect size of list of users by orgId was returned", 3, result.size());
-        assertFalse("List of users by orgId contains a record it should not", result.contains(user2));
+        assertNotNull("List of old.users by orgId not returned", result);
+        assertEquals("Incorrect size of list of old.users by orgId was returned", 3, result.size());
+        assertFalse("List of old.users by orgId contains a record it should not", result.contains(user2));
     }
 
     @Test

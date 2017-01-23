@@ -182,12 +182,12 @@ public class MemberService {
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             List<MemberDTO> list = null;
             if(memberFilterBean.isSearch()){
-                OrgApiLogger.getServiceLogger().debug("Getting list of members that match search parameters. Subject: " + serviceCommons.getSubjectName() +
+                OrgApiLogger.getServiceLogger().debug("Getting list of old.members that match search parameters. Subject: " + serviceCommons.getSubjectName() +
                         " | Schema: " + serviceCommons.getSchemaName());
                 list = (List<MemberDTO>) memberDao.query(AdditionalQueries.SEARCH, memberFilterBean);
             }
             else{
-                OrgApiLogger.getServiceLogger().debug("Getting list of members. Subject: " + serviceCommons.getSubjectName() +
+                OrgApiLogger.getServiceLogger().debug("Getting list of old.members. Subject: " + serviceCommons.getSubjectName() +
                         " | Schema: " + serviceCommons.getSchemaName());
                 list = (offset >= 0 && size >= 0) ? memberDao.getAll(offset, size) : memberDao.getAll();
             }

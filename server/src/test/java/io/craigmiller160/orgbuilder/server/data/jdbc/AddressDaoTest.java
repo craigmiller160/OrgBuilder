@@ -27,7 +27,7 @@ public class AddressDaoTest {
             "ALTER TABLE addresses " +
             "AUTO_INCREMENT = 1;";
     private static final String RESET_MEMBER_AUTO_INC_SQL =
-            "ALTER TABLE members " +
+            "ALTER TABLE old.members " +
             "AUTO_INCREMENT = 1000;";
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();

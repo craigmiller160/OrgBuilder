@@ -36,7 +36,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/users")
+@Path("/old.users")
 public class UserResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -48,13 +48,13 @@ public class UserResource {
     private UriInfo uriInfo;
 
     /**
-     * RESOURCE: GET /users
+     * RESOURCE: GET /old.users
      *
-     * PURPOSE: Get all users in the system, restricted based on
+     * PURPOSE: Get all old.users in the system, restricted based on
      *          their Org if a non-MASTER user calls this.
      *
      * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
+     *          old.users will only access old.users in their own Org.
      *
      * BODY: NONE
      *
@@ -64,7 +64,7 @@ public class UserResource {
      * {search}: additional params for performing a search function.
      *
      * @param userFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the users retrieved.
+     * @return the Response, containing all the old.users retrieved.
      * @throws OrgApiException if an error occurs.
      */
     @GET
@@ -75,7 +75,7 @@ public class UserResource {
         UserService service = factory.newUserService(securityContext);
 
         //If the principal has an orgId, they must have an Admin role (due to annotation restriction)
-        //The service will restrict results to only users in their org.
+        //The service will restrict results to only old.users in their org.
         UserListDTO results = service.getAllUsers(getPrincipalOrgId(), userFilterBean.getOffset(), userFilterBean.getSize());
 
         if(results != null){
@@ -90,13 +90,13 @@ public class UserResource {
     }
 
     /**
-     * RESOURCE: POST /users
+     * RESOURCE: POST /old.users
      *
      * PURPOSE: Create a new user. If done by an ADMIN user, that user
      *          will be restricted to the creating user's Org.
      *
      * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
+     *          old.users will only access old.users in their own Org.
      *
      * BODY: The user to create.
      *
@@ -123,12 +123,12 @@ public class UserResource {
     }
 
     /**
-     * RESOURCE: PUT /users/{userId}
+     * RESOURCE: PUT /old.users/{userId}
      *
      * PURPOSE: Update an existing user.
      *
      * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
+     *          old.users will only access old.users in their own Org.
      *          In addition, if the user calling this resource is
      *          the same as the user being retrieved, they can access it.
      *
@@ -167,12 +167,12 @@ public class UserResource {
     }
 
     /**
-     * RESOURCE: DELETE /users/{userId}
+     * RESOURCE: DELETE /old.users/{userId}
      *
      * PURPOSE: Delete an existing user.
      *
      * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
+     *          old.users will only access old.users in their own Org.
      *          In addition, if the user calling this resource is
      *          the same as the user being retrieved, they can access it.
      *
@@ -205,12 +205,12 @@ public class UserResource {
     }
 
     /**
-     * RESOURCE: GET /users/{userId}
+     * RESOURCE: GET /old.users/{userId}
      *
      * PURPOSE: Retrieve the specified user.
      *
      * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
+     *          old.users will only access old.users in their own Org.
      *          In addition, if the user calling this resource is
      *          the same as the user being retrieved, they can access it.
      *
@@ -258,7 +258,7 @@ public class UserResource {
 
     private void ensureMasterCreationRestriction(UserDTO user) {
         if(user.getRoles().contains(Role.MASTER) && !isPrincipalMaster()){
-            throw new ForbiddenException("Only users with Master access can give a user Master access");
+            throw new ForbiddenException("Only old.users with Master access can give a user Master access");
         }
 
         if(user.getRoles().contains(Role.MASTER) && (user.getRoles().size() != 1 || user.getOrgId() > 0)){

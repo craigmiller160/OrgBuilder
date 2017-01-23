@@ -30,7 +30,7 @@ public class MemberDaoWithPreferredTest {
 
     private static final String TEST_SCHEMA_NAME = "test_member_preferred";
     private static final String RESET_MEMBER_AUTO_INC_SQL =
-            "alter table members " +
+            "alter table old.members " +
             "auto_increment = 1000;";
     private static final String RESET_ADDRESS_AUTO_INC_SQL =
             "alter table addresses " +

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS orgs (
   PRIMARY KEY (org_id)
 );
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS old.users (
   user_id BIGINT NOT NULL AUTO_INCREMENT,
   user_email VARCHAR(255) NOT NULL UNIQUE,
   passwd VARCHAR(255) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS tokens (
   token_hash VARCHAR(255) NOT NULL UNIQUE,
   expiration TIMESTAMP NOT NULL,
   PRIMARY KEY (token_id),
-  FOREIGN KEY (user_id) REFERENCES users (user_id),
+  FOREIGN KEY (user_id) REFERENCES old.users (user_id),
   FOREIGN KEY (org_id) REFERENCES orgs (org_id)
 );
 
@@ -82,14 +82,14 @@ CREATE PROCEDURE restrict_master_role_proc (IN role VARCHAR(255))
   END ;;
 
 CREATE TRIGGER users_before_insert_trigger
-BEFORE INSERT ON users FOR EACH ROW
+BEFORE INSERT ON old.users FOR EACH ROW
   BEGIN
     CALL restrict_master_role_proc(NEW.role);
     CALL restrict_master_orgid_proc(NEW.role, NEW.org_id);
   END ;;
 
 CREATE TRIGGER users_before_update_trigger
-BEFORE UPDATE ON users FOR EACH ROW
+BEFORE UPDATE ON old.users FOR EACH ROW
   BEGIN
     CALL restrict_master_role_proc(NEW.role);
     CALL restrict_master_orgid_proc(NEW.role, NEW.org_id);

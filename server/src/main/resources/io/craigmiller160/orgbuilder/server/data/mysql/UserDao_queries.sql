@@ -1,43 +1,43 @@
 -- The queries used by the UserDao
 
 -- QUERY=INSERT
-INSERT INTO users (user_id, user_email, passwd, first_name, last_name, role, org_id)
+INSERT INTO old.users (user_id, user_email, passwd, first_name, last_name, role, org_id)
 VALUES (?,?,?,?,?, ?, ?);
 
 -- QUERY=UPDATE
-UPDATE users
+UPDATE old.users
 SET user_id = ?, user_email = ?, passwd = ?, first_name = ?, last_name = ?, role = ?, org_id = ?
 WHERE user_id = ?;
 
 -- QUERY=DELETE
-DELETE FROM users
+DELETE FROM old.users
 WHERE user_id = ?;
 
 -- QUERY=GET_BY_ID
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 WHERE u.user_id = ?;
 
 -- QUERY=COUNT
 SELECT COUNT(*) AS user_count
-FROM users;
+FROM old.users;
 
 -- QUERY=GET_ALL
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 ORDER BY u.user_id ASC;
 
 -- QUERY=GET_ALL_LIMIT
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 ORDER BY u.user_id ASC
 LIMIT ?,?;
 
 -- QUERY=INSERT_OR_UPDATE
-INSERT INTO users (user_id, user_email, passwd, first_name, last_name, role, org_id)
+INSERT INTO old.users (user_id, user_email, passwd, first_name, last_name, role, org_id)
 VALUES (?,?,?,?,?,?,?)
 ON DUPLICATE KEY UPDATE user_email = VALUES (user_email),
   passwd = VALUES (passwd), first_name = VALUES (first_name), last_name = VALUES (last_name),
@@ -45,37 +45,37 @@ ON DUPLICATE KEY UPDATE user_email = VALUES (user_email),
 
 -- QUERY=GET_WITH_NAME
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 WHERE u.user_email = ?;
 
 -- QUERY=GET_BY_ID_AND_ORG
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 WHERE u.user_id = ?
 AND u.org_id = ?;
 
 -- QUERY=COUNT_BY_ORG
 SELECT COUNT(*) AS user_count
-FROM users
+FROM old.users
 WHERE org_id = ?;
 
 -- QUERY=GET_ALL_BY_ORG
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 WHERE u.org_id = ?
 ORDER BY u.user_id ASC;
 
 -- QUERY=GET_ALL_LIMIT_BY_ORG
 SELECT u.*, o.org_name
-FROM users u
+FROM old.users u
   LEFT JOIN orgs o ON u.org_id = o.org_id
 WHERE u.org_id = ?
 ORDER BY u.user_id ASC
 LIMIT ?,?;
 
 -- QUERY=DELETE_BY_ORG
-DELETE FROM users
+DELETE FROM old.users
 WHERE org_id = ?;

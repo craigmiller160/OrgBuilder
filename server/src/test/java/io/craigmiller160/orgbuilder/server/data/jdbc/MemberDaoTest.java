@@ -20,7 +20,7 @@ public class MemberDaoTest {
 
     private static final String TEST_SCHEMA_NAME = "test_member";
     private static final String RESET_AUTO_INC_SQL =
-            "alter table members " +
+            "alter table old.members " +
             "auto_increment = 1000;";
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();
