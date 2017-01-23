@@ -145,7 +145,7 @@ public class UserService {
         DataConnection connection = null;
         UserListDTO results = null;
         try{
-            OrgApiLogger.getServiceLogger().debug("Getting list of old.users. Subject: " + serviceCommons.getSubjectName());
+            OrgApiLogger.getServiceLogger().debug("Getting list of users. Subject: " + serviceCommons.getSubjectName());
             connection = serviceCommons.newConnection();
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 

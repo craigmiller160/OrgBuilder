@@ -25,7 +25,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/old.members/{memberId}/phones")
+@Path("/members/{memberId}/phones")
 public class PhoneResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -40,7 +40,7 @@ public class PhoneResource {
     private long memberId;
 
     /**
-     * RESOURCE: GET /old.members/{memberId}/phones
+     * RESOURCE: GET /members/{memberId}/phones
      *
      * PURPOSE: Retrieve all phones for a member.
      *
@@ -74,7 +74,7 @@ public class PhoneResource {
     }
 
     /**
-     * RESOURCE: POST /old.members/{memberId}/phones
+     * RESOURCE: POST /members/{memberId}/phones
      *
      * PURPOSE: Create a new phone for a member.
      *
@@ -101,7 +101,7 @@ public class PhoneResource {
     }
 
     /**
-     * RESOURCE: PUT /old.members/{memberId}/phones/{phoneId}
+     * RESOURCE: PUT /members/{memberId}/phones/{phoneId}
      *
      * PURPOSE: Update an existing phone for a member.
      *
@@ -136,7 +136,7 @@ public class PhoneResource {
     }
 
     /**
-     * RESOURCE: DELETE /old.members/{memberId}/phones/{phoneId}
+     * RESOURCE: DELETE /members/{memberId}/phones/{phoneId}
      *
      * PURPOSE: Delete an existing phone for a member.
      *
@@ -169,7 +169,7 @@ public class PhoneResource {
     }
 
     /**
-     * RESOURCE: GET /old.members/{memberId}/phones/{phoneId}
+     * RESOURCE: GET /members/{memberId}/phones/{phoneId}
      *
      * PURPOSE: Retrieve a single phone for a member.
      *

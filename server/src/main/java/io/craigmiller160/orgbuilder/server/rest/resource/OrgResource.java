@@ -104,7 +104,7 @@ public class OrgResource {
      *
      * PURPOSE: Update an existing Org.
      *
-     * ACCESS: Only old.users with the MASTER role, or old.users
+     * ACCESS: Only users with the MASTER role, or users
      *          with the ADMIN role who are a part of the
      *          Org being updated.
      *
@@ -141,7 +141,7 @@ public class OrgResource {
      *
      * PURPOSE: Delete an existing Org.
      *
-     * ACCESS: Only old.users with the MASTER role, or old.users
+     * ACCESS: Only users with the MASTER role, or users
      *          with the ADMIN role who are a part of the
      *          Org being updated.
      *
@@ -176,7 +176,7 @@ public class OrgResource {
      *
      * PURPOSE: Retrieve a single Org and all its details.
      *
-     * ACCESS: Only old.users with the MASTER role, or old.users
+     * ACCESS: Only users with the MASTER role, or users
      *          with the ADMIN role who are a part of the
      *          Org being updated.
      *

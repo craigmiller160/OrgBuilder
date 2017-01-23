@@ -16,7 +16,7 @@ WHERE token_id = ?;
 -- QUERY=GET_BY_ID
 SELECT t.*, u.user_email, o.org_name
 FROM tokens t
-  LEFT JOIN old.users u ON t.user_id = u.user_id
+  LEFT JOIN users u ON t.user_id = u.user_id
   LEFT JOIN orgs o ON t.org_id = o.org_id
 WHERE t.token_id = ?;
 
@@ -27,14 +27,14 @@ FROM tokens;
 -- QUERY=GET_ALL
 SELECT t.*, u.user_email, o.org_name
 FROM tokens t
-  LEFT JOIN old.users u ON t.user_id = u.user_id
+  LEFT JOIN users u ON t.user_id = u.user_id
   LEFT JOIN orgs o ON t.org_id = o.org_id
 ORDER BY token_id ASC;
 
 -- QUERY=GET_ALL_LIMIT
 SELECT t.*, u.user_email, o.org_name
 FROM tokens t
-  LEFT JOIN old.users u ON t.user_id = u.user_id
+  LEFT JOIN users u ON t.user_id = u.user_id
   LEFT JOIN orgs o ON t.org_id = o.org_id
 ORDER BY token_id ASC
 LIMIT ?,?;
@@ -48,7 +48,7 @@ ON DUPLICATE KEY UPDATE user_id = VALUES (user_id), token_hash = VALUES (token_h
 -- QUERY=GET_WITH_HASH
 SELECT t.*, u.user_email, o.org_name
 FROM tokens t
-  LEFT JOIN old.users u ON t.user_id = u.user_id
+  LEFT JOIN users u ON t.user_id = u.user_id
   LEFT JOIN orgs o ON t.org_id = o.org_id
 WHERE token_hash = ?;
 

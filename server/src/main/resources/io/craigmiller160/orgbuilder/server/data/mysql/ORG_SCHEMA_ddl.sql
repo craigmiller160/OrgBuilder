@@ -1,6 +1,6 @@
 -- Creates the table layout for each organization's schema in the database of this application
 
-CREATE TABLE old.members (
+CREATE TABLE members (
   member_id BIGINT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(255),
   middle_name VARCHAR(255),
@@ -10,7 +10,7 @@ CREATE TABLE old.members (
   PRIMARY KEY (member_id)
 );
 
-ALTER TABLE old.members AUTO_INCREMENT = 1000;
+ALTER TABLE members AUTO_INCREMENT = 1000;
 
 CREATE TABLE addresses (
   address_id BIGINT NOT NULL AUTO_INCREMENT,
@@ -23,7 +23,7 @@ CREATE TABLE addresses (
   preferred_address BOOLEAN NOT NULL DEFAULT FALSE,
   address_member_id BIGINT NOT NULL,
   PRIMARY KEY (address_id),
-  FOREIGN KEY (address_member_id) REFERENCES old.members (member_id)
+  FOREIGN KEY (address_member_id) REFERENCES members (member_id)
 );
 
 CREATE TABLE phones (
@@ -36,7 +36,7 @@ CREATE TABLE phones (
   preferred_phone BOOLEAN NOT NULL DEFAULT FALSE,
   phone_member_id BIGINT NOT NULL,
   PRIMARY KEY (phone_id),
-  FOREIGN KEY (phone_member_id) REFERENCES old.members (member_id)
+  FOREIGN KEY (phone_member_id) REFERENCES members (member_id)
 );
 
 CREATE TABLE emails (
@@ -46,5 +46,5 @@ CREATE TABLE emails (
   preferred_email BOOLEAN NOT NULL DEFAULT FALSE,
   email_member_id BIGINT NOT NULL,
   PRIMARY KEY (email_id),
-  FOREIGN KEY (email_member_id) REFERENCES old.members (member_id)
+  FOREIGN KEY (email_member_id) REFERENCES members (member_id)
 );

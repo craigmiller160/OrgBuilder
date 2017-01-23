@@ -25,7 +25,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/old.members/{memberId}/addresses")
+@Path("/members/{memberId}/addresses")
 public class AddressResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -40,7 +40,7 @@ public class AddressResource {
     private long memberId;
 
     /**
-     * RESOURCE: GET /old.members/{memberId}/addresses
+     * RESOURCE: GET /members/{memberId}/addresses
      *
      * PURPOSE: Retrieve all addresses for a specific member.
      *
@@ -74,7 +74,7 @@ public class AddressResource {
     }
 
     /**
-     * RESOURCE: POST /old.members/{memberId}/addresses
+     * RESOURCE: POST /members/{memberId}/addresses
      *
      * PURPOSE: Create a new address for a member.
      *
@@ -101,7 +101,7 @@ public class AddressResource {
     }
 
     /**
-     * RESOURCE: PUT /old.members/{memberId}/addresses/{addressId}
+     * RESOURCE: PUT /members/{memberId}/addresses/{addressId}
      *
      * PURPOSE: To update an existing address for a member.
      *
@@ -136,7 +136,7 @@ public class AddressResource {
     }
 
     /**
-     * RESOURCE: DELETE /old.members/{memberId}/addresses/{addressId}
+     * RESOURCE: DELETE /members/{memberId}/addresses/{addressId}
      *
      * PURPOSE: Delete an existing address from a member.
      *
@@ -169,7 +169,7 @@ public class AddressResource {
     }
 
     /**
-     * RESOURCE: GET /old.members/{memberId}/addresses/{addressId}
+     * RESOURCE: GET /members/{memberId}/addresses/{addressId}
      *
      * PURPOSE: Retrieve a single address for a member.
      *

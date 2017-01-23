@@ -24,7 +24,7 @@ public class EmailDaoTest {
             "ALTER TABLE emails " +
             "AUTO_INCREMENT = 1;";
     private static final String RESET_MEMBER_AUTO_INC_SQL =
-            "ALTER TABLE old.members " +
+            "ALTER TABLE members " +
             "AUTO_INCREMENT = 1000;";
 
     private static final DaoTestUtils daoTestUtils = new DaoTestUtils();

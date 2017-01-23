@@ -25,7 +25,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/old.members/{memberId}/emails")
+@Path("/members/{memberId}/emails")
 public class EmailResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -40,7 +40,7 @@ public class EmailResource {
     private long memberId;
 
     /**
-     * RESOURCE: GET /old.members/{memberId}/emails
+     * RESOURCE: GET /members/{memberId}/emails
      *
      * PURPOSE: Retrieve all emails for a specific member.
      *
@@ -74,7 +74,7 @@ public class EmailResource {
     }
 
     /**
-     * RESOURCE: POST /old.members/{memberId}/emails
+     * RESOURCE: POST /members/{memberId}/emails
      *
      * PURPOSE: Create new email for a member.
      *
@@ -101,7 +101,7 @@ public class EmailResource {
     }
 
     /**
-     * RESOURCE: PUT /old.members/{memberId}/emails/{emailId}
+     * RESOURCE: PUT /members/{memberId}/emails/{emailId}
      *
      * PURPOSE: Update an existing email for a member.
      *
@@ -137,7 +137,7 @@ public class EmailResource {
     }
 
     /**
-     * RESOURCE: DELETE /old.members/{memberId}/emails/{emailId}
+     * RESOURCE: DELETE /members/{memberId}/emails/{emailId}
      *
      * PURPOSE: Delete an existing email for a member.
      *
@@ -170,7 +170,7 @@ public class EmailResource {
     }
 
     /**
-     * RESOURCE: GET /old.members/{memberId}/emails/{emailId}
+     * RESOURCE: GET /members/{memberId}/emails/{emailId}
      *
      * PURPOSE: To retrieve a single email for a member.
      *

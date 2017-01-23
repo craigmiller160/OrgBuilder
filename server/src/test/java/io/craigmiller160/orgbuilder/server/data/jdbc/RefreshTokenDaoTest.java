@@ -28,7 +28,7 @@ public class RefreshTokenDaoTest {
             "auto_increment = 1;";
 
     private static final String RESET_USER_AUTO_INC_SQL =
-            "alter table old.users " +
+            "alter table users " +
             "auto_increment = 1;";
 
     private static final String RESET_ORG_AUTO_INC_SQL =

@@ -32,7 +32,7 @@ import java.net.URI;
  */
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@Path("/old.members")
+@Path("/members")
 public class MemberResource {
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
@@ -44,9 +44,9 @@ public class MemberResource {
     private UriInfo uriInfo;
 
     /**
-     * RESOURCE: GET /old.members
+     * RESOURCE: GET /members
      *
-     * PURPOSE: Retrieve all old.members.
+     * PURPOSE: Retrieve all members.
      *
      * ACCESS: Users with the READ role.
      *
@@ -58,7 +58,7 @@ public class MemberResource {
      * {search}: a number of other params for performing a search for a specific member.
      *
      * @param membersFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the old.members retrieved by the request.
+     * @return the Response, containing all the members retrieved by the request.
      * @throws OrgApiException if an error occurs.
      */
     @GET
@@ -79,7 +79,7 @@ public class MemberResource {
     }
 
     /**
-     * RESOURCE: POST /old.members
+     * RESOURCE: POST /members
      *
      * PURPOSE: Create a new member.
      *
@@ -106,7 +106,7 @@ public class MemberResource {
     }
 
     /**
-     * RESOURCE: PUT /old.members/{memberId}
+     * RESOURCE: PUT /members/{memberId}
      *
      * PURPOSE: Update an existing member.
      *
@@ -141,7 +141,7 @@ public class MemberResource {
     }
 
     /**
-     * RESOURCE: DELETE /old.members/{memberId}
+     * RESOURCE: DELETE /members/{memberId}
      *
      * PURPOSE: Delete an existing member.
      *
@@ -173,7 +173,7 @@ public class MemberResource {
     }
 
     /**
-     * RESOURCE: GET /old.members/{memberId}
+     * RESOURCE: GET /members/{memberId}
      *
      * PURPOSE: Retrieve a single member and all its details.
      *
