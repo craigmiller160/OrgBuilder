@@ -27,9 +27,8 @@
         <div class="row">
             <div class="col-sm-3 col-lg-4"></div>
             <div id="signin-box" class="col-sm-6 col-lg-4 ">
-                <div id="loginFailedAlert" class="invisible alert alert-danger fade in">
-                    <!--<a href="#" class="close" data-dismiss="alert">&times;</a>-->
-                    <strong>Error!</strong> Invalid email or password.
+                <div id="errorAlert" class="invisible alert alert-danger fade in">
+                    <strong>Error! </strong><span id="errorMsg"></span>
                 </div>
                 <div class="well well-lg">
                     <form class="form-signin">
@@ -47,6 +46,7 @@
         </div>
     </div>
 <script src="jquery-3.1.1.js"></script>
+<script src="URI.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
 <script src="js/org-props.js"></script>
 <script src="js/orgbuilder.js"></script>
@@ -56,6 +56,13 @@
         /*************************
          * 1) Top Scope Variables
          *************************/
+
+        var denied = (function(){
+            var url = URI(window.location.href);
+            if(url.hasQuery("denied")){
+                return url.search(true).denied;
+            }
+        })();
 
         /*******************************
          * 2) Access to Page Validation
@@ -86,11 +93,12 @@
             orgbuilder.api.send("auth", orgbuilder.methods.post, jsonMsg)
                 .done(function(){
                     console.log("Login Success");
-                    //TODO redirect somewhere
+                    window.location = "main.html";
                 })
                 .fail(function(jqXHR){
                     console.log("Login failed: " + jqXHR.status + " " + jqXHR.statusText);
-                    $("#loginFailedAlert").removeClass("invisible");
+                    $("#errorAlert").removeClass("invisible");
+                    $("#errorMsg").text("Invalid email or password.");
                     $("#passwordField").val("");
                 });
         }
@@ -102,6 +110,13 @@
         /*************************
          * 6) Page Initialization
          *************************/
+
+        if(denied){
+            $("#errorAlert").removeClass("invisible");
+            $("#errorMsg").text("Access denied.");
+        }
+
+        //TODO include a way to test if the token exists AND is still un-expired by querying the server. if it passes the test, send the user along to the main menu
 
     });
 </script>
