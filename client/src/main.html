@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>OrgBuilder</title>
-    <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css" />
+    <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -26,8 +27,29 @@
             </div>
         </div>
     </nav>
-    <div class="container-fluid">
-        <h1>Hi there</h1>
+    <div id="wrapper">
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a id="menu-toggle" href="#menu-toggle">Sidebar</a>
+                </li>
+                <li>
+                    <a href="#">Item 1</a>
+                </li>
+                <li>
+                    <a href="#">Item 2</a>
+                </li>
+                <li>
+                    <a href="#">Item 3</a>
+                </li>
+                <li>
+                    <a href="#">Item 4</a>
+                </li>
+                <li>
+                    <a href="#">Item 5</a>
+                </li>
+            </ul>
+        </div>
     </div>
 <script src="jquery-3.1.1.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
@@ -55,9 +77,19 @@
          * 3) UI Actions
          ****************/
 
+        $("#menu-toggle").click(toggleMenu);
+
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        function toggleMenu(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            $("#wrapper").toggleClass("toggled");
+        }
 
         /***********************
          * 5) Utility Functions
