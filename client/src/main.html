@@ -4,53 +4,93 @@
     <meta charset="UTF-8">
     <title>OrgBuilder</title>
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="css/simple-sidebar.css" />
     <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
+            <!-- Navbar Header -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#orgNavbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
                 <a class="navbar-brand" href="#">OrgBuilder</a>
             </div>
-            <div id="orgNavbar" class="collapse navbar-collapse">
+
+            <!-- Navbar Items -->
+            <div>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#">Logout</a>
+                        <!-- TODO make the current user's name appear here -->
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i> User <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">
+                                    <i class="glyphicon glyphicon-user"></i> User Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="glyphicon glyphicon-globe"></i> Org Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="glyphicon glyphicon-off"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+    <!-- Wrapper around sidebar and page content -->
     <div id="wrapper">
+        <!-- Sidebar -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a id="menu-toggle" href="#menu-toggle">Sidebar</a>
+            <ul class="sidebar-nav nav flex-column">
+                <li>
+                    <a id="menu-toggle" href="#">
+                        <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="#">
+                        <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="#">Item 1</a>
+                    <a href="#">
+                        <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="#">Item 2</a>
+                    <a href="#">
+                        <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="#">Item 3</a>
-                </li>
-                <li>
-                    <a href="#">Item 4</a>
-                </li>
-                <li>
-                    <a href="#">Item 5</a>
+                    <a href="#">
+                        <i class="glyphicon glyphicon-signal"></i><span class="sidebar-text"> Members</span>
+                    </a>
                 </li>
             </ul>
         </div>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-md-offset-3">
+                        <div class="page-header">
+                            <h1>Welcome to OrgBuilder</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 <script src="jquery-3.1.1.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
 <script src="js/org-props.js"></script>
@@ -68,10 +108,10 @@
          * 2) Access to Page Validation
          *******************************/
 
-        if(!orgbuilder.validateAccess().hasToken().isValid()){
-            window.location = "index.html?denied=true"
-            return;
-        }
+//        if(!orgbuilder.validateAccess().hasToken().isValid()){
+//            window.location = "index.html?denied=true"
+//            return;
+//        }
 
         /****************
          * 3) UI Actions
@@ -84,11 +124,9 @@
          ***********************************/
 
         function toggleMenu(event){
-            if(event !== null){
-                event.preventDefault();
-            }
-
-            $("#wrapper").toggleClass("toggled");
+            event.preventDefault();
+            console.log("Working"); //TODO delete this
+            $("#wrapper").toggleClass("display-menu");
         }
 
         /***********************

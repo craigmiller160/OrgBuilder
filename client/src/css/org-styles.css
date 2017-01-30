@@ -1,3 +1,71 @@
 html, body {
     height: 100%;
 }
+
+nav.navbar ul.navbar-right {
+    padding-right: 30px;
+}
+
+.page-header {
+    text-align: center;
+}
+
+#sidebar-wrapper {
+    z-index: 1;
+    position: absolute;
+    width: 80px;
+    height: 100%;
+    overflow-y: hidden;
+    border-right: 1px solid #e7e7e7;;
+}
+
+nav.navbar {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    padding: 15px;
+}
+
+.sidebar-nav {
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-nav li {
+    text-indent: 10px;
+    line-height: 40px;
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    font-size: 16px;
+    white-space: nowrap;
+    color: #777;
+}
+
+.sidebar-nav li a .sidebar-text {
+    display: none;
+}
+
+#wrapper.display-menu #sidebar-wrapper {
+    width: 200px;
+}
+
+#wrapper.display-menu #sidebar-wrapper .sidebar-text {
+    display: inline;
+}
+
+#wrapper.display-menu #page-content-wrapper {
+    padding-left: 200px;
+}
+
+#sidebar-wrapper .glyphicon {
+    text-indent: 0;
+    margin-right: 5px;
+}
