@@ -1,6 +1,14 @@
+/*****************
+ * HTML ELEMENTS *
+ *****************/
+
 html, body {
     height: 100%;
 }
+
+/**********************
+ * BOOTSTRAP OVERRIDE *
+ **********************/
 
 nav.navbar ul.navbar-right {
     padding-right: 30px;
@@ -9,6 +17,24 @@ nav.navbar ul.navbar-right {
 .page-header {
     text-align: center;
 }
+
+nav.navbar {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+/*************
+ * MY STYLES *
+ *************/
+
+#page-content-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    padding: 15px;
+}
+
+/* Sidebar Style */
 
 #sidebar-wrapper {
     z-index: 1;
@@ -21,18 +47,6 @@ nav.navbar ul.navbar-right {
     -moz-transition: width 0.5s;
     -webkit-transition: width 0.5s;
     -o-transition: width 0.5s;
-}
-
-nav.navbar {
-    padding-bottom: 0;
-    margin-bottom: 0;
-}
-
-#page-content-wrapper {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    padding: 15px;
 }
 
 .sidebar-nav {
@@ -57,6 +71,13 @@ nav.navbar {
     display: none;
 }
 
+#sidebar-wrapper .glyphicon {
+    text-indent: 0;
+    margin-right: 5px;
+}
+
+/* Sidebar Show/Hide Styles */
+
 #wrapper.display-menu #sidebar-wrapper {
     width: 200px;
 }
@@ -67,9 +88,4 @@ nav.navbar {
 
 #wrapper.display-menu #page-content-wrapper {
     padding-left: 200px;
-}
-
-#sidebar-wrapper .glyphicon {
-    text-indent: 0;
-    margin-right: 5px;
 }
