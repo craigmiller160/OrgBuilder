@@ -21,7 +21,7 @@
                     <li>
                         <!-- TODO make the current user's name appear here -->
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-user"></i> User <span class="caret"></span></a>
+                            <i class="glyphicon glyphicon-user"></i> <span id="userName">User</span> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="#">
@@ -34,7 +34,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#">
+                                <a id="logoutBtn" href="index.html"> <!-- TODO when this is turned into a template, probably will need an absolute path for this -->
                                     <i class="glyphicon glyphicon-off"></i> Logout
                                 </a>
                             </li>
@@ -123,10 +123,11 @@
          * 2) Access to Page Validation
          *******************************/
 
-//        if(!orgbuilder.validateAccess().hasToken().isValid()){
-//            window.location = "index.html?denied=true"
-//            return;
-//        }
+        if(!orgbuilder.validateAccess().hasToken().isValid()){
+            console.log("Access to main page denied");
+            window.location = "index.html?denied=true";
+            return;
+        }
 
         /****************
          * 3) UI Actions
@@ -134,6 +135,7 @@
 
         $("#menu-toggle").click(toggleMenu);
         $(".sidebar-parent-item").click(parentItemAction);
+        $("#logoutBtn").click(orgbuilder.jwt.clearToken);
 
         /***********************************
          * 4) Core Business Logic Functions
@@ -159,6 +161,11 @@
         /*************************
          * 6) Page Initialization
          *************************/
+
+        //Check that the access token is still valid
+        orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
+
+        $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
 
     });
 </script>

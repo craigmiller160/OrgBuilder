@@ -5,15 +5,13 @@
     <title>OrgBuilder</title>
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
-    <style>
-        .form-signin .heading {
-            text-align: center;
-        }
-
-        #signin-box {
-            margin-top: 8em;
-        }
-    </style>
+    <script>
+        //IMPORTANT: This JavaScript doesn't use any of the application API so that it can be super-lightweight and run before page load. This means changes to the client API will not affect this
+        //Send the user to the main.html page if the access token already exists.
+//        if(localStorage.getItem("orgapiToken") !== undefined && localStorage.getItem("orgapiToken") !== null){
+//            window.location = "main.html";
+//        }
+    </script>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -26,20 +24,20 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-3 col-lg-4"></div>
-            <div id="signin-box" class="col-sm-6 col-lg-4 ">
+            <div id="login-box" class="col-sm-6 col-lg-4 ">
                 <div id="errorAlert" class="invisible alert alert-danger fade in">
                     <strong>Error! </strong><span id="errorMsg"></span>
                 </div>
                 <div class="well well-lg">
-                    <form class="form-signin">
-                        <h2 class="heading">Sign in</h2>
+                    <form class="form-login">
+                        <h2 class="heading">Log In</h2>
                         <div class="form-group">
                             <label for="emailField" class="sr-only">Email address</label>
                             <input type="email" id="emailField" class="form-control" title="User email address" placeholder="Email address" required autofocus />
                             <label for="passwordField" class="sr-only">Password</label>
                             <input type="password" id="passwordField" class="form-control" title="User password" placeholder="Password" required />
                         </div>
-                        <button id="signinBtn" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                        <button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
                     </form>
                 </div>
             </div>
@@ -72,13 +70,13 @@
          * 3) UI Actions
          ****************/
 
-        $(".form-signin").submit(signin);
+        $(".form-login").submit(login);
 
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
 
-        function signin(event){
+        function login(event){
             if(event !== null){
                 event.preventDefault();
             }

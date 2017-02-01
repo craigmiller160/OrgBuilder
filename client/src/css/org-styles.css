@@ -93,3 +93,13 @@ nav.navbar {
 #wrapper.display-menu #page-content-wrapper {
     padding-left: 200px;
 }
+
+/* Log In Page */
+
+.form-login .heading {
+    text-align: center;
+}
+
+#login-box {
+    margin-top: 8em;
+}

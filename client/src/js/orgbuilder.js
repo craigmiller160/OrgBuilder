@@ -102,10 +102,11 @@ var orgbuilder = (function(){
                     var status = jqXHR.status;
                     console.log("API Request Failed. Status: " + status);
                     if(status === 403){
-                        window.location = orgProps.clientOrigin + "/access-denied.html";
+                        window.location = orgProps.clientOrigin + "/index.html?denied=true";
                     }
                     else if(status === 0){
-                        window.location = orgProps.clientOrigin + "/server-error.html";
+                        // window.location = orgProps.clientOrigin + "/server-error.html";
+                        console.log("SERVER ERROR"); //TODO replace this
                     }
                     else if(status === 401){
                         //Do nothing, this comes up during a bad login
