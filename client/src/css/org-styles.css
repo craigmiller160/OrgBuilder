@@ -67,6 +67,10 @@ nav.navbar {
     color: #777;
 }
 
+.menu-collapse {
+    list-style: none;
+}
+
 .sidebar-nav li a .sidebar-text {
     display: none;
 }
