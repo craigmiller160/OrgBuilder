@@ -80,6 +80,12 @@ nav.navbar {
     margin-right: 5px;
 }
 
+.expandable[aria-expanded = 'true'] .caret {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
 /* Sidebar Show/Hide Styles */
 
 #wrapper.display-menu #sidebar-wrapper {
