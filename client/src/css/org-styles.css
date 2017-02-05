@@ -49,6 +49,10 @@ nav.navbar {
     -o-transition: width 0.5s;
 }
 
+#wrapper.phone #sidebar-wrapper {
+    width: 0;
+}
+
 .sidebar-nav {
     padding: 0;
     list-style: none;
@@ -98,6 +102,12 @@ nav.navbar {
 
 #wrapper.display-menu #page-content-wrapper {
     padding-left: 200px;
+}
+
+#wrapper.display-menu.phone #page-content-wrapper {
+    padding-left: 0;
+    margin-left: 200px;
+    overflow: hidden;
 }
 
 /* Log In Page */

@@ -349,16 +349,18 @@ var orgbuilder = (function(){
     };
 
     var menus = (function(){
+        var navbarSidebarBtn;
         function resizeSidebar(){
             var winWidth = $(window).width();
             if(winWidth < grid.small){
                 //Smartphone or smaller, phone layout
-                $("#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn").removeClass("hidden");
+                $(navbarSidebarBtn).removeClass("hidden");
+                $("#wrapper").addClass("phone");
             }
             else{
                 //Tablet or bigger, default layout
-                $("#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn").addClass("hidden");
-
+                $(navbarSidebarBtn).addClass("hidden");
+                $("#wrapper").removeClass("phone");
             }
         }
 
@@ -366,6 +368,15 @@ var orgbuilder = (function(){
             event.preventDefault();
             $("#sidebar-wrapper .menu-collapse").collapse("hide");
             $("#wrapper").toggleClass("display-menu");
+            //Display/hide the toggle button for the phone sized menu.
+            if($("#sidebar-wrapper").hasClass("phone")){
+                if($("#wrapper").hasClass("display-menu")){
+                    $(navbarSidebarBtn).addClass("hidden");
+                }
+                else{
+                    $(navbarSidebarBtn).removeClass("hidden");
+                }
+            }
         }
 
         function parentItemAction(event){
@@ -448,6 +459,9 @@ var orgbuilder = (function(){
                     if(type !== types.login){
                         displayAccessibleMenuItems();
                     }
+
+                    //This variable is important for the resizing logic, it needs to be assigned here
+                    navbarSidebarBtn = $("#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn");
 
                     //Add resizing logic
                     if(type !== types.login){
