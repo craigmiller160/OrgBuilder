@@ -174,7 +174,7 @@
                 }
                 else{
                     if(!orgbuilder.validateData.org(orgData)){
-                        //TODO handle this error
+                        //TODO FC-3
                         console.log("BAD DATA RETURNED FROM SERVER");
                         return;
                     }
@@ -184,7 +184,7 @@
             };
 
             var failFn = function(){
-                //TODO need some sort of fail behavior
+                //TODO FC-3
                 console.log("Save FAILED");
             };
 
@@ -211,7 +211,7 @@
             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData, status, jqXHR){
                     if(jqXHR.status === 204){
-                        //TODO treat this as some sort of error, with a response in the UI
+                        //TODO FC-3
                         console.log("Org not found on server");
                         return;
                     }
@@ -228,7 +228,7 @@
                     $("#orgDescriptionField").val(orgData.orgDescription);
                 })
                 .fail(function(){
-                    //TODO need better fail behavior
+                    //TODO FC-3
                     console.log("FAILED TO RETRIEVE ORG DETAILS");
                 });
         }
@@ -256,7 +256,7 @@
                         }
                     })
                     .fail(function(){
-                        //TODO need better fail behavior
+                        //TODO FC-3
                         console.log("DELETE FAILED");
                     });
             }

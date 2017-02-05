@@ -53,7 +53,7 @@
                     </td>
                     <td>*</td>
                 </tr>
-                <tr> <!-- TODO need an age field along with this too, that is calculated based on the DOB and is not editable -->
+                <tr> <!-- TODO FC-9 -->
                     <td field="label" colspan="2">Date of Birth:</td>
                     <td field="input">
                         <input id="dobField" name="dateOfBirth" type="date" required />
@@ -63,7 +63,7 @@
                 <tr>
                     <td field="label" colspan="2">Sex</td>
                     <td field="input">
-                        <!-- TODO change this to some sort of multi-option select box -->
+                        <!-- TODO FC-9 -->
                         <input id="sexField" name="sex" type="text" required />
                     </td>
                     <td>*</td>
@@ -114,7 +114,7 @@
         </table>
         <div class="buttonDiv">
             <table>
-                <tr> <!-- TODO hide certain buttons if user only has READ access -->
+                <tr> <!-- TODO FC-10 -->
                     <td>
                         <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
                     </td>
@@ -318,7 +318,7 @@
             orgbuilder.api.send("members/" + memberid, orgbuilder.methods.get)
                 .done(function(memberData, status, jqXHR){
                     if(jqXHR.status === 204){
-                        //TODO treat this as some sort of error, with a response in the UI
+                        //TODO FC-3
                         console.log("Member not found on server");
                         return;
                     }
@@ -341,7 +341,7 @@
                     buildEmailsList(memberData.emails);
                 })
                 .fail(function(){
-                    //TODO need better fail behavior
+                    //TODO FC-3
                     console.log("FAILED TO LOAD MEMBER");
                 });
         }

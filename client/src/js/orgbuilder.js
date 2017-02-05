@@ -106,7 +106,7 @@ var orgbuilder = (function(){
                     }
                     else if(status === 0){
                         // window.location = orgProps.clientOrigin + "/server-error.html";
-                        console.log("SERVER ERROR"); //TODO replace this
+                        console.log("SERVER ERROR"); //TODO FC-3
                     }
                     else if(status === 401){
                         //This comes up during a bad login or if the token has expired
@@ -120,7 +120,7 @@ var orgbuilder = (function(){
                     }
                     else{
                         alert("Error communicating with server. Status: " + status);
-                        //TODO more detailed response is ultimately preferred here
+                        //TODO FC-3
                     }
                 });
         }

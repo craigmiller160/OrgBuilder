@@ -71,7 +71,7 @@ public class UserResource {
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response getAllUsers(@BeanParam UserFilterBean userFilterBean) throws OrgApiException {
         userFilterBean.validateFilterParams();
-        //TODO add search for user by name
+        //TODO FC-13
         UserService service = factory.newUserService(securityContext);
 
         //If the principal has an orgId, they must have an Admin role (due to annotation restriction)

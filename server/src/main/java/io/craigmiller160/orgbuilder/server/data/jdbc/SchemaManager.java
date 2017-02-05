@@ -24,7 +24,7 @@ public class SchemaManager {
             "FROM information_schema.schemata " +
             "WHERE schema_name = ?;";
 
-    //TODO figure out if there's a way to improve these queries for SQL injection
+    //TODO FC-11
 
     private static final String CREATE_SCHEMA_SQL =
             "CREATE SCHEMA %1$s;";

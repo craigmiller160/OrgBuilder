@@ -75,7 +75,7 @@
         }
 
         function loadMemberList(){
-            //TODO need to add pagination
+            //TODO FC-7
             orgbuilder.api.send("members", orgbuilder.methods.get)
                 .done(function(data, status, jqXHR){
                     if(jqXHR.status === 204){
@@ -128,7 +128,7 @@
                     });
                 })
                 .fail(function(jqXHR){
-                    //TODO need better fail functionality
+                    //TODO FC-3
                     console.log("LOADING MEMBER LIST FAILED");
                 });
         }

@@ -17,8 +17,7 @@
     <h2 id="usersHeader"></h2>
 
     <div>
-        <!-- TODO need to add org filter to table -->
-        <!-- TODO need to add role filter to table -->
+        <!-- TODO FC-6 -->
         <table id="usersTable" border="1">
             <thead>
                 <tr>
@@ -73,11 +72,11 @@
          ***********************************/
 
         function loadUserList(){
-            //TODO need to add pagination
+            //TODO FC-7
             orgbuilder.api.send("users", orgbuilder.methods.get)
                 .done(function(data, status, jqXHR){
                     if(jqXHR.status === 204){
-                        //TODO treat this as some sort of error condition, with a response in the UI
+                        //TODO FC-3
                         console.log("No users found on server");
                         return;
                     }
@@ -121,14 +120,14 @@
                                     location.reload(true);
                                 })
                                 .fail(function(){
-                                    //TODO need better fail functionality
+                                    //TODO FC-3
                                     console.log("User delete FAILED");
                                 });
                         }
                     });
                 })
                 .fail(function(){
-                    //TODO need better fail functionality
+                    //TODO FC-3
                     console.log("LOADING USER LIST FAILED!!!");
                 });
         }

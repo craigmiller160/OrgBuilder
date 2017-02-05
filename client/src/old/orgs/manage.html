@@ -67,11 +67,11 @@
          ***********************************/
 
         function loadOrgList(){
-            //TODO need to add pagination
+            //TODO FC-7
             orgbuilder.api.send("orgs", orgbuilder.methods.get)
                 .done(function(data,status,jqXHR){
                     if(jqXHR.status === 204){
-                        //TODO treat this as some sort of error condition, with a response in the UI
+                        //TODO FC-3
                         console.log("No orgs found on server");
                         return;
                     }
@@ -110,16 +110,16 @@
                                     location.reload(true);
                                 })
                                 .fail(function(){
-                                    //TODO need better fail functionality
+                                    //TODO FC-3
                                     console.log("Org delete FAILED");
                                 });
                         }
                     });
 
-                    //TODO also add the ability to open the old.users page for the org
+                    //TODO FC-8
                 })
                 .fail(function(jqXHR){
-                    //TODO improve fail handling
+                    //TODO FC-3
                     console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
                 });
         }
