@@ -340,7 +340,7 @@ var orgbuilder = (function(){
         return allComplete;
     };
 
-    var loadMenuTemplates = (function(){
+    var menus = (function(){
         function toggleMenu(event){
             event.preventDefault();
             $("#sidebar-wrapper .menu-collapse").collapse("hide");
@@ -355,27 +355,55 @@ var orgbuilder = (function(){
             }
         }
 
-        function doLoading(){
+        var types = {
+            main: "main",
+            login: "login"
+        };
+
+        function loadLoginTemplate(){
+            loadTemplates(types.login);
+        }
+
+        function loadMainTemplate(){
+            loadTemplates(types.main);
+        }
+
+        function loadTemplates(type){
             $.get("template/menus-template.html")
                 .done(function(data){
+                    //Add the html from the template file to the container divs on the current page
                     var navbar = $(data).filter("#navbar-template");
-                    var sidebar = $(data).filter("#sidebar-template");
                     $("#navbar-container").html(navbar);
-                    $("#sidebar-container").html(sidebar);
+                    if(type !== types.login){
+                        var sidebar = $(data).filter("#sidebar-template");
+                        $("#sidebar-container").html(sidebar);
+                    }
 
-                    //Assign UI actions
-                    $("#menu-toggle").click(toggleMenu);
-                    $(".sidebar-parent-item").click(parentItemAction);
-                    $("#logoutBtn").click(orgbuilder.jwt.clearToken);
+                    //Assign UI actions to the template elements
+                    if(type !== types.login){
+                        $("#menu-toggle").click(toggleMenu);
+                        $(".sidebar-parent-item").click(parentItemAction);
+                        $("#logoutBtn").click(orgbuilder.jwt.clearToken);
+                    }
 
                     //Display dynamic values in navbar
-                    $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
-                    if(orgbuilder.jwt.getTokenPayload().onm !== ""){
-                        $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                    if(type !== types.login){
+                        $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
+                        if(orgbuilder.jwt.getTokenPayload().onm !== ""){
+                            $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                        }
+                    }
+                    else{
+                        $("#navbar-user-menu").addClass("hidden");
                     }
 
                     //Fix path to index.html
-                    $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/index.html");
+                    if(type !== types.login){
+                        $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/index.html");
+                    }
+                    else{
+                        $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/login.html");
+                    }
                 })
                 .fail(function(jqXHR){
                     //TODO TC-3
@@ -383,7 +411,10 @@ var orgbuilder = (function(){
                 });
         }
 
-        return doLoading;
+        return {
+            loadMainTemplate: loadMainTemplate,
+            loadLoginTemplate: loadLoginTemplate
+        }
 
     })();
 
@@ -396,7 +427,7 @@ var orgbuilder = (function(){
         checkRequiredFields: checkRequiredFields,
         cancelChangesCheck: cancelChangesCheck,
         validateData: validateData,
-        loadMenuTemplates: loadMenuTemplates
+        menus: menus
     }
 })();
 

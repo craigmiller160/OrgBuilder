@@ -15,13 +15,9 @@
     </script>
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">OrgBuilder</a>
-        </div>
-    </div>
-</nav>
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
 <div class="container">
     <div class="row">
         <div class="col-sm-3 col-lg-4"></div>
@@ -109,6 +105,8 @@
         /*************************
          * 6) Page Initialization
          *************************/
+
+        orgbuilder.menus.loadLoginTemplate();
 
         if(denied){
             $("#errorAlert").removeClass("invisible");
