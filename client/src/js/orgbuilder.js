@@ -355,18 +355,26 @@ var orgbuilder = (function(){
             }
         }
 
+        function displayAccessibleMenuItems(){
+            if(jwt.hasRole(roles.master)){
+                $("#sidebar-orgs-btn").removeClass("hidden");
+                $("#sidebar-users-btn").removeClass("hidden");
+            }
+            else{
+                if(jwt.hasRole(roles.admin)){
+                    $("#sidebar-users-btn").removeClass("hidden");
+                }
+
+                if(jwt.hasRole(roles.read) || jwt.hasRole(roles.write)){
+                    $("#sidebar-members-btn").removeClass("hidden");
+                }
+            }
+        }
+
         var types = {
             main: "main",
             login: "login"
         };
-
-        function loadLoginTemplate(){
-            loadTemplates(types.login);
-        }
-
-        function loadMainTemplate(){
-            loadTemplates(types.main);
-        }
 
         function loadTemplates(type){
             $.get("template/menus-template.html")
@@ -383,13 +391,13 @@ var orgbuilder = (function(){
                     if(type !== types.login){
                         $("#menu-toggle").click(toggleMenu);
                         $(".sidebar-parent-item").click(parentItemAction);
-                        $("#logoutBtn").click(orgbuilder.jwt.clearToken);
+                        $("#logoutBtn").click(jwt.clearToken);
                     }
 
                     //Display dynamic values in navbar
                     if(type !== types.login){
                         $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
-                        if(orgbuilder.jwt.getTokenPayload().onm !== ""){
+                        if(jwt.getTokenPayload().onm !== ""){
                             $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
                         }
                     }
@@ -407,11 +415,24 @@ var orgbuilder = (function(){
 
                     //Fix the logout button link, to use an absolute path to the login page
                     $("#logoutBtn").attr("href", orgProps.clientOrigin + "/login.html");
+
+                    //Display the menu items that the user has access to
+                    if(type !== types.login){
+                        displayAccessibleMenuItems();
+                    }
                 })
                 .fail(function(jqXHR){
                     //TODO TC-3
                     console.log("Failed to log template. Status: " + jqXHR.status);
                 });
+        }
+
+        function loadLoginTemplate(){
+            loadTemplates(types.login);
+        }
+
+        function loadMainTemplate(){
+            loadTemplates(types.main);
         }
 
         return {
