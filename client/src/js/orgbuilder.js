@@ -340,6 +340,53 @@ var orgbuilder = (function(){
         return allComplete;
     };
 
+    var loadMenuTemplates = (function(){
+        function toggleMenu(event){
+            event.preventDefault();
+            $("#sidebar-wrapper .menu-collapse").collapse("hide");
+            $("#wrapper").toggleClass("display-menu");
+        }
+
+        function parentItemAction(event){
+            event.preventDefault();
+            $("#sidebar-wrapper .menu-collapse").collapse("hide");
+            if(!$("#wrapper").hasClass("display-menu")){
+                $("#wrapper").addClass("display-menu");
+            }
+        }
+
+        function doLoading(){
+            $.get("template/menus-template.html")
+                .done(function(data){
+                    var navbar = $(data).filter("#navbar-template");
+                    var sidebar = $(data).filter("#sidebar-template");
+                    $("#navbar-container").html(navbar);
+                    $("#sidebar-container").html(sidebar);
+
+                    //Assign UI actions
+                    $("#menu-toggle").click(toggleMenu);
+                    $(".sidebar-parent-item").click(parentItemAction);
+                    $("#logoutBtn").click(orgbuilder.jwt.clearToken);
+
+                    //Display dynamic values in navbar
+                    $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
+                    if(orgbuilder.jwt.getTokenPayload().onm !== ""){
+                        $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                    }
+
+                    //Fix path to index.html
+                    $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/index.html");
+                })
+                .fail(function(jqXHR){
+                    //TODO TC-3
+                    console.log("Failed to log template. Status: " + jqXHR.status);
+                });
+        }
+
+        return doLoading;
+
+    })();
+
     return{
         roles: roles,
         methods: methods,
@@ -348,7 +395,8 @@ var orgbuilder = (function(){
         validateAccess: validateAccess,
         checkRequiredFields: checkRequiredFields,
         cancelChangesCheck: cancelChangesCheck,
-        validateData: validateData
+        validateData: validateData,
+        loadMenuTemplates: loadMenuTemplates
     }
 })();
 
