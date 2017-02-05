@@ -9,87 +9,14 @@
 </head>
 <body>
 <!-- Navbar -->
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <!-- Navbar Header -->
-        <div class="navbar-header">
-            <a class="navbar-brand org-brand" href="index.html">OrgBuilder</a>
-        </div>
-
-        <!-- Navbar Items -->
-        <div>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" class="dropdown-toggle expandable" data-toggle="dropdown">
-                        <i class="glyphicon glyphicon-user"></i> <span id="userName">User</span> <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">
-                                <i class="glyphicon glyphicon-user"></i> User Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="glyphicon glyphicon-globe"></i> Org Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a id="logoutBtn" href="login.html">
-                                <i class="glyphicon glyphicon-off"></i> Logout
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
 <!-- Wrapper around sidebar and page content -->
 <div id="wrapper">
     <!-- Sidebar -->
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav nav flex-column">
-            <li>
-                <a id="menu-toggle" href="#">
-                    <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
-                </a>
-            </li>
-            <li class="active">
-                <a href="#">
-                    <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#orgs-collapse">
-                    <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs <span class="caret"></span></span>
-                </a>
-                <ul id="orgs-collapse" class="collapse menu-collapse">
-                    <li>
-                        <a href="#">Manage</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#users-collapse">
-                    <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users <span class="caret"></span></span>
-                </a>
-                <ul id="users-collapse" class="collapse menu-collapse">
-                    <li>
-                        <a href="#">Manage</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#members-collapse">
-                    <i class="glyphicon glyphicon-signal"></i><span class="sidebar-text"> Members <span class="caret"></span></span>
-                </a>
-                <ul id="members-collapse" class="collapse menu-collapse">
-                    <li>
-                        <a href="#">Manage</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
     </div>
 
     <!-- Page Content -->
@@ -106,6 +33,7 @@
     </div>
 </div>
 
+<!-- TODO FC-4 -->
 <script src="jquery-3.1.1.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
 <script src="js/org-props.js"></script>
@@ -138,9 +66,7 @@
          * 3) UI Actions
          ****************/
 
-        $("#menu-toggle").click(toggleMenu);
-        $(".sidebar-parent-item").click(parentItemAction);
-        $("#logoutBtn").click(orgbuilder.jwt.clearToken);
+
 
         /***********************************
          * 4) Core Business Logic Functions
@@ -167,18 +93,32 @@
          * 6) Page Initialization
          *************************/
 
-        //Check that the access token is still valid
-        orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
+        //TODO move this all into a utility method, along with any additional JS code from here that would be needed
+        $.get("template/menus-template.html")
+            .done(function(data){
+                var navbar = $(data).filter("#navbar-template");
+                var sidebar = $(data).filter("#sidebar-template");
+                $("#navbar-container").html(navbar);
+                $("#sidebar-container").html(sidebar);
 
-        //Display dynamic values in navbar
-        $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
-        if(orgbuilder.jwt.getTokenPayload().onm !== ""){
-            $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
-        }
+                //Assign UI actions
+                $("#menu-toggle").click(toggleMenu);
+                $(".sidebar-parent-item").click(parentItemAction);
+                $("#logoutBtn").click(orgbuilder.jwt.clearToken);
 
-        //Fix path to index.html
-        $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/index.html");
+                //Display dynamic values in navbar
+                $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
+                if(orgbuilder.jwt.getTokenPayload().onm !== ""){
+                    $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                }
 
+                //Fix path to index.html
+                $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/index.html");
+            })
+            .fail(function(jqXHR){
+                //TODO TC-3
+                console.log("Failed to log template. Status: " + jqXHR.status);
+            });
     });
 </script>
 </body>
