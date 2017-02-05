@@ -104,7 +104,7 @@ public class SecurityFilter implements ContainerRequestFilter{
             return principal;
         }
         catch(OrgApiException ex){
-            FilterUtils.handleAccessRejected(requestContext, ex.getClass(), ex.getMessage());
+            FilterUtils.handleAccessRejected(requestContext, ex.getClass(), "Access Denied: " + ex.getMessage());
         }
 
         return null;

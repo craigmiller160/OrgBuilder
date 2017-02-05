@@ -12,8 +12,16 @@ import javax.ws.rs.core.Response;
 public class FilterUtils {
 
     public static void handleAccessRejected(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage){
+        handleRejection(requestContext, exceptionClass, errorMessage, Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    public static void handleAccessExpired(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage){
+        handleRejection(requestContext, exceptionClass, errorMessage, Response.Status.UNAUTHORIZED.getStatusCode());
+    }
+
+    private static void handleRejection(ContainerRequestContext requestContext, Class<?> exceptionClass, String errorMessage, int status){
         ErrorDTO error = new ErrorDTO();
-        error.setStatusCode(Response.Status.FORBIDDEN.getStatusCode());
+        error.setStatusCode(status);
         error.setExceptionName(exceptionClass.getSimpleName());
         error.setErrorMessage(errorMessage);
         requestContext.abortWith(
