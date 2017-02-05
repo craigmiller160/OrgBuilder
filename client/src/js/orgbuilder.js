@@ -397,13 +397,16 @@ var orgbuilder = (function(){
                         $("#navbar-user-menu").addClass("hidden");
                     }
 
-                    //Fix path to index.html
+                    //Fix path to link to link to home page, either index.html or login.html
                     if(type !== types.login){
-                        $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/index.html");
+                        $(".home-link").attr("href", orgProps.clientOrigin + "/index.html");
                     }
                     else{
-                        $("a.navbar-brand.org-brand").attr("href", orgProps.clientOrigin + "/login.html");
+                        $(".home-link").attr("href", orgProps.clientOrigin + "/login.html");
                     }
+
+                    //Fix the logout button link, to use an absolute path to the login page
+                    $("#logoutBtn").attr("href", orgProps.clientOrigin + "/login.html");
                 })
                 .fail(function(jqXHR){
                     //TODO TC-3
