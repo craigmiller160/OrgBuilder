@@ -102,7 +102,7 @@ var orgbuilder = (function(){
                     var status = jqXHR.status;
                     console.log("API Request Failed. Status: " + status);
                     if(status === 403){
-                        window.location = orgProps.clientOrigin + "/index.html?denied=true";
+                        window.location = orgProps.clientOrigin + "/login.html?denied=true";
                     }
                     else if(status === 0){
                         // window.location = orgProps.clientOrigin + "/server-error.html";
