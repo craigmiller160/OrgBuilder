@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
+    <script>
+        //IMPORTANT: This JavaScript doesn't use any of the application API so that it can be super-lightweight and run before page load. This means changes to the client API will not affect this
+        //Send the user to the main.html page if the access token already exists.
+        //        if(localStorage.getItem("orgapiToken") !== undefined && localStorage.getItem("orgapiToken") !== null){
+        //            window.location = "main.html";
+        //        }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">OrgBuilder</a>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3 col-lg-4"></div>
+        <div id="login-box" class="col-sm-6 col-lg-4 ">
+            <div id="errorAlert" class="invisible alert alert-danger fade in">
+                <strong>Error! </strong><span id="errorMsg"></span>
+            </div>
+            <div class="well well-lg">
+                <form class="form-login">
+                    <h2 class="heading">Log In</h2>
+                    <div class="form-group">
+                        <label for="emailField" class="sr-only">Email address</label>
+                        <input type="email" id="emailField" class="form-control" title="User email address" placeholder="Email address" required autofocus />
+                        <label for="passwordField" class="sr-only">Password</label>
+                        <input type="password" id="passwordField" class="form-control" title="User password" placeholder="Password" required />
+                    </div>
+                    <button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="jquery-3.1.1.js"></script>
+<script src="URI.js"></script>
+<script src="bootstrap/js/bootstrap.js"></script>
+<script src="js/org-props.js"></script>
+<script src="js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function () {
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var denied = (function(){
+            var url = URI(window.location.href);
+            if(url.hasQuery("denied")){
+                return url.search(true).denied;
+            }
+        })();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $(".form-login").submit(login);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function login(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            var email = $("#emailField").val();
+            var password = $("#passwordField").val();
+            var jsonMsg = {
+                "userEmail": email,
+                "password": password
+            };
+
+            orgbuilder.api.send("auth", orgbuilder.methods.post, jsonMsg)
+                .done(function(){
+                    console.log("Login Success");
+                    window.location = "index.html";
+                })
+                .fail(function(jqXHR){
+                    console.log("Login failed: " + jqXHR.status + " " + jqXHR.statusText);
+                    $("#errorAlert").removeClass("invisible");
+                    $("#errorMsg").text("Invalid email or password.");
+                    $("#passwordField").val("");
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        if(denied){
+            $("#errorAlert").removeClass("invisible");
+            $("#errorMsg").text("Access denied.");
+        }
+
+        //TODO include a way to test if the token exists AND is still un-expired by querying the server. if it passes the test, send the user along to the main menu
+
+    });
+</script>
+</body>
+</html>

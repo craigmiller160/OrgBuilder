@@ -5,100 +5,152 @@
     <title>OrgBuilder</title>
     <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="css/org-styles.css" />
-    <script>
-        //IMPORTANT: This JavaScript doesn't use any of the application API so that it can be super-lightweight and run before page load. This means changes to the client API will not affect this
-        //Send the user to the main.html page if the access token already exists.
-//        if(localStorage.getItem("orgapiToken") !== undefined && localStorage.getItem("orgapiToken") !== null){
-//            window.location = "main.html";
-//        }
-    </script>
 </head>
 <body>
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">OrgBuilder</a>
-            </div>
+<!-- Navbar -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Navbar Header -->
+        <div class="navbar-header">
+            <a class="navbar-brand org-brand" href="#">OrgBuilder</a>
         </div>
-    </nav>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3 col-lg-4"></div>
-            <div id="login-box" class="col-sm-6 col-lg-4 ">
-                <div id="errorAlert" class="invisible alert alert-danger fade in">
-                    <strong>Error! </strong><span id="errorMsg"></span>
-                </div>
-                <div class="well well-lg">
-                    <form class="form-login">
-                        <h2 class="heading">Log In</h2>
-                        <div class="form-group">
-                            <label for="emailField" class="sr-only">Email address</label>
-                            <input type="email" id="emailField" class="form-control" title="User email address" placeholder="Email address" required autofocus />
-                            <label for="passwordField" class="sr-only">Password</label>
-                            <input type="password" id="passwordField" class="form-control" title="User password" placeholder="Password" required />
-                        </div>
-                        <button id="loginBtn" class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
-                    </form>
+
+        <!-- Navbar Items -->
+        <div>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" class="dropdown-toggle expandable" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-user"></i> <span id="userName">User</span> <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">
+                                <i class="glyphicon glyphicon-user"></i> User Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="glyphicon glyphicon-globe"></i> Org Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a id="logoutBtn" href="login.html"> <!-- TODO when this is turned into a template, probably will need an absolute path for this -->
+                                <i class="glyphicon glyphicon-off"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav nav flex-column">
+            <li>
+                <a id="menu-toggle" href="#">
+                    <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="#">
+                    <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#orgs-collapse">
+                    <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs <span class="caret"></span></span>
+                </a>
+                <ul id="orgs-collapse" class="collapse menu-collapse">
+                    <li>
+                        <a href="#">Manage</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#users-collapse">
+                    <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users <span class="caret"></span></span>
+                </a>
+                <ul id="users-collapse" class="collapse menu-collapse">
+                    <li>
+                        <a href="#">Manage</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#members-collapse">
+                    <i class="glyphicon glyphicon-signal"></i><span class="sidebar-text"> Members <span class="caret"></span></span>
+                </a>
+                <ul id="members-collapse" class="collapse menu-collapse">
+                    <li>
+                        <a href="#">Manage</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-md-offset-3">
+                    <div class="page-header">
+                        <h1>Welcome to <span class="org-brand">OrgBuilder</span></h1>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 <script src="jquery-3.1.1.js"></script>
-<script src="URI.js"></script>
 <script src="bootstrap/js/bootstrap.js"></script>
 <script src="js/org-props.js"></script>
 <script src="js/orgbuilder.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function(){
 
         /*************************
          * 1) Top Scope Variables
          *************************/
 
-        var denied = (function(){
-            var url = URI(window.location.href);
-            if(url.hasQuery("denied")){
-                return url.search(true).denied;
-            }
-        })();
+
 
         /*******************************
          * 2) Access to Page Validation
          *******************************/
 
+        if(!orgbuilder.validateAccess().hasToken().isValid()){
+            console.log("Access to main page denied");
+            window.location = "login.html?denied=true";
+            return;
+        }
+
         /****************
          * 3) UI Actions
          ****************/
 
-        $(".form-login").submit(login);
+        $("#menu-toggle").click(toggleMenu);
+        $(".sidebar-parent-item").click(parentItemAction);
+        $("#logoutBtn").click(orgbuilder.jwt.clearToken);
 
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
 
-        function login(event){
-            if(event !== null){
-                event.preventDefault();
+        function toggleMenu(event){
+            event.preventDefault();
+            $("#sidebar-wrapper .menu-collapse").collapse("hide");
+            $("#wrapper").toggleClass("display-menu");
+        }
+
+        function parentItemAction(event){
+            $("#sidebar-wrapper .menu-collapse").collapse("hide");
+            if(!$("#wrapper").hasClass("display-menu")){
+                $("#wrapper").addClass("display-menu");
             }
-
-            var email = $("#emailField").val();
-            var password = $("#passwordField").val();
-            var jsonMsg = {
-                "userEmail": email,
-                "password": password
-            };
-
-            orgbuilder.api.send("auth", orgbuilder.methods.post, jsonMsg)
-                .done(function(){
-                    console.log("Login Success");
-                    window.location = "main.html";
-                })
-                .fail(function(jqXHR){
-                    console.log("Login failed: " + jqXHR.status + " " + jqXHR.statusText);
-                    $("#errorAlert").removeClass("invisible");
-                    $("#errorMsg").text("Invalid email or password.");
-                    $("#passwordField").val("");
-                });
         }
 
         /***********************
@@ -109,12 +161,14 @@
          * 6) Page Initialization
          *************************/
 
-        if(denied){
-            $("#errorAlert").removeClass("invisible");
-            $("#errorMsg").text("Access denied.");
-        }
+        //Check that the access token is still valid
+        orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
 
-        //TODO include a way to test if the token exists AND is still un-expired by querying the server. if it passes the test, send the user along to the main menu
+        //Display dynamic values in navbar
+        $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
+        if(orgbuilder.jwt.getTokenPayload().onm !== ""){
+            $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+        }
 
     });
 </script>
