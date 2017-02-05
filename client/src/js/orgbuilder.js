@@ -396,9 +396,16 @@ var orgbuilder = (function(){
 
                     //Display dynamic values in navbar
                     if(type !== types.login){
-                        $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
-                        if(jwt.getTokenPayload().onm !== ""){
-                            $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                        $("#userName").text(jwt.getTokenPayload().unm);
+                        $("#user-profile-btn > a").attr("href", orgProps.clientOrigin + "/users/content.html?userid=" + jwt.getTokenPayload().uid);
+                        if(!jwt.hasRole(roles.master)){
+                            if(jwt.getTokenPayload().onm !== ""){
+                                $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                            }
+                            $("#org-profile-btn > 1").attr("href", orgProps.clientOrigin + "/orgs/content.html?orgid=" + jwt.getTokenPayload().oid);
+                        }
+                        else{
+                            $("#org-profile-btn").addClass("hidden");
                         }
                     }
                     else{
