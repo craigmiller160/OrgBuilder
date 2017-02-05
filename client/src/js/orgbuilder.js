@@ -23,6 +23,14 @@ var orgbuilder = (function(){
         delete: "DELETE"
     };
 
+    //Constants for the widow sizes used by bootstrap
+    var grid = {
+        xsmall: 768, // <
+        small: 768, // >=
+        medium: 992, // >=
+        large: 1200 // >=
+    };
+
     //Utility methods for working with the JWT
     var jwt = {
         storeToken: function(token){
@@ -341,6 +349,19 @@ var orgbuilder = (function(){
     };
 
     var menus = (function(){
+        function resizeSidebar(){
+            var winWidth = $(window).width();
+            if(winWidth < grid.small){
+                //Smartphone or smaller, phone layout
+                $("#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn").removeClass("hidden");
+            }
+            else{
+                //Tablet or bigger, default layout
+                $("#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn").addClass("hidden");
+
+            }
+        }
+
         function toggleMenu(event){
             event.preventDefault();
             $("#sidebar-wrapper .menu-collapse").collapse("hide");
@@ -389,7 +410,7 @@ var orgbuilder = (function(){
 
                     //Assign UI actions to the template elements
                     if(type !== types.login){
-                        $("#menu-toggle").click(toggleMenu);
+                        $(".sidebar-menu-btn > a").click(toggleMenu);
                         $(".sidebar-parent-item").click(parentItemAction);
                         $("#logoutBtn").click(jwt.clearToken);
                     }
@@ -426,6 +447,14 @@ var orgbuilder = (function(){
                     //Display the menu items that the user has access to
                     if(type !== types.login){
                         displayAccessibleMenuItems();
+                    }
+
+                    //Add resizing logic
+                    if(type !== types.login){
+                        resizeSidebar();
+                        $(window).resize(function(){
+                            resizeSidebar();
+                        });
                     }
                 })
                 .fail(function(jqXHR){
