@@ -109,7 +109,8 @@ var orgbuilder = (function(){
                         console.log("SERVER ERROR"); //TODO replace this
                     }
                     else if(status === 401){
-                        //Do nothing, this comes up during a bad login
+                        //This comes up during a bad login or if the token has expired
+                        window.location = orgProps.clientOrigin + "login.html";
                     }
                     else if(status >= 500){
                         var error = jqXHR.responseJSON;

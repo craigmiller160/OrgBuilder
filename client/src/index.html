@@ -122,10 +122,15 @@
          * 2) Access to Page Validation
          *******************************/
 
+        //If no token exists, simply re-direct to the login page
         if(!orgbuilder.validateAccess().hasToken().isValid()){
-            console.log("Access to main page denied");
-            window.location = "login.html?denied=true";
+            console.log("User needs to log in");
+            window.location = "login.html";
             return;
+        }
+        else{
+            //Otherwise, attempt to validate that the token hasn't expired
+            orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
         }
 
         /****************
