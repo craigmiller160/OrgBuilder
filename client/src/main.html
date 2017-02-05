@@ -12,7 +12,7 @@
         <div class="container-fluid">
             <!-- Navbar Header -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">OrgBuilder</a>
+                <a class="navbar-brand org-brand" href="#">OrgBuilder</a>
             </div>
 
             <!-- Navbar Items -->
@@ -98,7 +98,7 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-6 col-md-offset-3">
                         <div class="page-header">
-                            <h1>Welcome to OrgBuilder</h1>
+                            <h1>Welcome to <span class="org-brand">OrgBuilder</span></h1>
                         </div>
                     </div>
                 </div>
@@ -165,7 +165,11 @@
         //Check that the access token is still valid
         orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
 
+        //Display dynamic values in navbar
         $("#userName").text(orgbuilder.jwt.getTokenPayload().unm);
+        if(orgbuilder.jwt.getTokenPayload().onm !== ""){
+            $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+        }
 
     });
 </script>
