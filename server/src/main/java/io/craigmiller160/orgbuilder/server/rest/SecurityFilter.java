@@ -87,7 +87,7 @@ public class SecurityFilter implements ContainerRequestFilter{
 
             if(JWTUtil.isTokenExpired(jwt)){
                 if(!isRefreshAllowed(requestContext, jwt)){
-                    FilterUtils.handleAccessRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
+                    FilterUtils.handleAccessExpired(requestContext, OrgApiSecurityException.class, "Token is expired");
                     return null;
                 }
 
