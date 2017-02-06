@@ -368,15 +368,6 @@ var orgbuilder = (function(){
             event.preventDefault();
             $("#sidebar-wrapper .menu-collapse").collapse("hide");
             $("#wrapper").toggleClass("display-menu");
-            //Display/hide the toggle button for the phone sized menu.
-            if($("#sidebar-wrapper").hasClass("phone")){
-                if($("#wrapper").hasClass("display-menu")){
-                    $(navbarSidebarBtn).addClass("hidden");
-                }
-                else{
-                    $(navbarSidebarBtn).removeClass("hidden");
-                }
-            }
         }
 
         function parentItemAction(event){

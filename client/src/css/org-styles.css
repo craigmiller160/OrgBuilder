@@ -32,6 +32,21 @@ nav.navbar {
     height: 100%;
     position: absolute;
     padding: 15px;
+    transition: margin 0.5s, padding 0.5s;
+    -moz-transition: margin 0.5s, padding 0.5s;
+    -webkit-transition: margin 0.5s, padding 0.5s;
+    -o-transition: margin 0.5s, padding 0.5s;
+}
+
+#wrapper.phone #page-content-wrapper {
+    padding: 0;
+}
+
+.expandable[aria-expanded = 'true'] .caret {
+    -ms-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
 /* Sidebar Style */
@@ -51,6 +66,10 @@ nav.navbar {
 
 #wrapper.phone #sidebar-wrapper {
     width: 0;
+}
+
+#wrapper.phone #sidebar-wrapper > .sidebar-nav > .sidebar-menu-btn {
+    display: none;
 }
 
 .sidebar-nav {
@@ -82,12 +101,6 @@ nav.navbar {
 #sidebar-wrapper .glyphicon {
     text-indent: 0;
     margin-right: 5px;
-}
-
-.expandable[aria-expanded = 'true'] .caret {
-    -ms-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
-    transform: rotate(180deg);
 }
 
 /* Sidebar Show/Hide Styles */
