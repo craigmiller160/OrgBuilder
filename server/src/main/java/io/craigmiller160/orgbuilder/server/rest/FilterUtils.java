@@ -26,7 +26,7 @@ public class FilterUtils {
         error.setErrorMessage(errorMessage);
         requestContext.abortWith(
                 Response
-                        .status(Response.Status.FORBIDDEN)
+                        .status(status)
                         .entity(error)
                         .type(MediaType.APPLICATION_JSON)
                         .build()
