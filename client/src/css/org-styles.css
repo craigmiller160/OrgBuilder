@@ -1,9 +1,16 @@
+/*********
+ * FONTS *
+ *********/
+
+@import url('https://fonts.googleapis.com/css?family=Ubuntu');
+
 /*****************
  * HTML ELEMENTS *
  *****************/
 
 html, body {
     height: 100%;
+    font-family: 'Ubuntu', sans-serif;
 }
 
 /**********************
