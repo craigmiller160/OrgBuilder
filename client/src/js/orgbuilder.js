@@ -349,21 +349,6 @@ var orgbuilder = (function(){
     };
 
     var menus = (function(){
-        var navbarSidebarBtn;
-        function resizeSidebar(){
-            var winWidth = $(window).width();
-            if(winWidth < grid.small){
-                //Smartphone or smaller, phone layout
-                $(navbarSidebarBtn).removeClass("hidden");
-                $("#wrapper").addClass("phone");
-            }
-            else{
-                //Tablet or bigger, default layout
-                $(navbarSidebarBtn).addClass("hidden");
-                $("#wrapper").removeClass("phone");
-            }
-        }
-
         function toggleMenu(event){
             event.preventDefault();
             $("#sidebar-wrapper .menu-collapse").collapse("hide");
@@ -449,17 +434,6 @@ var orgbuilder = (function(){
                     //Display the menu items that the user has access to
                     if(type !== types.login){
                         displayAccessibleMenuItems();
-                    }
-
-                    //This variable is important for the resizing logic, it needs to be assigned here
-                    navbarSidebarBtn = $("#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn");
-
-                    //Add resizing logic
-                    if(type !== types.login){
-                        resizeSidebar();
-                        $(window).resize(function(){
-                            resizeSidebar();
-                        });
                     }
                 })
                 .fail(function(jqXHR){

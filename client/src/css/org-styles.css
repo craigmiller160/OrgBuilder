@@ -65,14 +65,6 @@ nav.navbar {
     -o-transition: width 0.5s;
 }
 
-#wrapper.phone #sidebar-wrapper {
-    width: 0;
-}
-
-#wrapper.phone #sidebar-wrapper > .sidebar-nav > .sidebar-menu-btn {
-    display: none;
-}
-
 .sidebar-nav {
     padding: 0;
     list-style: none;
@@ -104,6 +96,32 @@ nav.navbar {
     margin-right: 5px;
 }
 
+#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
+    display: none;
+}
+
+/* Sidebar phone style */
+
+@media screen and (max-width: 768px) {
+    #sidebar-wrapper {
+        width: 0;
+    }
+
+    #sidebar-wrapper > .sidebar-nav > .sidebar-menu-btn {
+        display: none;
+    }
+
+    #wrapper.display-menu #page-content-wrapper {
+        padding-left: 0;
+        margin-left: 200px;
+        overflow: hidden;
+    }
+
+    #navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
+        display: block;
+    }
+}
+
 /* Sidebar Show/Hide Styles */
 
 #wrapper.display-menu #sidebar-wrapper {
@@ -116,12 +134,6 @@ nav.navbar {
 
 #wrapper.display-menu #page-content-wrapper {
     padding-left: 200px;
-}
-
-#wrapper.display-menu.phone #page-content-wrapper {
-    padding-left: 0;
-    margin-left: 200px;
-    overflow: hidden;
 }
 
 /* Log In Page */
