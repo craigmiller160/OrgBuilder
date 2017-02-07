@@ -385,7 +385,7 @@ var orgbuilder = (function(){
         };
 
         function loadTemplates(type){
-            $.get("template/menus-template.html")
+            $.get(orgProps.clientOrigin + "/template/menus-template.html")
                 .done(function(data){
                     //Add the html from the template file to the container divs on the current page
                     var navbar = $(data).filter("#navbar-template");
@@ -427,6 +427,7 @@ var orgbuilder = (function(){
                     else{
                         $(".home-link").attr("href", orgProps.clientOrigin + "/login.html");
                     }
+                    $(".origin-link").attr("href", orgProps.clientOrigin + $(".origin-link").attr("href"));
 
                     //Fix the logout button link, to use an absolute path to the login page
                     $("#logoutBtn").attr("href", orgProps.clientOrigin + "/login.html");
