@@ -19,6 +19,11 @@ public class InfoService {
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
+    public AllInfoDTO getAll(){
+        OrgApiLogger.getServiceLogger().debug("Getting list of all info resource values");
+        return new AllInfoDTO(createAppInfoDTO(), Sex.values(), State.values(), Role.ALL);
+    }
+
     public SexListDTO getSexes(){
         OrgApiLogger.getServiceLogger().debug("Getting list of Gender values");
         return new SexListDTO(Sex.values());
@@ -36,6 +41,10 @@ public class InfoService {
 
     public AppInfoDTO getAppInfo(){
         OrgApiLogger.getServiceLogger().debug("Getting application info");
+        return createAppInfoDTO();
+    }
+
+    private AppInfoDTO createAppInfoDTO(){
         return new AppInfoDTO(ServerCore.getProperty(ServerProps.API_NAME), ServerCore.getProperty(ServerProps.API_VERSION));
     }
 

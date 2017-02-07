@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.dto.AllInfoDTO;
 import io.craigmiller160.orgbuilder.server.dto.AppInfoDTO;
 import io.craigmiller160.orgbuilder.server.dto.SexListDTO;
 import io.craigmiller160.orgbuilder.server.dto.RoleListDTO;
@@ -35,6 +36,31 @@ public class InfoResource {
 
     @Context
     private SecurityContext securityContext;
+
+    /**
+     * RESOURCE: GET /info
+     *
+     * PURPOSE: Get all the accepted values for all the info resources.
+     *
+     * ACCESS: Everyone.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @return a Response containing the values of the info resources.
+     * @throws OrgApiException if an error occurs.
+     */
+    @GET
+    @PermitAll
+    public Response getAll() throws OrgApiException{
+        InfoService infoService = factory.newInfoService(securityContext);
+        AllInfoDTO allInfoDTO = infoService.getAll();
+
+        return Response
+                .ok(allInfoDTO)
+                .build();
+    }
 
     /**
      * RESOURCE: GET /info/sexes
