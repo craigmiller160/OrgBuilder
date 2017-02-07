@@ -337,4 +337,16 @@ public class JWTUtil {
         return result;
     }
 
+    //Generates an expired token for testing purposes
+    public static void main(String[] args) throws Exception{
+        ServerCore core = new ServerCore();
+        core.contextInitialized(null);
+        Set<String> roles = new HashSet<>();
+        roles.add(Role.MASTER);
+        LocalDateTime exp = LocalDateTime.of(2017, 2, 6, 0, 0, 0);
+        String token = generateNewToken(1L, "craig@gmail.com", "", 1L, 0L,
+                "APP_SCHEMA", roles, LegacyDateConverter.convertLocalDateTimeToDate(exp));
+        System.out.println(token);
+    }
+
 }
