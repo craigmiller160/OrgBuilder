@@ -64,6 +64,10 @@ nav.navbar {
     -ms-transform: scale(1,1);
 }
 
+.table-hover > tbody > tr:hover {
+    background-color: #e9e9ff;
+}
+
 /*************
  * MY STYLES *
  *************/
@@ -160,6 +164,11 @@ nav.navbar {
 
     #navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
         display: block;
+    }
+
+    #page-content-wrapper {
+        padding-left: 0;
+        margin-left: 0;
     }
 }
 
