@@ -29,58 +29,61 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div id="orgInfoSection" class="panel panel-default form-group" status="view">
-                        <div class="panel-heading clearfix">
-                            <h4 class="pull-left">Org Info</h4>
-                            <a href="#" class="toggleEditBtn btn btn-default pull-right">Edit</a>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p>Org Name:</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="content-label"></p>
-                                    <input id="orgNameField" name="orgName" class="content-field form-control" type="text" required /> <!-- TODO figure out a more elegant way to do the asterisk here -->
-                                </div>
+            <form id="orgContentForm">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <div id="orgInfoSection" class="panel panel-default form-group" status="view">
+                            <div class="panel-heading clearfix">
+                                <h4 class="pull-left">Org Info</h4>
+                                <a href="#" class="toggleEditBtn btn btn-default pull-right" title="Edit/Save Section Toggle">Edit</a>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p>Created Date:</p>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Org Name:</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="content-label"></p>
+                                        <input id="orgNameField" name="orgName" class="content-field form-control" type="text" required /> <!-- TODO figure out a more elegant way to do the asterisk here -->
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <p></p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Created Date:</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p></p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p>Org Description:</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p class="content-label"></p>
-                                    <textarea id="orgDescriptionField" name="orgDescription" class="form-control content-field" maxlength="255" rows="5"></textarea>
-                                    <p class="content-field">(Limit 255 characters)</p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Org Description:</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="content-label"></p>
+                                        <textarea id="orgDescriptionField" name="orgDescription" class="form-control content-field" maxlength="255" rows="5"></textarea>
+                                        <p class="content-field">(Limit 255 characters)</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <button id="cancelBtn" class="btn btn-default" type="button" title="Cancel changes">Cancel</button>
-                    <button id="saveBtn" class="btn btn-default" type="button" title="Save changes">Save</button>
-                    <button id="deleteBtn" class="btn btn-default pull-right" type="button" title="Delete Org">Delete Org</button>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <button id="cancelBtn" class="btn btn-default" type="button" title="Cancel changes">Cancel</button>
+                        <button id="saveBtn" class="btn btn-default" type="button" title="Save changes">Save</button> <!-- TODO need this to trigger form.onSubmit() -->
+                        <button id="deleteBtn" class="btn btn-default pull-right" type="button" title="Delete Org">Delete Org</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 
 </div>
 <!-- TODO FC-4 -->
 <script src="../jquery-3.1.1.js"></script>
+<script src="../URI.js"></script>
 <script src="../bootstrap/js/bootstrap.js"></script>
 <script src="../js/org-props.js"></script>
 <script src="../js/orgbuilder.js"></script>
@@ -91,21 +94,65 @@
          * 1) Top Scope Variables
          *************************/
 
+        var orgid = (function(){
+            var url = URI(window.location.href);
+            if(url.hasQuery("orgid")){
+                return url.search(true).orgid;
+            }
+        })();
+
         /*******************************
          * 2) Access to Page Validation
          *******************************/
+
+        if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid() &&
+            !orgbuilder.validateAccess().hasToken().isOrg(orgid).isValid()){
+            invalidCredentialsFn();
+            return;
+        }
 
         /****************
          * 3) UI Actions
          ****************/
 
+        $(".toggleEditBtn").click(toggleEditAndSave);
+        $("#orgContentForm").on("submit", function(event){
+            event.preventDefault();
+            //TODO maybe more here???
+        });
+
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
 
+        function toggleEditAndSave(event){
+            event.preventDefault();
+            var section = $(event.target).parents(".panel.form-group");
+            if($(section).attr("status") === "view"){
+                $(section).attr("status", "edit");
+                $(event.target).text("Save");
+            }
+            else{
+                //TODO need to execute a save operation here
+                $(section).attr("status", "view");
+                $(event.target).text("Edit");
+            }
+        }
+
+        function cancelChanges(event){
+            event.preventDefault();
+
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        function invalidCredentialsFn(){
+            //TODO FC-3
+            console.log("Invalid credentials to access org content editor!");
+            window.location = "../access-denied.html";
+        }
 
         /*************************
          * 6) Page Initialization
