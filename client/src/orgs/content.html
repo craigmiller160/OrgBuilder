@@ -31,35 +31,48 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <div id="orgInfoSection" class="panel panel-default">
+                    <div id="orgInfoSection" class="panel panel-default form-group" status="view">
                         <div class="panel-heading clearfix">
-                            <h4 class="panel-title pull-left">Org Info</h4>
-                            <a href="#" class="btn btn-default pull-right">Edit</a>
+                            <h4 class="pull-left">Org Info</h4>
+                            <a href="#" class="toggleEditBtn btn btn-default pull-right">Edit</a>
                         </div>
                         <div class="panel-body">
-                            <div class="display">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p>Org Name:</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p>Temp Name</p> <!-- TODO need a real value here -->
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Org Name:</p>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p>Org Description:</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p>Temp Description is here going on and on and on. Really trying to put in some extra content to see if I can force this to wrap and see how it behaves.</p> <!-- TODO need a real value here -->
-                                    </div>
+                                <div class="col-md-6">
+                                    <p class="content-label"></p>
+                                    <input id="orgNameField" name="orgName" class="content-field form-control" type="text" required /> <!-- TODO figure out a more elegant way to do the asterisk here -->
                                 </div>
                             </div>
-                            <div class="edit">
-                                <!-- TODO this is where the edit UI goes -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Created Date:</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Org Description:</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="content-label"></p>
+                                    <textarea id="orgDescriptionField" name="orgDescription" class="form-control content-field" maxlength="255" rows="5"></textarea>
+                                    <p class="content-field">(Limit 255 characters)</p>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <button id="cancelBtn" class="btn btn-default" type="button" title="Cancel changes">Cancel</button>
+                    <button id="saveBtn" class="btn btn-default" type="button" title="Save changes">Save</button>
+                    <button id="deleteBtn" class="btn btn-default pull-right" type="button" title="Delete Org">Delete Org</button>
                 </div>
             </div>
         </div>

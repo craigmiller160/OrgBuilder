@@ -41,7 +41,7 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-                    <button id="addOrgBtn" class="btn btn-info" type="button" title="Add new Org">Add</button>
+                    <button id="addOrgBtn" class="btn btn-default" type="button" title="Add new Org">Add</button>
                 </div>
             </div>
         </div>
@@ -104,8 +104,8 @@
                         newRow.append($("<td></td>").attr("field","createdDate").text(org.createdDate));
 
                         var options = $("<td></td>").attr("field","options");
-                        options.append($("<button class='editOrgBtn btn btn-info' type='button' title='Edit Org'></button>").text("Edit"));
-                        options.append($("<button class='deleteOrgBtn btn btn-info' type='button' title='Delete Org'></button>").text("Delete"));
+                        options.append($("<button class='editOrgBtn btn btn-default' type='button' title='Edit Org'></button>").text("Edit"));
+                        options.append($("<button class='deleteOrgBtn btn btn-default' type='button' title='Delete Org'></button>").text("Delete"));
 
 
                         newRow.append(options);
