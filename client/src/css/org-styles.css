@@ -193,11 +193,15 @@ textarea.content-field {
 /* Content page view/edit styles */
 
 div.panel[status = 'view'] .content-label,
-div.panel[status = 'edit'] .content-field {
+div.panel[status = 'edit'] .content-field,
+div.panel[status = 'view'] .section-edit,
+div.panel[status = 'edit'] .section-save {
     display: block;
 }
 div.panel[status = 'edit'] .content-label,
-div.panel[status = 'view'] .content-field {
+div.panel[status = 'view'] .content-field,
+div.panel[status = 'edit'] .section-edit,
+div.panel[status = 'view'] .section-save {
     display: none;
 }
 

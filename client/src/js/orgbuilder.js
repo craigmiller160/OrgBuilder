@@ -325,7 +325,7 @@ var orgbuilder = (function(){
     }
 
     function cancelChangesCheck(){
-        if($(".formSection[status = 'edit']").length > 0){
+        if($(".panel.form-group[status = 'edit']").length > 0){
             return confirm("Are you sure you want to cancel? All changes will be lost.");
         }
         return true;
@@ -436,6 +436,9 @@ var orgbuilder = (function(){
                     if(type !== types.login){
                         displayAccessibleMenuItems();
                     }
+
+                    //Add cancellation behavior
+                    $(".template-link").click(cancelChangesCheck);
                 })
                 .fail(function(jqXHR){
                     //TODO TC-3
