@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="page-header">
-                        <h2>Org Content</h2>
+                        <h2></h2>
                     </div>
                 </div>
             </div>
@@ -65,7 +65,7 @@
                                     <div class="col-md-6">
                                         <p class="content-label"></p>
                                         <textarea id="orgDescriptionField" name="orgDescription" class="form-control content-field" maxlength="255" rows="5"></textarea>
-                                        <p class="content-field">(Limit 255 characters)</p>
+                                        <!--<p class="content-field">(Limit 255 characters)</p>--> <!-- TODO figure out a way to restore this later -->
                                     </div>
                                 </div>
                             </div>
@@ -120,14 +120,8 @@
 
         $("#cancelBtn").click(cancelChanges);
         $(".section-edit").click(toggleEdit);
-        $("#orgContentForm").on("submit", function(event){
-            if($(document.activeElement).hasClass("section-save")){
-                console.log("Section Save Button");
-            }
-            else{
-                console.log("Other save button");
-            }
-        });
+        $("#orgContentForm").on("submit", submitAction);
+        $("#deleteBtn").click(deleteOrg);
 
         //Disable the bootstrap form keyboard event
         $("#orgContentForm input.content-field").keydown(function(event){
@@ -160,6 +154,109 @@
             }
         }
 
+        function submitAction(event){
+            event.preventDefault();
+
+            var fieldArray;
+            if($(document.activeElement).hasClass("section-save")){
+                console.log("Section Save Button");
+
+                if($(document.activeElement).parents(".panel.form-group").length === 0){
+                    //TODO FC-3
+                    console.log("Error! Cannot find section to save content from");
+                    return;
+                }
+
+                fieldArray = $($(document.activeElement).parents(".panel.form-group")[0]).find(".content-field");
+            }
+            else{
+                console.log("Main Save button");
+
+                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
+            }
+
+            var jsonMsg = {};
+
+            $.each(fieldArray, function(index, field){
+                jsonMsg[$(field).attr("name")] = $(field).val();
+            });
+
+            //TODO include some kind of toast message for success vs fail
+
+            var failFn = function(){
+                //TODO FC-3
+                console.log("Save FAILED");
+            };
+
+            if(orgid){
+                console.log("Updating existing Org");
+                orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
+                    .fail(failFn);
+            }
+            else{
+                console.log("Creating new Org");
+                orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
+                    .fail(failFn);
+            }
+        }
+
+        function loadOrg(){
+            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
+                .done(function(orgData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        //TODO FC-3
+                        console.log("Org not found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.org(orgData)){
+                        console.log("Error! Data returned from server for Org does not contain the Org.");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    //TODO need to populate the labels too
+
+                    $(".page-header h2").text("Org: " + orgData.orgName);
+
+                    $("#orgNameField").val(orgData.orgName);
+                    $("#orgDescriptionField").val(orgData.orgDescription);
+                })
+                .fail(function(){
+                    //TODO FC-3
+                    console.log("FAILED TO RETRIEVE ORG DETAILS");
+                });
+        }
+
+        function deleteOrg(event){
+            if(event){
+                event.preventDefault();
+            }
+
+            var confirmMsg = "Are you sure you want to delete " +
+                (orgid == payload.oid ? "your" : "this") + " Org? This action cannot be undone";
+            var choice = confirm(confirmMsg);
+            if(choice){
+                orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
+                    .done(function(){
+                        if(orgid == payload.oid){
+                            orgbuilder.jwt.clearToken();
+                            window.location = "../index.html";
+                        }
+                        else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                            window.location = "manage.html";
+                        }
+                        else{
+                            window.location = "../main.html";
+                        }
+                    })
+                    .fail(function(){
+                        //TODO FC-3
+                        console.log("DELETE FAILED");
+                    });
+            }
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
@@ -173,7 +270,24 @@
         /*************************
          * 6) Page Initialization
          *************************/
-        orgbuilder.menus.loadMainTemplate()
+
+        orgbuilder.menus.loadMainTemplate();
+
+        if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master) && !orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+            $(".section-edit").addClass("hidden");
+            $("#deleteBtn").addClass("hidden");
+            $("#saveBtn").addClass("hidden");
+            $("#cancelBtn").addClass("hidden");
+        }
+
+        if(orgid){
+            loadOrg();
+        }
+        else{
+            $(".page-header h2").text("New Org");
+            $(".section-toggle").addClass("hidden");
+            $(".panel.form-group").attr("status", "edit");
+        }
 
     });
 </script>
