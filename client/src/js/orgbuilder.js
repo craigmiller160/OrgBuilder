@@ -110,6 +110,7 @@ var orgbuilder = (function(){
                     var status = jqXHR.status;
                     console.log("API Request Failed. Status: " + status);
                     if(status === 403){
+                        //TODO FC-3
                         window.location = orgProps.clientOrigin + "/login.html?denied=true";
                     }
                     else if(status === 0){
@@ -117,14 +118,16 @@ var orgbuilder = (function(){
                         console.log("SERVER ERROR"); //TODO FC-3
                     }
                     else if(status === 401){
+                        //TODO FC-3
                         //This comes up during a bad login or if the token has expired
                         window.location = orgProps.clientOrigin + "/login.html";
                     }
                     else if(status >= 500){
+                        //TODO FC-3
                         var error = jqXHR.responseJSON;
                         console.log("Critical error server-side, please check server logs for details");
                         console.log("Error Message: " + error.errorMessage);
-                        window.location = orgProps.clientOrigin + "/server-error.html";
+                        // window.location = orgProps.clientOrigin + "/server-error.html";
                     }
                     else{
                         alert("Error communicating with server. Status: " + status);

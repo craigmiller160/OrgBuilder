@@ -45,16 +45,16 @@
                                     <div class="col-md-6">
                                         <p>Org Name:</p>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div id="orgNameField" class="col-md-6">
                                         <p class="content-label"></p>
-                                        <input id="orgNameField" name="orgName" class="content-field form-control" type="text" required /> <!-- TODO figure out a more elegant way to do the asterisk here -->
+                                        <input name="orgName" class="content-field form-control" type="text" required disabled /> <!-- TODO figure out a more elegant way to do the asterisk here -->
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p>Created Date:</p>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div id="createdDateField" class="col-md-6">
                                         <p></p>
                                     </div>
                                 </div>
@@ -62,9 +62,9 @@
                                     <div class="col-md-6">
                                         <p>Org Description:</p>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div id="orgDescriptionField" class="col-md-6">
                                         <p class="content-label"></p>
-                                        <textarea id="orgDescriptionField" name="orgDescription" class="form-control content-field" maxlength="255" rows="5"></textarea>
+                                        <textarea name="orgDescription" class="form-control content-field" maxlength="255" rows="5" disabled></textarea>
                                         <!--<p class="content-field">(Limit 255 characters)</p>--> <!-- TODO figure out a way to restore this later -->
                                     </div>
                                 </div>
@@ -138,6 +138,7 @@
             var section = $(event.target).parents(".panel.form-group");
             if($(section).attr("status") === "view"){
                 $(section).attr("status", "edit");
+                $(section).find(".content-field").removeAttr("disabled"); //TODO need to re-add this when the fields are hidden again
             }
         }
 
@@ -196,6 +197,9 @@
             else{
                 console.log("Creating new Org");
                 orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
+                    .done(function(orgData){
+                        window.location = "content.html?orgid=" + orgData.orgId;
+                    })
                     .fail(failFn);
             }
         }
@@ -209,23 +213,29 @@
                         return;
                     }
 
-                    if(!orgbuilder.validateData.org(orgData)){
-                        console.log("Error! Data returned from server for Org does not contain the Org.");
-                        window.location = "../server-error.html";
-                        return;
-                    }
-
-                    //TODO need to populate the labels too
-
-                    $(".page-header h2").text("Org: " + orgData.orgName);
-
-                    $("#orgNameField").val(orgData.orgName);
-                    $("#orgDescriptionField").val(orgData.orgDescription);
+                    updateFields(orgData);
                 })
                 .fail(function(){
                     //TODO FC-3
                     console.log("FAILED TO RETRIEVE ORG DETAILS");
                 });
+        }
+
+        function updateFields(orgData){
+            if(!orgbuilder.validateData.org(orgData)){
+                //TODO FC-3
+                console.log("Error! Data returned from server for Org does not contain the Org.");
+                window.location = "../server-error.html";
+                return;
+            }
+
+            $(".page-header h2").text("Org: " + orgData.orgName);
+
+            $("#orgNameField > .content-label").text(orgData.orgName);
+            $("#orgNameField > .content-field").val(orgData.orgName);
+            $("#createdDateField > p").text(orgData.createdDate);
+            $("#orgDescriptionField > .content-label").text(orgData.orgDescription);
+            $("#orgDescriptionField > .content-field").text(orgData.orgDescription);
         }
 
         function deleteOrg(event){
@@ -287,6 +297,8 @@
             $(".page-header h2").text("New Org");
             $(".section-toggle").addClass("hidden");
             $(".panel.form-group").attr("status", "edit");
+            $(".content-field").removeAttr("disabled");
+            $("#deleteBtn").addClass("hidden");
         }
 
     });
