@@ -143,18 +143,6 @@
             }
         });
 
-        //Close alert
-        $("body").click(function(){
-            $(".alert").removeClass("in");
-        });
-
-        //TODO better implement this below... move it and above into orgbuilder.js
-        (function(){
-            $("[data-hide]").on("click",function(){
-                $("." + $(this).attr("data-hide")).removeClass("in");
-            });
-        })();
-
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/

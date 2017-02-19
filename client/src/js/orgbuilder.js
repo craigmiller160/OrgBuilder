@@ -31,6 +31,15 @@ var orgbuilder = (function(){
         large: 1200 // >=
     };
 
+    //Utility code to execute on page initialization to support the alert messages
+    //Close alert
+    $("body").click(function(){
+        $(".alert").removeClass("in");
+    });
+    $("[data-hide]").on("click",function(){
+        $("." + $(this).attr("data-hide")).removeClass("in");
+    });
+
     //Utility methods for working with the JWT
     var jwt = {
         storeToken: function(token){
