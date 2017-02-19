@@ -101,16 +101,20 @@
 <script>
     $(document).ready(function(){
 
+        //TODO there is an issue with pressing save when no fields are being edited
+        //TODO also, the server requires payloads with all fields, so need to provide that
+
         /*************************
          * 1) Top Scope Variables
          *************************/
 
+        var currentUrl = URI(window.location.href);
         var orgid = (function(){
-            var url = URI(window.location.href);
-            if(url.hasQuery("orgid")){
-                return url.search(true).orgid;
+            if(currentUrl.hasQuery("orgid")){
+                return currentUrl.search(true).orgid;
             }
         })();
+        var saved = currentUrl.hasQuery("saved");
         var payload = orgbuilder.jwt.getTokenPayload();
 
         /*******************************
@@ -159,7 +163,7 @@
             var section = $(event.target).parents(".panel.form-group");
             if($(section).attr("status") === "view"){
                 $(section).attr("status", "edit");
-                $(section).find(".content-field").removeAttr("disabled"); //TODO need to re-add this when the fields are hidden again
+                $(section).find(".content-field").removeAttr("disabled");
             }
         }
 
@@ -184,8 +188,8 @@
                 console.log("Section Save Button");
 
                 if($(document.activeElement).parents(".panel.form-group").length === 0){
-                    //TODO FC-3
-                    console.log("Error! Cannot find section to save content from");
+                    console.log("Error! Cannot find edited section to save content from.");
+                    showAlert("alert-danger", "Cannot find edited section to save content from.");
                     return;
                 }
 
@@ -193,18 +197,13 @@
                 fieldArray = $(section).find(".content-field");
 
                 var doneFn = function(orgData){
-                    //TODO toggle off edit, reset data fields for section
-
                     if(!orgbuilder.validateData.org(orgData)){
-                        //TODO FC-3
                         console.log("Error! Data returned from server for Org does not contain the Org.");
-//                        window.location = "../server-error.html"; //TODO need new error, no more server-error page
+                        showAlert("alert-danger", "Invalid data for Org returned from server.");
                         return;
                     }
 
-                    $("#actionAlert").addClass("alert-success");
-                    $("#actionAlert > p").text("Org saved successfully");
-                    $("#actionAlert").addClass("in");
+                    showAlert("alert-success", "Org changes saved successfully");
 
 
                     $(section).attr("status", "view");
@@ -223,7 +222,17 @@
                 fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
 
                 var doneFn = function(orgData){
-                    window.location.reload(true);
+                    window.location.href = (function(){
+                        var url = window.location.pathname;
+                        if(orgid){
+                            url = url + "?orgid=" + orgid + "&";
+                        }
+                        else{
+                            url = url + "?";
+                        }
+
+                        return url + "saved=true";
+                    })();
                 }
             }
 
@@ -233,11 +242,9 @@
                 jsonMsg[$(field).attr("name")] = $(field).val();
             });
 
-            //TODO include some kind of toast message for success vs fail
-
             var failFn = function(){
-                //TODO FC-3
                 console.log("Save FAILED");
+                showAlert("alert-danger", "Failed to save Org");
             };
 
             if(orgid){
@@ -260,25 +267,23 @@
             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
                 .done(function(orgData, status, jqXHR){
                     if(jqXHR.status === 204){
-                        //TODO FC-3
                         console.log("Org not found on server");
+                        showAlert("alert-danger", "Org not found on server");
                         return;
                     }
 
                     updateFields(orgData);
                 })
-                .fail(function(){
-                    //TODO FC-3
-                    console.log("FAILED TO RETRIEVE ORG DETAILS");
+                .fail(function(jqXHR){
+                    console.log("FAILED TO RETRIEVE ORG DETAILS: " + jqXHR.status);
+                    showAlert("alert-danger", "Failed to retrieve Org details");
                 });
         }
 
         function updateFields(orgData){
             if(!orgbuilder.validateData.org(orgData)){
                 console.log("Error! Data returned from server for Org does not contain the Org.");
-                $("#actionAlert > p").text("Error! Invalid data returned from server for Org.");
-                $("#actionAlert").addClass("alert-danger");
-                $("#actionAlert").fadeIn();
+                showAlert("alert-danger", "Error! Invalid data returned from server for Org.");
                 return;
             }
 
@@ -302,6 +307,7 @@
             if(choice){
                 orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
                     .done(function(){
+                        //TODO FC-3
                         if(orgid == payload.oid){
                             orgbuilder.jwt.clearToken();
                             window.location = "../index.html";
@@ -314,8 +320,8 @@
                         }
                     })
                     .fail(function(){
-                        //TODO FC-3
                         console.log("DELETE FAILED");
+                        showAlert("alert-danger", "Failed to delete Org");
                     });
             }
         }
@@ -327,7 +333,12 @@
         function invalidCredentialsFn(){
             //TODO FC-3
             console.log("Invalid credentials to access org content editor!");
-//            window.location = "../access-denied.html"; //TODO no more access-denied page
+        }
+
+        function showAlert(clazz, message){
+            $("#actionAlert > p").text(message);
+            $("#actionAlert").addClass(clazz);
+            $("#actionAlert").addClass("in");
         }
 
         /*************************
@@ -352,6 +363,10 @@
             $(".panel.form-group").attr("status", "edit");
             $(".content-field").removeAttr("disabled");
             $("#deleteBtn").addClass("hidden");
+        }
+
+        if(saved){
+            showAlert("alert-success", "Org saved successfully");
         }
 
     });
