@@ -104,17 +104,14 @@
                         newRow.append($("<td></td>").attr("field","createdDate").text(org.createdDate));
 
                         var options = $("<td></td>").attr("field","options");
-                        options.append($("<button class='editOrgBtn btn btn-default' type='button' title='Edit Org'></button>").text("Edit"));
-                        options.append($("<button class='deleteOrgBtn btn btn-default' type='button' title='Delete Org'></button>").text("Delete"));
+                        var editUri = "content.html?orgid=" + org.orgId;
+
+                        options.append($("<a class='editOrgBtn btn btn-default' type='button' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteOrgBtn btn btn-default' type='button' title='Delete Org'></a>").text("Delete"));
 
 
                         newRow.append(options);
                         tableBody.append(newRow);
-                    });
-
-                    $(".editOrgBtn").click(function(event){
-                        var orgid = getOrgId(event);
-                        window.location = "content.html?orgid=" + orgid;
                     });
 
                     $(".deleteOrgBtn").click(function(event){
@@ -123,6 +120,7 @@
                             var orgid = getOrgId(event);
                             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
                                 .done(function(){
+                                    //TODO FC-3
                                     console.log("Org successfully deleted");
                                     location.reload(true);
                                 })
