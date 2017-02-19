@@ -45,7 +45,7 @@
                                     <div class="col-md-6">
                                         <p>Org Name:</p>
                                     </div>
-                                    <div id="orgNameField" class="col-md-6">
+                                    <div id="orgNameField" class="content col-md-6">
                                         <p class="content-label"></p>
                                         <input name="orgName" class="content-field form-control" type="text" required disabled /> <!-- TODO figure out a more elegant way to do the asterisk here -->
                                     </div>
@@ -62,7 +62,7 @@
                                     <div class="col-md-6">
                                         <p>Org Description:</p>
                                     </div>
-                                    <div id="orgDescriptionField" class="col-md-6">
+                                    <div id="orgDescriptionField" class="content col-md-6">
                                         <p class="content-label"></p>
                                         <textarea name="orgDescription" class="form-control content-field" maxlength="255" rows="5" disabled></textarea>
                                         <!--<p class="content-field">(Limit 255 characters)</p>--> <!-- TODO figure out a way to restore this later -->
@@ -168,12 +168,38 @@
                     return;
                 }
 
-                fieldArray = $($(document.activeElement).parents(".panel.form-group")[0]).find(".content-field");
+                var section = $(document.activeElement).parents(".panel.form-group")[0];
+                fieldArray = $(section).find(".content-field");
+
+                var doneFn = function(orgData){
+                    //TODO toggle off edit, reset data fields for section
+
+                    if(!orgbuilder.validateData.org(orgData)){
+                        //TODO FC-3
+                        console.log("Error! Data returned from server for Org does not contain the Org.");
+//                        window.location = "../server-error.html"; //TODO need new error, no more server-error page
+                        return;
+                    }
+
+
+                    $(section).attr("status", "view");
+                    $(section).find(".content-field").attr("disabled", true);
+
+                    var contents = $(section).find(".content");
+                    $.each(contents, function(index,content){
+                        var name = $(content).children(".content-field").attr("name");
+                        $(content).children(".content-label").text(orgData[name]);
+                    });
+                }
             }
             else{
                 console.log("Main Save button");
 
                 fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
+
+                var doneFn = function(orgData){
+                    window.location.reload(true);
+                }
             }
 
             var jsonMsg = {};
@@ -192,6 +218,7 @@
             if(orgid){
                 console.log("Updating existing Org");
                 orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
+                    .done(doneFn)
                     .fail(failFn);
             }
             else{
@@ -225,7 +252,7 @@
             if(!orgbuilder.validateData.org(orgData)){
                 //TODO FC-3
                 console.log("Error! Data returned from server for Org does not contain the Org.");
-                window.location = "../server-error.html";
+//                window.location = "../server-error.html"; //TODO need new error, no more server-error page
                 return;
             }
 
@@ -274,7 +301,7 @@
         function invalidCredentialsFn(){
             //TODO FC-3
             console.log("Invalid credentials to access org content editor!");
-            window.location = "../access-denied.html";
+//            window.location = "../access-denied.html"; //TODO no more access-denied page
         }
 
         /*************************
