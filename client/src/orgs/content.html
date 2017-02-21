@@ -101,6 +101,8 @@
 <script>
     $(document).ready(function(){
 
+        //TODO still have an issue, the saved successfully alert appears upon reloading the page, even though the save action isn't happening again
+
         /*************************
          * 1) Top Scope Variables
          *************************/
@@ -294,7 +296,6 @@
             if(choice){
                 orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
                     .done(function(){
-                        //TODO FC-3
                         if(orgid == payload.oid){
                             orgbuilder.jwt.clearToken();
                             window.location = "../login.html";
