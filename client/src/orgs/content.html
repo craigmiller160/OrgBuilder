@@ -101,9 +101,6 @@
 <script>
     $(document).ready(function(){
 
-        //TODO there is an issue with pressing save when no fields are being edited
-        //TODO also, the server requires payloads with all fields, so need to provide that
-
         /*************************
          * 1) Top Scope Variables
          *************************/
@@ -177,7 +174,7 @@
 
                 if($(document.activeElement).parents(".panel.form-group").length === 0){
                     console.log("Error! Cannot find edited section to save content from.");
-                    showAlert("alert-danger", "Cannot find edited section to save content from.");
+                    orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
                     return;
                 }
 
@@ -187,11 +184,11 @@
                 var doneFn = function(orgData){
                     if(!orgbuilder.validateData.org(orgData)){
                         console.log("Error! Data returned from server for Org does not contain the Org.");
-                        showAlert("alert-danger", "Invalid data for Org returned from server.");
+                        orgbuilder.showAlert("alert-danger", "Invalid data for Org returned from server.");
                         return;
                     }
 
-                    showAlert("alert-success", "Org changes saved successfully");
+                    orgbuilder.showAlert("alert-success", "Org changes saved successfully");
 
 
                     $(section).attr("status", "view");
@@ -224,7 +221,7 @@
                 }
             }
 
-            var jsonMsg = orgbuilder.data.getData();
+            var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
 
             $.each(fieldArray, function(index, field){
                 jsonMsg[$(field).attr("name")] = $(field).val();
@@ -232,7 +229,7 @@
 
             var failFn = function(){
                 console.log("Save FAILED");
-                showAlert("alert-danger", "Failed to save Org");
+                orgbuilder.showAlert("alert-danger", "Failed to save Org");
             };
 
             if(orgid){
@@ -256,7 +253,7 @@
                 .done(function(orgData, status, jqXHR){
                     if(jqXHR.status === 204){
                         console.log("Org not found on server");
-                        showAlert("alert-danger", "Org not found on server");
+                        orgbuilder.showAlert("alert-danger", "Org not found on server");
                         return;
                     }
 
@@ -264,14 +261,14 @@
                 })
                 .fail(function(jqXHR){
                     console.log("FAILED TO RETRIEVE ORG DETAILS: " + jqXHR.status);
-                    showAlert("alert-danger", "Failed to retrieve Org details");
+                    orgbuilder.showAlert("alert-danger", "Failed to retrieve Org details");
                 });
         }
 
         function updateFields(orgData){
             if(!orgbuilder.validateData.org(orgData)){
                 console.log("Error! Data returned from server for Org does not contain the Org.");
-                showAlert("alert-danger", "Error! Invalid data returned from server for Org.");
+                orgbuilder.showAlert("alert-danger", "Error! Invalid data returned from server for Org.");
                 return;
             }
 
@@ -300,18 +297,15 @@
                         //TODO FC-3
                         if(orgid == payload.oid){
                             orgbuilder.jwt.clearToken();
-                            window.location = "../index.html";
+                            window.location = "../login.html";
                         }
                         else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                            window.location = "manage.html";
-                        }
-                        else{
-                            window.location = "../main.html";
+                            window.location = "manage.html?deleted=true";
                         }
                     })
                     .fail(function(){
                         console.log("DELETE FAILED");
-                        showAlert("alert-danger", "Failed to delete Org");
+                        orgbuilder.showAlert("alert-danger", "Failed to delete Org");
                     });
             }
         }
@@ -323,12 +317,6 @@
         function invalidCredentialsFn(){
             //TODO FC-3
             console.log("Invalid credentials to access org content editor!");
-        }
-
-        function showAlert(clazz, message){
-            $("#actionAlert > p").text(message);
-            $("#actionAlert").addClass(clazz);
-            $("#actionAlert").addClass("in");
         }
 
         /*************************
@@ -356,7 +344,7 @@
         }
 
         if(saved){
-            showAlert("alert-success", "Org saved successfully");
+            orgbuilder.showAlert("alert-success", "Org saved successfully");
         }
 
     });

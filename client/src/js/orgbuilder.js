@@ -487,6 +487,13 @@ var orgbuilder = (function(){
 
     })();
 
+    //Utility function to show an alert on the page
+    function showAlert(clazz, message){
+        $("#actionAlert > p").text(message);
+        $("#actionAlert").addClass(clazz);
+        $("#actionAlert").addClass("in");
+    }
+
     return{
         roles: roles,
         methods: methods,
@@ -497,7 +504,8 @@ var orgbuilder = (function(){
         cancelChangesCheck: cancelChangesCheck,
         validateData: validateData,
         menus: menus,
-        data: data
+        data: data,
+        showAlert: showAlert
     }
 })();
 
