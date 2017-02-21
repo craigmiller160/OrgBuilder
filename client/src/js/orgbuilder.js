@@ -81,6 +81,20 @@ var orgbuilder = (function(){
         }
     };
 
+    //Store the JSON payload returned by the server to access later
+    var dataObj;
+    var data = {
+        storeData: function(data){
+            dataObj = data;
+        },
+        hasData: function(){
+            return dataObj !== undefined;
+        },
+        getData: function(){
+            return dataObj;
+        }
+    };
+
     //Utility methods for communicating with the OrgBuilder API
     var api = {
         send: function(uri, method, json){
@@ -482,7 +496,8 @@ var orgbuilder = (function(){
         checkRequiredFields: checkRequiredFields,
         cancelChangesCheck: cancelChangesCheck,
         validateData: validateData,
-        menus: menus
+        menus: menus,
+        data: data
     }
 })();
 

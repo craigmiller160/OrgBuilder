@@ -224,7 +224,7 @@
                 }
             }
 
-            var jsonMsg = {};
+            var jsonMsg = orgbuilder.data.getData();
 
             $.each(fieldArray, function(index, field){
                 jsonMsg[$(field).attr("name")] = $(field).val();
@@ -274,6 +274,8 @@
                 showAlert("alert-danger", "Error! Invalid data returned from server for Org.");
                 return;
             }
+
+            orgbuilder.data.storeData(orgData);
 
             $(".page-header h2").text("Org: " + orgData.orgName);
 
