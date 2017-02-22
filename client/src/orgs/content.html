@@ -244,7 +244,7 @@
                 console.log("Creating new Org");
                 orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
                     .done(function(orgData){
-                        window.location = "content.html?orgid=" + orgData.orgId;
+                        window.location = "content.html?orgid=" + orgData.orgId + "&saved=true";
                     })
                     .fail(failFn);
             }
