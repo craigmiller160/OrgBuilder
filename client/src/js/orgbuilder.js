@@ -133,28 +133,26 @@ var orgbuilder = (function(){
                     var status = jqXHR.status;
                     console.log("API Request Failed. Status: " + status);
                     if(status === 403){
-                        //TODO FC-3
-                        window.location = orgProps.clientOrigin + "/login.html?denied=true";
+                        window.location = orgProps.clientOrigin + "/index.html?denied=true";
                     }
                     else if(status === 0){
-                        // window.location = orgProps.clientOrigin + "/server-error.html";
-                        console.log("SERVER ERROR"); //TODO FC-3
+                        console.log("SERVER ERROR");
+                        showAlert("alert-danger", "Critical server error!");
                     }
                     else if(status === 401){
-                        //TODO FC-3
                         //This comes up during a bad login or if the token has expired
                         window.location = orgProps.clientOrigin + "/login.html";
                     }
                     else if(status >= 500){
-                        //TODO FC-3
+                        //TODO FC-3 - See if having a generic server error is better than using individual fail messages on other calls of this
                         var error = jqXHR.responseJSON;
                         console.log("Critical error server-side, please check server logs for details");
                         console.log("Error Message: " + error.errorMessage);
                         // window.location = orgProps.clientOrigin + "/server-error.html";
                     }
                     else{
-                        alert("Error communicating with server. Status: " + status);
-                        //TODO FC-3
+                        console.log("Error communicating with server. Status: " + status);
+                        showAlert("alert-danger", "Critical server error!");
                     }
                 });
         }
@@ -467,8 +465,8 @@ var orgbuilder = (function(){
                     $(".template-link").click(cancelChangesCheck);
                 })
                 .fail(function(jqXHR){
-                    //TODO TC-3
                     console.log("Failed to log template. Status: " + jqXHR.status);
+                    showAlert("alert-danger", "Unable to load all content for page.");
                 });
         }
 

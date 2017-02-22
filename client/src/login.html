@@ -71,13 +71,6 @@
          * 1) Top Scope Variables
          *************************/
 
-        var denied = (function(){
-            var url = URI(window.location.href);
-            if(url.hasQuery("denied")){
-                return url.search(true).denied;
-            }
-        })();
-
         /*******************************
          * 2) Access to Page Validation
          *******************************/
