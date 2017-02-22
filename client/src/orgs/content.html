@@ -209,10 +209,13 @@
                 fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
 
                 var doneFn = function(orgData){
-                    window.location.href = (function(){
+                    window.location = (function(){
                         var url = window.location.pathname;
                         if(orgid){
                             url = url + "?orgid=" + orgid + "&";
+                        }
+                        else if(orgData !== undefined){
+                            url = url + "?orgid=" + orgData.orgId + "&";
                         }
                         else{
                             url = url + "?";
@@ -243,9 +246,10 @@
             else{
                 console.log("Creating new Org");
                 orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
-                    .done(function(orgData){
-                        window.location = "content.html?orgid=" + orgData.orgId + "&saved=true";
-                    })
+//                    .done(function(orgData){
+//                        window.location = "content.html?orgid=" + orgData.orgId + "&saved=true";
+//                    })
+                    .done(doneFn)
                     .fail(failFn);
             }
         }
