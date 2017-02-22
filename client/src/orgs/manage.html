@@ -132,13 +132,12 @@
                             var orgid = getOrgId(event);
                             orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
                                 .done(function(){
-                                    //TODO FC-3
                                     console.log("Org successfully deleted");
-                                    location.reload(true);
+                                    window.location = window.location.href + "?deleted=true";
                                 })
                                 .fail(function(){
-                                    //TODO FC-3
                                     console.log("Org delete FAILED");
+                                    orgbuilder.showAlert("alert-danger", "Org delete failed");
                                 });
                         }
                     });
@@ -146,8 +145,8 @@
                     //TODO FC-8
                 })
                 .fail(function(jqXHR){
-                    //TODO FC-3
                     console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
+                    orgbuilder.showAlert("alert-danger", "Unable to get Orgs from the server");
                 });
         }
 
