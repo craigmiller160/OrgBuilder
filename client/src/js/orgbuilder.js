@@ -137,22 +137,21 @@ var orgbuilder = (function(){
                     }
                     else if(status === 0){
                         console.log("SERVER ERROR");
-                        showAlert("alert-danger", "Critical server error!");
+                        showAlert("alert-danger", "Unable to contact server!");
                     }
                     else if(status === 401){
                         //This comes up during a bad login or if the token has expired
                         window.location = orgProps.clientOrigin + "/login.html";
                     }
                     else if(status >= 500){
-                        //TODO FC-3 - See if having a generic server error is better than using individual fail messages on other calls of this
                         var error = jqXHR.responseJSON;
                         console.log("Critical error server-side, please check server logs for details");
-                        console.log("Error Message: " + error.errorMessage);
-                        // window.location = orgProps.clientOrigin + "/server-error.html";
+                        console.log("Error Message: " + error.exceptionName + ": " + error.errorMessage);
+                        showAlert("alert-danger", "Server Error: " + error.exceptionName + ": " + error.errorMessage);
                     }
                     else{
-                        console.log("Error communicating with server. Status: " + status);
-                        showAlert("alert-danger", "Critical server error!");
+                        console.log("Error communicating with server. Status: " + status + " " + jqXHR.statusText);
+                        showAlert("alert-danger", "Unknown critical server error!");
                     }
                 });
         }
@@ -487,9 +486,11 @@ var orgbuilder = (function(){
 
     //Utility function to show an alert on the page
     function showAlert(clazz, message){
-        $("#actionAlert > p").text(message);
-        $("#actionAlert").addClass(clazz);
-        $("#actionAlert").addClass("in");
+        if($("#actionAlert").length > 0){
+            $("#actionAlert > p").text(message);
+            $("#actionAlert").addClass(clazz);
+            $("#actionAlert").addClass("in");
+        }
     }
 
     return{

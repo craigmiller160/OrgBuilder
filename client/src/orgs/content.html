@@ -234,7 +234,6 @@
 
             var failFn = function(){
                 console.log("Save FAILED");
-                orgbuilder.showAlert("alert-danger", "Failed to save Org");
             };
 
             if(orgid){
@@ -246,9 +245,6 @@
             else{
                 console.log("Creating new Org");
                 orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
-//                    .done(function(orgData){
-//                        window.location = "content.html?orgid=" + orgData.orgId + "&saved=true";
-//                    })
                     .done(doneFn)
                     .fail(failFn);
             }
@@ -267,7 +263,6 @@
                 })
                 .fail(function(jqXHR){
                     console.log("FAILED TO RETRIEVE ORG DETAILS: " + jqXHR.status);
-                    orgbuilder.showAlert("alert-danger", "Failed to retrieve Org details");
                 });
         }
 
@@ -310,7 +305,6 @@
                     })
                     .fail(function(){
                         console.log("DELETE FAILED");
-                        orgbuilder.showAlert("alert-danger", "Failed to delete Org");
                     });
             }
         }
@@ -320,8 +314,8 @@
          ***********************/
 
         function invalidCredentialsFn(){
-            //TODO FC-3
             console.log("Invalid credentials to access org content editor!");
+            window.location = "../index.html?denied=true";
         }
 
         /*************************

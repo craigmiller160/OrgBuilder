@@ -137,7 +137,6 @@
                                 })
                                 .fail(function(){
                                     console.log("Org delete FAILED");
-                                    orgbuilder.showAlert("alert-danger", "Org delete failed");
                                 });
                         }
                     });
@@ -146,7 +145,6 @@
                 })
                 .fail(function(jqXHR){
                     console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
-                    orgbuilder.showAlert("alert-danger", "Unable to get Orgs from the server");
                 });
         }
 
