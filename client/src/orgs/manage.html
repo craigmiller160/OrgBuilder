@@ -118,7 +118,7 @@
                         var editUri = "content.html?orgid=" + org.orgId;
 
                         options.append($("<a class='editOrgBtn btn btn-default' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
-                        options.append($("<a class='deleteOrgBtn btn btn-default' title='Delete Org'></a>").text("Delete"));
+                        options.append($("<a class='deleteOrgBtn btn btn-default' href='#' title='Delete Org'></a>").text("Delete"));
 
 
                         newRow.append(options);
@@ -126,6 +126,7 @@
                     });
 
                     $(".deleteOrgBtn").click(function(event){
+                        event.preventDefault();
                         var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
                         if(choice){
                             var orgid = getOrgId(event);

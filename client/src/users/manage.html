@@ -76,6 +76,8 @@
          *************************/
 
         var tableBody = $("#usersTable > tbody");
+        var currentUrl = URI(window.location.href);
+        var deleted = currentUrl.hasQuery("deleted");
 
         /*******************************
          * 2) Access to Page Validation
@@ -100,14 +102,13 @@
             orgbuilder.api.send("users", orgbuilder.methods.get)
                 .done(function(data, status, jqXHR){
                     if(jqXHR.status === 204){
-                        //TODO FC-3
                         console.log("No users found on server");
                         return;
                     }
 
                     if(!orgbuilder.validateData.userList(data)){
                         console.log("Error! Data returned from server for userList does not contain the userList");
-                        window.location = "../server-error.html";
+                        orgbuilder.showAlert("alert-danger", "Data returned from server is not a valid list of Users");
                         return;
                     }
 
@@ -124,32 +125,41 @@
                         var editUri = "content.html?userid=" + user.userid;
 
                         options.append($("<a class='editUserBtn btn btn-default' title='Edit User'></a>").attr("href",editUri).text("Edit"));
-                        options.append($("<a class='deleteUserBtn btn btn-default' title='Delete User'></a>").text("Delete"));
+                        options.append($("<a class='deleteUserBtn btn btn-default' href='#' title='Delete User'></a>").text("Delete"));
 
                         newRow.append(options);
                         tableBody.append(newRow);
                     });
 
                     $(".deleteUserBtn").click(function(event){
+                        event.preventDefault();
                         var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
                         if(choice){
                             var userid = getUserId(event);
                             orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
                                 .done(function(){
                                     console.log("User successfully deleted");
-                                    location.reload(true);
+                                    window.location = window.location.href + "?deleted=true";
                                 })
                                 .fail(function(){
-                                    //TODO FC-3
                                     console.log("User delete FAILED");
                                 });
                         }
                     });
                 })
                 .fail(function(){
-                    //TODO FC-3
                     console.log("LOADING USER LIST FAILED!!!");
                 });
+        }
+
+        //TODO test that this function is executing properly
+        function setHeader(){
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                $(".page-header > h2").text("All Users");
+            }
+            else{
+                $(".page-header > h2").text(orgbuilder.jwt.getTokenPayload().onm + " Users");
+            }
         }
 
         /***********************
@@ -170,6 +180,12 @@
 
         orgbuilder.menus.loadMainTemplate();
         loadUserList();
+        setHeader();
+
+        //TODO test this alert
+        if(deleted){
+            orgbuilder.showAlert("alert-success", "User successfully deleted");
+        }
 
     });
 </script>
