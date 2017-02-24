@@ -39,7 +39,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <table id="usersTable" class="table table-striped"> <!-- TODO make sure that this table can look good in smaller view... maybe scrolling??? -->
+                    <table id="usersTable" class="table table-striped">
                         <thead>
                         <tr>
                             <th>Email</th>
@@ -52,6 +52,11 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <a id="addUserBtn" class="btn btn-default" href="content.html" title="Add new Org">Add</a>
                 </div>
             </div>
         </div>
@@ -118,8 +123,8 @@
                         var options = $("<td></td>").attr("field","options");
                         var editUri = "content.html?userid=" + user.userid;
 
-                        options.append($("<a class='editUserBtn btn btn-default' type='button' title='Edit User'></a>").attr("href",editUri).text("Edit"));
-                        options.append($("<a class='deleteUserBtn btn btn-default' type='button' title='Delete User'></a>").text("Delete"));
+                        options.append($("<a class='editUserBtn btn btn-default' title='Edit User'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteUserBtn btn btn-default' title='Delete User'></a>").text("Delete"));
 
                         newRow.append(options);
                         tableBody.append(newRow);

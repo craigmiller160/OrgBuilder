@@ -49,7 +49,11 @@
                         </thead>
                         <tbody></tbody>
                     </table>
-                    <button id="addOrgBtn" class="btn btn-default" type="button" title="Add new Org">Add</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <a id="addOrgBtn" class="btn btn-default" href="content.html" title="Add new Org">Add</a>
                 </div>
             </div>
         </div>
@@ -87,10 +91,6 @@
          * 3) UI Actions
          ****************/
 
-        $("#addOrgBtn").click(function(){
-            window.location = "content.html";
-        });
-
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
@@ -118,8 +118,8 @@
                         var options = $("<td></td>").attr("field","options");
                         var editUri = "content.html?orgid=" + org.orgId;
 
-                        options.append($("<a class='editOrgBtn btn btn-default' type='button' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
-                        options.append($("<a class='deleteOrgBtn btn btn-default' type='button' title='Delete Org'></a>").text("Delete"));
+                        options.append($("<a class='editOrgBtn btn btn-default' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteOrgBtn btn btn-default' title='Delete Org'></a>").text("Delete"));
 
 
                         newRow.append(options);
