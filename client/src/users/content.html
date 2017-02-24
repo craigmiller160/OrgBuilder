@@ -55,9 +55,23 @@
          * 1) Top Scope Variables
          *************************/
 
+        var currentUrl = URI(window.location.href);
+        var userid = (function(){
+            if(currentUrl.hasQuery("userid")){
+                return currentUrl.search(true).userid;
+            }
+        });
+
         /*******************************
          * 2) Access to Page Validation
          *******************************/
+
+        //Deliberately using != here
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid() &&
+            !orgbuilder.validateAccess().hasToken().isUser(userid).isValid()){
+            window.location = "../index.html?denied=true";
+            return;
+        }
 
         /****************
          * 3) UI Actions
@@ -74,6 +88,8 @@
         /*************************
          * 6) Page Initialization
          *************************/
+
+        orgbuilder.menus.loadMainTemplate();
 
     });
 </script>
