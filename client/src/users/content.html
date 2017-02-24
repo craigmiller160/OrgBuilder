@@ -90,6 +90,17 @@
                             </div>
                             <div class="panel-body">
                                 <!-- TODO Password stuff here -->
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>Password:</p>
+                                    </div>
+                                    <div id="passwordField" class="col-sm-6">
+                                        <!-- TODO need to make sure save logic validates that both password fields are the same -->
+                                        <p class="content-label"></p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
+                                        <input name="password" class="content-field form-control" type="text" required disabled />
+                                    </div>
+                                    <!-- TODO need that second password field -->
+                                </div>
                             </div>
                         </div>
                     </div>
