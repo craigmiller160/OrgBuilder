@@ -103,11 +103,11 @@ var orgbuilder = (function(){
                 type: method,
                 headers: (function(){
                     var result = {
-                        "Access-Control-Request-Headers": [
+                        /*"Access-Control-Request-Headers": [
                             "X-Requested-With",
                             "Authorization"
                         ],
-                        "Access-Control-Request-Method": method
+                        "Access-Control-Request-Method": method*/
                     };
 
                     var token = jwt.getToken();
