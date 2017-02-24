@@ -427,33 +427,32 @@ var orgbuilder = (function(){
 
                     //Display dynamic values in navbar
                     if(type !== types.login){
+                        //Fix links to be absolute paths using the clientOrigin
+                        $.each($(".template-link"), function(index,link){
+                            $(link).attr("href", orgProps.clientOrigin + $(link).attr("href"));
+                        });
+
                         $("#userName").text(jwt.getTokenPayload().unm);
-                        $("#user-profile-btn > a").attr("href", orgProps.clientOrigin + "/users/content.html?userid=" + jwt.getTokenPayload().uid);
+                        $("#user-profile-btn > a").attr("href", $("#user-profile-btn > a").attr("href") + "?userid=" + jwt.getTokenPayload().uid);
                         if(!jwt.hasRole(roles.master)){
                             if(jwt.getTokenPayload().onm !== ""){
                                 $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
                             }
-                            $("#org-profile-btn > 1").attr("href", orgProps.clientOrigin + "/orgs/content.html?orgid=" + jwt.getTokenPayload().oid);
+                            $("#org-profile-btn > a").attr("href", $("#org-profile-btn > a").attr("href") + "?orgid=" + jwt.getTokenPayload().oid);
                         }
                         else{
                             $("#org-profile-btn").addClass("hidden");
                         }
-                    }
-                    else{
-                        $("#navbar-user-menu").addClass("hidden");
-                    }
 
-                    //Fix path to link to link to home page, either index.html or login.html
-                    if(type !== types.login){
+                        //Fix path to link to link to home page, either index.html or login.html
                         $(".home-link").attr("href", orgProps.clientOrigin + "/index.html");
                     }
                     else{
+                        $("#navbar-user-menu").addClass("hidden");
+
+                        //Fix path to link to link to home page, either index.html or login.html
                         $(".home-link").attr("href", orgProps.clientOrigin + "/login.html");
                     }
-                    $(".origin-link").attr("href", orgProps.clientOrigin + $(".origin-link").attr("href"));
-
-                    //Fix the logout button link, to use an absolute path to the login page
-                    $("#logoutBtn").attr("href", orgProps.clientOrigin + "/login.html");
 
                     //Display the menu items that the user has access to
                     if(type !== types.login){
