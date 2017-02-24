@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="page-header">
-                        <h2>User Content</h2> <!-- TODO this needs to change dynamically -->
+                        <h2></h2>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,92 @@
                     </div>
                 </div>
             </div>
+            <form>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <div id="userInfoSection" class="panel panel-default form-group" status="view">
+                            <div class="panel-heading clearfix">
+                                <h4 class="pull-left">User Info</h4>
+                                <div class="btn-group pull-right">
+                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>Email:</p>
+                                    </div>
+                                    <div id="userEmailField" class="col-sm-6">
+                                        <p class="content-label"></p>
+                                        <input name="userEmail" class="content-field form-control" type="text" required disabled />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>First Name:</p>
+                                    </div>
+                                    <div id="firstNameField" class="col-sm-6">
+                                        <p class="content-label"></p>
+                                        <input name="firstName" class="content-field form-control" type="text" disabled />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>Last Name:</p>
+                                    </div>
+                                    <div id="lastNameField" class="col-sm-6">
+                                        <p class="content-label"></p>
+                                        <input name="lastName" class="content-field form-control" type="text" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <div id="passwordSection" class="panel panel-default form-group" status="view">
+                            <div class="panel-heading clearfix">
+                                <h4 class="pull-left">Password</h4>
+                                <div class="btn-group pull-right">
+                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <!-- TODO Password stuff here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <div id="accessSection" class="panel panel-default form-group" status="view">
+                            <div class="panel-heading clearfix">
+                                <h4 class="pull-left">Access Roles</h4>
+                                <div class="btn-group pull-right">
+                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <!-- TODO Access stuff here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <div id="orgSection" class="panel panel-default form-group" status="view">
+                            <div class="panel-heading clearfix">
+                                <h4 class="pull-left">Org</h4>
+                                <div class="btn-group pull-right">
+                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <!-- TODO Org stuff here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <!-- TODO remaining content goes here -->
         </div>
     </div>
@@ -90,6 +176,14 @@
          *************************/
 
         orgbuilder.menus.loadMainTemplate();
+
+        if(userid){
+            //Configure for an edit user page
+        }
+        else{
+            //Configure for an add user page
+            $(".page-header > h2").text("New User");
+        }
 
     });
 </script>
