@@ -29,6 +29,31 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <table id="usersTable" class="table table-striped"> <!-- TODO make sure that this table can look good in smaller view... maybe scrolling??? -->
+                        <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Org</th>
+                            <th>Roles</th>
+                            <th>Options</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -44,6 +69,8 @@
         /*************************
          * 1) Top Scope Variables
          *************************/
+
+        var tableBody = $("#usersTable > tbody");
 
         /*******************************
          * 2) Access to Page Validation
@@ -63,15 +90,81 @@
          * 4) Core Business Logic Functions
          ***********************************/
 
+        function loadUserList(){
+            //TODO FC-7
+            orgbuilder.api.send("users", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        //TODO FC-3
+                        console.log("No users found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.userList(data)){
+                        console.log("Error! Data returned from server for userList does not contain the userList");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    $.each(data.userList, function(index, user){
+                        var newRow = $("<tr></tr>").attr("index", index).attr("userid", user.userId);
+
+                        newRow.append($("<td></td>").attr("field", "email").text(user.userEmail));
+                        newRow.append($("<td></td>").attr("field", "firstName").text(user.firstName));
+                        newRow.append($("<td></td>").attr("field", "lastName").text(user.lastName));
+                        newRow.append($("<td></td>").attr("field", "org").text(user.orgName));
+                        newRow.append($("<td></td>").attr("field", "roles").text(user.roles.toString()));
+
+                        var options = $("<td></td>").attr("field","options");
+                        var editUri = "content.html?userid=" + user.userid;
+
+                        options.append($("<a class='editUserBtn btn btn-default' type='button' title='Edit User'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteUserBtn btn btn-default' type='button' title='Delete User'></a>").text("Delete"));
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+
+                    $(".deleteUserBtn").click(function(event){
+                        var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
+                        if(choice){
+                            var userid = getUserId(event);
+                            orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("User successfully deleted");
+                                    location.reload(true);
+                                })
+                                .fail(function(){
+                                    //TODO FC-3
+                                    console.log("User delete FAILED");
+                                });
+                        }
+                    });
+                })
+                .fail(function(){
+                    //TODO FC-3
+                    console.log("LOADING USER LIST FAILED!!!");
+                });
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        function getUserId(event){
+            return $(event.target).parents("tr[userId]").attr("userId");
+        }
+
+        function getUserEmail(event){
+            return $(event.target).parents("tr").children("td[field = 'email']").text();
+        }
 
         /*************************
          * 6) Page Initialization
          *************************/
 
         orgbuilder.menus.loadMainTemplate();
+        loadUserList();
 
     });
 </script>
