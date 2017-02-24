@@ -152,7 +152,6 @@
                 });
         }
 
-        //TODO test that this function is executing properly
         function setHeader(){
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
                 $(".page-header > h2").text("All Users");
@@ -182,7 +181,6 @@
         loadUserList();
         setHeader();
 
-        //TODO test this alert
         if(deleted){
             orgbuilder.showAlert("alert-success", "User successfully deleted");
         }
