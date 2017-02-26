@@ -185,7 +185,7 @@
             if(choice){
                 orgbuilder.api.send("orgs/" + orgId, orgbuilder.methods.delete)
                     .done(function(){
-                        if(orgid == payload.oid){
+                        if(orgId == payload.oid){
                             orgbuilder.jwt.clearToken();
                             window.location = "../login.html";
                         }

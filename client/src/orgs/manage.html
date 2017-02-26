@@ -115,7 +115,7 @@
                         newRow.append($("<td></td>").attr("field","createdDate").text(org.createdDate));
 
                         var options = $("<td></td>").attr("field","options");
-                        var editUri = "content.html?orgid=" + org.orgId;
+                        var editUri = "content.html?orgId=" + org.orgId;
 
                         options.append($("<a class='editOrgBtn btn btn-default' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
                         options.append($("<a class='deleteOrgBtn btn btn-default' href='#' title='Delete Org'></a>").text("Delete"));
@@ -129,8 +129,8 @@
                         event.preventDefault();
                         var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
                         if(choice){
-                            var orgid = getOrgId(event);
-                            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
+                            var orgId = getOrgId(event);
+                            orgbuilder.api.send("orgs/" + orgId, orgbuilder.methods.delete)
                                 .done(function(){
                                     console.log("Org successfully deleted");
                                     window.location = window.location.href + "?deleted=true";

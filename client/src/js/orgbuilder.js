@@ -574,12 +574,12 @@ var orgbuilder = (function(){
                         });
 
                         $("#userName").text(jwt.getTokenPayload().unm);
-                        $("#user-profile-btn > a").attr("href", $("#user-profile-btn > a").attr("href") + "?userid=" + jwt.getTokenPayload().uid);
+                        $("#user-profile-btn > a").attr("href", $("#user-profile-btn > a").attr("href") + "?userId=" + jwt.getTokenPayload().uid);
                         if(!jwt.hasRole(roles.master)){
                             if(jwt.getTokenPayload().onm !== ""){
                                 $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
                             }
-                            $("#org-profile-btn > a").attr("href", $("#org-profile-btn > a").attr("href") + "?orgid=" + jwt.getTokenPayload().oid);
+                            $("#org-profile-btn > a").attr("href", $("#org-profile-btn > a").attr("href") + "?orgId=" + jwt.getTokenPayload().oid);
                         }
                         else{
                             $("#org-profile-btn").addClass("hidden");
