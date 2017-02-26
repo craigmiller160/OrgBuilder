@@ -259,24 +259,6 @@
                 });
         }
 
-        function updateFields(orgData){
-            if(!orgbuilder.validateData.org(orgData)){
-                console.log("Error! Data returned from server for Org does not contain the Org.");
-                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for Org.");
-                return;
-            }
-
-            orgbuilder.data.storeData(orgData);
-
-            $(".page-header h2").text("Org: " + orgData.orgName);
-
-            $("#orgNameField > .content-label").text(orgData.orgName);
-            $("#orgNameField > .content-field").val(orgData.orgName);
-            $("#createdDateField > p").text(orgData.createdDate);
-            $("#orgDescriptionField > .content-label").text(orgData.orgDescription);
-            $("#orgDescriptionField > .content-field").text(orgData.orgDescription);
-        }
-
         function deleteOrg(event){
             if(event){
                 event.preventDefault();
@@ -309,6 +291,24 @@
         function invalidCredentialsFn(){
             console.log("Invalid credentials to access org content editor!");
             window.location = "../index.html?denied=true";
+        }
+
+        function updateFields(orgData){
+            if(!orgbuilder.validateData.org(orgData)){
+                console.log("Error! Data returned from server for Org does not contain the Org.");
+                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for Org.");
+                return;
+            }
+
+            orgbuilder.data.storeData(orgData);
+
+            $(".page-header h2").text("Org: " + orgData.orgName);
+
+            $("#orgNameField > .content-label").text(orgData.orgName);
+            $("#orgNameField > .content-field").val(orgData.orgName);
+            $("#createdDateField > p").text(orgData.createdDate);
+            $("#orgDescriptionField > .content-label").text(orgData.orgDescription);
+            $("#orgDescriptionField > .content-field").text(orgData.orgDescription);
         }
 
         /*************************

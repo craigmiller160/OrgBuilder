@@ -247,9 +247,45 @@
             }
         }
 
+        function loadUser(){
+            orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
+                .done(function(userData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("User not found on server");
+                        orgbuilder.showAlert("alert-danger", "User not found on server");
+                        return;
+                    }
+
+                    updateFields(userData);
+                });
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        function updateFields(userData){
+            if(!orgbuilder.validateData.user(userData)){
+                console.log("Error! Data returned from server for User does not contain the User.");
+                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for User.");
+                return;
+            }
+
+            orgbuilder.data.storeData(userData);
+
+            $(".page-header > h2").text("User: " + userData.userEmail);
+
+            $("#userEmailField > .content-label").text(userData.userEmail);
+            $("#userEmailField > .content-field").val(userData.userEmail);
+
+            $("#firstNameField > .content-label").text(userData.firstName);
+            $("#firstNameField > .content-field").val(userData.firstName);
+
+            $("#lastNameField > .content-label").text(userData.lastName);
+            $("#lastNameField > .content-field").val(userData.lastName);
+
+            //TODO finish this
+        }
 
         /*************************
          * 6) Page Initialization
@@ -259,6 +295,7 @@
 
         if(userid){
             //Configure for an edit user page
+            loadUser();
         }
         else{
             //Configure for an add user page
