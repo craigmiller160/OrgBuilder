@@ -195,6 +195,7 @@
         $("#cancelBtn").click(cancelChanges);
         $(".section-edit").click(toggleEdit);
         $("#deleteBtn").click(deleteUser);
+        $("#userContentForm").on("submit", submitAction);
 
         /***********************************
          * 4) Core Business Logic Functions
@@ -285,6 +286,91 @@
             $("#lastNameField > .content-field").val(userData.lastName);
 
             //TODO finish this
+        }
+
+        //TODO this should be made more generic, it's virtually identical between the two content pages
+        function submitAction(event){
+            event.preventDefault();
+
+            var fieldArray;
+            if($(document.activeElement).hasClass("section-save")){
+                console.log("Section save button");
+
+                if($(document.activeElement).parents(".panel.form-group").length === 0){
+                    console.log("Error! Cannot find edited section to save content from.");
+                    orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
+                    return;
+                }
+
+                var section = $(document.activeElement).parents(".panel.form-group")[0];
+                fieldArray = $(section).find(".content-field");
+
+                var doneFn = function(userData){
+                    if(!orgbuilder.validateData.user(userData)){
+                        console.log("Error! Data returned from server for User does not contain the User."); //TODO slight text difference
+                        orgbuilder.showAlert("alert-danger", "Invalid data for User returned from server."); //TODO slight text difference
+                        return;
+                    }
+
+                    orgbuilder.showAlert("alert-success", "User changes saved successfully"); //TODO slight text difference
+
+                    $(section).attr("status", "view");
+                    $(section).find(".content-field").attr("disabled", true);
+
+                    var contents = $(section).find(".content");
+                    $.each(contents, function(index,content){
+                        var name = $(content).children(".content-field").attr("name");
+                        $(content).children(".content-label").text(orgData[name]);
+                    });
+                }
+            }
+            else{
+                console.log("Main save button");
+
+                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
+
+                var doneFn = function(userData){
+                    window.location = (function(){
+                        var url = window.location.pathname;
+                        if(userid){
+                            url = url + "?userid=" + userid + "&";
+                        }
+                        else if(orgData !== undefined){
+                            url = url + "?userid=" + userData.userId + "&";
+                        }
+                        else{
+                            url = url + "?";
+                        }
+
+                        return url + "saved=true";
+                    })();
+                }
+            }
+
+            //TODO need an extra check on the password fields before submitting.
+
+            var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
+
+            $.each(fieldArray, function(index, field){
+                jsonMsg[$(field).attr("name")] = $(field).val();
+            });
+
+            var failFn = function(){
+                console.log("Save FAILED");
+            };
+
+            if(userid){
+                console.log("Updating existing User");
+                orgbuilder.api.send("users/" + userid, orgbuilder.methods.put, jsonMsg)
+                    .done(doneFn)
+                    .fail(failFn);
+            }
+            else{
+                console.log("Creating new User");
+                orgbuilder.api.send("users", orgbuilder.methods.post, jsonMsg)
+                    .done(doneFn)
+                    .fail(failFn);
+            }
         }
 
         /*************************
