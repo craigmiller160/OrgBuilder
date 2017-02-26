@@ -39,21 +39,27 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <table id="orgsTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Org Name</th>
-                            <th>Created Date</th>
-                            <th>Options</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <a id="addOrgBtn" class="btn btn-default" href="content.html" title="Add new Org">Add</a>
+                    <div class="well well-lg">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="orgsTable" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Org Name</th>
+                                        <th>Created Date</th>
+                                        <th>Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a id="addOrgBtn" class="btn btn-primary" href="content.html" title="Add new Org">Add</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,8 +123,8 @@
                         var options = $("<td></td>").attr("field","options");
                         var editUri = "content.html?orgId=" + org.orgId;
 
-                        options.append($("<a class='editOrgBtn btn btn-default' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
-                        options.append($("<a class='deleteOrgBtn btn btn-default' href='#' title='Delete Org'></a>").text("Delete"));
+                        options.append($("<a class='editOrgBtn btn btn-info' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteOrgBtn btn btn-danger' href='#' title='Delete Org'></a>").text("Delete"));
 
 
                         newRow.append(options);

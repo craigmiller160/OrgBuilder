@@ -39,26 +39,33 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <table id="usersTable" class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Org</th>
-                            <th>Roles</th>
-                            <th>Options</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                    <div class="well well-lg">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="usersTable" class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Org</th>
+                                        <th>Roles</th>
+                                        <th>Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a id="addUserBtn" class="btn btn-primary" href="content.html" title="Add new Org">Add</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                    <a id="addUserBtn" class="btn btn-default" href="content.html" title="Add new Org">Add</a>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
@@ -124,8 +131,8 @@
                         var options = $("<td></td>").attr("field","options");
                         var editUri = "content.html?userId=" + user.userId;
 
-                        options.append($("<a class='editUserBtn btn btn-default' title='Edit User'></a>").attr("href",editUri).text("Edit"));
-                        options.append($("<a class='deleteUserBtn btn btn-default' href='#' title='Delete User'></a>").text("Delete"));
+                        options.append($("<a class='editUserBtn btn btn-info' title='Edit User'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteUserBtn btn btn-danger' href='#' title='Delete User'></a>").text("Delete"));
 
                         newRow.append(options);
                         tableBody.append(newRow);
