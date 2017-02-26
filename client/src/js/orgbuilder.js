@@ -40,6 +40,13 @@ var orgbuilder = (function(){
         $("." + $(this).attr("data-hide")).removeClass("in");
     });
 
+    //Utility code to disable enter-key-submit action in forms
+    $(".no-enter-form input.content-field").keydown(function(event){
+        if(event.which && event.which === 13){
+            event.preventDefault();
+        }
+    });
+
     //Utility methods for working with the JWT
     var jwt = {
         storeToken: function(token){
