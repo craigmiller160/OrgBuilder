@@ -277,7 +277,9 @@
                     }
 
                     updateFields(userData);
-                    loadOrgList();
+                    if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                        loadOrgList();
+                    }
                     disableOrgSelectionForMaster();
                 });
         }
@@ -537,7 +539,9 @@
                 $("#orgIdField").val(0);
             }
             else{
-                $("#orgSection .section-toggle").removeClass("hidden");
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                    $("#orgSection .section-toggle").removeClass("hidden");
+                }
                 $("#userOrgField > .content-label").text($("#orgSelectBox :selected").attr("name"));
 
                 setOrgIdFromSelect();
