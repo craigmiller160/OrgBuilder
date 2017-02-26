@@ -89,7 +89,6 @@
                                 </div>
                             </div>
                             <div class="panel-body">
-                                <!-- TODO Password stuff here -->
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <p>Password:</p>
@@ -99,7 +98,6 @@
                                         <p class="content-label">************</p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
                                         <input name="password" class="content-field form-control" type="password" required disabled />
                                     </div>
-                                    <!-- TODO need that second password field -->
                                 </div>
                                 <div class="row content-field">
                                     <div class="col-sm-6">
@@ -261,33 +259,6 @@
                 });
         }
 
-        /***********************
-         * 5) Utility Functions
-         ***********************/
-
-        function updateFields(userData){
-            if(!orgbuilder.validateData.user(userData)){
-                console.log("Error! Data returned from server for User does not contain the User.");
-                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for User.");
-                return;
-            }
-
-            orgbuilder.data.storeData(userData);
-
-            $(".page-header > h2").text("User: " + userData.userEmail);
-
-            $("#userEmailField > .content-label").text(userData.userEmail);
-            $("#userEmailField > .content-field").val(userData.userEmail);
-
-            $("#firstNameField > .content-label").text(userData.firstName);
-            $("#firstNameField > .content-field").val(userData.firstName);
-
-            $("#lastNameField > .content-label").text(userData.lastName);
-            $("#lastNameField > .content-field").val(userData.lastName);
-
-            //TODO finish this
-        }
-
         //TODO this should be made more generic, it's virtually identical between the two content pages
         function submitAction(event){
             event.preventDefault();
@@ -373,6 +344,76 @@
             }
         }
 
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function updateFields(userData){
+            if(!orgbuilder.validateData.user(userData)){
+                console.log("Error! Data returned from server for User does not contain the User.");
+                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for User.");
+                return;
+            }
+
+            orgbuilder.data.storeData(userData);
+
+            $(".page-header > h2").text("User: " + userData.userEmail);
+
+            $("#userEmailField > .content-label").text(userData.userEmail);
+            $("#userEmailField > .content-field").val(userData.userEmail);
+
+            $("#firstNameField > .content-label").text(userData.firstName);
+            $("#firstNameField > .content-field").val(userData.firstName);
+
+            $("#lastNameField > .content-label").text(userData.lastName);
+            $("#lastNameField > .content-field").val(userData.lastName);
+
+            addAccessCheckboxes(userData);
+
+            //TODO finish this
+        }
+
+        //TODO this needs to add all checkboxes, but only add master for master user principals
+        function addAccessCheckboxes(userData){
+            var accessPanel = $("#accessSection > .panel-body");
+
+            $.each(orgbuilder.roles, function(index, role){
+                var inputCheckbox;
+                if(role === orgbuilder.roles.master){
+                    //Only add master checkbox if the current user principal has master access
+                    if(payload.rol.includes(orgbuilder.roles.master)){
+                        inputCheckbox = appendCheckbox(accessPanel, orgbuilder.roles.master);
+                    }
+                }
+                else{
+                    inputCheckbox = appendCheckbox(accessPanel, role);
+                }
+
+                if(inputCheckbox && userData && userData.roles.includes(role)){
+                    $(inputCheckbox).prop("checked", true);
+                }
+            });
+
+            //TODO finish this
+        }
+
+        function appendCheckbox(accessPanel, role){
+            var id = "select" + role;
+            var disabled = userid ? true : false;
+            var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").prop("disabled", disabled);
+            var checkboxLabel = $("<label></label>").attr("for",id).text(role);
+
+            var row = $("<div></div>").addClass("row");
+            var col = $("<div></div>").addClass("col-sm-12");
+            row.append(col);
+
+            $(col).append(inputCheckbox);
+            $(col).append(checkboxLabel);
+            $(accessPanel).append(row);
+
+            return inputCheckbox;
+        }
+
         /*************************
          * 6) Page Initialization
          *************************/
@@ -389,6 +430,7 @@
             $(".panel.form-group").attr("status", "edit");
             $(".section-toggle").addClass("hidden");
             $(".content-field").removeAttr("disabled");
+            addAccessCheckboxes();
         }
 
     });
