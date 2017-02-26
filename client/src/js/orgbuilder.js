@@ -105,6 +105,7 @@ var orgbuilder = (function(){
     //Utility methods for communicating with the OrgBuilder API
     var api = {
         send: function(uri, method, json){
+            console.log("Calling API: " + method + " " + uri);
             return $.ajax({
                 url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
                 type: method,
