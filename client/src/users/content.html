@@ -205,6 +205,8 @@
             if($(section).attr("status") === "view"){
                 $(section).attr("status", "edit");
                 $(section).find(".content-field").removeAttr("disabled");
+                $(section).find(".content-checkbox").removeAttr("disabled"); //TODO restore this
+                disableCheckboxesForMaster(); //TODO this will need to be unique
             }
         }
 
@@ -373,7 +375,6 @@
             //TODO finish this
         }
 
-        //TODO this needs to add all checkboxes, but only add master for master user principals
         function addAccessCheckboxes(userData){
             var accessPanel = $("#accessSection > .panel-body");
 
@@ -393,14 +394,12 @@
                     $(inputCheckbox).prop("checked", true);
                 }
             });
-
-            //TODO finish this
         }
 
         function appendCheckbox(accessPanel, role){
             var id = "select" + role;
             var disabled = userid ? true : false;
-            var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").prop("disabled", disabled);
+            var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").addClass("content-checkbox").prop("disabled", disabled);
             var checkboxLabel = $("<label></label>").attr("for",id).text(role);
 
             var row = $("<div></div>").addClass("row");
@@ -411,33 +410,28 @@
             $(col).append(checkboxLabel);
             $(accessPanel).append(row);
 
-            $(inputCheckbox).click(disableCheckboxesOnMasterSelect);
+            $(inputCheckbox).click(disableCheckboxesForMaster);
 
             return inputCheckbox;
         }
 
-        function disableCheckboxesOnMasterSelect(){
-            if($(this).attr("name") === orgbuilder.roles.master){
-                var otherCheckboxes = $("#accessSection input[type='checkbox'][name!='" + orgbuilder.roles.master + "']");
-                if($(this).is(":checked")){
+        //Disable checkboxes for the master role, not relying on a click
+        function disableCheckboxesForMaster(){
+            if($("#accessSection input[type='checkbox']:not(:disabled)").length > 0){
+                var allCheckboxes = $("#accessSection input[type='checkbox']");
+                var masterCheckbox = $(allCheckboxes).filter("[name='" + orgbuilder.roles.master + "']");
+                var otherCheckboxes = $(allCheckboxes).filter("[name!='" + orgbuilder.roles.master + "']");
+                var otherCheckedCheckboxes = $(otherCheckboxes).filter(":checked");
+                if($(masterCheckbox).is(":checked")){
                     $(otherCheckboxes).prop("checked", false);
                     $(otherCheckboxes).prop("disabled", true);
                 }
-                else{
-                    $(otherCheckboxes).prop("disabled", false);
-                }
-            }
-            else{
-                var masterCheckbox = $("#accessSection input[type='checkbox'][name='" + orgbuilder.roles.master + "']");
-                var checkedCheckboxes = $("#accessSection input[type='checkbox']:checked");
-                if($(this).is(":checked")){
+                else if(otherCheckedCheckboxes.length > 0){
                     $(masterCheckbox).prop("checked", false);
                     $(masterCheckbox).prop("disabled", true);
                 }
                 else{
-                    if(checkedCheckboxes.length === 0){
-                        $(masterCheckbox).prop("disabled", false);
-                    }
+                    $(allCheckboxes).prop("disabled", false);
                 }
             }
         }
