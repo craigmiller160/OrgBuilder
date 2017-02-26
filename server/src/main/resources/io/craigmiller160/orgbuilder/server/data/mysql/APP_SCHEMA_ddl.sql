@@ -44,7 +44,7 @@ CREATE TRIGGER orgs_before_schema_name_trigger
 BEFORE INSERT ON orgs FOR EACH ROW
   BEGIN
     DECLARE next_index INT;
-    DECLARE temp_schema_name VARCHAR(50);
+    DECLARE temp_schema_name VARCHAR(255);
 
     SET next_index =
     (SELECT auto_increment
