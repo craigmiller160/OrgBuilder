@@ -273,6 +273,7 @@
 
                     updateFields(userData);
                     loadOrgList();
+                    disableOrgSelectionForMaster();
                 });
         }
 
@@ -532,12 +533,7 @@
             }
             else{
                 $("#orgSection .section-toggle").removeClass("hidden");
-//                if(orgbuilder.data.hasData()){
-//                    $("#userOrgField > .content-label").text(orgbuilder.data.getData().orgName);
-//                }
-//                else{
-                    $("#userOrgField > .content-label").text($("#orgSelectBox :selected").attr("name"));
-//                }
+                $("#userOrgField > .content-label").text($("#orgSelectBox :selected").attr("name"));
 
                 setOrgIdFromSelect();
             }
