@@ -37,134 +37,140 @@
                     </div>
                 </div>
             </div>
-            <form id="userContentForm" class="no-enter-form">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                        <div id="userInfoSection" class="panel panel-info form-group" status="view">
-                            <div class="panel-heading clearfix">
-                                <h4 class="pull-left">User Info</h4>
-                                <div class="btn-group pull-right section-toggle">
-                                    <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                    <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="well well-lg">
+                        <form id="userContentForm" class="no-enter-form">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="userInfoSection" class="panel panel-info form-group" status="view">
+                                        <div class="panel-heading clearfix">
+                                            <h4 class="pull-left">User Info</h4>
+                                            <div class="btn-group pull-right section-toggle">
+                                                <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                                <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <p>Email:</p>
+                                                </div>
+                                                <div id="userEmailField" class="content col-sm-6">
+                                                    <p class="content-label"></p>
+                                                    <input name="userEmail" class="content-field form-control" type="email" required disabled />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <p>First Name:</p>
+                                                </div>
+                                                <div id="firstNameField" class="content col-sm-6">
+                                                    <p class="content-label"></p>
+                                                    <input name="firstName" class="content-field form-control" type="text" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <p>Last Name:</p>
+                                                </div>
+                                                <div id="lastNameField" class="content col-sm-6">
+                                                    <p class="content-label"></p>
+                                                    <input name="lastName" class="content-field form-control" type="text" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p>Email:</p>
-                                    </div>
-                                    <div id="userEmailField" class="content col-sm-6">
-                                        <p class="content-label"></p>
-                                        <input name="userEmail" class="content-field form-control" type="email" required disabled />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p>First Name:</p>
-                                    </div>
-                                    <div id="firstNameField" class="content col-sm-6">
-                                        <p class="content-label"></p>
-                                        <input name="firstName" class="content-field form-control" type="text" disabled />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p>Last Name:</p>
-                                    </div>
-                                    <div id="lastNameField" class="content col-sm-6">
-                                        <p class="content-label"></p>
-                                        <input name="lastName" class="content-field form-control" type="text" disabled />
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="passwordSection" class="panel panel-info form-group" status="view">
+                                        <div class="panel-heading clearfix">
+                                            <h4 class="pull-left">Password</h4>
+                                            <div class="btn-group pull-right section-toggle">
+                                                <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                                <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <p>Password:</p>
+                                                </div>
+                                                <div id="passwordField" class="content col-sm-6">
+                                                    <p class="content-label password">************</p>
+                                                    <input name="password" class="content-field form-control" type="password" required disabled />
+                                                </div>
+                                            </div>
+                                            <div class="row content-field">
+                                                <div class="col-sm-6">
+                                                    <p>Repeat Password:</p>
+                                                </div>
+                                                <div id="repeatPasswordField" class="content col-sm-6">
+                                                    <input class="form-control content-field" type="password" required disabled />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="accessSection" class="panel panel-info form-group" status="view">
+                                        <div class="panel-heading clearfix">
+                                            <h4 class="pull-left">Access Roles</h4>
+                                            <div class="btn-group pull-right section-toggle">
+                                                <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                                <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            </div>
+                                        </div>
+                                        <div name="roles" class="panel-body content-checkbox-group">
+                                            <div class="row">
+                                                <div id="accessCheckboxes" class="col-sm-6 col-sm-offset-6">
+                                                    <!-- The access role checkboxes go here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div id="orgSection" class="panel panel-info form-group" status="view">
+                                        <div class="panel-heading clearfix">
+                                            <h4 class="pull-left">Org</h4>
+                                            <div class="btn-group pull-right section-toggle">
+                                                <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                                <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <p>Org:</p>
+                                                </div>
+                                                <div id="userOrgField" class="content col-sm-6">
+                                                    <p class="content-label"></p>
+                                                    <select id="orgSelectBox" name="orgName" class="content-field form-control"></select>
+                                                    <input id="orgIdField" name="orgId" class="default-field" type="hidden" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <button id="cancelBtn" class="btn btn-warning" type="button" title="Cancel changes">Cancel</button>
+                                    <button id="saveBtn" class="btn btn-primary" type="submit" title="Save changes">Save</button>
+                                    <button id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                        <div id="passwordSection" class="panel panel-info form-group" status="view">
-                            <div class="panel-heading clearfix">
-                                <h4 class="pull-left">Password</h4>
-                                <div class="btn-group pull-right section-toggle">
-                                    <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                    <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p>Password:</p>
-                                    </div>
-                                    <div id="passwordField" class="content col-sm-6">
-                                        <p class="content-label password">************</p>
-                                        <input name="password" class="content-field form-control" type="password" required disabled />
-                                    </div>
-                                </div>
-                                <div class="row content-field">
-                                    <div class="col-sm-6">
-                                        <p>Repeat Password:</p>
-                                    </div>
-                                    <div id="repeatPasswordField" class="content col-sm-6">
-                                        <input class="form-control content-field" type="password" required disabled />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                        <div id="accessSection" class="panel panel-info form-group" status="view">
-                            <div class="panel-heading clearfix">
-                                <h4 class="pull-left">Access Roles</h4>
-                                <div class="btn-group pull-right section-toggle">
-                                    <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                    <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
-                                </div>
-                            </div>
-                            <div name="roles" class="panel-body content-checkbox-group">
-                                <div class="row">
-                                    <div id="accessCheckboxes" class="col-sm-6 col-sm-offset-6">
-                                        <!-- The access role checkboxes go here -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                        <div id="orgSection" class="panel panel-info form-group" status="view">
-                            <div class="panel-heading clearfix">
-                                <h4 class="pull-left">Org</h4>
-                                <div class="btn-group pull-right section-toggle">
-                                    <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                    <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p>Org:</p>
-                                    </div>
-                                    <div id="userOrgField" class="content col-sm-6">
-                                        <p class="content-label"></p>
-                                        <select id="orgSelectBox" name="orgName" class="content-field form-control"></select>
-                                        <input id="orgIdField" name="orgId" class="default-field" type="hidden" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                        <button id="cancelBtn" class="btn btn-warning" type="button" title="Cancel changes">Cancel</button>
-                        <button id="saveBtn" class="btn btn-primary" type="submit" title="Save changes">Save</button>
-                        <button id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
