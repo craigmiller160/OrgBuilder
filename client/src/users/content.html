@@ -53,7 +53,7 @@
                                     <div class="col-sm-6">
                                         <p>Email:</p>
                                     </div>
-                                    <div id="userEmailField" class="col-sm-6">
+                                    <div id="userEmailField" class="content col-sm-6">
                                         <p class="content-label"></p>
                                         <input name="userEmail" class="content-field form-control" type="email" required disabled />
                                     </div>
@@ -62,7 +62,7 @@
                                     <div class="col-sm-6">
                                         <p>First Name:</p>
                                     </div>
-                                    <div id="firstNameField" class="col-sm-6">
+                                    <div id="firstNameField" class="content col-sm-6">
                                         <p class="content-label"></p>
                                         <input name="firstName" class="content-field form-control" type="text" disabled />
                                     </div>
@@ -71,7 +71,7 @@
                                     <div class="col-sm-6">
                                         <p>Last Name:</p>
                                     </div>
-                                    <div id="lastNameField" class="col-sm-6">
+                                    <div id="lastNameField" class="content col-sm-6">
                                         <p class="content-label"></p>
                                         <input name="lastName" class="content-field form-control" type="text" disabled />
                                     </div>
@@ -93,9 +93,9 @@
                                     <div class="col-sm-6">
                                         <p>Password:</p>
                                     </div>
-                                    <div id="passwordField" class="col-sm-6">
+                                    <div id="passwordField" class="content col-sm-6">
                                         <!-- TODO need to make sure save logic validates that both password fields are the same -->
-                                        <p class="content-label">************</p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
+                                        <p class="content-label password">************</p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
                                         <input name="password" class="content-field form-control" type="password" required disabled />
                                     </div>
                                 </div>
@@ -266,6 +266,7 @@
             event.preventDefault();
 
             var fieldArray;
+            var doneFn;
             if($(document.activeElement).hasClass("section-save")){
                 console.log("Section save button");
 
@@ -278,7 +279,7 @@
                 var section = $(document.activeElement).parents(".panel.form-group")[0];
                 fieldArray = $(section).find(".content-field, .content-checkbox-group");
 
-                var doneFn = function(userData){
+                doneFn = function(userData){
                     if(!orgbuilder.validateData.user(userData)){
                         console.log("Error! Data returned from server for User does not contain the User."); //TODO slight text difference
                         orgbuilder.showAlert("alert-danger", "Invalid data for User returned from server."); //TODO slight text difference
@@ -293,7 +294,7 @@
                     var contents = $(section).find(".content");
                     $.each(contents, function(index,content){
                         var name = $(content).children(".content-field").attr("name");
-                        $(content).children(".content-label").text(orgData[name]);
+                        $(content).children(".content-label:not(.password)").text(orgData[name]); //TODO make sure that this logic works, updating display text fields but not touching the password field
                     });
                 }
             }
@@ -302,7 +303,7 @@
 
                 fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field, .panel.form-group[status='edit'] .content-checkbox-group");
 
-                var doneFn = function(userData){
+                doneFn = function(userData){
                     window.location = (function(){
                         var url = window.location.pathname;
                         if(userid){
@@ -353,7 +354,6 @@
             var failFn = function(){
                 console.log("Save FAILED");
             };
-
 
             if(userid){
                 console.log("Updating existing User");
