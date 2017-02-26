@@ -183,6 +183,11 @@
                 return currentUrl.search(true).userid;
             }
         })();
+        var saved = (function(){
+            if(currentUrl.hasQuery("saved")){
+                return true;
+            }
+        })();
 
         //If the tokenExists() check below fails, then it won't matter that this would be null
         var payload = orgbuilder.jwt.getTokenPayload();
@@ -357,7 +362,7 @@
                         if(userid){
                             url = url + "?userid=" + userid + "&";
                         }
-                        else if(orgData !== undefined){
+                        else if(userData !== undefined){
                             url = url + "?userid=" + userData.userId + "&";
                         }
                         else{
@@ -572,6 +577,10 @@
             else{
                 $("#userOrgField > p.content-label").text(payload.onm);
             }
+        }
+
+        if(saved){
+            orgbuilder.showAlert("alert-success", "User saved successfully");
         }
 
     });
