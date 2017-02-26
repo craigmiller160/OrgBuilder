@@ -37,15 +37,15 @@
                     </div>
                 </div>
             </div>
-            <form>
+            <form id="userContentForm" class="no-enter-form">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                         <div id="userInfoSection" class="panel panel-default form-group" status="view">
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">User Info</h4>
-                                <div class="btn-group pull-right">
-                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                <div class="btn-group pull-right section-toggle">
+                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -55,7 +55,7 @@
                                     </div>
                                     <div id="userEmailField" class="col-sm-6">
                                         <p class="content-label"></p>
-                                        <input name="userEmail" class="content-field form-control" type="text" required disabled />
+                                        <input name="userEmail" class="content-field form-control" type="email" required disabled />
                                     </div>
                                 </div>
                                 <div class="row">
@@ -83,9 +83,9 @@
                         <div id="passwordSection" class="panel panel-default form-group" status="view">
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Password</h4>
-                                <div class="btn-group pull-right">
-                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                <div class="btn-group pull-right section-toggle">
+                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -96,10 +96,18 @@
                                     </div>
                                     <div id="passwordField" class="col-sm-6">
                                         <!-- TODO need to make sure save logic validates that both password fields are the same -->
-                                        <p class="content-label"></p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
-                                        <input name="password" class="content-field form-control" type="text" required disabled />
+                                        <p class="content-label">************</p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
+                                        <input name="password" class="content-field form-control" type="password" required disabled />
                                     </div>
                                     <!-- TODO need that second password field -->
+                                </div>
+                                <div class="row content-field">
+                                    <div class="col-sm-6">
+                                        <p>Repeat Password:</p>
+                                    </div>
+                                    <div id="repeatPasswordField" class="col-sm-6">
+                                        <input class="form-control content-field" type="password" required disabled />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -108,9 +116,9 @@
                         <div id="accessSection" class="panel panel-default form-group" status="view">
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Access Roles</h4>
-                                <div class="btn-group pull-right">
-                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                <div class="btn-group pull-right section-toggle">
+                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -122,9 +130,9 @@
                         <div id="orgSection" class="panel panel-default form-group" status="view">
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Org</h4>
-                                <div class="btn-group pull-right">
-                                    <button href="#" class="section-toggle section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-toggle section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                <div class="btn-group pull-right section-toggle">
+                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -133,8 +141,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                        <button id="cancelBtn" class="btn btn-default" type="button" title="Cancel changes">Cancel</button>
+                        <button id="saveBtn" class="btn btn-default" type="submit" title="Save changes">Save</button>
+                        <button id="deleteBtn" class="btn btn-default pull-right" type="button" title="Delete User">Delete</button>
+                    </div>
+                </div>
             </form>
-            <!-- TODO remaining content goes here -->
         </div>
     </div>
 </div>
@@ -157,7 +171,10 @@
             if(currentUrl.hasQuery("userid")){
                 return currentUrl.search(true).userid;
             }
-        });
+        })();
+
+        //If the tokenExists() check below fails, then it won't matter that this would be null
+        var payload = orgbuilder.jwt.getTokenPayload();
 
         /*******************************
          * 2) Access to Page Validation
@@ -166,6 +183,7 @@
         //Deliberately using != here
         if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid() &&
             !orgbuilder.validateAccess().hasToken().isUser(userid).isValid()){
+            console.log("Invalid credentials to access user content editor");
             window.location = "../index.html?denied=true";
             return;
         }
@@ -174,9 +192,60 @@
          * 3) UI Actions
          ****************/
 
+        $("#cancelBtn").click(cancelChanges);
+        $(".section-edit").click(toggleEdit);
+        $("#deleteBtn").click(deleteUser);
+
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        //TODO add this to orgbuilder.js for reusability
+        function toggleEdit(event){
+            var section = $(event.target).parents(".panel.form-group");
+            if($(section).attr("status") === "view"){
+                $(section).attr("status", "edit");
+                $(section).find(".content-field").removeAttr("disabled");
+            }
+        }
+
+        function cancelChanges(event){
+            event.preventDefault();
+            if(orgbuilder.cancelChangesCheck()){
+                console.log("Cancelling changes to User details");
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+                    window.location = "manage.html";
+                }
+                else{
+                    window.location = "../index.html";
+                }
+            }
+        }
+
+        function deleteUser(event){
+            if(event){
+                event.preventDefault();
+            }
+
+            var confirmMsg = "Are you sure you want to delete " +
+                (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
+            var choice = confirm(confirmMsg);
+            if(choice){
+                orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                    .done(function(){
+                        if(userid == payload.uid){
+                            orgbuilder.jwt.clearToken();
+                            window.location = "../login.html";
+                        }
+                        else{
+                            window.location = "manage.html?deleted=true";
+                        }
+                    })
+                    .fail(function(){
+                        console.log("DELETE FAILED");
+                    });
+            }
+        }
 
         /***********************
          * 5) Utility Functions
@@ -194,6 +263,9 @@
         else{
             //Configure for an add user page
             $(".page-header > h2").text("New User");
+            $(".panel.form-group").attr("status", "edit");
+            $(".section-toggle").addClass("hidden");
+            $(".content-field").removeAttr("disabled");
         }
 
     });
