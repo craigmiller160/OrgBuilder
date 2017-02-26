@@ -288,7 +288,7 @@
                     orgbuilder.showAlert("alert-success", "User changes saved successfully"); //TODO slight text difference
 
                     $(section).attr("status", "view");
-                    $(section).find(".content-field").attr("disabled", true);
+                    $(section).find(".content-field, .content-checkbox").attr("disabled", true);
 
                     var contents = $(section).find(".content");
                     $.each(contents, function(index,content){
@@ -320,11 +320,24 @@
                 }
             }
 
-            //TODO need an extra check on the password fields before submitting.
+            //TODO this extra password check is unique to this page
+            if($("#passwordSection").attr("status") === "edit"){
+                var firstPassword = $("#passwordField > input").val();
+                var secondPassword = $("#repeatPasswordField > input").val();
+                if(firstPassword !== secondPassword){
+                    console.log("Passwords don't match, can't save password change");
+                    orgbuilder.showAlert("alert-warning", "Cannot save changes, passwords don't match");
+                    return;
+                }
+            }
 
             var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
 
             $.each(fieldArray, function(index, field){
+                if($(field).attr("name") === undefined){
+                    return true;
+                }
+
                 if($(field).is("input")){
                     jsonMsg[$(field).attr("name")] = $(field).val();
                 }
@@ -340,6 +353,7 @@
             var failFn = function(){
                 console.log("Save FAILED");
             };
+
 
             if(userid){
                 console.log("Updating existing User");
@@ -366,7 +380,7 @@
                 return;
             }
 
-            orgbuilder.data.storeData(userData);
+            orgbuilder.data.storeData(userData); //TODO the store-data thing should probably be done in orgbuilder.js... or maybe not then... if not, it should be done in more places...
 
             $(".page-header > h2").text("User: " + userData.userEmail);
 
