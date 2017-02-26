@@ -564,6 +564,10 @@
             $("#orgSection .section-toggle").addClass("hidden");
         }
 
+        if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master, orgbuilder.roles.admin)){
+            $("#accessSection .section-toggle").addClass("hidden");
+        }
+
         if(userid){
             //Configure for an edit user page
             loadUser();
