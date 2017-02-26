@@ -122,7 +122,7 @@
                         newRow.append($("<td></td>").attr("field", "roles").text(user.roles.toString()));
 
                         var options = $("<td></td>").attr("field","options");
-                        var editUri = "content.html?userid=" + user.userid;
+                        var editUri = "content.html?userid=" + user.userId;
 
                         options.append($("<a class='editUserBtn btn btn-default' title='Edit User'></a>").attr("href",editUri).text("Edit"));
                         options.append($("<a class='deleteUserBtn btn btn-default' href='#' title='Delete User'></a>").text("Delete"));
