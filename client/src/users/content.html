@@ -44,8 +44,8 @@
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">User Info</h4>
                                 <div class="btn-group pull-right section-toggle">
-                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                    <button class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button>
+                                    <button class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -84,8 +84,8 @@
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Password</h4>
                                 <div class="btn-group pull-right section-toggle">
-                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                    <button class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button>
+                                    <button class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -115,8 +115,8 @@
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Access Roles</h4>
                                 <div class="btn-group pull-right section-toggle">
-                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                    <button class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button>
+                                    <button class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div name="roles" class="panel-body content-checkbox-group">
@@ -133,8 +133,8 @@
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Org</h4>
                                 <div class="btn-group pull-right section-toggle">
-                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                    <button class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button>
+                                    <button class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
                             <div class="panel-body">
@@ -346,6 +346,8 @@
                     $(section).attr("status", "view");
                     $(section).find(".content-field, .content-checkbox").attr("disabled", true);
 
+                    orgbuilder.data.storeData(userData);
+
                     var contents = $(section).find(".content");
                     $.each(contents, function(index,content){
                         var name = $(content).children(".content-field").attr("name");
@@ -441,7 +443,7 @@
                 return;
             }
 
-            orgbuilder.data.storeData(userData); //TODO the store-data thing should probably be done in orgbuilder.js... or maybe not then... if not, it should be done in more places...
+            orgbuilder.data.storeData(userData);
 
             $(".page-header > h2").text("User: " + userData.userEmail);
 
@@ -527,8 +529,6 @@
                 }
             }
         }
-
-        //TODO need to, for editing, to have the correct item in the selection box chosen...
 
         //Toggle enabling/disabling the OrgId selection box and setting the OrgId value based on if the master checkbox is checked
         function disableOrgSelectionForMaster(){

@@ -44,7 +44,7 @@
                             <div class="panel-heading clearfix">
                                 <h4 class="pull-left">Org Info</h4>
                                 <div class="btn-group pull-right section-toggle">
-                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button>
                                     <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
@@ -100,8 +100,6 @@
 <script src="../js/orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
-
-        //TODO still have an issue, the saved successfully alert appears upon reloading the page, even though the save action isn't happening again
 
         /*************************
          * 1) Top Scope Variables
@@ -185,6 +183,7 @@
 
                     orgbuilder.showAlert("alert-success", "Org changes saved successfully");
 
+                    orgbuilder.data.storeData(orgData);
 
                     $(section).attr("status", "view");
                     $(section).find(".content-field").attr("disabled", true);
