@@ -106,9 +106,9 @@
          *************************/
 
         var currentUrl = URI(window.location.href);
-        var orgid = (function(){
-            if(currentUrl.hasQuery("orgid")){
-                return currentUrl.search(true).orgid;
+        var orgId = (function(){
+            if(currentUrl.hasQuery("orgId")){
+                return currentUrl.search(true).orgId;
             }
         })();
         var saved = currentUrl.hasQuery("saved");
@@ -119,7 +119,7 @@
          *******************************/
 
         if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid() &&
-            !orgbuilder.validateAccess().hasToken().isOrg(orgid).isValid()){
+            !orgbuilder.validateAccess().hasToken().isOrg(orgId).isValid()){
             invalidCredentialsFn();
             return;
         }
@@ -138,11 +138,7 @@
          ***********************************/
 
         function toggleEdit(event){
-            var section = $(event.target).parents(".panel.form-group");
-            if($(section).attr("status") === "view"){
-                $(section).attr("status", "edit");
-                $(section).find(".content-field").removeAttr("disabled");
-            }
+            orgbuilder.content.toggleEdit(event);
         }
 
         function cancelChanges(event){
@@ -159,91 +155,11 @@
         }
 
         function submitAction(event){
-            event.preventDefault();
-
-            var fieldArray;
-            if($(document.activeElement).hasClass("section-save")){
-                console.log("Section Save Button");
-
-                if($(document.activeElement).parents(".panel.form-group").length === 0){
-                    console.log("Error! Cannot find edited section to save content from.");
-                    orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
-                    return;
-                }
-
-                var section = $(document.activeElement).parents(".panel.form-group")[0];
-                fieldArray = $(section).find(".content-field");
-
-                var doneFn = function(orgData){
-                    if(!orgbuilder.validateData.org(orgData)){
-                        console.log("Error! Data returned from server for Org does not contain the Org.");
-                        orgbuilder.showAlert("alert-danger", "Invalid data for Org returned from server.");
-                        return;
-                    }
-
-                    orgbuilder.showAlert("alert-success", "Org changes saved successfully");
-
-                    orgbuilder.data.storeData(orgData);
-
-                    $(section).attr("status", "view");
-                    $(section).find(".content-field").attr("disabled", true);
-
-                    var contents = $(section).find(".content");
-                    $.each(contents, function(index,content){
-                        var name = $(content).children(".content-field").attr("name");
-                        $(content).children(".content-label").text(orgData[name]);
-                    });
-                }
-            }
-            else{
-                console.log("Main Save button");
-
-                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
-
-                var doneFn = function(orgData){
-                    window.location = (function(){
-                        var url = window.location.pathname;
-                        if(orgid){
-                            url = url + "?orgid=" + orgid + "&";
-                        }
-                        else if(orgData !== undefined){
-                            url = url + "?orgid=" + orgData.orgId + "&";
-                        }
-                        else{
-                            url = url + "?";
-                        }
-
-                        return url + "saved=true";
-                    })();
-                }
-            }
-
-            var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
-
-            $.each(fieldArray, function(index, field){
-                jsonMsg[$(field).attr("name")] = $(field).val();
-            });
-
-            var failFn = function(){
-                console.log("Save FAILED");
-            };
-
-            if(orgid){
-                console.log("Updating existing Org");
-                orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.put, jsonMsg)
-                    .done(doneFn)
-                    .fail(failFn);
-            }
-            else{
-                console.log("Creating new Org");
-                orgbuilder.api.send("orgs", orgbuilder.methods.post, jsonMsg)
-                    .done(doneFn)
-                    .fail(failFn);
-            }
+            orgbuilder.content.submitAction(event, "Org", orgId, "orgId", "orgs", orgbuilder.validateData.org);
         }
 
         function loadOrg(){
-            orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.get)
+            orgbuilder.api.send("orgs/" + orgId, orgbuilder.methods.get)
                 .done(function(orgData, status, jqXHR){
                     if(jqXHR.status === 204){
                         console.log("Org not found on server");
@@ -264,10 +180,10 @@
             }
 
             var confirmMsg = "Are you sure you want to delete " +
-                (orgid == payload.oid ? "your" : "this") + " Org? This action cannot be undone";
+                (orgId == payload.oid ? "your" : "this") + " Org? This action cannot be undone";
             var choice = confirm(confirmMsg);
             if(choice){
-                orgbuilder.api.send("orgs/" + orgid, orgbuilder.methods.delete)
+                orgbuilder.api.send("orgs/" + orgId, orgbuilder.methods.delete)
                     .done(function(){
                         if(orgid == payload.oid){
                             orgbuilder.jwt.clearToken();
@@ -323,7 +239,7 @@
             $("#cancelBtn").addClass("hidden");
         }
 
-        if(orgid){
+        if(orgId){
             loadOrg();
         }
         else{

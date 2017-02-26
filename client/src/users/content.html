@@ -94,8 +94,7 @@
                                         <p>Password:</p>
                                     </div>
                                     <div id="passwordField" class="content col-sm-6">
-                                        <!-- TODO need to make sure save logic validates that both password fields are the same -->
-                                        <p class="content-label password">************</p> <!-- TODO need the stars here if it's an existing user and there is a password. generic, random stars -->
+                                        <p class="content-label password">************</p>
                                         <input name="password" class="content-field form-control" type="password" required disabled />
                                     </div>
                                 </div>
@@ -178,9 +177,9 @@
          *************************/
 
         var currentUrl = URI(window.location.href);
-        var userid = (function(){
-            if(currentUrl.hasQuery("userid")){
-                return currentUrl.search(true).userid;
+        var userId = (function(){
+            if(currentUrl.hasQuery("userId")){
+                return currentUrl.search(true).userId;
             }
         })();
         var saved = (function(){
@@ -198,7 +197,7 @@
 
         //Deliberately using != here
         if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid() &&
-            !orgbuilder.validateAccess().hasToken().isUser(userid).isValid()){
+            !orgbuilder.validateAccess().hasToken().isUser(userId).isValid()){
             console.log("Invalid credentials to access user content editor");
             window.location = "../index.html?denied=true";
             return;
@@ -218,15 +217,8 @@
          * 4) Core Business Logic Functions
          ***********************************/
 
-        //TODO add this to orgbuilder.js for reusability
         function toggleEdit(event){
-            var section = $(event.target).parents(".panel.form-group");
-            if($(section).attr("status") === "view"){
-                $(section).attr("status", "edit");
-                $(section).find(".content-field").removeAttr("disabled");
-                $(section).find(".content-checkbox").removeAttr("disabled"); //TODO restore this
-                disableCheckboxesForMaster(); //TODO this will need to be unique
-            }
+            orgbuilder.content.toggleEdit(event,disableCheckboxesForMaster);
         }
 
         function cancelChanges(event){
@@ -248,12 +240,12 @@
             }
 
             var confirmMsg = "Are you sure you want to delete " +
-                (userid == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
+                (userId == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
             var choice = confirm(confirmMsg);
             if(choice){
-                orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                orgbuilder.api.send("users/" + userId, orgbuilder.methods.delete)
                     .done(function(){
-                        if(userid == payload.uid){
+                        if(userId == payload.uid){
                             orgbuilder.jwt.clearToken();
                             window.location = "../login.html";
                         }
@@ -268,7 +260,7 @@
         }
 
         function loadUser(){
-            orgbuilder.api.send("users/" + userid, orgbuilder.methods.get)
+            orgbuilder.api.send("users/" + userId, orgbuilder.methods.get)
                 .done(function(userData, status, jqXHR){
                     if(jqXHR.status === 204){
                         console.log("User not found on server");
@@ -316,120 +308,21 @@
                 });
         }
 
-        //TODO this should be made more generic, it's virtually identical between the two content pages
         function submitAction(event){
-            event.preventDefault();
-
-            var fieldArray;
-            var doneFn;
-            if($(document.activeElement).hasClass("section-save")){
-                console.log("Section save button");
-
-                if($(document.activeElement).parents(".panel.form-group").length === 0){
-                    console.log("Error! Cannot find edited section to save content from.");
-                    orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
-                    return;
-                }
-
-                var section = $(document.activeElement).parents(".panel.form-group")[0];
-                fieldArray = $(section).find(".content-field, .content-checkbox-group");
-
-                doneFn = function(userData){
-                    if(!orgbuilder.validateData.user(userData)){
-                        console.log("Error! Data returned from server for User does not contain the User."); //TODO slight text difference
-                        orgbuilder.showAlert("alert-danger", "Invalid data for User returned from server."); //TODO slight text difference
-                        return;
+            function preValidationFn(){
+                if($("#passwordSection").attr("status") === "edit"){
+                    var firstPassword = $("#passwordField > input").val();
+                    var secondPassword = $("#repeatPasswordField > input").val();
+                    if(firstPassword !== secondPassword){
+                        console.log("Passwords don't match, can't save password change");
+                        orgbuilder.showAlert("alert-warning", "Cannot save changes, passwords don't match");
+                        return false;
                     }
-
-                    orgbuilder.showAlert("alert-success", "User changes saved successfully"); //TODO slight text difference
-
-                    $(section).attr("status", "view");
-                    $(section).find(".content-field, .content-checkbox").attr("disabled", true);
-
-                    orgbuilder.data.storeData(userData);
-
-                    var contents = $(section).find(".content");
-                    $.each(contents, function(index,content){
-                        var name = $(content).children(".content-field").attr("name");
-                        $(content).children(".content-label:not(.password)").text(userData[name]);
-                        $(content).children(".content-field[type='password']").val("");
-                    });
                 }
-            }
-            else{
-                console.log("Main save button");
-
-                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field, .panel.form-group[status='edit'] .content-checkbox-group");
-
-                doneFn = function(userData){
-                    window.location = (function(){
-                        var url = window.location.pathname;
-                        if(userid){
-                            url = url + "?userid=" + userid + "&";
-                        }
-                        else if(userData !== undefined){
-                            url = url + "?userid=" + userData.userId + "&";
-                        }
-                        else{
-                            url = url + "?";
-                        }
-
-                        return url + "saved=true";
-                    })();
-                }
+                return true;
             }
 
-            //TODO this extra password check is unique to this page
-            if($("#passwordSection").attr("status") === "edit"){
-                var firstPassword = $("#passwordField > input").val();
-                var secondPassword = $("#repeatPasswordField > input").val();
-                if(firstPassword !== secondPassword){
-                    console.log("Passwords don't match, can't save password change");
-                    orgbuilder.showAlert("alert-warning", "Cannot save changes, passwords don't match");
-                    return;
-                }
-            }
-
-            var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
-
-            $.each(fieldArray, function(index, field){
-                //TODO this body should be made a re-usable function and should be reused in the following $.each() operation
-                if($(field).attr("name") === undefined){
-                    return true;
-                }
-
-                if($(field).is("input")){
-                    jsonMsg[$(field).attr("name")] = $(field).val();
-                }
-                else if($(field).is("div.content-checkbox-group")){
-                    var vals = [];
-                    $.each($(field).find(".content-checkbox:checked"), function(index,checkbox){
-                        vals.push($(checkbox).attr("name"));
-                    });
-                    jsonMsg[$(field).attr("name")] = vals;
-                }
-            });
-
-            $.each($(".default-field"), function(index, field){
-                jsonMsg[$(field).attr("name")] = $(field).val();
-            });
-
-            var failFn = function(){
-                console.log("Save FAILED");
-            };
-
-            if(userid){
-                console.log("Updating existing User");
-                orgbuilder.api.send("users/" + userid, orgbuilder.methods.put, jsonMsg)
-                    .done(doneFn)
-                    .fail(failFn);
-            }
-            else{
-                console.log("Creating new User");
-                orgbuilder.api.send("users", orgbuilder.methods.post, jsonMsg)
-                    .done(doneFn)
-                    .fail(failFn);
-            }
+            orgbuilder.content.submitAction(event, "User", userId, "userId", "users", orgbuilder.validateData.user, preValidationFn);
         }
 
         /***********************
@@ -492,7 +385,7 @@
 
         function appendCheckbox(accessPanel, role){
             var id = "select" + role;
-            var disabled = userid ? true : false;
+            var disabled = userId ? true : false;
 
             var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").addClass("content-checkbox").prop("disabled", disabled);
             var checkboxLabel = $("<label></label>");
@@ -568,7 +461,7 @@
             $("#accessSection .section-toggle").addClass("hidden");
         }
 
-        if(userid){
+        if(userId){
             //Configure for an edit user page
             loadUser();
         }

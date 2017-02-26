@@ -102,6 +102,136 @@ var orgbuilder = (function(){
         }
     };
 
+    //Utility methods for common functionality for the various content.html pages
+    var content = (function(){
+        function updateJsonMsg(jsonMsg, field){
+            if($(field).attr("name") === undefined){
+                return;
+            }
+
+            if($(field).is("input") || $(field).is("textarea")){
+                jsonMsg[$(field).attr("name")] = $(field).val();
+            }
+            else if($(field).is("div.content-checkbox-group")){
+                var vals = [];
+                $.each($(field).find(".content-checkbox:checked"), function(index,checkbox){
+                    vals.push($(checkbox).attr("name"));
+                });
+                jsonMsg[$(field).attr("name")] = vals;
+            }
+        }
+
+        function toggleEdit(event,postProcessFn){
+            var section = $(event.target).parents(".panel.form-group");
+            if($(section).attr("status") === "view"){
+                $(section).attr("status", "edit");
+                $(section).find(".content-field, .content-checkbox").removeAttr("disabled");
+                if(postProcessFn){
+                    postProcessFn();
+                }
+            }
+        }
+
+        function submitAction(event, contentName, contentId, contentIdName, uri, returnDataValidationFn, preValidationFn){
+            event.preventDefault();
+
+            var fieldArray;
+            var doneFn;
+            if($(document.activeElement).hasClass("section-save")){
+                console.log("Section save button");
+
+                if($(document.activeElement).parents(".panel.form-group").length === 0){
+                    console.log("Error! Cannot find edited section to save content from.");
+                    orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
+                    return;
+                }
+
+                var section = $(document.activeElement).parents(".panel.form-group")[0];
+                fieldArray = $(section).find(".content-field, .content-checkbox-group");
+
+                doneFn = function(data){
+                    if(returnDataValidationFn && !returnDataValidationFn(data)){
+                        console.log("Error! Data returned from server for " + contentName + " does not contain the " + contentName + ".");
+                        orgbuilder.showAlert("alert-danger", "Invalid data for " + contentName + " returned from server.");
+                        return;
+                    }
+
+                    orgbuilder.showAlert("alert-success", contentName + " changes saved successfully");
+
+                    orgbuilder.data.storeData(data);
+
+                    $(section).attr("status", "view");
+                    $(section).find(".content-field, .content-checkbox").attr("disabled", true);
+
+                    var contents = $(section).find(".content");
+                    $.each(contents, function(index,content){
+                        var name = $(content).children(".content-field").attr("name");
+                        $(content).children(".content-label:not(.password)").text(data[name]);
+                        $(content).children(".content-field[type='password']").val("");
+                    });
+                }
+            }
+            else{
+                console.log("Main save button");
+
+                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field, .panel.form-group[status='edit'] .content-checkbox-group");
+
+                doneFn = function(data){
+                    window.location = (function(){
+                        var url = window.location.pathname;
+                        if(contentId){
+                            url = url + "?" + contentIdName + "=" + contentId + "&";
+                        }
+                        else if(data !== undefined){
+                            url = url + "?" + contentIdName + "=" + data[contentIdName] + "&";
+                        }
+                        else{
+                            url = url + "?";
+                        }
+
+                        return url + "saved=true";
+                    })();
+                }
+            }
+
+            if(preValidationFn){
+                preValidationFn();
+            }
+
+            var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
+
+            $.each(fieldArray, function(index, field){
+                updateJsonMsg(jsonMsg, field);
+            });
+
+            $.each($(".default-field"), function(index, field){
+                updateJsonMsg(jsonMsg, field);
+            });
+
+            var failFn = function(){
+                console.log("Save FAILED");
+            };
+
+            if(contentId){
+                console.log("Updating existing " + contentName);
+                orgbuilder.api.send(uri + "/" + contentId, orgbuilder.methods.put, jsonMsg)
+                    .done(doneFn)
+                    .fail(failFn);
+            }
+            else{
+                console.log("Creating new " + contentName);
+                orgbuilder.api.send(uri, orgbuilder.methods.post, jsonMsg)
+                    .done(doneFn)
+                    .fail(failFn);
+            }
+        }
+
+        return {
+            toggleEdit: toggleEdit,
+            submitAction: submitAction
+        }
+    })();
+
     //Utility methods for communicating with the OrgBuilder API
     var api = {
         send: function(uri, method, json){
@@ -514,7 +644,8 @@ var orgbuilder = (function(){
         validateData: validateData,
         menus: menus,
         data: data,
-        showAlert: showAlert
+        showAlert: showAlert,
+        content: content
     }
 })();
 
