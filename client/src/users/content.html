@@ -120,21 +120,34 @@
                                 </div>
                             </div>
                             <div name="roles" class="panel-body content-checkbox-group">
-                                <!-- The access role checkboxes go here -->
+                                <div class="row">
+                                    <div id="accessCheckboxes" class="col-sm-6 col-sm-offset-6">
+                                        <!-- The access role checkboxes go here -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                         <div id="orgSection" class="panel panel-default form-group" status="view">
                             <div class="panel-heading clearfix">
-                                <h4 class="pull-left">Org</h4>
-                                <div class="btn-group pull-right section-toggle">
-                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
-                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
-                                </div>
+                                <h4 class="pull-left">Org</h4> <!-- TODO delete commented code -->
+                                <!--<div class="btn-group pull-right section-toggle">-->
+                                    <!--<button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> &lt;!&ndash; TODO should buttons have href? &ndash;&gt;-->
+                                    <!--<button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>-->
+                                <!--</div>-->
                             </div>
                             <div class="panel-body">
-                                <!-- TODO Org stuff here -->
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p>Org:</p>
+                                    </div>
+                                    <div id="userOrgField" class="content col-sm-6">
+                                        <p class="content-label"></p>
+                                        <select id="orgSelectBox" class="content-field form-control"></select>
+                                        <input id="orgIdField" name="orgId" class="default-field" type="hidden" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,6 +207,7 @@
         $(".section-edit").click(toggleEdit);
         $("#deleteBtn").click(deleteUser);
         $("#userContentForm").on("submit", submitAction);
+        $("#orgSelectBox").change(setOrgIdFromSelect);
 
         /***********************************
          * 4) Core Business Logic Functions
@@ -258,6 +272,34 @@
                     }
 
                     updateFields(userData);
+                });
+        }
+
+        function loadOrgList(){
+            orgbuilder.api.send("orgs", orgbuilder.methods.get)
+                .done(function(orgData,status,jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("Could not load org list");
+                        orgbuilder.showAlert("alert-danger", "Could not load list of Orgs");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.orgList(orgData)){
+                        console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
+                        orgbuilder.showAlert("alert-danger", "Data returned from server does not contain a valid list of Orgs");
+                        return;
+                    }
+
+                    var orgSelectBox = $("#userOrgField > select");
+                    $.each(orgData.orgList, function(index, org){
+                        var option = $("<option></option>").attr("value", org.orgId).text(org.orgName);
+                        $(orgSelectBox).append(option);
+                    });
+
+                    setOrgIdFromSelect();
+                })
+                .fail(function(){
+                    console.log("FAILED TO RETRIEVE LIST OF ORGS");
                 });
         }
 
@@ -335,6 +377,7 @@
             var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
 
             $.each(fieldArray, function(index, field){
+                //TODO this body should be made a re-usable function and should be reused in the following $.each() operation
                 if($(field).attr("name") === undefined){
                     return true;
                 }
@@ -349,6 +392,10 @@
                     });
                     jsonMsg[$(field).attr("name")] = vals;
                 }
+            });
+
+            $.each($(".default-field"), function(index, field){
+                jsonMsg[$(field).attr("name")] = $(field).val();
             });
 
             var failFn = function(){
@@ -395,11 +442,18 @@
 
             addAccessCheckboxes(userData);
 
-            //TODO finish this
+            if(userData.orgName !== null){
+                $("#userOrgField > .content-label").text(userData.orgName);
+            }
+            else{
+                $("#userOrgField > .content-label").text("NONE");
+            }
+
+            $("#orgIdField").val(userData.orgId);
         }
 
         function addAccessCheckboxes(userData){
-            var accessPanel = $("#accessSection > .panel-body");
+            var accessPanel = $("#accessCheckboxes");
 
             $.each(orgbuilder.roles, function(index, role){
                 var inputCheckbox;
@@ -422,16 +476,16 @@
         function appendCheckbox(accessPanel, role){
             var id = "select" + role;
             var disabled = userid ? true : false;
+
             var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").addClass("content-checkbox").prop("disabled", disabled);
-            var checkboxLabel = $("<label></label>").attr("for",id).text(role);
+            var checkboxLabel = $("<label></label>");
 
-            var row = $("<div></div>").addClass("row");
-            var col = $("<div></div>").addClass("col-sm-12");
-            row.append(col);
+            var checkboxWrapper = $("<div></div>").addClass("checkbox");
 
-            $(col).append(inputCheckbox);
-            $(col).append(checkboxLabel);
-            $(accessPanel).append(row);
+            $(checkboxWrapper).append(checkboxLabel);
+            $(checkboxLabel).append(inputCheckbox);
+            $(checkboxLabel).append(role);
+            $(accessPanel).append(checkboxWrapper);
 
             $(inputCheckbox).click(disableCheckboxesForMaster);
 
@@ -440,8 +494,8 @@
 
         //Disable checkboxes for the master role, not relying on a click
         function disableCheckboxesForMaster(){
-            if($("#accessSection input[type='checkbox']:not(:disabled)").length > 0){
-                var allCheckboxes = $("#accessSection input[type='checkbox']");
+            if($("#accessCheckboxes input[type='checkbox']:not(:disabled)").length > 0){
+                var allCheckboxes = $("#accessCheckboxes input[type='checkbox']");
                 var masterCheckbox = $(allCheckboxes).filter("[name='" + orgbuilder.roles.master + "']");
                 var otherCheckboxes = $(allCheckboxes).filter("[name!='" + orgbuilder.roles.master + "']");
                 var otherCheckedCheckboxes = $(otherCheckboxes).filter(":checked");
@@ -459,6 +513,14 @@
             }
         }
 
+        //Toggle enabling/disabling the OrgId selection box and setting the OrgId value based on if the master checkbox is checked
+        //TODO implement this
+
+        function setOrgIdFromSelect(){
+            var selected = $("#orgSelectBox :selected");
+            $("#orgIdField").val($(selected).val());
+        }
+
         /*************************
          * 6) Page Initialization
          *************************/
@@ -472,10 +534,17 @@
         else{
             //Configure for an add user page
             $(".page-header > h2").text("New User");
-            $(".panel.form-group").attr("status", "edit");
+            $(".panel.form-group:not(#orgSection)").attr("status", "edit");
             $(".section-toggle").addClass("hidden");
             $(".content-field").removeAttr("disabled");
             addAccessCheckboxes();
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                loadOrgList();
+                $("#orgSection").attr("status", "edit");
+            }
+            else{
+                $("#userOrgField > p.content-label").text(payload.onm);
+            }
         }
 
     });
