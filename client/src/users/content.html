@@ -131,11 +131,11 @@
                     <div class="col-xs-12 col-sm-6 col-sm-offset-3">
                         <div id="orgSection" class="panel panel-default form-group" status="view">
                             <div class="panel-heading clearfix">
-                                <h4 class="pull-left">Org</h4> <!-- TODO delete commented code -->
-                                <!--<div class="btn-group pull-right section-toggle">-->
-                                    <!--<button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> &lt;!&ndash; TODO should buttons have href? &ndash;&gt;-->
-                                    <!--<button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>-->
-                                <!--</div>-->
+                                <h4 class="pull-left">Org</h4>
+                                <div class="btn-group pull-right section-toggle">
+                                    <button href="#" class="section-edit btn btn-default" type="button" title="Edit Section">Edit</button> <!-- TODO should buttons have href? -->
+                                    <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
+                                </div>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
@@ -272,6 +272,7 @@
                     }
 
                     updateFields(userData);
+                    loadOrgList();
                 });
         }
 
@@ -292,9 +293,13 @@
 
                     var orgSelectBox = $("#userOrgField > select");
                     $.each(orgData.orgList, function(index, org){
-                        var option = $("<option></option>").attr("value", org.orgId).text(org.orgName);
+                        var option = $("<option></option>").attr("value", org.orgId).attr("name", org.orgName).text(org.orgName);
                         $(orgSelectBox).append(option);
                     });
+
+                    if(orgbuilder.data.hasData()){
+                        $("#orgSelectBox").val(orgbuilder.data.getData().orgId);
+                    }
 
                     setOrgIdFromSelect();
                 })
@@ -336,7 +341,7 @@
                     var contents = $(section).find(".content");
                     $.each(contents, function(index,content){
                         var name = $(content).children(".content-field").attr("name");
-                        $(content).children(".content-label:not(.password)").text(orgData[name]); //TODO make sure that this logic works, updating display text fields but not touching the password field
+                        $(content).children(".content-label:not(.password)").text(userData[name]); //TODO make sure that this logic works, updating display text fields but not touching the password field
                     });
                 }
             }
@@ -461,6 +466,7 @@
                     //Only add master checkbox if the current user principal has master access
                     if(payload.rol.includes(orgbuilder.roles.master)){
                         inputCheckbox = appendCheckbox(accessPanel, orgbuilder.roles.master);
+                        $(inputCheckbox).click(disableOrgSelectionForMaster);
                     }
                 }
                 else{
@@ -513,8 +519,29 @@
             }
         }
 
+        //TODO need to, for editing, to have the correct item in the selection box chosen...
+
         //Toggle enabling/disabling the OrgId selection box and setting the OrgId value based on if the master checkbox is checked
-        //TODO implement this
+        function disableOrgSelectionForMaster(){
+            var masterCheckbox = $("#accessCheckboxes input[type='checkbox'][name='" + orgbuilder.roles.master + "']");
+            if($(masterCheckbox).is(":checked")){
+                $("#orgSection").attr("status", "view");
+                $("#orgSection .section-toggle").addClass("hidden");
+                $("#userOrgField > .content-label").text("NONE");
+                $("#orgIdField").val(0);
+            }
+            else{
+                $("#orgSection .section-toggle").removeClass("hidden");
+//                if(orgbuilder.data.hasData()){
+//                    $("#userOrgField > .content-label").text(orgbuilder.data.getData().orgName);
+//                }
+//                else{
+                    $("#userOrgField > .content-label").text($("#orgSelectBox :selected").attr("name"));
+//                }
+
+                setOrgIdFromSelect();
+            }
+        }
 
         function setOrgIdFromSelect(){
             var selected = $("#orgSelectBox :selected");
@@ -526,6 +553,10 @@
          *************************/
 
         orgbuilder.menus.loadMainTemplate();
+
+        if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            $("#orgSection .section-toggle").addClass("hidden");
+        }
 
         if(userid){
             //Configure for an edit user page
