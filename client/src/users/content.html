@@ -103,7 +103,7 @@
                                     <div class="col-sm-6">
                                         <p>Repeat Password:</p>
                                     </div>
-                                    <div id="repeatPasswordField" class="col-sm-6">
+                                    <div id="repeatPasswordField" class="content col-sm-6">
                                         <input class="form-control content-field" type="password" required disabled />
                                     </div>
                                 </div>
@@ -279,8 +279,8 @@
                     updateFields(userData);
                     if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
                         loadOrgList();
+                        disableOrgSelectionForMaster();
                     }
-                    disableOrgSelectionForMaster();
                 });
         }
 
@@ -349,7 +349,8 @@
                     var contents = $(section).find(".content");
                     $.each(contents, function(index,content){
                         var name = $(content).children(".content-field").attr("name");
-                        $(content).children(".content-label:not(.password)").text(userData[name]); //TODO make sure that this logic works, updating display text fields but not touching the password field
+                        $(content).children(".content-label:not(.password)").text(userData[name]);
+                        $(content).children(".content-field[type='password']").val("");
                     });
                 }
             }
