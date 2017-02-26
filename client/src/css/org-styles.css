@@ -13,6 +13,10 @@ html, body {
     font-family: 'Ubuntu', sans-serif;
 }
 
+body {
+    margin-bottom: 5em;
+}
+
 /**********************
  * BOOTSTRAP OVERRIDE *
  **********************/
