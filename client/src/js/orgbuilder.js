@@ -149,7 +149,10 @@ var orgbuilder = (function(){
                     }
                     else if(status === 401){
                         //This comes up during a bad login or if the token has expired
-                        window.location = orgProps.clientOrigin + "/login.html";
+                        var loginUrl = orgProps.clientOrigin + "/login.html";
+                        if(!window.location.href === loginUrl){
+                            window.location = loginUrl;
+                        }
                     }
                     else if(status >= 500){
                         var error = jqXHR.responseJSON;

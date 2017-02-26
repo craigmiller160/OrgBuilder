@@ -91,9 +91,8 @@
                 })
                 .fail(function(jqXHR){
                     console.log("Login failed: " + jqXHR.status + " " + jqXHR.statusText);
-                    $("#errorAlert").removeClass("invisible");
-                    $("#errorMsg").text("Invalid email or password.");
                     $("#passwordField").val("");
+                    orgbuilder.showAlert("alert-danger", "Access denied");
                 });
         }
 
