@@ -280,7 +280,7 @@ var orgbuilder = (function(){
                     else if(status === 401){
                         //This comes up during a bad login or if the token has expired
                         var loginUrl = orgProps.clientOrigin + "/login.html";
-                        if(!window.location.href === loginUrl){
+                        if(window.location.href !== loginUrl){
                             window.location = loginUrl;
                         }
                     }
