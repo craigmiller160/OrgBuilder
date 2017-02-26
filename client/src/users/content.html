@@ -411,7 +411,35 @@
             $(col).append(checkboxLabel);
             $(accessPanel).append(row);
 
+            $(inputCheckbox).click(disableCheckboxesOnMasterSelect);
+
             return inputCheckbox;
+        }
+
+        function disableCheckboxesOnMasterSelect(){
+            if($(this).attr("name") === orgbuilder.roles.master){
+                var otherCheckboxes = $("#accessSection input[type='checkbox'][name!='" + orgbuilder.roles.master + "']");
+                if($(this).is(":checked")){
+                    $(otherCheckboxes).prop("checked", false);
+                    $(otherCheckboxes).prop("disabled", true);
+                }
+                else{
+                    $(otherCheckboxes).prop("disabled", false);
+                }
+            }
+            else{
+                var masterCheckbox = $("#accessSection input[type='checkbox'][name='" + orgbuilder.roles.master + "']");
+                var checkedCheckboxes = $("#accessSection input[type='checkbox']:checked");
+                if($(this).is(":checked")){
+                    $(masterCheckbox).prop("checked", false);
+                    $(masterCheckbox).prop("disabled", true);
+                }
+                else{
+                    if(checkedCheckboxes.length === 0){
+                        $(masterCheckbox).prop("disabled", false);
+                    }
+                }
+            }
         }
 
         /*************************
