@@ -119,8 +119,8 @@
                                     <button href="#" class="section-save btn btn-default" type="submit" title="Save Section">Save</button>
                                 </div>
                             </div>
-                            <div class="panel-body">
-                                <!-- TODO Access stuff here -->
+                            <div name="roles" class="panel-body content-checkbox-group">
+                                <!-- The access role checkboxes go here -->
                             </div>
                         </div>
                     </div>
@@ -276,7 +276,7 @@
                 }
 
                 var section = $(document.activeElement).parents(".panel.form-group")[0];
-                fieldArray = $(section).find(".content-field");
+                fieldArray = $(section).find(".content-field, .content-checkbox-group");
 
                 var doneFn = function(userData){
                     if(!orgbuilder.validateData.user(userData)){
@@ -300,7 +300,7 @@
             else{
                 console.log("Main save button");
 
-                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field");
+                fieldArray = $(event.target).find(".panel.form-group[status = 'edit'] .content-field, .panel.form-group[status='edit'] .content-checkbox-group");
 
                 var doneFn = function(userData){
                     window.location = (function(){
@@ -325,7 +325,16 @@
             var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
 
             $.each(fieldArray, function(index, field){
-                jsonMsg[$(field).attr("name")] = $(field).val();
+                if($(field).is("input")){
+                    jsonMsg[$(field).attr("name")] = $(field).val();
+                }
+                else if($(field).is("div.content-checkbox-group")){
+                    var vals = [];
+                    $.each($(field).find(".content-checkbox:checked"), function(index,checkbox){
+                        vals.push($(checkbox).attr("name"));
+                    });
+                    jsonMsg[$(field).attr("name")] = vals;
+                }
             });
 
             var failFn = function(){
