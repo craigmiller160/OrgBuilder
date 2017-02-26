@@ -54,10 +54,15 @@
          * 1) Top Scope Variables
          *************************/
 
+        var currentUrl = URI(window.location.href);
         var denied = (function(){
-            var url = URI(window.location.href);
-            if(url.hasQuery("denied")){
-                return url.search(true).denied;
+            if(currentUrl.hasQuery("denied")){
+                return currentUrl.search(true).denied;
+            }
+        })();
+        var errorMessage = (function(){
+            if(currentUrl.hasQuery("message")){
+                return currentUrl.search(true).message;
             }
         })();
 
@@ -95,7 +100,14 @@
         orgbuilder.menus.loadMainTemplate();
 
         if(denied){
-            orgbuilder.showAlert("alert-danger", "Access denied!");
+            var messageText = (function(){
+                var text = "Access denied!";
+                if(errorMessage){
+                    return text + " Message: " + errorMessage;
+                }
+                return text;
+            })();
+            orgbuilder.showAlert("alert-danger", messageText);
         }
     });
 </script>
