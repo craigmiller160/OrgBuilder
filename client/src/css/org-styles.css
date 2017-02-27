@@ -208,6 +208,10 @@ textarea.content-field {
     border-color: #2e6da4;
 }
 
+#navbar-template .nav.navbar-nav.navbar-right li > a[aria-expanded = 'true']{
+    background-color: #368cb7;
+}
+
 #navbar-template > .navbar.navbar-default {
     border-radius: 0;
 }
@@ -215,6 +219,10 @@ textarea.content-field {
 #navbar-template .navbar-brand:hover,
 #navbar-template .nav.navbar-nav.navbar-right li > a:hover,
 #sidebar-template > #sidebar-wrapper > .sidebar-nav.nav li > a:hover{
+    background-color: #368cb7;
+}
+
+#sidebar-template > #sidebar-wrapper > .sidebar-nav.nav li > a.active {
     background-color: #368cb7;
 }
 

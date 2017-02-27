@@ -463,7 +463,7 @@
          * 6) Page Initialization
          *************************/
 
-        orgbuilder.menus.loadMainTemplate();
+        orgbuilder.menus.loadMainTemplate("sidebar-users-btn");
 
         if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
             $("#orgSection .section-toggle").addClass("hidden");

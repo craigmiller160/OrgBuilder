@@ -548,7 +548,7 @@ var orgbuilder = (function(){
             login: "login"
         };
 
-        function loadTemplates(type){
+        function loadTemplates(type, activeElement){
             $.get(orgProps.clientOrigin + "/template/menus-template.html")
                 .done(function(data){
                     //Add the html from the template file to the container divs on the current page
@@ -563,7 +563,7 @@ var orgbuilder = (function(){
                     if(type !== types.login){
                         $(".sidebar-menu-btn > a").click(toggleMenu);
                         $(".sidebar-parent-item").click(parentItemAction);
-                        $("#logoutBtn").click(jwt.clearToken);
+                        $("#logoutBtn > a").click(jwt.clearToken);
                     }
 
                     //Display dynamic values in navbar
@@ -602,6 +602,10 @@ var orgbuilder = (function(){
 
                     //Add cancellation behavior
                     $(".template-link").click(cancelChangesCheck);
+
+                    if(activeElement){
+                        $("#" + activeElement + " > a").addClass("active");
+                    }
                 })
                 .fail(function(jqXHR){
                     console.log("Failed to log template. Status: " + jqXHR.status);
@@ -613,8 +617,8 @@ var orgbuilder = (function(){
             loadTemplates(types.login);
         }
 
-        function loadMainTemplate(){
-            loadTemplates(types.main);
+        function loadMainTemplate(activeElement){
+            loadTemplates(types.main, activeElement);
         }
 
         return {

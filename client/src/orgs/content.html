@@ -236,7 +236,7 @@
          * 6) Page Initialization
          *************************/
 
-        orgbuilder.menus.loadMainTemplate();
+        orgbuilder.menus.loadMainTemplate("sidebar-orgs-btn");
 
         if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master) && !orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
             $(".section-edit").addClass("hidden");
