@@ -13,10 +13,6 @@ html, body {
     font-family: 'Ubuntu', sans-serif;
 }
 
-body {
-    margin-bottom: 5em;
-}
-
 /**********************
  * BOOTSTRAP OVERRIDE *
  **********************/
@@ -111,7 +107,7 @@ textarea.content-field {
     width: 80px;
     height: 100%;
     overflow-y: hidden;
-    border-right: 1px solid #e7e7e7;
+    border-right: 1px solid #e7e7e7; /* TODO change the color of this */
     transition: width 0.5s;
     -moz-transition: width 0.5s;
     -webkit-transition: width 0.5s;
@@ -131,9 +127,8 @@ textarea.content-field {
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 14px;
     white-space: nowrap;
-    color: #777;
 }
 
 .menu-collapse {
@@ -147,6 +142,12 @@ textarea.content-field {
 #sidebar-wrapper .glyphicon {
     text-indent: 0;
     margin-right: 5px;
+}
+
+/* Navbar Styles */
+
+#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
+    display: none;
 }
 
 /* Sidebar phone style */
@@ -190,16 +191,14 @@ textarea.content-field {
     padding-left: 200px;
 }
 
-/* Navbar Styles */
-
-#navbar-template > nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
-    display: none;
-}
+/* Navbar and Sidebar colors */
 
 #navbar-template > .navbar.navbar-default,
 #navbar-template .navbar-brand,
 #navbar-template .nav.navbar-nav.navbar-right li > a,
-#navbar-template .nav.navbar-nav.navbar-right li > ul{
+#navbar-template .nav.navbar-nav.navbar-right li > ul,
+#sidebar-template > #sidebar-wrapper,
+#sidebar-template > #sidebar-wrapper > .sidebar-nav.nav li > a {
     color: #fff;
     background-color: #337ab7;
     border-color: #2e6da4;
@@ -210,7 +209,8 @@ textarea.content-field {
 }
 
 #navbar-template .navbar-brand:hover,
-#navbar-template .nav.navbar-nav.navbar-right li > a:hover{
+#navbar-template .nav.navbar-nav.navbar-right li > a:hover,
+#sidebar-template > #sidebar-wrapper > .sidebar-nav.nav li > a:hover{
     background-color: #368cb7;
 }
 
