@@ -72,6 +72,10 @@ nav.navbar {
     background-color: #e9e9ff;
 }
 
+.table-responsive {
+    border: none;
+}
+
 /*************
  * MY STYLES *
  *************/
@@ -201,10 +205,6 @@ textarea.content-field {
     background-color: #337ab7;
     border-color: #2e6da4;
     border-bottom: 1px solid #2e6da4;
-}
-
-.table-primary {
-    border: 1px solid #2e6da4;
 }
 
 .table.table-primary > tbody > tr > td {
