@@ -115,7 +115,7 @@ textarea.content-field {
     width: 80px;
     height: 100%;
     overflow-y: hidden;
-    border-right: 1px solid #e7e7e7; /* TODO change the color of this */
+    border-right: 1px solid #2e6da4;
     transition: width 0.5s;
     -moz-transition: width 0.5s;
     -webkit-transition: width 0.5s;
