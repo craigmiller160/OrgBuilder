@@ -483,6 +483,7 @@
             $(".panel.form-group:not(#orgSection)").attr("status", "edit");
             $(".section-toggle").addClass("hidden");
             $(".content-field").removeAttr("disabled");
+            $("#deleteBtn").addClass("hidden");
             addAccessCheckboxes();
             if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
                 loadOrgList();
