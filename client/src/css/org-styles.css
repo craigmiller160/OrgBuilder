@@ -107,6 +107,10 @@ textarea.content-field {
     transform: rotate(180deg);
 }
 
+.content-name {
+    font-weight: bold;
+}
+
 /* Sidebar Style */
 
 #sidebar-wrapper {
