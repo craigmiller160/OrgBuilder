@@ -634,6 +634,51 @@ var orgbuilder = (function(){
 
     })();
 
+    var modal = (function(){
+
+        function getModal(name,type){
+            if(type === "cancel"){
+                return $("#cancelWarningModal");
+            }
+            else{
+                return $("#deleteWarningModal");
+            }
+        }
+
+        function showModal(name,type){
+            var cancelModal = getModal(name,type);
+            var returnVal = -1;
+            $(cancelModal).find(".modal-yes").click(function(event){
+                console.log("Yes clicked"); //TODO delete this
+                returnVal = 1;
+            });
+
+            $(cancelModal).find(".modal-no").click(function(event){
+                console.log("No clicked"); //TODO delete this
+                returnVal = 2;
+            });
+
+            $(cancelModal).modal({
+                backdrop: "static"
+            });
+
+            return returnVal;
+        }
+
+        function showCancel(){
+            return showModal("cancel");
+        }
+
+        function showDelete(deleteType){
+            //TODO finish this
+        }
+
+        return {
+            showCancel: showCancel,
+            showDelete: showDelete
+        }
+    })();
+
     //Utility function to show an alert on the page
     function showAlert(clazz, message){
         if($("#actionAlert").length > 0){
@@ -655,7 +700,8 @@ var orgbuilder = (function(){
         menus: menus,
         data: data,
         showAlert: showAlert,
-        content: content
+        content: content,
+        modal: modal
     }
 })();
 
