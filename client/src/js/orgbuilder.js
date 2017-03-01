@@ -559,6 +559,12 @@ var orgbuilder = (function(){
                         $("#sidebar-container").html(sidebar);
                     }
 
+                    //Add the modal templates, if a wrapper exists there
+                    if($("#modal-wrapper").length > 0){
+                        var modal = $(data).filter("#modal-template");
+                        $("#modal-wrapper").html(modal);
+                    }
+
                     //Assign UI actions to the template elements
                     if(type !== types.login){
                         $(".sidebar-menu-btn > a").click(toggleMenu);
