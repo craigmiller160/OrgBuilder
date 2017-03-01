@@ -276,6 +276,11 @@ div.panel > div.panel-body > div.row {
     text-align: center;
 }
 
+.form-login .form-group {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 #login-box {
     margin-top: 8em;
 }
