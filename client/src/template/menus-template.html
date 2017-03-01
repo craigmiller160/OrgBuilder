@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
 </head>
 <body>
+<!-- TODO rename this file to simply "template" -->
 <div id="navbar-template">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -93,6 +94,44 @@
                 </ul>
             </li>
         </ul>
+    </div>
+</div>
+<div id="cancel-modal-template">
+    <div id="cancelWarningModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Cancel Changes</h4>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel all changes?</p>
+            </div>
+            <div class="modal-footer">
+                <!-- TODO need button-specific behavior here -->
+                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="delete-modal-template">
+    <div id="deleteWarningModal" class="modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <!-- TODO need some way to add a more specific item that is being deleted... or keep the text generic -->
+                <h4 class="modal-title">Delete</h4>
+            </div>
+            <div class="modal-body">
+                <!-- TODO need some way to add a more specific item that is being deleted... or keep the text generic -->
+                <p>Are you sure you want to delete</p>
+            </div>
+            <div class="modal-footer">
+                <!-- TODO need button-specific behavior here -->
+                <button type="button" class="btn btn-success" data-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+            </div>
+        </div>
     </div>
 </div>
 </body>
