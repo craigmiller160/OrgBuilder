@@ -161,15 +161,18 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <button id="cancelBtn" class="btn btn-primary" type="button" title="Cancel changes">Cancel</button>
-                                <button id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</button>
-                                <button id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</button>
+                                <a id="cancelBtn" class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
+                                <a id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</a>
+                                <a id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="modal-wrapper">
+        <!-- Modals go here -->
     </div>
 </div>
 
@@ -217,7 +220,7 @@
          * 3) UI Actions
          ****************/
 
-        $("#cancelBtn").click(cancelChanges);
+        $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
         $(".section-edit").click(toggleEdit);
         $("#deleteBtn").click(deleteUser);
         $("#userContentForm").on("submit", submitAction);
@@ -229,19 +232,6 @@
 
         function toggleEdit(event){
             orgbuilder.content.toggleEdit(event,disableCheckboxesForMaster);
-        }
-
-        function cancelChanges(event){
-            event.preventDefault();
-            if(orgbuilder.cancelChangesCheck()){
-                console.log("Cancelling changes to User details");
-                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
-                    window.location = "manage.html";
-                }
-                else{
-                    window.location = "../index.html";
-                }
-            }
         }
 
         function deleteUser(event){
@@ -494,6 +484,13 @@
 
         if(saved){
             orgbuilder.showAlert("alert-success", "User saved successfully");
+        }
+
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+            $("#cancelBtn").attr("href", "manage.html");
+        }
+        else{
+            $("#cancelBtn").attr("href", "../index.html");
         }
 
     });

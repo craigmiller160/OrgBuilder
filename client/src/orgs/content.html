@@ -40,61 +40,63 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <form id="orgContentForm" class="no-enter-form">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div id="orgInfoSection" class="panel panel-primary form-group" status="view">
-                                        <div class="panel-heading clearfix">
-                                            <h4 class="pull-left">Org Info</h4>
-                                            <div class="btn-group pull-right section-toggle">
-                                                <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                                <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div id="orgInfoSection" class="panel panel-primary form-group" status="view">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Org Info</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Org Name:</p>
+                                            </div>
+                                            <div id="orgNameField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="orgName" class="content-field form-control" type="text" required disabled /> <!-- TODO figure out a more elegant way to do the asterisk here, and for all other required fields -->
                                             </div>
                                         </div>
-                                        <div class="panel-body">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <p class="content-name">Org Name:</p>
-                                                </div>
-                                                <div id="orgNameField" class="content col-sm-6">
-                                                    <p class="content-label"></p>
-                                                    <input name="orgName" class="content-field form-control" type="text" required disabled /> <!-- TODO figure out a more elegant way to do the asterisk here, and for all other required fields -->
-                                                </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Created Date:</p>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <p class="content-name">Created Date:</p>
-                                                </div>
-                                                <div id="createdDateField" class="col-sm-6">
-                                                    <p></p>
-                                                </div>
+                                            <div id="createdDateField" class="col-sm-6">
+                                                <p></p>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <p class="content-name">Org Description:</p>
-                                                </div>
-                                                <div id="orgDescriptionField" class="content col-sm-6">
-                                                    <p class="content-label"></p>
-                                                    <textarea name="orgDescription" class="form-control content-field" maxlength="255" rows="5" disabled></textarea>
-                                                    <!--<p class="content-field">(Limit 255 characters)</p>--> <!-- TODO figure out a way to restore this later -->
-                                                </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Org Description:</p>
+                                            </div>
+                                            <div id="orgDescriptionField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <textarea name="orgDescription" class="form-control content-field" maxlength="255" rows="5" disabled></textarea>
+                                                <!--<p class="content-field">(Limit 255 characters)</p>--> <!-- TODO figure out a way to restore this later -->
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <button id="cancelBtn" class="btn btn-primary" type="button" title="Cancel changes">Cancel</button>
-                                    <button id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</button>
-                                    <button id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Org">Delete</button>
-                                </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a id="cancelBtn" class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
+                                <a id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</a>
+                                <a id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Org">Delete</a>
                             </div>
-                        </form>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
+    <div id="modal-wrapper">
+        <!-- Modals go here -->
+    </div>
 </div>
 <!-- TODO FC-4 -->
 <script src="../jquery-3.1.1.js"></script>
@@ -132,7 +134,7 @@
          * 3) UI Actions
          ****************/
 
-        $("#cancelBtn").click(cancelChanges);
+        $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
         $(".section-edit").click(toggleEdit);
         $("#orgContentForm").on("submit", submitAction);
         $("#deleteBtn").click(deleteOrg);
@@ -143,19 +145,6 @@
 
         function toggleEdit(event){
             orgbuilder.content.toggleEdit(event);
-        }
-
-        function cancelChanges(event){
-            event.preventDefault();
-            if(orgbuilder.cancelChangesCheck()){
-                console.log("Cancelling changes to Org details");
-                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                    window.location = "manage.html";
-                }
-                else{
-                    window.location = "../index.html";
-                }
-            }
         }
 
         function submitAction(event){
@@ -256,6 +245,13 @@
 
         if(saved){
             orgbuilder.showAlert("alert-success", "Org saved successfully");
+        }
+
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            $("#cancelBtn").attr("href", "manage.html");
+        }
+        else{
+            $("#cancelBtn").attr("href", "../index.html");
         }
 
     });

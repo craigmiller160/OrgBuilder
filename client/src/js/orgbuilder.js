@@ -488,9 +488,12 @@ var orgbuilder = (function(){
         return token;
     }
 
-    function cancelChangesCheck(){
+    function cancelChangesCheck(event){
         if($(".panel.form-group[status = 'edit']").length > 0){
-            return confirm("Are you sure you want to cancel? All changes will be lost.");
+            modal.showCancel(function(){
+                window.location = event.target.href;
+            });
+            return false;
         }
         return true;
     }
@@ -603,6 +606,14 @@ var orgbuilder = (function(){
                 var modal = $(data).filter("#modal-template");
                 $("#modal-wrapper").html(modal);
             }
+
+            $(".org-modal .modal-yes").click(function(event){
+                $(event.target).parents(".modal-footer").attr("status", "yes");
+            });
+
+            $(".org-modal .modal-no").click(function(event){
+                $(event.target).parents(".modal-footer").attr("status", "no");
+            });
         }
 
         function loadTemplates(type, activeElement){
@@ -646,7 +657,7 @@ var orgbuilder = (function(){
 
     var modal = (function(){
 
-        function getModal(name,type){
+        function getModal(type){
             if(type === "cancel"){
                 return $("#cancelWarningModal");
             }
@@ -655,32 +666,27 @@ var orgbuilder = (function(){
             }
         }
 
-        function showModal(name,type){
-            var cancelModal = getModal(name,type);
-            var returnVal = -1;
-            $(cancelModal).find(".modal-yes").click(function(event){
-                console.log("Yes clicked"); //TODO delete this
-                returnVal = 1;
+        function showModal(type, callback){
+            var modal = getModal(type);
+            $(modal).on("hidden.bs.modal", function(event){
+                var status = $(event.target).find(".modal-footer").attr("status");
+                $(event.target).find(".modal-footer").removeAttr("status");
+                if("yes" === status && callback !== undefined && callback !== null){
+                    callback();
+                }
             });
 
-            $(cancelModal).find(".modal-no").click(function(event){
-                console.log("No clicked"); //TODO delete this
-                returnVal = 2;
-            });
-
-            $(cancelModal).modal({
+            $(modal).modal({
                 backdrop: "static"
             });
-
-            return returnVal;
         }
 
-        function showCancel(){
-            return showModal("cancel");
+        function showCancel(callback){
+            return showModal("cancel", callback);
         }
 
-        function showDelete(deleteType){
-            //TODO finish this
+        function showDelete(callback){
+            return showModal("delete", callback);
         }
 
         return {
