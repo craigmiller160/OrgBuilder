@@ -67,6 +67,9 @@
             </div>
         </div>
     </div>
+    <div id="modal-wrapper">
+        <!-- Modals go here -->
+    </div>
 </div>
 <!-- TODO FC-4 -->
 <script src="../jquery-3.1.1.js"></script>
@@ -140,15 +143,8 @@
                     $(".deleteUserBtn").click(function(event){
                         event.preventDefault();
                         var userId = getUserId(event);
-                        var choice = (function(){
-                            if(userId == orgbuilder.jwt.getTokenPayload().uid){
-                                return confirm("This will delete YOUR user account. Do you want to proceed?");
-                            }
-                            else{
-                                return confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
-                            }
-                        })();
-                        if(choice){
+                        var item = (userId == orgbuilder.jwt.getTokenPayload().uid ? "your" : "this") + " User: " + getUserEmail(event);
+                        orgbuilder.modal.showDelete(item, function(){
                             orgbuilder.api.send("users/" + userId, orgbuilder.methods.delete)
                                 .done(function(){
                                     console.log("User successfully deleted");
@@ -163,7 +159,7 @@
                                 .fail(function(){
                                     console.log("User delete FAILED");
                                 });
-                        }
+                        });
                     });
                 })
                 .fail(function(){

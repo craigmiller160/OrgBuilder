@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="page-header">
-                        <h2></h2>
+                        <h2 name=""></h2>
                     </div>
                 </div>
             </div>
@@ -162,7 +162,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <a id="cancelBtn" class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
-                                <a id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</a>
+                                <button id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</button>
                                 <a id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
                             </div>
                         </div>
@@ -239,10 +239,8 @@
                 event.preventDefault();
             }
 
-            var confirmMsg = "Are you sure you want to delete " +
-                (userId == payload.uid ? "your" : "this") + " user account? This action cannot be undone";
-            var choice = confirm(confirmMsg);
-            if(choice){
+            var item = (userId == payload.uid ? "your" : "this") + " User: " + $(".page-header > h2").attr("name");
+            orgbuilder.modal.showDelete(item, function(){
                 orgbuilder.api.send("users/" + userId, orgbuilder.methods.delete)
                     .done(function(){
                         if(userId == payload.uid){
@@ -256,7 +254,7 @@
                     .fail(function(){
                         console.log("DELETE FAILED");
                     });
-            }
+            });
         }
 
         function loadUser(){
@@ -339,6 +337,7 @@
             orgbuilder.data.storeData(userData);
 
             $(".page-header > h2").text("User: " + userData.userEmail);
+            $(".page-header > h2").attr("name", userData.userEmail);
 
             $("#userEmailField > .content-label").text(userData.userEmail);
             $("#userEmailField > .content-field").val(userData.userEmail);
