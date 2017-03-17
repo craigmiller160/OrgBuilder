@@ -548,29 +548,69 @@ var orgbuilder = (function(){
             login: "login"
         };
 
+        function loadNavbar(data, type){
+            //Add the html from the template file to the container divs on the current page
+            var navbar = $(data).filter("#navbar-template");
+            $("#navbar-container").html(navbar);
+
+            if(type !== types.login){
+                //Assign UI actions to the template elements
+                $("#logoutBtn > a").click(jwt.clearToken);
+
+                //Handle dynamic values
+                $("#userName").text(jwt.getTokenPayload().unm);
+                $("#user-profile-btn > a").attr("href", $("#user-profile-btn > a").attr("href") + "?userId=" + jwt.getTokenPayload().uid);
+                if(!jwt.hasRole(roles.master)){
+                    if(jwt.getTokenPayload().onm !== ""){
+                        $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
+                    }
+                    $("#org-profile-btn > a").attr("href", $("#org-profile-btn > a").attr("href") + "?orgId=" + jwt.getTokenPayload().oid);
+                }
+                else{
+                    $("#org-profile-btn").addClass("hidden");
+                }
+
+                //Fix path to link to link to home page, either index.html or login.html
+                $(".home-link").attr("href", orgProps.clientOrigin + "/index.html");
+            }
+            else{
+                $("#navbar-user-menu").addClass("hidden");
+
+                //Fix path to link to link to home page, either index.html or login.html
+                $(".home-link").attr("href", orgProps.clientOrigin + "/login.html");
+            }
+        }
+
+        function loadSidebar(data, activeElement){
+            //Add the html from the template file to the container divs on the current page
+            var sidebar = $(data).filter("#sidebar-template");
+            $("#sidebar-container").html(sidebar);
+
+            //Assign UI actions to the template elements
+            $(".sidebar-menu-btn > a").click(toggleMenu);
+            $(".sidebar-parent-item").click(parentItemAction);
+
+            displayAccessibleMenuItems();
+
+            if(activeElement){
+                $("#" + activeElement + " > a").addClass("active");
+            }
+        }
+
+        function loadModals(data){
+            //Add the modal templates, if a wrapper exists there
+            if($("#modal-wrapper").length > 0){
+                var modal = $(data).filter("#modal-template");
+                $("#modal-wrapper").html(modal);
+            }
+        }
+
         function loadTemplates(type, activeElement){
             $.get(orgProps.clientOrigin + "/template/menus-template.html")
                 .done(function(data){
-                    //Add the html from the template file to the container divs on the current page
-                    var navbar = $(data).filter("#navbar-template");
-                    $("#navbar-container").html(navbar);
-                    if(type !== types.login){
-                        var sidebar = $(data).filter("#sidebar-template");
-                        $("#sidebar-container").html(sidebar);
-                    }
-
-                    //Add the modal templates, if a wrapper exists there
-                    if($("#modal-wrapper").length > 0){
-                        var modal = $(data).filter("#modal-template");
-                        $("#modal-wrapper").html(modal);
-                    }
-
-                    //Assign UI actions to the template elements
-                    if(type !== types.login){
-                        $(".sidebar-menu-btn > a").click(toggleMenu);
-                        $(".sidebar-parent-item").click(parentItemAction);
-                        $("#logoutBtn > a").click(jwt.clearToken);
-                    }
+                    loadNavbar(data, type);
+                    loadSidebar(data, activeElement);
+                    loadModals(data);
 
                     //Display dynamic values in navbar
                     if(type !== types.login){
@@ -578,40 +618,10 @@ var orgbuilder = (function(){
                         $.each($(".template-link"), function(index,link){
                             $(link).attr("href", orgProps.clientOrigin + $(link).attr("href"));
                         });
-
-                        $("#userName").text(jwt.getTokenPayload().unm);
-                        $("#user-profile-btn > a").attr("href", $("#user-profile-btn > a").attr("href") + "?userId=" + jwt.getTokenPayload().uid);
-                        if(!jwt.hasRole(roles.master)){
-                            if(jwt.getTokenPayload().onm !== ""){
-                                $(".org-brand").text(orgbuilder.jwt.getTokenPayload().onm);
-                            }
-                            $("#org-profile-btn > a").attr("href", $("#org-profile-btn > a").attr("href") + "?orgId=" + jwt.getTokenPayload().oid);
-                        }
-                        else{
-                            $("#org-profile-btn").addClass("hidden");
-                        }
-
-                        //Fix path to link to link to home page, either index.html or login.html
-                        $(".home-link").attr("href", orgProps.clientOrigin + "/index.html");
-                    }
-                    else{
-                        $("#navbar-user-menu").addClass("hidden");
-
-                        //Fix path to link to link to home page, either index.html or login.html
-                        $(".home-link").attr("href", orgProps.clientOrigin + "/login.html");
-                    }
-
-                    //Display the menu items that the user has access to
-                    if(type !== types.login){
-                        displayAccessibleMenuItems();
                     }
 
                     //Add cancellation behavior
-                    $(".template-link").click(cancelChangesCheck);
-
-                    if(activeElement){
-                        $("#" + activeElement + " > a").addClass("active");
-                    }
+                    $(".template-link, .home-link").click(cancelChangesCheck);
                 })
                 .fail(function(jqXHR){
                     console.log("Failed to log template. Status: " + jqXHR.status);
