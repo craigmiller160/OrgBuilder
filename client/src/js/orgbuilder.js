@@ -559,6 +559,7 @@ var orgbuilder = (function(){
             if(type !== types.login){
                 //Assign UI actions to the template elements
                 $("#logoutBtn > a").click(jwt.clearToken);
+                $("#logoutBtn > a").attr("href", orgProps.clientOrigin + "/index.html");
 
                 //Handle dynamic values
                 $("#userName").text(jwt.getTokenPayload().unm);
@@ -620,11 +621,11 @@ var orgbuilder = (function(){
             $.get(orgProps.clientOrigin + "/template/menus-template.html")
                 .done(function(data){
                     loadNavbar(data, type);
-                    loadSidebar(data, activeElement);
                     loadModals(data);
 
-                    //Display dynamic values in navbar
                     if(type !== types.login){
+                        loadSidebar(data, activeElement);
+
                         //Fix links to be absolute paths using the clientOrigin
                         $.each($(".template-link"), function(index,link){
                             $(link).attr("href", orgProps.clientOrigin + $(link).attr("href"));
