@@ -658,17 +658,18 @@ var orgbuilder = (function(){
 
     var modal = (function(){
 
-        function getModal(type){
+        function getModal(type, item){
             if(type === "cancel"){
                 return $("#cancelWarningModal");
             }
             else{
+                $("#deleteWarningModal .type").text(item);
                 return $("#deleteWarningModal");
             }
         }
 
-        function showModal(type, callback){
-            var modal = getModal(type);
+        function showModal(type, callback, item){
+            var modal = getModal(type, item);
             $(modal).on("hidden.bs.modal", function(event){
                 var status = $(event.target).find(".modal-footer").attr("status");
                 $(event.target).find(".modal-footer").removeAttr("status");
@@ -686,8 +687,8 @@ var orgbuilder = (function(){
             return showModal("cancel", callback);
         }
 
-        function showDelete(callback){
-            return showModal("delete", callback);
+        function showDelete(item, callback){
+            return showModal("delete", callback, item);
         }
 
         return {

@@ -136,9 +136,10 @@
 
                     $(".deleteOrgBtn").click(function(event){
                         event.preventDefault();
-                        var choice = confirm("This will delete the Org named " + getOrgName(event) + ", along with all users and data associated with it. Do you want to proceed?");
-                        if(choice){
-                            var orgId = getOrgId(event);
+
+                        var item = "this Org: " + getOrgName(event);
+                        var orgId = getOrgId(event);
+                        orgbuilder.modal.showDelete(item, function(){
                             orgbuilder.api.send("orgs/" + orgId, orgbuilder.methods.delete)
                                 .done(function(){
                                     console.log("Org successfully deleted");
@@ -147,7 +148,7 @@
                                 .fail(function(){
                                     console.log("Org delete FAILED");
                                 });
-                        }
+                        });
                     });
 
                     //TODO FC-8
