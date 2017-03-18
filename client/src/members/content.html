@@ -185,6 +185,186 @@
     <div id="modal-wrapper">
         <!-- Modals go here -->
     </div>
+    <div id="address-modal" class="modal org-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span class="title-type"></span> Address</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Address Type:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="addressTypeSelect" name="addressType" class="form-control" />
+                            <!-- TODO need to populate this -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Address Line 1:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="address1Field" name="address1" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Address Line 2:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="address2Field" name="address2" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">City:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="cityField" name="city" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">State:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <!-- TODO need to populate this select with values -->
+                            <select id="stateField" name="state" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Zip Code:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="zipCodeField" name="zipCode" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-6">
+                            <label for="primaryAddressField">
+                                <input id="primaryAddressField" name="primary" class="" type="checkbox">
+                                Primary
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="phone-modal" class="modal org-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span class="title-type"></span> Phone</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Phone Type:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="phoneTypeSelect" name="phoneType" class="form-control"></select>
+                            <!-- TODO need to populate this -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Area Code:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="areaCodeField" name="areaCode" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Prefix:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="prefixField" name="prefix" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Line Number:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="lineNumberField" name="lineNumber" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Extension:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="extensionField" name="extension" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-6">
+                            <label for="primaryPhoneField">
+                                <input id="primaryPhoneField" name="primary" class="" type="checkbox">
+                                Primary
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="email-modal" class="modal org-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span class="title-type"></span> Email</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Email Type:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="emailTypeSelect" name="emailType" class="form-control"></select>
+                            <!-- TODO need to populate this -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Email:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="emailField" name="emailAddress" class="form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-6">
+                            <label for="primaryEmailField">
+                                <input id="primaryEmailField" name="primary" class="" type="checkbox">
+                                Primary
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- TODO FC-4 -->
@@ -325,6 +505,18 @@
             $("#sexField > .content-label").text(memberData.sex);
         }
 
+        function showAddressModal(){
+            $("#address-modal").modal();
+        }
+
+        function showPhoneModal(){
+            $("#phone-modal").modal();
+        }
+
+        function showEmailModal(){
+            $("#email-modal").modal();
+        }
+
         /*************************
          * 6) Page Initialization
          *************************/
@@ -344,6 +536,10 @@
             $(".content-field").removeAttr("disabled");
             $("#deleteBtn").addClass("hidden");
         }
+
+//        showAddressModal(); //TODO delete this
+//        showPhoneModal(); //TODO delete this
+//        showEmailModal(); //TODO delete this
 
     });
 </script>
