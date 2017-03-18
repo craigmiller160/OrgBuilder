@@ -140,6 +140,10 @@ var orgbuilder = (function(){
             submitAction(event, "User", id, "userId", "users", orgbuilder.validateData.user, preValidationFn);
         }
 
+        function memberSubmitAction(event, id){
+            submitAction(event, "Member", id, "memberId", "members", orgbuilder.validateData.member);
+        }
+
         function submitAction(event, contentName, contentId, contentIdName, uri, returnDataValidationFn, preValidationFn){
             event.preventDefault();
 
@@ -237,7 +241,8 @@ var orgbuilder = (function(){
         return {
             toggleEdit: toggleEdit,
             orgSubmitAction: orgSubmitAction,
-            userSubmitAction: userSubmitAction
+            userSubmitAction: userSubmitAction,
+            memberSubmitAction: memberSubmitAction
         }
     })();
 

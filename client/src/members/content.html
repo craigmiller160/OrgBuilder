@@ -71,7 +71,6 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <!-- TODO last name -->
                                             <div class="col-sm-6">
                                                 <p class="content-name">Last Name:</p>
                                             </div>
@@ -81,12 +80,12 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <!-- TODO birth date and age -->
+
                                             <div class="col-sm-6">
                                                 <p class="content-name">Date of Birth:</p>
                                             </div>
                                             <div id="birthDateField" class="content col-sm-6">
-
+                                                <!-- TODO birth date and age -->
                                             </div>
                                         </div>
                                         <div class="row">
@@ -166,9 +165,20 @@
          * 3) UI Actions
          ****************/
 
+        $(".section-edit").click(toggleEdit);
+        $("#memberContentForm").on("submit", submitAction);
+
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
+
+        function toggleEdit(event){
+            orgbuilder.content.toggleEdit(event);
+        }
+
+        function submitAction(event){
+            orgbuilder.content.memberSubmitAction(event, memberId);
+        }
 
         /***********************
          * 5) Utility Functions
