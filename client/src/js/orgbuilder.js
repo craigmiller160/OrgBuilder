@@ -132,6 +132,14 @@ var orgbuilder = (function(){
             }
         }
 
+        function orgSubmitAction(event, id){
+            submitAction(event, "Org", id, "orgId", "orgs", orgbuilder.validateData.org);
+        }
+
+        function userSubmitAction(event, id, preValidationFn){
+            submitAction(event, "User", id, "userId", "users", orgbuilder.validateData.user, preValidationFn);
+        }
+
         function submitAction(event, contentName, contentId, contentIdName, uri, returnDataValidationFn, preValidationFn){
             event.preventDefault();
 
@@ -228,7 +236,8 @@ var orgbuilder = (function(){
 
         return {
             toggleEdit: toggleEdit,
-            submitAction: submitAction
+            orgSubmitAction: orgSubmitAction,
+            userSubmitAction: userSubmitAction
         }
     })();
 
