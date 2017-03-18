@@ -122,9 +122,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a id="cancelBtn" href="manage.html" class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
+                                <button id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</button>
+                                <a id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Member">Delete</a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
     <div id="modal-wrapper">
@@ -147,8 +155,8 @@
 
         var currentUrl = URI(window.location.href);
         var memberId = (function(){
-            if(currentUrl.hasQuery("userId")){
-                return currentUrl.search(true).userId;
+            if(currentUrl.hasQuery("memberId")){
+                return currentUrl.search(true).memberId;
             }
         })();
         var saved = (function(){
@@ -180,6 +188,10 @@
             orgbuilder.content.memberSubmitAction(event, memberId);
         }
 
+        function loadMember(){
+            //TODO finish this
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
@@ -189,6 +201,19 @@
          *************************/
 
         orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+
+        if(memberId){
+            //Configure for edit member page
+            loadMember();
+        }
+        else{
+            //Configure for new member page
+            $(".page-header > h2").text("New Member");
+            $(".panel.form-group").attr("status", "edit");
+            $(".section-toggle").addClass("hidden");
+            $(".content-field").removeAttr("disabled");
+            $("#deleteBtn").addClass("hidden");
+        }
 
     });
 </script>
