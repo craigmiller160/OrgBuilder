@@ -110,6 +110,10 @@
          * 4) Core Business Logic Functions
          ***********************************/
 
+        function setHeader(){
+            $(".page-header > h2").text(orgbuilder.jwt.getTokenPayload().onm + " Members");
+        }
+
         function loadMemberList(){
             //TODO FC-7
             orgbuilder.api.send("members", orgbuilder.methods.get)
@@ -195,13 +199,12 @@
             return firstName + " " + lastName;
         }
 
-        //TODO need getMemberName() function here
-
         /*************************
          * 6) Page Initialization
          *************************/
 
         orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+        setHeader();
         loadMemberList();
 
         if(deleted){
