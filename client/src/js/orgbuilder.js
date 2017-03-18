@@ -102,6 +102,11 @@ var orgbuilder = (function(){
         }
     };
 
+    function calculateAge(dateOfBirth){
+        var ageDiff = Date.now() - new Date(dateOfBirth).getTime();
+        return Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+    }
+
     //Utility methods for common functionality for the various content.html pages
     var content = (function(){
         function updateJsonMsg(jsonMsg, field){
@@ -733,7 +738,8 @@ var orgbuilder = (function(){
         data: data,
         showAlert: showAlert,
         content: content,
-        modal: modal
+        modal: modal,
+        calculateAge: calculateAge
     }
 })();
 

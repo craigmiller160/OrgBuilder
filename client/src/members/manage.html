@@ -129,17 +129,13 @@
                         return;
                     }
 
-                    var now = Date.now();
-
                     $.each(data.memberList, function(index, member){
                         var newRow = $("<tr></tr>").attr("index", index).attr("memberId", member.memberId);
                         newRow.append($("<td></td>").attr("field","firstName").text(member.firstName));
                         newRow.append($("<td></td>").attr("field", "lastName").text(member.lastName));
 
                         var age = $("<td></td>").attr("field", "age");
-                        var ageDiff = now - new Date(member.dateOfBirth).getTime();
-                        var ageVal = Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
-                        $(age).text(ageVal);
+                        $(age).text(orgbuilder.calculateAge(member.dateOfBirth));
                         newRow.append(age);
 
                         var city = $("<td></td>").attr("field","city");
