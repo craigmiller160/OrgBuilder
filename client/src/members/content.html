@@ -80,11 +80,11 @@
                                             </div>
                                         </div>
                                         <div class="row">
-
                                             <div class="col-sm-6">
                                                 <p class="content-name">Date of Birth:</p>
                                             </div>
                                             <div id="birthDateField" class="content col-sm-6">
+                                                <p class="content-label"></p>
                                                 <!-- TODO birth date and age -->
                                             </div>
                                         </div>
@@ -189,12 +189,57 @@
         }
 
         function loadMember(){
-            //TODO finish this
+            orgbuilder.api.send("members/" + memberId, orgbuilder.methods.get)
+                .done(function(memberData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("Member not found on server");
+                        orgbuilder.showAlert("alert-danger", "Member not found on server");
+                        return;
+                    }
+
+                    updateFields(memberData);
+                    //TODO finish this
+                });
         }
 
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        function updateFields(memberData){
+            if(!orgbuilder.validateData.member(memberData)){
+                console.log("Error! Data returned from server for Member does not contain the Member.");
+                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for Member.");
+                return;
+            }
+
+            orgbuilder.data.storeData(memberData);
+
+            var firstLastName = memberData.firstName + " " + memberData.lastName;
+
+            $(".page-header > h2").text("Member: " + firstLastName);
+            $(".page-header > h2").attr("name", firstLastName);
+
+            $("#firstNameField > .content-label").text(memberData.firstName);
+            $("#firstNameField > .content-field").val(memberData.firstName);
+
+            $("#middleNameField > .content-label").text(memberData.middleName);
+            $("#middleNameField > .content-field").val(memberData.middleName);
+
+            $("#lastNameField > .content-label").text(memberData.lastName);
+            $("#lastNameField > .content-field").val(memberData.lastName);
+
+            var age = (function(){
+                if(memberData.dateOfBirth){
+                    return " (" + orgbuilder.calculateAge(memberData.dateOfBirth) + ")";
+                }
+                return ""
+            })();
+
+            $("#birthDateField > .content-label").text(memberData.dateOfBirth + age);
+
+            $("#sexField > .content-label").text(memberData.sex);
+        }
 
         /*************************
          * 6) Page Initialization

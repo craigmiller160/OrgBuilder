@@ -135,7 +135,9 @@
                         newRow.append($("<td></td>").attr("field", "lastName").text(member.lastName));
 
                         var age = $("<td></td>").attr("field", "age");
-                        $(age).text(orgbuilder.calculateAge(member.dateOfBirth));
+                        if(member.dateOfBirth){
+                            $(age).text(orgbuilder.calculateAge(member.dateOfBirth));
+                        }
                         newRow.append(age);
 
                         var city = $("<td></td>").attr("field","city");
