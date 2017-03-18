@@ -111,7 +111,14 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <!-- TODO Member Addresses -->
+                                        <div id="addressContainer">
+                                            <!-- Addresses will go here -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button id="addAddressBtn" class="content-btn btn btn-primary" type="button" title="Add Address">Add</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +134,14 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <!-- TODO Member Phones -->
+                                        <div id="phoneContainer">
+                                            <!-- Phones will go here -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button id="addPhoneBtn" class="content-btn btn btn-primary" type="button" title="Add Phone">Add</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -143,7 +157,14 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <!-- TODO Member Emails -->
+                                        <div id="emailContainer">
+                                            <!-- Emails will go here -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button id="addEmailBtn" class="content-btn btn btn-primary" type="button" title="Add Email">Add</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -195,6 +216,8 @@
          * 2) Access to Page Validation
          *******************************/
 
+        //TODO going to need something here...
+
         /****************
          * 3) UI Actions
          ****************/
@@ -202,6 +225,7 @@
         $(".section-edit").click(toggleEdit);
         $("#memberContentForm").on("submit", submitAction);
         $("#deleteBtn").click(deleteMember);
+        $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
 
         /***********************************
          * 4) Core Business Logic Functions
