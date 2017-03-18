@@ -22,7 +22,55 @@
     <!-- Page Content -->
     <div id="page-content-wrapper">
         <div class="container-fluid">
-
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2 name=""></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <form id="memberContentForm" class="no-enter-form">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberInfoSection" class="panel panel-primary form-group" status="view">
+                                    <!-- TODO Member Info -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberAddressSection" class="panel panel-primary form-group" status="view">
+                                    <!-- TODO Member Addresses -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberPhoneSection" class="panel panel-primary form-group" status="view">
+                                    <!-- TODO Member Phones -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberEmailSection" class="panel panel-primary form-group" status="view">
+                                    <!-- TODO Member Emails -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <div id="modal-wrapper">
@@ -43,6 +91,18 @@
          * 1) Top Scope Variables
          *************************/
 
+        var currentUrl = URI(window.location.href);
+        var memberId = (function(){
+            if(currentUrl.hasQuery("userId")){
+                return currentUrl.search(true).userId;
+            }
+        })();
+        var saved = (function(){
+            if(currentUrl.hasQuery("saved")){
+                return true;
+            }
+        })();
+
         /*******************************
          * 2) Access to Page Validation
          *******************************/
@@ -62,6 +122,8 @@
         /*************************
          * 6) Page Initialization
          *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
 
     });
 </script>
