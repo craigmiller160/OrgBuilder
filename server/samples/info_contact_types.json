@@ -1,0 +1,20 @@
+{
+  "addressTypes": [
+    "HOME",
+    "WORK",
+    "MAIL",
+    "OTHER"
+  ],
+  "phoneTypes": [
+    "HOME",
+    "MOBILE",
+    "FAX",
+    "WORK",
+    "OTHER"
+  ],
+  "emailTypes": [
+    "PERSONAL",
+    "WORK",
+    "OTHER"
+  ]
+}
