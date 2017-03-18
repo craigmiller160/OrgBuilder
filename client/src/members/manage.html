@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrgBuilder - Manage Members</title>
+    <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
+</head>
+<body>
+<!-- Navbar -->
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2>Members</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div class="row">
+                        <div class="col-xs-12 table-responsive">
+                            <div class="panel panel-primary">
+                                <table id="membersTable" class="table table-primary table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Age</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a id="addMemberBtn" class="btn btn-primary" href="content.html" title="Add new Member">Add</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-wrapper">
+        <!-- The modal templates get stored here -->
+    </div>
+</div>
+<!-- TODO FC-4 -->
+<script src="../jquery-3.1.1.js"></script>
+<script src="../URI.js"></script>
+<script src="../bootstrap/js/bootstrap.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        //TODO the Edit buttons need to be renamed to "View" if the user has read-only access. Also no delete or add in that case
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var currentUrl = URI(window.location.href);
+        var deleted = currentUrl.hasQuery("deleted");
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //Access is invalid if the user doesn't have the READ role, or if they have the MASTER role
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.read).isValid() ||
+            orgbuilder.validateAccess().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access member manager!");
+            window.location = "../index.html?denied=true";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+
+        if(deleted){
+            orgbuilder.showAlert("alert-success", "Member successfully deleted");
+        }
+
+    });
+</script>
+</body>
+</html>
