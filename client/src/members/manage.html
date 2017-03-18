@@ -86,6 +86,7 @@
          * 1) Top Scope Variables
          *************************/
 
+        var tableBody = $("#membersTable tbody");
         var currentUrl = URI(window.location.href);
         var deleted = currentUrl.hasQuery("deleted");
 
@@ -109,15 +110,79 @@
          * 4) Core Business Logic Functions
          ***********************************/
 
+        function loadMemberList(){
+            //TODO FC-7
+            orgbuilder.api.send("members", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("No orgs found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.memberList(data)){
+                        console.log("Error! Data returned from server for memberList does not contain the memberList.");
+                        orgbuilder.showAlert("alert-danger", "Data returned from server is not a valid list of Members");
+                        return;
+                    }
+
+                    var now = Date.now();
+
+                    $.each(data.memberList, function(index, member){
+                        var newRow = $("<tr></tr>").attr("index", index).attr("memberId", member.memberId);
+                        newRow.append($("<td></td>").attr("field","firstName").text(member.firstName));
+                        newRow.append($("<td></td>").attr("field", "lastName").text(member.lastName));
+
+                        var age = $("<td></td>").attr("field", "age");
+                        var ageDiff = now - new Date(member.dateOfBirth).getTime();
+                        var ageVal = Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+                        $(age).text(ageVal);
+                        newRow.append(age);
+
+                        var city = $("<td></td>").attr("field","city");
+                        var state = $("<td></td>").attr("field", "state");
+                        if(member.addresses.length > 0){
+                            //TODO need to ensure primary address here
+                            $(city).text(member.addresses[0].city);
+                            $(state).text(member.addresses[0].state);
+                        }
+
+                        newRow.append(city);
+                        newRow.append(state);
+
+                        var options = $("<td></td>").attr("field", "options");
+                        var editUri = "content.html?memberId=" + member.memberId;
+
+                        var editBtn = $("<a></a>").addClass("editMemberBtn").addClass("btn").addClass("btn-info")
+                                        .attr("title", "Edit Member").attr("href", editUri).text("Edit");
+                        var deleteBtn = $("<a></a>").addClass("deleteMemberBtn").addClass("btn").addClass("btn-danger")
+                                        .attr("href", "#").attr("title", "Delete Member").text("Delete");
+
+                        options.append(editBtn);
+                        options.append(deleteBtn);
+                        newRow.append(options);
+
+                        tableBody.append(newRow);
+                    });
+                })
+
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
+
+        function getMemberId(event){
+            return $(event.target).parents("tr[memberId]").attr("memberId");
+        }
+
+        //TODO need getMemberName() function here
 
         /*************************
          * 6) Page Initialization
          *************************/
 
         orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+        loadMemberList();
 
         if(deleted){
             orgbuilder.showAlert("alert-success", "Member successfully deleted");
