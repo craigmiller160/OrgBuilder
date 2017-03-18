@@ -85,7 +85,7 @@
                                             </div>
                                             <div id="birthDateField" class="content col-sm-6">
                                                 <p class="content-label"></p>
-                                                <!-- TODO birth date and age -->
+                                                <input name="dateOfBirth" class="content-field form-control" type="date" disabled />
                                             </div>
                                         </div>
                                         <div class="row">
@@ -94,6 +94,7 @@
                                             </div>
                                             <div id="sexField" class="content col-sm-6">
                                                 <p class="content-label"></p>
+                                                <select id="sexSelectBox" name="sex" class="content-field form-control"></select>
                                                 <!-- TODO sex - Need select box-->
                                             </div>
                                         </div>
@@ -181,6 +182,7 @@
          ***********************************/
 
         function toggleEdit(event){
+            $("#sexSelectBox").val(orgbuilder.data.getData().sex);
             orgbuilder.content.toggleEdit(event);
         }
 
@@ -198,7 +200,23 @@
                     }
 
                     updateFields(memberData);
-                    //TODO finish this
+                });
+        }
+
+        function loadInfo(){
+            orgbuilder.api.send("info", orgbuilder.methods.get)
+                .done(function(infoData, status, jqXHR){
+                    if(!orgbuilder.validateData.infoAll(infoData)){
+                        console.log("Error! Data returned from server for Info does not contain the Info.");
+                        orgbuilder.showAlert("alert-danger", "Invalid data returned from server for General Info.");
+                        return;
+                    }
+
+                    var sexSelectBox = $("#sexSelectBox");
+                    $.each(infoData.sexes, function(index, sex){
+                        var option = $("<option></option>").attr("value", sex).attr("name", sex).text(sex);
+                        $(sexSelectBox).append(option);
+                    });
                 });
         }
 
@@ -229,6 +247,7 @@
             $("#lastNameField > .content-label").text(memberData.lastName);
             $("#lastNameField > .content-field").val(memberData.lastName);
 
+            //TODO need to make sure age is recalculated after editing birth date value
             var age = (function(){
                 if(memberData.dateOfBirth){
                     return " (" + orgbuilder.calculateAge(memberData.dateOfBirth) + ")";
@@ -237,6 +256,7 @@
             })();
 
             $("#birthDateField > .content-label").text(memberData.dateOfBirth + age);
+            $("#birthDateField > .content-field").val(new Date(memberData.dateOfBirth).toISOString().substr(0,10));
 
             $("#sexField > .content-label").text(memberData.sex);
         }
@@ -246,6 +266,7 @@
          *************************/
 
         orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+        loadInfo();
 
         if(memberId){
             //Configure for edit member page

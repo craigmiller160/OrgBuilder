@@ -461,7 +461,7 @@ var orgbuilder = (function(){
                     })()
         },
         member: function(memberData){
-            return memberData != null &&
+            return memberData !== null &&
                     memberData.dateOfBirth !== undefined &&
                     memberData.memberId !== undefined &&
                     memberData.firstName !== undefined &&
@@ -483,6 +483,14 @@ var orgbuilder = (function(){
                         });
                         return valid;
                     })()
+        },
+        infoAll: function(infoData){
+            return infoData !== null && infoData !== undefined &&
+                    infoData.appInfo !== undefined &&
+                    infoData.sexes !== undefined &&
+                    infoData.states !== undefined &&
+                    infoData.roles !== undefined &&
+                    infoData.contactTypes !== undefined;
         }
     };
 
