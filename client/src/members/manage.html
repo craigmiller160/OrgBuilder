@@ -141,7 +141,7 @@
                         var city = $("<td></td>").attr("field","city");
                         var state = $("<td></td>").attr("field", "state");
                         if(member.addresses.length > 0){
-                            //TODO need to ensure primary address here
+                            //Member List JSON payload only includes primary contact info
                             $(city).text(member.addresses[0].city);
                             $(state).text(member.addresses[0].state);
                         }
@@ -163,6 +163,19 @@
 
                         tableBody.append(newRow);
                     });
+
+                    $(".deleteMemberBtn").click(function(event){
+                        event.preventDefault();
+                        var item = "this Member: " + getMemberName(event);
+                        var memberId = getMemberId(event);
+                        orgbuilder.modal.showDelete(item, function(){
+                            orgbuilder.api.send("members/" + memberId, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("Member successfully deleted");
+                                    window.location = window.location.href + "?deleted=true";
+                                });
+                        });
+                    });
                 })
 
         }
@@ -173,6 +186,13 @@
 
         function getMemberId(event){
             return $(event.target).parents("tr[memberId]").attr("memberId");
+        }
+
+        function getMemberName(event){
+            var row = $(event.target).parents("tr");
+            var firstName = $(row).children("td[field = 'firstName']").text();
+            var lastName = $(row).children("td[field = 'lastName']").text();
+            return firstName + " " + lastName;
         }
 
         //TODO need getMemberName() function here
