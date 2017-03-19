@@ -529,14 +529,14 @@
                 $.each(memberData.addresses, function(index, address){
                     var row = $("<div></div>").addClass("row");
                     var preferredCol = $("<div></div>").addClass("col-sm-1");
-                    var typeCol = $("<div></div>").addClass("col-sm-1");
-                    var addrCol = $("<div></div>").addClass("col-sm-4");
+                    var typeCol = $("<div></div>").addClass("col-sm-2");
+                    var addrCol = $("<div></div>").addClass("col-sm-3");
                     var cityCol = $("<div></div>").addClass("col-sm-2");
                     var stateCol = $("<div></div>").addClass("col-sm-1");
                     var zipCol = $("<div></div>").addClass("col-sm-1");
                     var options = $("<div></div>").addClass("col-sm-2");
 
-                    $(preferredCol).append($("<p></p>").text(address.preferred === true ? "*" : ""));
+                    $(preferredCol).append($("<p></p>").text(address.preferred ? "*" : ""));
                     $(typeCol).append($("<p></p>").text(address.addressType));
 
                     var addrText = address.address1 !== null ? address.address1 + " " : "";
@@ -560,6 +560,61 @@
                     $(row).append(options);
 
                     $(addressContainer).append(row);
+                });
+            }
+
+            if(memberData.phones !== null && memberData.phones.length > 0){
+                var phoneContainer = $("#phoneContainer");
+                $.each(memberData.phones, function(index, phone){
+                    var row = $("<div></div>").addClass("row");
+                    var preferredCol = $("<div></div>").addClass("col-sm-1");
+                    var typeCol = $("<div></div>").addClass("col-sm-2");
+                    var phoneCol = $("<div></div>").addClass("col-sm-7");
+                    var optionsCol = $("<div></div>").addClass("col-sm-2");
+
+                    var phoneText = phone.areaCode !== null ? "(" + phone.areaCode + ") " : "";
+                    phoneText = phoneText + (phone.prefix !== null ? phone.prefix + "-" : "-");
+                    phoneText = phoneText + (phone.lineNumber !== null ? phone.lineNumber + " " : " ");
+                    phoneText = phoneText + (phone.extension !== null ? "x" + phone.extension : "");
+
+                    $(preferredCol).append($("<p></p>").text(phone.preferred ? "*" : ""));
+                    $(typeCol).append($("<p></p>").text(phone.phoneType));
+                    $(phoneCol).append($("<p></p>").text(phoneText));
+
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#phone-modal").text("Edit");
+                    $(optionsCol).append(editBtn);
+
+                    $(row).append(preferredCol);
+                    $(row).append(typeCol);
+                    $(row).append(phoneCol);
+                    $(row).append(optionsCol);
+
+                    $(phoneContainer).append(row);
+                });
+            }
+
+            if(memberData.emails !== null && memberData.emails.length > 0){
+                var emailContainer = $("#emailContainer");
+                $.each(memberData.emails, function(index, email){
+                    var row = $("<div></div>").addClass("row");
+                    var preferredCol = $("<div></div>").addClass("col-sm-1");
+                    var typeCol = $("<div></div>").addClass("col-sm-2");
+                    var emailCol = $("<div></div>").addClass("col-sm-7");
+                    var optionsCol = $("<div></div>").addClass("col-sm-2");
+
+                    $(preferredCol).append($("<p></p>").text(email.preferred ? "*" : ""));
+                    $(typeCol).append($("<p></p>").text(email.emailType));
+                    $(emailCol).append($("<p></p>").text(email.emailAddress));
+
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#email-modal").text("Edit");
+                    $(optionsCol).append(editBtn);
+
+                    $(row).append(preferredCol);
+                    $(row).append(typeCol);
+                    $(row).append(emailCol);
+                    $(row).append(optionsCol);
+
+                    $(emailContainer).append(row);
                 });
             }
 
