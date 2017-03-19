@@ -116,7 +116,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <button id="addAddressBtn" class="content-btn btn btn-primary" type="button" title="Add Address">Add</button>
+                                                <button id="addAddressBtn" class="content-btn btn btn-primary modal-btn" type="button" title="Add Address" data-target="#address-modal">Add</button>
                                             </div>
                                         </div>
                                     </div>
@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <button id="addPhoneBtn" class="content-btn btn btn-primary" type="button" title="Add Phone">Add</button>
+                                                <button id="addPhoneBtn" class="content-btn btn btn-primary modal-btn" type="button" title="Add Phone" data-target="#phone-modal">Add</button>
                                             </div>
                                         </div>
                                     </div>
@@ -162,7 +162,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <button id="addEmailBtn" class="content-btn btn btn-primary" type="button" title="Add Email">Add</button>
+                                                <button id="addEmailBtn" class="content-btn btn btn-primary modal-btn" type="button" title="Add Email" data-target="#email-modal">Add</button>
                                             </div>
                                         </div>
                                     </div>
@@ -185,7 +185,7 @@
     <div id="modal-wrapper">
         <!-- Modals go here -->
     </div>
-    <div id="address-modal" class="modal org-modal" role="dialog">
+    <div id="address-modal" class="modal org-modal contact-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -259,7 +259,7 @@
             </div>
         </div>
     </div>
-    <div id="phone-modal" class="modal org-modal" role="dialog">
+    <div id="phone-modal" class="modal org-modal contact-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -324,7 +324,7 @@
             </div>
         </div>
     </div>
-    <div id="email-modal" class="modal org-modal" role="dialog">
+    <div id="email-modal" class="modal org-modal contact-modal" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -406,6 +406,7 @@
         $("#memberContentForm").on("submit", submitAction);
         $("#deleteBtn").click(deleteMember);
         $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
+        $(".modal-btn").click(showContactModal);
 
         /***********************************
          * 4) Core Business Logic Functions
@@ -446,6 +447,25 @@
                     $.each(infoData.sexes, function(index, sex){
                         var option = $("<option></option>").attr("value", sex).attr("name", sex).text(sex);
                         $(sexSelectBox).append(option);
+                    });
+
+                    var addressTypeSelect = $("#addressTypeSelect");
+                    var phoneTypeSelect = $("#phoneTypeSelect");
+                    var emailTypeSelect = $("#emailTypeSelect");
+
+                    $.each(infoData.contactTypes.addressTypes, function(index, type){
+                        var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
+                        $(addressTypeSelect).append(option);
+                    });
+
+                    $.each(infoData.contactTypes.phoneTypes, function(index, type){
+                        var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
+                        $(phoneTypeSelect).append(option);
+                    });
+
+                    $.each(infoData.contactTypes.emailTypes, function(index, type){
+                        var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
+                        $(emailTypeSelect).append(option);
                     });
                 });
         }
@@ -505,16 +525,11 @@
             $("#sexField > .content-label").text(memberData.sex);
         }
 
-        function showAddressModal(){
-            $("#address-modal").modal();
-        }
-
-        function showPhoneModal(){
-            $("#phone-modal").modal();
-        }
-
-        function showEmailModal(){
-            $("#email-modal").modal();
+        function showContactModal(event){
+            var target = $(event.target).attr("data-target");
+            $(target).modal({
+                backdrop: "static"
+            });
         }
 
         /*************************
@@ -536,10 +551,6 @@
             $(".content-field").removeAttr("disabled");
             $("#deleteBtn").addClass("hidden");
         }
-
-//        showAddressModal(); //TODO delete this
-//        showPhoneModal(); //TODO delete this
-//        showEmailModal(); //TODO delete this
 
     });
 </script>
