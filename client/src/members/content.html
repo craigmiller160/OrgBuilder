@@ -449,6 +449,7 @@
                     var addressTypeSelect = $("#addressTypeSelect");
                     var phoneTypeSelect = $("#phoneTypeSelect");
                     var emailTypeSelect = $("#emailTypeSelect");
+                    var stateSelect = $("#stateField");
 
                     $.each(infoData.contactTypes.addressTypes, function(index, type){
                         var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
@@ -463,6 +464,11 @@
                     $.each(infoData.contactTypes.emailTypes, function(index, type){
                         var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
                         $(emailTypeSelect).append(option);
+                    });
+
+                    $.each(infoData.states, function(index, state){
+                        var option = $("<option></option>").attr("value", state).attr("name", state).text(state);
+                        $(stateSelect).append(option);
                     });
                 });
         }
