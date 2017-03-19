@@ -111,7 +111,7 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <div id="addressContainer">
+                                        <div id="addressContainer" class="contact-container">
                                             <!-- Addresses will go here -->
                                         </div>
                                         <div class="row">
@@ -134,7 +134,7 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <div id="phoneContainer">
+                                        <div id="phoneContainer" class="contact-container">
                                             <!-- Phones will go here -->
                                         </div>
                                         <div class="row">
@@ -157,7 +157,7 @@
                                         </div>
                                     </div>
                                     <div class="panel-body">
-                                        <div id="emailContainer">
+                                        <div id="emailContainer" class="contact-container">
                                             <!-- Emails will go here -->
                                         </div>
                                         <div class="row">
@@ -523,6 +523,47 @@
             $("#birthDateField > .content-field").val(new Date(memberData.dateOfBirth).toISOString().substr(0,10));
 
             $("#sexField > .content-label").text(memberData.sex);
+
+            if(memberData.addresses !== null && memberData.addresses.length > 0){
+                var addressContainer = $("#addressContainer");
+                $.each(memberData.addresses, function(index, address){
+                    var row = $("<div></div>").addClass("row");
+                    var preferredCol = $("<div></div>").addClass("col-sm-1");
+                    var typeCol = $("<div></div>").addClass("col-sm-1");
+                    var addrCol = $("<div></div>").addClass("col-sm-4");
+                    var cityCol = $("<div></div>").addClass("col-sm-2");
+                    var stateCol = $("<div></div>").addClass("col-sm-1");
+                    var zipCol = $("<div></div>").addClass("col-sm-1");
+                    var options = $("<div></div>").addClass("col-sm-2");
+
+                    $(preferredCol).append($("<p></p>").text(address.preferred === true ? "*" : ""));
+                    $(typeCol).append($("<p></p>").text(address.addressType));
+
+                    var addrText = address.address1 !== null ? address.address1 + " " : "";
+                    addrText = addrText + (address.address2 !== null ? address.address2 : "");
+                    $(addrCol).append($("<p></p>").text(addrText));
+
+                    $(cityCol).append($("<p></p>").text(address.city !== null ? address.city : ""));
+                    $(stateCol).append($("<p></p>").text(address.state !== null ? address.state : ""));
+                    $(zipCol).append($("<p></p>").text(address.zipCode !== null ? address.zipCode : ""));
+
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#address-modal").text("Edit");
+
+                    $(options).append(editBtn);
+
+                    $(row).append(preferredCol);
+                    $(row).append(typeCol);
+                    $(row).append(addrCol);
+                    $(row).append(cityCol);
+                    $(row).append(stateCol);
+                    $(row).append(zipCol);
+                    $(row).append(options);
+
+                    $(addressContainer).append(row);
+                });
+            }
+
+            $(".modal-btn").click(showContactModal);
         }
 
         function showContactModal(event){

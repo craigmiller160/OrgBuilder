@@ -286,3 +286,8 @@ div.panel > div.panel-body > div.row {
 #login-box {
     margin-top: 8em;
 }
+
+/* Member Content */
+.contact-container > .row {
+    padding-bottom: 5px;
+}
