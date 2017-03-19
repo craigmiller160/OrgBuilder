@@ -547,7 +547,7 @@
                     $(stateCol).append($("<p></p>").text(address.state !== null ? address.state : ""));
                     $(zipCol).append($("<p></p>").text(address.zipCode !== null ? address.zipCode : ""));
 
-                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#address-modal").text("Edit");
+                    var editBtn = $("<button></button>").addClass("btn").addClass("content-btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#address-modal").text("Edit");
 
                     $(options).append(editBtn);
 
@@ -581,7 +581,7 @@
                     $(typeCol).append($("<p></p>").text(phone.phoneType));
                     $(phoneCol).append($("<p></p>").text(phoneText));
 
-                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#phone-modal").text("Edit");
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("content-btn").addClass("modal-btn").attr("type", "button").attr("data-target", "#phone-modal").text("Edit");
                     $(optionsCol).append(editBtn);
 
                     $(row).append(preferredCol);
@@ -606,7 +606,7 @@
                     $(typeCol).append($("<p></p>").text(email.emailType));
                     $(emailCol).append($("<p></p>").text(email.emailAddress));
 
-                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#email-modal").text("Edit");
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("content-btn").addClass("modal-btn").attr("type", "button").attr("data-target", "#email-modal").text("Edit");
                     $(optionsCol).append(editBtn);
 
                     $(row).append(preferredCol);
