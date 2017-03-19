@@ -198,8 +198,7 @@
                             <p class="content-name">Address Type:</p>
                         </div>
                         <div class="col-sm-6">
-                            <select id="addressTypeSelect" name="addressType" class="form-control" />
-                            <!-- TODO need to populate this -->
+                            <select id="addressTypeSelect" name="addressType" class="form-control content-field"></select>
                         </div>
                     </div>
                     <div class="row">
@@ -207,7 +206,7 @@
                             <p class="content-name">Address Line 1:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="address1Field" name="address1" class="form-control" type="text" />
+                            <input id="address1Field" name="address1" class="form-control content-field" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -215,7 +214,7 @@
                             <p class="content-name">Address Line 2:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="address2Field" name="address2" class="form-control" type="text" />
+                            <input id="address2Field" name="address2" class="form-control content-field" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -223,7 +222,7 @@
                             <p class="content-name">City:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="cityField" name="city" class="form-control" type="text" />
+                            <input id="cityField" name="city" class="form-control content-field" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -232,7 +231,7 @@
                         </div>
                         <div class="col-sm-6">
                             <!-- TODO need to populate this select with values -->
-                            <select id="stateField" name="state" class="form-control"></select>
+                            <select id="stateField" name="state" class="form-control content-field"></select>
                         </div>
                     </div>
                     <div class="row">
@@ -240,7 +239,7 @@
                             <p class="content-name">Zip Code:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="zipCodeField" name="zipCode" type="text" />
+                            <input id="zipCodeField" class="content-field" name="zipCode" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -272,8 +271,7 @@
                             <p class="content-label">Phone Type:</p>
                         </div>
                         <div class="col-sm-6">
-                            <select id="phoneTypeSelect" name="phoneType" class="form-control"></select>
-                            <!-- TODO need to populate this -->
+                            <select id="phoneTypeSelect" name="phoneType" class="content-field form-control"></select>
                         </div>
                     </div>
                     <div class="row">
@@ -281,7 +279,7 @@
                             <p class="content-label">Area Code:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="areaCodeField" name="areaCode" class="form-control" type="text" />
+                            <input id="areaCodeField" name="areaCode" class="content-field form-control" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -289,7 +287,7 @@
                             <p class="content-label">Prefix:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="prefixField" name="prefix" class="form-control" type="text" />
+                            <input id="prefixField" name="prefix" class="content-field form-control" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -297,7 +295,7 @@
                             <p class="content-label">Line Number:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="lineNumberField" name="lineNumber" class="form-control" type="text" />
+                            <input id="lineNumberField" name="lineNumber" class="content-field form-control" type="text" />
                         </div>
                     </div>
                     <div class="row">
@@ -305,13 +303,13 @@
                             <p class="content-label">Extension:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="extensionField" name="extension" class="form-control" type="text" />
+                            <input id="extensionField" name="extension" class="content-field form-control" type="text" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-6">
                             <label for="primaryPhoneField">
-                                <input id="primaryPhoneField" name="primary" class="" type="checkbox">
+                                <input id="primaryPhoneField" name="primary" class="content-field" type="checkbox">
                                 Primary
                             </label>
                         </div>
@@ -337,8 +335,7 @@
                             <p class="content-label">Email Type:</p>
                         </div>
                         <div class="col-sm-6">
-                            <select id="emailTypeSelect" name="emailType" class="form-control"></select>
-                            <!-- TODO need to populate this -->
+                            <select id="emailTypeSelect" name="emailType" class="content-field form-control"></select>
                         </div>
                     </div>
                     <div class="row">
@@ -346,13 +343,13 @@
                             <p class="content-label">Email:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="emailField" name="emailAddress" class="form-control" type="text" />
+                            <input id="emailField" name="emailAddress" class="content-field form-control" type="text" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-6">
                             <label for="primaryEmailField">
-                                <input id="primaryEmailField" name="primary" class="" type="checkbox">
+                                <input id="primaryEmailField" name="primary" class="content-field" type="checkbox">
                                 Primary
                             </label>
                         </div>
@@ -484,6 +481,31 @@
             });
         }
 
+        function showContactModal(event){
+            var target = $(event.target).attr("data-target");
+            if($(event.target).parents(".contact-row").length > 0){
+                var id = $(event.target).parents(".contact-row").attr("id");
+                var type = $(event.target).parents(".contact-row").attr("type");
+
+                var data = orgbuilder.data.getData()[type];
+            }
+
+            //The second through fourth arguments are ignored if this is not an edit operation
+            if("#address-modal" === target){
+                updateModalFields($("#address-modal"), data, id, "addressId");
+            }
+            else if("#phone-modal" === target){
+                updateModalFields($("#phone-modal"), data, id, "phoneId");
+            }
+            else if("#email-modal" === target){
+                updateModalFields($("#email-modal"), data, id, "emailId");
+            }
+
+            $(target).modal({
+                backdrop: "static"
+            });
+        }
+
         /***********************
          * 5) Utility Functions
          ***********************/
@@ -527,7 +549,7 @@
             if(memberData.addresses !== null && memberData.addresses.length > 0){
                 var addressContainer = $("#addressContainer");
                 $.each(memberData.addresses, function(index, address){
-                    var row = $("<div></div>").addClass("row");
+                    var row = $("<div></div>").addClass("row").addClass("contact-row").attr("type", "addresses");
                     var preferredCol = $("<div></div>").addClass("col-sm-1");
                     var typeCol = $("<div></div>").addClass("col-sm-2");
                     var addrCol = $("<div></div>").addClass("col-sm-3");
@@ -535,6 +557,8 @@
                     var stateCol = $("<div></div>").addClass("col-sm-1");
                     var zipCol = $("<div></div>").addClass("col-sm-1");
                     var options = $("<div></div>").addClass("col-sm-2");
+
+                    $(row).attr("id", address.addressId);
 
                     $(preferredCol).append($("<p></p>").text(address.preferred ? "*" : ""));
                     $(typeCol).append($("<p></p>").text(address.addressType));
@@ -566,11 +590,13 @@
             if(memberData.phones !== null && memberData.phones.length > 0){
                 var phoneContainer = $("#phoneContainer");
                 $.each(memberData.phones, function(index, phone){
-                    var row = $("<div></div>").addClass("row");
+                    var row = $("<div></div>").addClass("row").addClass("contact-row").attr("type", "phones");
                     var preferredCol = $("<div></div>").addClass("col-sm-1");
                     var typeCol = $("<div></div>").addClass("col-sm-2");
                     var phoneCol = $("<div></div>").addClass("col-sm-7");
                     var optionsCol = $("<div></div>").addClass("col-sm-2");
+
+                    $(row).attr("id", phone.phoneId);
 
                     var phoneText = phone.areaCode !== null ? "(" + phone.areaCode + ") " : "";
                     phoneText = phoneText + (phone.prefix !== null ? phone.prefix + "-" : "-");
@@ -596,11 +622,13 @@
             if(memberData.emails !== null && memberData.emails.length > 0){
                 var emailContainer = $("#emailContainer");
                 $.each(memberData.emails, function(index, email){
-                    var row = $("<div></div>").addClass("row");
+                    var row = $("<div></div>").addClass("row").addClass("contact-row").attr("type", "emails");
                     var preferredCol = $("<div></div>").addClass("col-sm-1");
                     var typeCol = $("<div></div>").addClass("col-sm-2");
                     var emailCol = $("<div></div>").addClass("col-sm-7");
                     var optionsCol = $("<div></div>").addClass("col-sm-2");
+
+                    $(row).attr("id", email.emailId);
 
                     $(preferredCol).append($("<p></p>").text(email.preferred ? "*" : ""));
                     $(typeCol).append($("<p></p>").text(email.emailType));
@@ -621,11 +649,29 @@
             $(".modal-btn").click(showContactModal);
         }
 
-        function showContactModal(event){
-            var target = $(event.target).attr("data-target");
-            $(target).modal({
-                backdrop: "static"
-            });
+        function updateModalFields(modal, data, id, idName){
+            if(data !== undefined && data !== null){
+                //Populate fields
+                var record = data.filter(function(obj){
+                    return obj[idName] == id;
+                });
+
+                if(record.length === 0){
+                    alert("Error! Unable to find matching record for modal");
+                }
+
+                record = record[0];
+                $.each($(modal).find(".content-field"), function(index, field){
+                    var name = $(field).attr("name");
+                    $(field).val(record[name]);
+                });
+            }
+            else{
+                //Clear fields
+                $.each($(modal).find(".content-field"), function(index, field){
+                    $(field).val(null);
+                });
+            }
         }
 
         /*************************

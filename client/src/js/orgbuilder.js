@@ -114,7 +114,7 @@ var orgbuilder = (function(){
                 return;
             }
 
-            if($(field).is("input") || $(field).is("textarea")){
+            if($(field).is("input") || $(field).is("textarea") || $(field).is("select")){
                 jsonMsg[$(field).attr("name")] = $(field).val();
             }
             else if($(field).is("div.content-checkbox-group")){
