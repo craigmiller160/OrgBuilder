@@ -1,0 +1,15 @@
+{
+  "sub": "craig@gmail.com::NONE",
+  "uid": 1,
+  "unm": "craig@gmail.com",
+  "sma": "org_app",
+  "iss": "OrgBuilder API",
+  "oid": 0,
+  "exp": 1490204596,
+  "iat": 1490203396,
+  "jti": "26",
+  "rol": [
+    "MASTER"
+  ],
+  "onm": ""
+}
