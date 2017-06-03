@@ -107,6 +107,11 @@ var orgbuilder = (function(){
         return Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
     }
 
+    function reformatDate(dateString){
+        var parts = dateString.split("-");
+        return parts[1] + "-" + parts[2] + "-" + parts[0];
+    }
+
     //Utility methods for common functionality for the various content.html pages
     var content = (function(){
         function updateJsonMsg(jsonMsg, field){
@@ -115,7 +120,13 @@ var orgbuilder = (function(){
             }
 
             if($(field).is("input") || $(field).is("textarea") || $(field).is("select")){
-                jsonMsg[$(field).attr("name")] = $(field).val();
+                var value = $(field).val();
+                //Re-format the date if it is a date value
+                if($(field).attr("type") === "date"){
+                    value = reformatDate(value);
+                }
+
+                jsonMsg[$(field).attr("name")] = value;
             }
             else if($(field).is("div.content-checkbox-group")){
                 var vals = [];
