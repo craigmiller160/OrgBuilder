@@ -239,14 +239,14 @@
                             <p class="content-name">Zip Code:</p>
                         </div>
                         <div class="col-sm-6">
-                            <input id="zipCodeField" class="content-field" name="zipCode" type="text" />
+                            <input id="zipCodeField" class="form-control content-field" name="zipCode" type="text" />
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-6">
                             <label for="primaryAddressField">
-                                <input id="primaryAddressField" name="primary" class="" type="checkbox">
-                                Primary
+                                <input id="primaryAddressField" name="preferred" class="content-field" type="checkbox">
+                                Preferred
                             </label>
                         </div>
                     </div>
@@ -309,8 +309,8 @@
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-6">
                             <label for="primaryPhoneField">
-                                <input id="primaryPhoneField" name="primary" class="content-field" type="checkbox">
-                                Primary
+                                <input id="primaryPhoneField" name="preferred" class="content-field" type="checkbox">
+                                Preferred
                             </label>
                         </div>
                     </div>
@@ -349,8 +349,8 @@
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-6">
                             <label for="primaryEmailField">
-                                <input id="primaryEmailField" name="primary" class="content-field" type="checkbox">
-                                Primary
+                                <input id="primaryEmailField" name="preferred" class="content-field" type="checkbox">
+                                Preferred
                             </label>
                         </div>
                     </div>
@@ -669,7 +669,12 @@
                 record = record[0];
                 $.each($(modal).find(".content-field"), function(index, field){
                     var name = $(field).attr("name");
-                    $(field).val(record[name]);
+                    if($(field).attr("type") === "checkbox"){
+                        $(field).prop("checked", record[name]);
+                    }
+                    else{
+                        $(field).val(record[name]);
+                    }
                 });
             }
             else{
