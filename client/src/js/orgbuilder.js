@@ -89,18 +89,55 @@ var orgbuilder = (function(){
     };
 
     //Store the JSON payload returned by the server to access later
-    var dataObj;
-    var data = {
-        storeData: function(data){
-            dataObj = data;
-        },
-        hasData: function(){
-            return dataObj !== undefined;
-        },
-        getData: function(){
-            return dataObj;
+    //Two variables are within here, one is the full JSON data payload, the other is a piece of it that has been currently selected
+    var data = (function(){
+        var fullData;
+        var selectedData;
+
+        function storeFullData(data){
+            fullData = data;
         }
-    };
+
+        function hasFullData(){
+            return fullData !== undefined && fullData !== null;
+        }
+
+        function getFullData(){
+            return fullData;
+        }
+
+        function clearFullData(){
+            fullData = undefined;
+        }
+
+        function storeSelectedData(data){
+            selectedData = data;
+        }
+
+        function hasSelectedData(){
+            return selectedData !== undefined && selectedData !== null;
+        }
+
+        function getSelectedData(){
+            return selectedData;
+        }
+
+        function clearSelectedData(){
+            selectedData = undefined;
+        }
+
+        return {
+            storeFullData: storeFullData,
+            hasFullData: hasFullData,
+            getFullData: getFullData,
+            clearFullData: clearFullData,
+            storeSelectedData: storeSelectedData,
+            hasSelectedData: hasSelectedData,
+            getSelectedData: getSelectedData,
+            clearSelectedData: clearSelectedData
+        }
+
+    })();
 
     function calculateAge(dateOfBirth){
         var ageDiff = Date.now() - new Date(dateOfBirth).getTime();
@@ -114,19 +151,26 @@ var orgbuilder = (function(){
 
     //Utility methods for common functionality for the various content.html pages
     var content = (function(){
-        function updateJsonMsg(jsonMsg, field){
+        function updateData(jsonMsg, field){
             if($(field).attr("name") === undefined){
                 return;
             }
 
             if($(field).is("input") || $(field).is("textarea") || $(field).is("select")){
-                var value = $(field).val();
-                //Re-format the date if it is a date value
-                if($(field).attr("type") === "date"){
-                    value = reformatDate(value);
-                }
-
-                jsonMsg[$(field).attr("name")] = value;
+                jsonMsg[$(field).attr("name")] = (function(){
+                    if($(field).attr("type") === "date"){
+                        //Re-format the date if it is a date value
+                        return reformatDate($(field).val());
+                    }
+                    else if($(field).attr("type") === "checkbox"){
+                        //Get the boolean value from the checkbox
+                        return $(field).prop("checked");
+                    }
+                    else{
+                        //Get the regular value from the field
+                        return $(field).val();
+                    }
+                })();
             }
             else if($(field).is("div.content-checkbox-group")){
                 var vals = [];
@@ -168,13 +212,27 @@ var orgbuilder = (function(){
             if($(document.activeElement).hasClass("section-save")){
                 console.log("Section save button");
 
-                if($(document.activeElement).parents(".panel.form-group").length === 0){
-                    console.log("Error! Cannot find edited section to save content from.");
-                    orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
-                    return;
-                }
+                //Find the section, either from a regular page field or from a modal
+                var section = (function(){
+                    if($(document.activeElement).hasClass("modal-yes")){
+                        if($(document.activeElement).parents(".org-modal").length === 0){
+                            console.log("Error! Cannot find edited section to save content from.");
+                            orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
+                            return;
+                        }
 
-                var section = $(document.activeElement).parents(".panel.form-group")[0];
+                        return $(document.activeElement).parents(".org-modal")[0];
+                    }
+                    else{
+                        if($(document.activeElement).parents(".panel.form-group").length === 0){
+                            console.log("Error! Cannot find edited section to save content from.");
+                            orgbuilder.showAlert("alert-danger", "Cannot find edited section to save content from.");
+                            return;
+                        }
+
+                        return $(document.activeElement).parents(".panel.form-group")[0];
+                    }
+                })();
                 fieldArray = $(section).find(".content-field, .content-checkbox-group");
 
                 doneFn = function(data){
@@ -186,7 +244,7 @@ var orgbuilder = (function(){
 
                     orgbuilder.showAlert("alert-success", contentName + " changes saved successfully");
 
-                    orgbuilder.data.storeData(data);
+                    orgbuilder.data.storeFullData(data);
 
                     $(section).attr("status", "view");
                     $(section).find(".content-field, .content-checkbox").attr("disabled", true);
@@ -226,19 +284,31 @@ var orgbuilder = (function(){
                 preValidationFn();
             }
 
-            var jsonMsg = orgbuilder.data.hasData() ? orgbuilder.data.getData() : {};
+            var data = (function(){
+                if(orgbuilder.data.hasSelectedData()){
+                    return orgbuilder.data.getSelectedData();
+                }
+                else if(orgbuilder.data.hasFullData()){
+                    return orgbuilder.data.getFullData();
+                }
+                else{
+                    return {};
+                }
+            })();
 
             $.each(fieldArray, function(index, field){
-                updateJsonMsg(jsonMsg, field);
+                updateData(data, field);
             });
 
             $.each($(".default-field"), function(index, field){
-                updateJsonMsg(jsonMsg, field);
+                updateData(data, field);
             });
 
             var failFn = function(){
                 console.log("Save FAILED");
             };
+
+            var jsonMsg = orgbuilder.data.hasFullData() ? orgbuilder.data.getFullData() : {};
 
             if(contentId){
                 console.log("Updating existing " + contentName);
@@ -313,15 +383,17 @@ var orgbuilder = (function(){
                         if(window.location.href !== loginUrl){
                             window.location = loginUrl;
                         }
+                        console.log("Error Message: " + jqXHR.responseText);
                     }
                     else if(status >= 500){
                         var error = jqXHR.responseJSON;
-                        console.log("Critical error server-side, please check server logs for details");
+                        console.log("Critical server error, please check server logs for details");
                         console.log("Error Message: " + error.exceptionName + ": " + error.errorMessage);
                         showAlert("alert-danger", "Server Error: " + error.exceptionName + ": " + error.errorMessage);
                     }
                     else{
                         console.log("Error communicating with server. Status: " + status + " " + jqXHR.statusText);
+                        console.log("Error Message: " + jqXHR.responseText);
                         showAlert("alert-danger", "Unknown critical server error!");
                     }
                 });

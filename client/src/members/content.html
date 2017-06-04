@@ -102,12 +102,12 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <div id="memberAddressSection" class="panel panel-primary form-group" status="view">
+                                <div id="memberAddressSection" class="panel panel-primary form-group" status="sub-edit">
                                     <div class="panel-heading clearfix">
                                         <h4 class="pull-left">Addresses</h4>
                                         <div class="btn-group pull-right section-toggle">
-                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            <!--<button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>-->
+                                            <!--<button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>-->
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -125,12 +125,12 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <div id="memberPhoneSection" class="panel panel-primary form-group" status="view">
+                                <div id="memberPhoneSection" class="panel panel-primary form-group" status="sub-edit">
                                     <div class="panel-heading clearfix">
                                         <h4 class="pull-left">Phones</h4>
                                         <div class="btn-group pull-right section-toggle">
-                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            <!--<button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>-->
+                                            <!--<button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>-->
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -148,12 +148,12 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <div id="memberEmailSection" class="panel panel-primary form-group" status="view">
+                                <div id="memberEmailSection" class="panel panel-primary form-group" status="sub-edit">
                                     <div class="panel-heading clearfix">
                                         <h4 class="pull-left">Emails</h4>
                                         <div class="btn-group pull-right section-toggle">
-                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
-                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                            <!--<button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>-->
+                                            <!--<button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>-->
                                         </div>
                                     </div>
                                     <div class="panel-body">
@@ -230,7 +230,6 @@
                             <p class="content-name">State:</p>
                         </div>
                         <div class="col-sm-6">
-                            <!-- TODO need to populate this select with values -->
                             <select id="stateField" name="state" class="form-control content-field"></select>
                         </div>
                     </div>
@@ -253,7 +252,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                    <button type="button" class="section-save modal-yes btn btn-success" data-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
@@ -317,7 +316,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                    <button type="button" class="section-save modal-yes btn btn-success" data-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
@@ -357,7 +356,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                    <button type="button" class="section-save modal-yes btn btn-success" data-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
@@ -404,13 +403,22 @@
         $("#deleteBtn").click(deleteMember);
         $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
         $(".modal-btn").click(showContactModal);
+        $(".modal-yes").click(modalButtonAction);
+        $(".modal-no").click(modalButtonAction);
 
         /***********************************
          * 4) Core Business Logic Functions
          ***********************************/
 
+        function modalButtonAction(event){
+            if($(event.target).hasClass("modal-yes")){
+                submitAction(event);
+            }
+            orgbuilder.data.clearSelectedData();
+        }
+
         function toggleEdit(event){
-            $("#sexSelectBox").val(orgbuilder.data.getData().sex);
+            $("#sexSelectBox").val(orgbuilder.data.getFullData().sex);
             orgbuilder.content.toggleEdit(event);
         }
 
@@ -493,7 +501,7 @@
                 var id = $(event.target).parents(".contact-row").attr("id");
                 var type = $(event.target).parents(".contact-row").attr("type");
 
-                var data = orgbuilder.data.getData()[type];
+                var data = orgbuilder.data.getFullData()[type];
             }
 
             //The second through fourth arguments are ignored if this is not an edit operation
@@ -523,7 +531,7 @@
                 return;
             }
 
-            orgbuilder.data.storeData(memberData);
+            orgbuilder.data.storeFullData(memberData);
 
             var firstLastName = memberData.firstName + " " + memberData.lastName;
 
@@ -664,9 +672,13 @@
 
                 if(record.length === 0){
                     alert("Error! Unable to find matching record for modal");
+                    return;
                 }
-
                 record = record[0];
+
+                //Store the selected record so that it is preserved for saving the data later on
+                orgbuilder.data.storeSelectedData(record);
+
                 $.each($(modal).find(".content-field"), function(index, field){
                     var name = $(field).attr("name");
                     if($(field).attr("type") === "checkbox"){

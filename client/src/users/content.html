@@ -295,8 +295,8 @@
                         $(orgSelectBox).append(option);
                     });
 
-                    if(orgbuilder.data.hasData()){
-                        $("#orgSelectBox").val(orgbuilder.data.getData().orgId);
+                    if(orgbuilder.data.hasFullData()){
+                        $("#orgSelectBox").val(orgbuilder.data.getFullData().orgId);
                     }
 
                     setOrgIdFromSelect();
@@ -334,7 +334,7 @@
                 return;
             }
 
-            orgbuilder.data.storeData(userData);
+            orgbuilder.data.storeFullData(userData);
 
             $(".page-header > h2").text("User: " + userData.userEmail);
             $(".page-header > h2").attr("name", userData.userEmail);
