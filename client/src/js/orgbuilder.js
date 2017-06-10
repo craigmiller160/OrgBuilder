@@ -246,6 +246,8 @@ var orgbuilder = (function(){
 
                     orgbuilder.data.storeFullData(data);
 
+                    //TODO need to alter this to handle updating the fields after the modal is closed
+
                     $(section).attr("status", "view");
                     $(section).find(".content-field, .content-checkbox").attr("disabled", true);
 
