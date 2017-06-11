@@ -256,13 +256,20 @@ textarea.content-field {
 div.panel[status = 'view'] .content-label,
 div.panel[status = 'edit'] .content-field,
 div.panel[status = 'view'] .section-edit,
-div.panel[status = 'edit'] .section-save {
+div.panel[status = 'edit'] .section-save,
+div.panel[status = 'edit'] .content-btn,
+div.panel[status = 'sub-edit'] .content-label,
+div.panel[status = 'sub-edit'] .content-field,
+div.panel[status = 'sub-edit'] .section-edit,
+div.panel[status = 'sub-edit'] .section-save,
+div.panel[status = 'sub-edit'] .content-btn{
     display: block;
 }
 div.panel[status = 'edit'] .content-label,
 div.panel[status = 'view'] .content-field,
 div.panel[status = 'edit'] .section-edit,
-div.panel[status = 'view'] .section-save {
+div.panel[status = 'view'] .section-save,
+div.panel[status = 'view'] .content-btn {
     display: none;
 }
 
@@ -283,4 +290,9 @@ div.panel > div.panel-body > div.row {
 
 #login-box {
     margin-top: 8em;
+}
+
+/* Member Content */
+.contact-container > .row {
+    padding-bottom: 5px;
 }

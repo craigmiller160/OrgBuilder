@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrgBuilder - Manage Members</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
+</head>
+<body>
+<!-- Navbar -->
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2>Members</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div class="row">
+                        <div class="col-xs-12 table-responsive">
+                            <div class="panel panel-primary">
+                                <table id="membersTable" class="table table-primary table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Age</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a id="addMemberBtn" class="btn btn-primary" href="content.html" title="Add new Member">Add</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-wrapper">
+        <!-- The modal templates get stored here -->
+    </div>
+</div>
+<!-- TODO FC-4 -->
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="../js/URI.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        //TODO the Edit buttons need to be renamed to "View" if the user has read-only access. Also no delete or add in that case
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var tableBody = $("#membersTable tbody");
+        var currentUrl = URI(window.location.href);
+        var deleted = currentUrl.hasQuery("deleted");
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //Access is invalid if the user doesn't have the READ role, or if they have the MASTER role
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.read).isValid() ||
+            orgbuilder.validateAccess().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access member manager!");
+            window.location = "../index.html?denied=true";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function setHeader(){
+            $(".page-header > h2").text(orgbuilder.jwt.getTokenPayload().onm + " Members");
+        }
+
+        function loadMemberList(){
+            //TODO FC-7
+            orgbuilder.api.send("members", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("No orgs found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.memberList(data)){
+                        console.log("Error! Data returned from server for memberList does not contain the memberList.");
+                        orgbuilder.showAlert("alert-danger", "Data returned from server is not a valid list of Members");
+                        return;
+                    }
+
+                    $.each(data.memberList, function(index, member){
+                        var newRow = $("<tr></tr>").attr("index", index).attr("memberId", member.memberId);
+                        newRow.append($("<td></td>").attr("field","firstName").text(member.firstName));
+                        newRow.append($("<td></td>").attr("field", "lastName").text(member.lastName));
+
+                        var age = $("<td></td>").attr("field", "age");
+                        if(member.dateOfBirth){
+                            $(age).text(orgbuilder.calculateAge(member.dateOfBirth));
+                        }
+                        newRow.append(age);
+
+                        var city = $("<td></td>").attr("field","city");
+                        var state = $("<td></td>").attr("field", "state");
+                        if(member.addresses.length > 0){
+                            //Member List JSON payload only includes primary contact info
+                            $(city).text(member.addresses[0].city);
+                            $(state).text(member.addresses[0].state);
+                        }
+
+                        newRow.append(city);
+                        newRow.append(state);
+
+                        var options = $("<td></td>").attr("field", "options");
+                        var editUri = "content.html?memberId=" + member.memberId;
+
+                        var editBtn = $("<a></a>").addClass("editMemberBtn").addClass("btn").addClass("btn-info")
+                                        .attr("title", "Edit Member").attr("href", editUri).text("Edit");
+                        var deleteBtn = $("<a></a>").addClass("deleteMemberBtn").addClass("btn").addClass("btn-danger")
+                                        .attr("href", "#").attr("title", "Delete Member").text("Delete");
+
+                        options.append(editBtn);
+                        options.append(deleteBtn);
+                        newRow.append(options);
+
+                        tableBody.append(newRow);
+                    });
+
+                    $(".deleteMemberBtn").click(function(event){
+                        event.preventDefault();
+                        var item = "this Member: " + getMemberName(event);
+                        var memberId = getMemberId(event);
+                        orgbuilder.modal.showDelete(item, function(){
+                            orgbuilder.api.send("members/" + memberId, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("Member successfully deleted");
+                                    window.location = window.location.href + "?deleted=true";
+                                });
+                        });
+                    });
+                })
+
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function getMemberId(event){
+            return $(event.target).parents("tr[memberId]").attr("memberId");
+        }
+
+        function getMemberName(event){
+            var row = $(event.target).parents("tr");
+            var firstName = $(row).children("td[field = 'firstName']").text();
+            var lastName = $(row).children("td[field = 'lastName']").text();
+            return firstName + " " + lastName;
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+        setHeader();
+        loadMemberList();
+
+        if(deleted){
+            orgbuilder.showAlert("alert-success", "Member successfully deleted");
+        }
+
+    });
+</script>
+</body>
+</html>

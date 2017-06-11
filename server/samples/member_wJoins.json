@@ -1,5 +1,5 @@
 {
-  "dateOfBirth": "1958-04-29",
+  "dateOfBirth": "04-29-1958",
   "addresses": [
     {
       "address1": "123 Hart Ct",
@@ -42,7 +42,7 @@
     }
   ],
   "firstName": "Gary",
-  "gender": "MALE",
+  "sex": "MALE",
   "lastName": "Miller",
   "middleName": "Jules",
   "phones": [

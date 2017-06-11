@@ -3,6 +3,7 @@ package io.craigmiller160.orgbuilder.server.rest.resource;
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.AllInfoDTO;
 import io.craigmiller160.orgbuilder.server.dto.AppInfoDTO;
+import io.craigmiller160.orgbuilder.server.dto.ContactTypesDTO;
 import io.craigmiller160.orgbuilder.server.dto.SexListDTO;
 import io.craigmiller160.orgbuilder.server.dto.RoleListDTO;
 import io.craigmiller160.orgbuilder.server.dto.StateListDTO;
@@ -160,6 +161,17 @@ public class InfoResource {
         AppInfoDTO appInfo = infoService.getAppInfo();
         return Response
                 .ok(appInfo)
+                .build();
+    }
+
+    @GET
+    @Path("/contact")
+    @PermitAll
+    public Response getContactTypes() throws OrgApiException{
+        InfoService infoService = factory.newInfoService(securityContext);
+        ContactTypesDTO contactTypes = infoService.getContactTypes();
+        return Response
+                .ok(contactTypes)
                 .build();
     }
 

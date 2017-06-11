@@ -1,0 +1,90 @@
+{
+  "appInfo": {
+    "appName": "OrgBuilder API",
+    "appVersion": "1.0-SNAPSHOT"
+  },
+  "sexes": [
+    "MALE",
+    "FEMALE",
+    "TRANSGENDER",
+    "OTHER"
+  ],
+  "states": [
+    "AL",
+    "AK",
+    "AZ",
+    "AR",
+    "CA",
+    "CO",
+    "CT",
+    "DC",
+    "DE",
+    "FL",
+    "GA",
+    "HI",
+    "ID",
+    "IL",
+    "IN",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MO",
+    "MT",
+    "NE",
+    "NV",
+    "NH",
+    "NJ",
+    "NY",
+    "NC",
+    "ND",
+    "OH",
+    "OK",
+    "OR",
+    "PA",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VT",
+    "VA",
+    "WA",
+    "WV",
+    "WI",
+    "WY"
+  ],
+  "roles": [
+    "MASTER",
+    "ADMIN",
+    "WRITE",
+    "READ"
+  ],
+  "contactTypes": {
+    "addressTypes": [
+      "HOME",
+      "WORK",
+      "MAIL",
+      "OTHER"
+    ],
+    "phoneTypes": [
+      "HOME",
+      "MOBILE",
+      "FAX",
+      "WORK",
+      "OTHER"
+    ],
+    "emailTypes": [
+      "PERSONAL",
+      "WORK",
+      "OTHER"
+    ]
+  }
+}
