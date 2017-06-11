@@ -310,17 +310,15 @@ var orgbuilder = (function(){
                 console.log("Save FAILED");
             };
 
-            var jsonMsg = orgbuilder.data.hasFullData() ? orgbuilder.data.getFullData() : {};
-
             if(contentId){
                 console.log("Updating existing " + contentName);
-                orgbuilder.api.send(uri + "/" + contentId, orgbuilder.methods.put, jsonMsg)
+                orgbuilder.api.send(uri + "/" + contentId, orgbuilder.methods.put, data)
                     .done(doneFn)
                     .fail(failFn);
             }
             else{
                 console.log("Creating new " + contentName);
-                orgbuilder.api.send(uri, orgbuilder.methods.post, jsonMsg)
+                orgbuilder.api.send(uri, orgbuilder.methods.post, data)
                     .done(doneFn)
                     .fail(failFn);
             }
