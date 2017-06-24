@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>OrgBuilder - Org Content</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="../css/org-styles.css" />
+    <link rel="stylesheet" type="text/css" href="../org-styles.css" />
 </head>
 <body>
 <!-- Navbar -->
@@ -103,10 +103,10 @@
         src="https://code.jquery.com/jquery-3.2.1.min.js"
         integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
-<script src="../js/URI.js"></script>
+<script src="../../js/URI.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="../js/org-props.js"></script>
-<script src="../js/orgbuilder.js"></script>
+<script src="../org-props.js"></script>
+<script src="../orgbuilder.js"></script>
 <script>
     $(document).ready(function(){
 
@@ -184,7 +184,7 @@
                             window.location = "../login.html";
                         }
                         else if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
-                            window.location = "manage.html?deleted=true";
+                            window.location = "manage.html";
                         }
                     })
                     .fail(function(){
@@ -199,7 +199,7 @@
 
         function invalidCredentialsFn(){
             console.log("Invalid credentials to access org content editor!");
-            window.location = "../index.html?denied=true";
+            window.location = "../index.html";
         }
 
         function updateFields(orgData){
