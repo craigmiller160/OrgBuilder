@@ -18,11 +18,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="org in orgList">
-                                <!-- TODO need orgId in the row too -->
+                            <tr v-for="org in orgList" :orgId="org.orgId">
                                 <td>{{ org.orgName }}</td>
                                 <td>{{ org.createdDate }}</td>
-                                <td>Need Stuff</td>
+                                <td>
+                                    <a class="btn btn-info" title="Edit Org">Edit</a>
+                                    <a class="btn btn-danger" title="Delete Org">Delete</a>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
