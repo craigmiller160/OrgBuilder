@@ -15,21 +15,27 @@
             'orgName'
         ],
         beforeMount(){
-//            if(!orgbuilder.access().hasToken().isValid()){
-//                //If no token exists, simple re-direct to login page
-//                window.location.href = '/#/login';
-//                return;
-//            }
-//            else{
-//                var app = this;
-//                //Otherwise, attempt to validate that the token hasn't expired
-//                orgbuilder.api.get('/auth/check')
-//                    .done(() => {
-//                        app.loggedIn = true;
-//                        window.location.href = '/#/';
-//                    });
-//            }
             orgbuilder.access.hasValidToken(this);
+        },
+        mounted(){
+            var denied = this.$route.query.denied;
+            var errorMessage = this.$route.query.errorMessage;
+
+            if(denied !== undefined && denied){
+                var msgTxt = (() => {
+                    var text = 'Access denied!';
+                    if(errorMessage !== undefined){
+                        return text + ' Message: ' + errorMessage;
+                    }
+                    return text;
+                })();
+
+                this.$emit('showAlert', {
+                    show: true,
+                    msg: msgTxt,
+                    clazz: 'alert-danger'
+                });
+            }
         }
     }
 </script>
