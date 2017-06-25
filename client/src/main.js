@@ -1,3 +1,6 @@
+//Import URI.js
+import * as URI from 'uri-js';
+
 //Import these orgbuilder js files so the orgbuilder object can be built properly and provided as a single import
 import './js/orgbuilder.js';
 import './js/org-jwt.js';
