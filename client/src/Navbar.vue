@@ -32,7 +32,7 @@
                         </ul>
                     </li>
                     <li class="sidebar-menu-btn">
-                        <a :href="menuBtnUrl" @click="toggleSidebar">
+                        <a :href="noChangeUrl" @click="toggleSidebar">
                             <i class="glyphicon glyphicon-menu-hamburger"></i> Menu
                         </a>
                     </li>
@@ -74,8 +74,8 @@
 
                 return 'User';
             },
-            menuBtnUrl(){
-                return window.location.hash;
+            noChangeUrl(){
+                return '/#' + this.$route.fullPath;
             }
         },
         methods: {

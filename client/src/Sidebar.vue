@@ -2,7 +2,7 @@
     <div v-show="loggedIn" id="sidebar">
         <ul class="sidebar-nav nav flex-column">
             <li>
-                <a :href="menuBtnUrl" @click="toggleSidebar" class="sidebar-menu-btn">
+                <a :href="noChangeUrl" @click="toggleSidebar" class="sidebar-menu-btn">
                     <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
                 </a>
             </li>
@@ -12,7 +12,7 @@
                 </a>
             </li>
             <li v-show="showOrgsBtn">
-                <a href="#" class="expandable" data-toggle="collapse" data-target="#orgs-collapse" @click="doShowSidebar">
+                <a :href="noChangeUrl" class="expandable" data-toggle="collapse" data-target="#orgs-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs <span class="caret"></span></span>
                 </a>
                 <ul id="orgs-collapse" class="collapse menu-collapse">
@@ -22,7 +22,7 @@
                 </ul>
             </li>
             <li v-show="showUsersBtn">
-                <a href="#" class="expandable" data-toggle="collapse" data-target="#users-collapse" @click="doShowSidebar">
+                <a :href="noChangeUrl" class="expandable" data-toggle="collapse" data-target="#users-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users <span class="caret"></span></span>
                 </a>
                 <ul id="users-collapse" class="collapse menu-collapse">
@@ -32,7 +32,7 @@
                 </ul>
             </li>
             <li v-show="showMembersBtn">
-                <a href="#" class="expandable" data-toggle="collapse" data-target="#members-collapse" @click="doShowSidebar">
+                <a :href="noChangeUrl" class="expandable" data-toggle="collapse" data-target="#members-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-th-list"></i><span class="sidebar-text"> Members <span class="caret"></span></span>
                 </a>
                 <ul id="members-collapse" class="collapse menu-collapse">
@@ -56,6 +56,9 @@
         ],
         methods: {
             toggleSidebar(){
+                if(this.expandSidebar){ //Test for true here because it hasn't been changed to false yet
+                    $(".menu-collapse").collapse("hide");
+                }
                 this.$emit('expandSidebar', !this.expandSidebar);
             },
             doShowSidebar(){
@@ -82,8 +85,8 @@
                 }
                 return !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
             },
-            menuBtnUrl(){
-                return window.location.hash;
+            noChangeUrl(){
+                return '/#' + this.$route.fullPath;
             }
         }
     }
