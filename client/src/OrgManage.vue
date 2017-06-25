@@ -36,9 +36,8 @@
                 <a class="btn btn-primary" href="/#/orgs/content" title="Add new Org">Add</a>
             </div>
         </div>
-        <app-modal :type="modalType"
-                   v-on:result="modalResult($event)"
-                   :context="modalContext">
+        <app-modal :context="modalContext"
+                   v-on:result="modalResult($event)">
         </app-modal>
     </div>
 </template>
@@ -52,8 +51,10 @@
         data(){
             return {
                 orgList: [],
-                modalType: 'Delete',
-                modalContext: null
+                modalContext: {
+                    type: '',
+                    id: 0
+                }
             }
         },
         components: {
@@ -78,7 +79,8 @@
                     });
             },
             showModal(event){
-                this.modalContext = $(event.target).parents('tr').attr('orgId');
+                this.modalContext.id = $(event.target).parents('tr').attr('orgId');
+                this.modalContext.type = 'Delete';
                 $(".modal").modal({
                     backdrop: 'static'
                 });
@@ -87,7 +89,7 @@
                 if(arg.status){
                     var app = this;
 
-                    orgbuilder.api.del('orgs/' + arg.context)
+                    orgbuilder.api.del('orgs/' + arg.context.id)
                         .done(() => {
                             console.log('Org successfully deleted');
                             app.loadOrgs();

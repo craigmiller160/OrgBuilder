@@ -45,17 +45,21 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                    <a class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
+                    <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
                     <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
-                    <a class="btn btn-danger pull-right" type="button" title="Delete Org">Delete</a>
+                    <a v-show="showDelete" class="btn btn-danger pull-right" type="button" title="Delete Org" @click="showDeleteModal">Delete</a>
                     <a v-show="!edit" class="btn btn-info pull-right" type="button" title="Edit Org" @click="startEdit">Edit</a>
                 </div>
             </div>
         </form>
+        <app-modal :context="modalContext"
+                   v-on:result="modalResult($event)">
+        </app-modal>
     </div>
 </template>
 
 <script>
+    import ConfirmModal from './ConfirmModal.vue';
     import { orgbuilder } from './js/orgbuilder.js';
 
     export default {
@@ -68,8 +72,15 @@
                     orgId: 0,
                     orgName: '',
                     orgDescription: ''
+                },
+                modalContext: {
+                    id: 0,
+                    type: ''
                 }
             }
+        },
+        components: {
+            'app-modal': ConfirmModal
         },
         beforeMount(){
             orgbuilder.access.hasMasterAccessOrSameOrg(this, this.$route.query.orgId);
@@ -134,6 +145,48 @@
                         .done(doneFn)
                         .fail(failFn);
                 }
+            },
+            showDeleteModal(){
+                this.modalContext.id = this.$route.query.orgId;
+                this.modalContext.type = 'Delete';
+                $(".modal").modal({
+                    backdrop: 'static'
+                });
+            },
+            handleCancel(){
+                if(this.edit){
+                    this.modalContext.type = 'Cancel';
+                    $(".modal").modal({
+                        backdrop: 'static'
+                    });
+                }
+                else{
+                    window.location.href = '/#/orgs/manage';
+                }
+            },
+            modalResult(arg){
+                var app = this;
+                if(arg.context.type === 'Delete' && arg.status){
+                    orgbuilder.api.del('orgs/' + arg.context.id)
+                        .done(() => {
+                            console.log('Org successfully deleted');
+                            window.location.href = '/#/orgs/manage';
+                            app.$emit('showAlert', {
+                                show: true,
+                                msg: 'Org successfully deleted',
+                                clazz: 'alert-success'
+                            })
+                        })
+                        .fail(() => console.log("Org delete FAILED"));
+                }
+                else if(arg.context.type === 'Cancel' && arg.status){
+                    window.location.href = '/#/orgs/manage';
+                }
+            }
+        },
+        computed: {
+            showDelete(){
+                return this.$route.query.orgId !== undefined;
             }
         }
     }
