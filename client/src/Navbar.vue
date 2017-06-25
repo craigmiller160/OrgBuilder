@@ -15,12 +15,12 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/#/users/content">
+                                <a :href="currentUserProfileLink">
                                     <i class="glyphicon glyphicon-user"></i> User Profile
                                 </a>
                             </li>
-                            <li>
-                                <a href="/#/orgs/content">
+                            <li v-show="showOrgProfile">
+                                <a :href="currentOrgProfileLink">
                                     <i class="glyphicon glyphicon-globe"></i> Org Profile
                                 </a>
                             </li>
@@ -76,6 +76,25 @@
             },
             noChangeUrl(){
                 return '/#' + this.$route.fullPath;
+            },
+            showOrgProfile(){
+                return this.loggedIn && !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
+            },
+            currentUserProfileLink(){
+                var url = '/#/users/content';
+                if(this.loggedIn){
+                    url = url + '?userId=' + orgbuilder.jwt.getTokenPayload().uid;
+                }
+
+                return url;
+            },
+            currentOrgProfileLink(){
+                var url = '/#/orgs/content';
+                if(this.loggedIn){
+                    url = url + '?orgId=' + orgbuilder.jwt.getTokenPayload().oid;
+                }
+
+                return url;
             }
         },
         methods: {
