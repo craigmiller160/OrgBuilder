@@ -51,8 +51,8 @@
     export default {
         name: 'navbar',
         props: [
-            'loggedIn',
-            'orgName'
+            'orgName',
+            'loggedIn'
         ],
         data() {
             return {
@@ -77,7 +77,7 @@
         methods: {
             logout(){
                 orgbuilder.jwt.clearToken();
-//                window.location.href = '/#/login';
+                this.$emit('loggedIn', false);
             }
         }
     }

@@ -1,9 +1,13 @@
 <template>
     <div>
-        <app-navbar :loggedIn="loggedIn" :orgName="orgName"></app-navbar>
+        <app-navbar :loggedIn="loggedIn"
+                    :orgName="orgName"
+                    @loggedIn="loggedIn = $event">
+        </app-navbar>
         <div id="wrapper" v-bind:class="{ displayMenu : expandSidebar}">
             <app-sidebar :expandSidebar="expandSidebar"
-                         @expandSidebar="expandSidebar = $event">
+                         @expandSidebar="expandSidebar = $event"
+                         :loggedIn="loggedIn">
             </app-sidebar>
             <div class="container" id="page-content-wrapper">
                 <app-alert :alert="alert"></app-alert>

@@ -1,5 +1,5 @@
 <template>
-    <div id="sidebar">
+    <div v-show="loggedIn" id="sidebar">
         <ul class="sidebar-nav nav flex-column">
             <li>
                 <a :href="menuBtnUrl" @click="toggleSidebar">
@@ -51,7 +51,8 @@
     export default {
         name: 'sidebar',
         props: [
-            'expandSidebar'
+            'expandSidebar',
+            'loggedIn'
         ],
         methods: {
             toggleSidebar(){
