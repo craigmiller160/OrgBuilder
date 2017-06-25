@@ -64,10 +64,9 @@
             return {
                 title: 'New Org',
                 edit: false,
-                org: {
+                org: { //createdDate is being left out so not to mess with adding a new org
                     orgId: 0,
                     orgName: '',
-                    createdDate: '',
                     orgDescription: ''
                 }
             }
@@ -107,8 +106,9 @@
             saveChanges(){
                 var app = this;
 
-                var doneFn = function(){
+                var doneFn = function(org){
                     app.edit = false;
+                    app.title = org.orgName;
                     app.$emit('showAlert', {
                         show: true,
                         msg: 'Org saved',
