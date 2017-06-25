@@ -48,7 +48,7 @@
                     <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
                     <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
                     <a v-show="showDelete" class="btn btn-danger pull-right" type="button" title="Delete Org" @click="showDeleteModal">Delete</a>
-                    <a v-show="!edit" class="btn btn-info pull-right" type="button" title="Edit Org" @click="startEdit">Edit</a>
+                    <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit Org" @click="startEdit">Edit</a>
                 </div>
             </div>
         </form>
@@ -160,8 +160,11 @@
                         backdrop: 'static'
                     });
                 }
-                else{
+                else if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
                     window.location.href = '/#/orgs/manage';
+                }
+                else{
+                    window.location.href = '/#/';
                 }
             },
             modalResult(arg){
@@ -180,13 +183,22 @@
                         .fail(() => console.log("Org delete FAILED"));
                 }
                 else if(arg.context.type === 'Cancel' && arg.status){
-                    window.location.href = '/#/orgs/manage';
+                    if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                        window.location.href = '/#/orgs/manage';
+                    }
+                    else{
+                        window.location.href = '/#/';
+                    }
                 }
             }
         },
         computed: {
             showDelete(){
                 return this.$route.query.orgId !== undefined;
+            },
+            canEdit(){
+                return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) ||
+                    (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) && this.$route.query.orgId !== undefined && this.$route.query.orgId == orgbuilder.jwt.getTokenPayload().oid);
             }
         }
     }
