@@ -125,4 +125,10 @@
             margin-left: 0;
         }
     }
+
+    /* Form styles */
+
+    .content-name {
+        font-weight: bold;
+    }
 </style>

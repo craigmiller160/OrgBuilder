@@ -33,7 +33,7 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <a class="btn btn-primary" href="/#/orgs/content.html" title="Add new Org">Add</a>
+                <a class="btn btn-primary" href="/#/orgs/content" title="Add new Org">Add</a>
             </div>
         </div>
         <app-modal :type="modalType"

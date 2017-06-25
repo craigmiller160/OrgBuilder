@@ -105,11 +105,15 @@ orgbuilder.access = (() => {
         return true;
     }
 
-    function checkTokenExp(app){
+    function checkTokenExp(app, denied){
         orgbuilder.api.get('auth/check')
             .done(() => {
                 if(app !== undefined){
                     app.$emit('loggedIn', true);
+                }
+
+                if(denied){
+                    window.location.href = '/#/?denied=true';
                 }
             })
             .fail(() => {
@@ -122,24 +126,43 @@ orgbuilder.access = (() => {
 
     function hasValidToken(app){
         if(doesTokenExist(app)){
-            checkTokenExp(app);
+            checkTokenExp(app, false);
         }
     }
 
     function hasMasterAccess(app){
         if(doesTokenExist(app)){
             if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
-                checkTokenExp(app);
+                checkTokenExp(app, false);
             }
             else{
-                window.location.href = '/#/?denied=true';
+               checkTokenExp(app, true);
+            }
+        }
+    }
+
+    function isSameOrg(orgId){
+        return orgbuilder.jwt.getTokenPayload().oid == orgId;
+    }
+
+    function hasMasterAccessOrSameOrg(app, orgId){
+        if(doesTokenExist(app)){
+            if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                checkTokenExp(app, false);
+            }
+            else if(isSameOrg(orgId)){
+                checkTokenExp(app, false);
+            }
+            else{
+                checkTokenExp(app, true);
             }
         }
     }
 
     return {
         hasValidToken: hasValidToken,
-        hasMasterAccess: hasMasterAccess
+        hasMasterAccess: hasMasterAccess,
+        hasMasterAccessOrSameOrg: hasMasterAccessOrSameOrg
     }
 
 })();
