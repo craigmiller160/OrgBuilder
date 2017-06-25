@@ -14,6 +14,7 @@ import Login from './Login.vue';
 import Main from './Main.vue';
 import OrgManage from './OrgManage.vue';
 import OrgContent from './OrgContent.vue';
+import UserManage from './UserManage.vue';
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,10 @@ const routes = [
     {
         path: '/orgs/content',
         component: OrgContent
+    },
+    {
+        path: '/users/manage',
+        component: UserManage
     }
 ];
 

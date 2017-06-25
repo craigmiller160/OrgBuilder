@@ -131,4 +131,22 @@
     .content-name {
         font-weight: bold;
     }
+
+    /* Table styles */
+
+    .table-primary > thead {
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+        border-bottom: 1px solid #2e6da4;
+        border-right: none;
+    }
+
+    .table.table-primary > tbody > tr > td {
+        vertical-align: middle;
+    }
+
+    .table.table-primary > thead > tr > th {
+        border-bottom: none;
+    }
 </style>
