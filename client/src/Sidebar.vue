@@ -7,12 +7,12 @@
                 </a>
             </li>
             <li>
-                <a href="/">
+                <a href="/#/" :class="{active : homeActive}">
                     <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
                 </a>
             </li>
             <li v-show="showOrgsBtn">
-                <a :href="noChangeUrl" class="expandable" data-toggle="collapse" data-target="#orgs-collapse" @click="doShowSidebar">
+                <a :href="noChangeUrl" :class="{active : orgsActive}" class="expandable" data-toggle="collapse" data-target="#orgs-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs <span class="caret"></span></span>
                 </a>
                 <ul id="orgs-collapse" class="collapse menu-collapse">
@@ -22,7 +22,7 @@
                 </ul>
             </li>
             <li v-show="showUsersBtn">
-                <a :href="noChangeUrl" class="expandable" data-toggle="collapse" data-target="#users-collapse" @click="doShowSidebar">
+                <a :href="noChangeUrl" :class="{active : usersActive}" class="expandable" data-toggle="collapse" data-target="#users-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users <span class="caret"></span></span>
                 </a>
                 <ul id="users-collapse" class="collapse menu-collapse">
@@ -32,7 +32,7 @@
                 </ul>
             </li>
             <li v-show="showMembersBtn">
-                <a :href="noChangeUrl" class="expandable" data-toggle="collapse" data-target="#members-collapse" @click="doShowSidebar">
+                <a :href="noChangeUrl" :class="{active : membersActive}" class="expandable" data-toggle="collapse" data-target="#members-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-th-list"></i><span class="sidebar-text"> Members <span class="caret"></span></span>
                 </a>
                 <ul id="members-collapse" class="collapse menu-collapse">
@@ -87,6 +87,18 @@
             },
             noChangeUrl(){
                 return '/#' + this.$route.fullPath;
+            },
+            homeActive(){
+                return this.$route.path === '/';
+            },
+            orgsActive(){
+                return this.$route.path.includes('orgs');
+            },
+            usersActive() {
+                return this.$route.path.includes('users');
+            },
+            membersActive(){
+                return this.$route.path.includes('members');
             }
         }
     }
@@ -144,7 +156,7 @@
     }
 
     #sidebar > .sidebar-nav.nav li > a:hover,
-    #sidebar > .sidebar-nav.nav li > a:active {
+    #sidebar > .sidebar-nav.nav li > a.active {
         background-color: var(--bars-highlight-color);
     }
 

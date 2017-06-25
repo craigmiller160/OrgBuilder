@@ -45,7 +45,7 @@
 <script>
     import { orgbuilder } from './js/orgbuilder.js';
 
-    var mainLink = "/";
+    var mainLink = "/#/";
     var loginLink = "/#/login";
 
     export default {
