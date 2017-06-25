@@ -2,7 +2,9 @@
     <div>
         <app-navbar :loggedIn="loggedIn"
                     :orgName="orgName"
-                    @loggedIn="loggedIn = $event">
+                    @loggedIn="loggedIn = $event"
+                    :expandSidebar="expandSidebar"
+                    @expandSidebar="expandSidebar = $event">
         </app-navbar>
         <div id="wrapper" v-bind:class="{ displayMenu : expandSidebar}">
             <app-sidebar :expandSidebar="expandSidebar"
@@ -107,5 +109,20 @@
 
     #wrapper.displayMenu #page-content-wrapper {
         padding-left: 200px;
+    }
+
+    /* Sidebar phone styles */
+    @media screen and (max-width: 768px){
+
+        #wrapper.displayMenu #page-content-wrapper {
+            padding-left: 0;
+            margin-left: 200px;
+            overflow: hidden;
+        }
+
+        #page-content-wrapper {
+            padding-left: 0;
+            margin-left: 0;
+        }
     }
 </style>

@@ -2,7 +2,7 @@
     <div v-show="loggedIn" id="sidebar">
         <ul class="sidebar-nav nav flex-column">
             <li>
-                <a :href="menuBtnUrl" @click="toggleSidebar">
+                <a :href="menuBtnUrl" @click="toggleSidebar" class="sidebar-menu-btn">
                     <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
                 </a>
             </li>
@@ -143,5 +143,17 @@
     #sidebar > .sidebar-nav.nav li > a:hover,
     #sidebar > .sidebar-nav.nav li > a:active {
         background-color: var(--bars-highlight-color);
+    }
+
+    /* Sidebar phone style */
+
+    @media screen and (max-width: 768px){
+        #sidebar {
+            width: 0;
+        }
+
+        #sidebar > .sidebar-nav > .sidebar-menu-btn {
+            display: none;
+        }
     }
 </style>

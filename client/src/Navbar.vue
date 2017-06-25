@@ -15,7 +15,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="/#/users/content"> <!-- TODO try changing this to v-link in the future, plus other related links -->
+                                <a href="/#/users/content">
                                     <i class="glyphicon glyphicon-user"></i> User Profile
                                 </a>
                             </li>
@@ -32,7 +32,7 @@
                         </ul>
                     </li>
                     <li class="sidebar-menu-btn">
-                        <a href="#">
+                        <a :href="menuBtnUrl" @click="toggleSidebar">
                             <i class="glyphicon glyphicon-menu-hamburger"></i> Menu
                         </a>
                     </li>
@@ -52,7 +52,8 @@
         name: 'navbar',
         props: [
             'orgName',
-            'loggedIn'
+            'loggedIn',
+            'expandSidebar'
         ],
         data() {
             return {
@@ -72,12 +73,18 @@
                 }
 
                 return 'User';
+            },
+            menuBtnUrl(){
+                return window.location.hash;
             }
         },
         methods: {
             logout(){
                 orgbuilder.jwt.clearToken();
                 this.$emit('loggedIn', false);
+            },
+            toggleSidebar(){
+                this.$emit('expandSidebar', !this.expandSidebar);
             }
         }
     }
@@ -143,5 +150,15 @@
 
     nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
         display: none;
+    }
+
+    /* Phone style */
+
+    @media screen and (max-width: 768px){
+
+        nav.navbar > div > div > ul.navbar-right > li.sidebar-menu-btn {
+            display: block;
+        }
+
     }
 </style>
