@@ -159,10 +159,23 @@ orgbuilder.access = (() => {
         }
     }
 
+    function hasAdminOrHigherAccess(app){
+        if(doesTokenExist(app)){
+            if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) ||
+                orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin)){
+                checkTokenExp(app, false);
+            }
+            else{
+                checkTokenExp(app, true);
+            }
+        }
+    }
+
     return {
         hasValidToken: hasValidToken,
         hasMasterAccess: hasMasterAccess,
-        hasMasterAccessOrSameOrg: hasMasterAccessOrSameOrg
+        hasMasterAccessOrSameOrg: hasMasterAccessOrSameOrg,
+        hasAdminOrHigherAccess: hasAdminOrHigherAccess
     }
 
 })();
