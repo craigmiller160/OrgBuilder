@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <!-- Navbar Header -->
                 <div class="navbar-header">
-                    <a :href="homeLink" class="navbar-brand">OrgBuilder</a> <!-- TODO there's some magic happening with the link here -->
+                    <a :href="homeLink" class="navbar-brand">OrgBuilder</a>
                 </div>
 
                 <!-- Navbar Items -->
@@ -16,7 +16,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="/#/users/content">
+                                    <a href="/#/users/content"> <!-- TODO try changing this to v-link in the future, plus other related links -->
                                         <i class="glyphicon glyphicon-user"></i> User Profile
                                     </a>
                                 </li>
@@ -55,7 +55,12 @@
         ],
         data() {
             return {
-                homeLink: loginLink
+
+            }
+        },
+        computed: {
+            homeLink() {
+                return this.loggedIn ? mainLink : loginLink;
             }
         }
     }

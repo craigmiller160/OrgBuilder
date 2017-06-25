@@ -8,6 +8,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './App.vue';
 import Login from './Login.vue';
+import Main from './Main.vue';
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,10 @@ const routes = [
     {
         path: '/login',
         component: Login
+    },
+    {
+        path: '/main',
+        component: Main
     }
 ];
 
@@ -25,5 +30,5 @@ const router = new VueRouter({
 new Vue({
     el: '#app',
     router: router,
-    render: h => h(App)
+    render: (h) => h(App)
 });
