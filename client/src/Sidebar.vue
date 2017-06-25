@@ -11,8 +11,8 @@
                     <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
                 </a>
             </li>
-            <li> <!-- TODO might need to add hidden here -->
-                <a href="#" class="expandable" data-toggle="collapse" data-target="#orgs-collapse">
+            <li v-show="showOrgsBtn">
+                <a href="#" class="expandable" data-toggle="collapse" data-target="#orgs-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs <span class="caret"></span></span>
                 </a>
                 <ul id="orgs-collapse" class="collapse menu-collapse">
@@ -21,8 +21,8 @@
                     </li>
                 </ul>
             </li>
-            <li> <!-- TODO might need to add hidden here -->
-                <a href="#" class="expandable" data-toggle="collapse" data-target="#users-collapse">
+            <li v-show="showUsersBtn">
+                <a href="#" class="expandable" data-toggle="collapse" data-target="#users-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users <span class="caret"></span></span>
                 </a>
                 <ul id="users-collapse" class="collapse menu-collapse">
@@ -31,8 +31,8 @@
                     </li>
                 </ul>
             </li>
-            <li> <!-- TODO might need to add hidden here -->
-                <a href="#" class="expandable" data-toggle="collapse" data-target="#members-collapse">
+            <li v-show="showMembersBtn">
+                <a href="#" class="expandable" data-toggle="collapse" data-target="#members-collapse" @click="doShowSidebar">
                     <i class="glyphicon glyphicon-th-list"></i><span class="sidebar-text"> Members <span class="caret"></span></span>
                 </a>
                 <ul id="members-collapse" class="collapse menu-collapse">
@@ -46,14 +46,40 @@
 </template>
 
 <script>
+    import { orgbuilder } from './js/orgbuilder.js';
+
     export default {
         name: 'sidebar',
         props: [
-            'showSidebar'
+            'expandSidebar'
         ],
         methods: {
             toggleSidebar(){
-                this.$emit('showSidebar', !this.showSidebar);
+                this.$emit('expandSidebar', !this.expandSidebar);
+            },
+            doShowSidebar(){
+                this.$emit('expandSidebar', true);
+            }
+        },
+        computed: {
+            showOrgsBtn(){
+                if(!orgbuilder.jwt.tokenExists()){
+                    return false;
+                }
+                return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
+            },
+            showUsersBtn(){
+                if(!orgbuilder.jwt.tokenExists()){
+                    return false;
+                }
+                return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) ||
+                        orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin);
+            },
+            showMembersBtn(){
+                if(!orgbuilder.jwt.tokenExists()){
+                    return false;
+                }
+                return !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
             }
         }
     }

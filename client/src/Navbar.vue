@@ -25,7 +25,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/#/login">
+                                <a href="/#/login" @click="logout">
                                     <i class="glyphicon glyphicon-off"></i> Logout
                                 </a>
                             </li>
@@ -73,6 +73,12 @@
 
                 return 'User';
             }
+        },
+        methods: {
+            logout(){
+                orgbuilder.jwt.clearToken();
+//                window.location.href = '/#/login';
+            }
         }
     }
 </script>
@@ -110,6 +116,11 @@
         -moz-transform: scale(1,1);
         -o-transform: scale(1,1);
         -ms-transform: scale(1,1);
+    }
+
+    nav.navbar {
+        padding-bottom: 0;
+        margin-bottom: 0;
     }
 
     nav.navbar,

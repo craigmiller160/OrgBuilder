@@ -1,9 +1,9 @@
 <template>
     <div>
         <app-navbar :loggedIn="loggedIn" :orgName="orgName"></app-navbar>
-        <div id="wrapper" v-bind:class="{ displayMenu : showSidebar}">
-            <app-sidebar :showSidebar="showSidebar"
-                         @showSidebar="showSidebar = $event">
+        <div id="wrapper" v-bind:class="{ displayMenu : expandSidebar}">
+            <app-sidebar :expandSidebar="expandSidebar"
+                         @expandSidebar="expandSidebar = $event">
             </app-sidebar>
             <div class="container" id="page-content-wrapper">
                 <app-alert :alert="alert"></app-alert>
@@ -31,7 +31,7 @@
                     msg: '',
                     clazz: ''
                 },
-                showSidebar: false
+                expandSidebar: false
             }
         },
         components: {
