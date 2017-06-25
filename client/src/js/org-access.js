@@ -92,34 +92,54 @@ orgbuilder.access = (() => {
     //     return new Validator();
     // }
 
-    function hasValidToken(app){
+    function doesTokenExist(app){
         if(!orgbuilder.jwt.tokenExists()){
             //If no token exists, simple re-direct to login page
             if(app !== undefined){
                 app.$emit('loggedIn', false);
             }
             window.location.href = '/#/login';
+            return false;
         }
-        else{
-            orgbuilder.api.get('auth/check')
-                .done(() => {
-                    if(app !== undefined){
-                        app.$emit('loggedIn', true);
-                    }
-                })
-                .fail(() => {
-                    if(app !== undefined){
-                        app.$emit('loggedIn', false);
-                    }
-                    window.location.href = '/#/login';
-                });
 
-                // .done(() => window.location.href = '/#/'); //TODO probably gonna need to work on that link there...
+        return true;
+    }
+
+    function checkTokenExp(app){
+        orgbuilder.api.get('auth/check')
+            .done(() => {
+                if(app !== undefined){
+                    app.$emit('loggedIn', true);
+                }
+            })
+            .fail(() => {
+                if(app !== undefined){
+                    app.$emit('loggedIn', false);
+                }
+                window.location.href = '/#/login';
+            });
+    }
+
+    function hasValidToken(app){
+        if(doesTokenExist(app)){
+            checkTokenExp(app);
+        }
+    }
+
+    function hasMasterAccess(app){
+        if(doesTokenExist(app)){
+            if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                checkTokenExp(app);
+            }
+            else{
+                window.location.href = '/#/?denied=true';
+            }
         }
     }
 
     return {
-        hasValidToken: hasValidToken
+        hasValidToken: hasValidToken,
+        hasMasterAccess: hasMasterAccess
     }
 
 })();

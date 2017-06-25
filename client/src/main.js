@@ -12,6 +12,7 @@ import VueRouter from 'vue-router';
 import App from './App.vue';
 import Login from './Login.vue';
 import Main from './Main.vue';
+import OrgManage from './OrgManage.vue';
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,10 @@ const routes = [
     {
         path: '/',
         component: Main
+    },
+    {
+        path: '/orgs/manage',
+        component: OrgManage
     }
 ];
 
