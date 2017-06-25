@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <!-- Navbar Header -->
                 <div class="navbar-header">
-                    <a :href="homeLink" class="navbar-brand">OrgBuilder</a>
+                    <a :href="homeLink" class="navbar-brand">{{ orgName }}</a>
                 </div>
 
                 <!-- Navbar Items -->
@@ -12,7 +12,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li v-show="loggedIn" class="dropdown">
                             <a href="#" class="dropdown-toggle expandable" data-toggle="dropdown">
-                                <i class="glyphicon glyphicon-user"></i> <span>User</span> <span class="caret"></span>
+                                <i class="glyphicon glyphicon-user"></i> {{ currentUserName }} <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
@@ -45,13 +45,16 @@
 </template>
 
 <script>
+    import { orgbuilder } from './js/orgbuilder.js';
+
     var mainLink = "/#/main";
     var loginLink = "/#/login";
 
     export default {
         name: 'navbar',
         props: [
-            'loggedIn'
+            'loggedIn',
+            'orgName'
         ],
         data() {
             return {
@@ -61,6 +64,16 @@
         computed: {
             homeLink() {
                 return this.loggedIn ? mainLink : loginLink;
+            },
+            currentUserName() {
+                if(this.loggedIn){
+                    var unm = orgbuilder.jwt.getTokenPayload().unm;
+                    if(unm !== undefined && unm !== null && unm.length > 0){
+                        return unm;
+                    }
+                }
+
+                return 'User';
             }
         }
     }

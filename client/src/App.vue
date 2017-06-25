@@ -1,10 +1,13 @@
 <template>
     <div>
-        <app-navbar :loggedIn="loggedIn"></app-navbar>
+        <app-navbar :loggedIn="loggedIn" :orgName="orgName"></app-navbar>
         <app-sidebar></app-sidebar>
         <div class="container">
             <app-alert :alert="alert"></app-alert>
-            <router-view @loggedIn="loggedIn = $event" @showAlert="alert = $event"></router-view>
+            <router-view @loggedIn="loggedIn = $event"
+                         @showAlert="alert = $event"
+                         :orgName="orgName">
+            </router-view>
         </div>
     </div>
 </template>
@@ -30,6 +33,18 @@
             'app-navbar': Navbar,
             'app-sidebar': Sidebar,
             'app-alert': Alert
+        },
+        computed: {
+            orgName() {
+                if(this.loggedIn){
+                    var onm = orgbuilder.jwt.getTokenPayload().onm;
+                    if(onm !== undefined && onm !== null && onm.length > 0){
+                        return onm;
+                    }
+                }
+
+                return 'OrgBuilder';
+            }
         },
         beforeMount(){
             if(!orgbuilder.access().hasToken().isValid()){
