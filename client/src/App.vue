@@ -1,13 +1,17 @@
 <template>
     <div>
         <app-navbar :loggedIn="loggedIn" :orgName="orgName"></app-navbar>
-        <app-sidebar></app-sidebar>
-        <div class="container">
-            <app-alert :alert="alert"></app-alert>
-            <router-view @loggedIn="loggedIn = $event"
-                         @showAlert="alert = $event"
-                         :orgName="orgName">
-            </router-view>
+        <div id="wrapper" v-bind:class="{ displayMenu : showSidebar}">
+            <app-sidebar :showSidebar="showSidebar"
+                         @showSidebar="showSidebar = $event">
+            </app-sidebar>
+            <div class="container" id="page-content-wrapper">
+                <app-alert :alert="alert"></app-alert>
+                <router-view @loggedIn="loggedIn = $event"
+                             @showAlert="alert = $event"
+                             :orgName="orgName">
+                </router-view>
+            </div>
         </div>
     </div>
 </template>
@@ -26,7 +30,8 @@
                     show: false,
                     msg: '',
                     clazz: ''
-                }
+                },
+                showSidebar: false
             }
         },
         components: {
@@ -58,7 +63,7 @@
                 orgbuilder.api.get('/auth/check')
                     .done(() => {
                         app.loggedIn = true;
-                        window.location.href = '/#/main';
+                        window.location.href = '/#/';
                     });
             }
         }
@@ -75,5 +80,44 @@
 
     body {
         background-color: #d9edf7;
+    }
+
+    :root {
+        --bars-background-color: #337ab7;
+        --bars-foreground-color: #fff;
+        --bars-highlight-color:  #368cb7;
+        --bars-border-color: #2e6da4;
+    }
+
+    #page-content-wrapper {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        padding-left: 80px;
+        transition: margin 0.5s, padding 0.5s;
+        -moz-transition: margin 0.5s, padding 0.5s;
+        -webkit-transition: margin 0.5s, padding 0.5s;
+        -o-transition: margin 0.5s, padding 0.5s;
+    }
+
+    .expandable[aria-expanded = 'true'] .caret {
+        -ms-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+
+    /* Sidebar Show/Hide Styles */
+    #wrapper.displayMenu #sidebar {
+        width: 200px;
+    }
+
+    #wrapper.displayMenu #sidebar .sidebar-text {
+        display: inline;
+    }
+
+    #wrapper.displayMenu #page-content-wrapper {
+        padding-left: 200px;
     }
 </style>

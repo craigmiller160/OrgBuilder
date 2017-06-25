@@ -40,7 +40,7 @@
                 orgbuilder.api.post('auth', this.credentials)
                     .done(() => {
                         app.$emit('loggedIn', true);
-                        window.location.href = '/#/main';
+                        window.location.href = '/';
                     })
                     .fail(() => {
                         app.credentials.password = '';
