@@ -3,17 +3,17 @@ var orgbuilder = (function(){
     var BEARER_PREFIX = "Bearer";
 
     //Global error handling method
-    window.onerror = function(message, source, lineno, colno, error){
-        alert("Error on page! Cause: " + message);
-    };
+    // window.onerror = function(message, source, lineno, colno, error){
+    //     alert("Error on page! Cause: " + message);
+    // };
 
     //Constants for the access roles for the application
-    var roles = {
-        master: 'MASTER',
-        admin: 'ADMIN',
-        write: 'WRITE',
-        read: 'READ'
-    };
+    // var roles = {
+    //     master: 'MASTER',
+    //     admin: 'ADMIN',
+    //     write: 'WRITE',
+    //     read: 'READ'
+    // };
 
     //Contants for the HTTP methods
     var methods = {
@@ -33,60 +33,60 @@ var orgbuilder = (function(){
 
     //Utility code to execute on page initialization to support the alert messages
     //Close alert
-    $("body").click(function(){
-        $(".alert").removeClass("in");
-    });
-    $("[data-hide]").on("click",function(){
-        $("." + $(this).attr("data-hide")).removeClass("in");
-    });
+    // $("body").click(function(){
+    //     $(".alert").removeClass("in");
+    // });
+    // $("[data-hide]").on("click",function(){
+    //     $("." + $(this).attr("data-hide")).removeClass("in");
+    // });
 
-    //Utility code to disable enter-key-submit action in forms
-    $(".no-enter-form input.content-field").keydown(function(event){
-        if(event.which && event.which === 13){
-            event.preventDefault();
-        }
-    });
+    // //Utility code to disable enter-key-submit action in forms
+    // $(".no-enter-form input.content-field").keydown(function(event){
+    //     if(event.which && event.which === 13){
+    //         event.preventDefault();
+    //     }
+    // });
 
     //Utility methods for working with the JWT
-    var jwt = {
-        storeToken: function(token){
-            token = stripBearerPrefix(token);
-            localStorage.setItem(TOKEN_STORAGE_KEY, token);
-        },
-        getToken: function(){
-            return localStorage.getItem(TOKEN_STORAGE_KEY);
-        },
-        getTokenPayload: function(){
-            var token = this.getToken();
-            if(token === null || token === undefined || token === ""){
-                console.log("No token to parse payload from");
-                return;
-            }
-
-            try{
-                return JSON.parse(atob(token.split(".")[1]));
-            }
-            catch(e){
-                console.log("Error! Unable to parse JSON payload in token.");
-                throw e;
-            }
-        },
-        clearToken: function(){
-            delete localStorage[TOKEN_STORAGE_KEY];
-        },
-        tokenExists: function(){
-            return localStorage.getItem(TOKEN_STORAGE_KEY) !== undefined && localStorage.getItem(TOKEN_STORAGE_KEY) !== null;
-        },
-        hasRole: function(role){
-            try{
-                return $.inArray(role, this.getTokenPayload().rol) !== -1;
-            }
-            catch(e){
-                console.log("Error! Unable to check the role in the token payload");
-                throw e;
-            }
-        }
-    };
+    // var jwt = {
+    //     storeToken: function(token){
+    //         token = stripBearerPrefix(token);
+    //         localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    //     },
+    //     getToken: function(){
+    //         return localStorage.getItem(TOKEN_STORAGE_KEY);
+    //     },
+    //     getTokenPayload: function(){
+    //         var token = this.getToken();
+    //         if(token === null || token === undefined || token === ""){
+    //             console.log("No token to parse payload from");
+    //             return;
+    //         }
+    //
+    //         try{
+    //             return JSON.parse(atob(token.split(".")[1]));
+    //         }
+    //         catch(e){
+    //             console.log("Error! Unable to parse JSON payload in token.");
+    //             throw e;
+    //         }
+    //     },
+    //     clearToken: function(){
+    //         delete localStorage[TOKEN_STORAGE_KEY];
+    //     },
+    //     tokenExists: function(){
+    //         return localStorage.getItem(TOKEN_STORAGE_KEY) !== undefined && localStorage.getItem(TOKEN_STORAGE_KEY) !== null;
+    //     },
+    //     hasRole: function(role){
+    //         try{
+    //             return $.inArray(role, this.getTokenPayload().rol) !== -1;
+    //         }
+    //         catch(e){
+    //             console.log("Error! Unable to check the role in the token payload");
+    //             throw e;
+    //         }
+    //     }
+    // };
 
     //Store the JSON payload returned by the server to access later
     //Two variables are within here, one is the full JSON data payload, the other is a piece of it that has been currently selected
@@ -333,164 +333,164 @@ var orgbuilder = (function(){
     })();
 
     //Utility methods for communicating with the OrgBuilder API
-    var api = {
-        send: function(uri, method, json){
-            console.log("Calling API: " + method + " " + uri);
-            return $.ajax({
-                url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
-                type: method,
-                headers: (function(){
-                    var result = {
-                        /*"Access-Control-Request-Headers": [
-                            "X-Requested-With",
-                            "Authorization"
-                        ],
-                        "Access-Control-Request-Method": method*/
-                    };
-
-                    var token = jwt.getToken();
-                    if(token !== undefined && token !== null){
-                        result.Authorization = restoreBearerPrefix(token);
-                    }
-
-                    return result;
-                })(),
-                contentType: "application/json; charset=utf-8",
-                data: (function(){
-                    if(json !== undefined){
-                        return JSON.stringify(json);
-                    }
-                    return null;
-                })()
-            })
-                .done(function(data, status, jqXHR){
-                    var token = jqXHR.getResponseHeader("Authorization");
-                    jwt.storeToken(token);
-                })
-                .fail(function(jqXHR){
-                    var status = jqXHR.status;
-                    console.log("API Request Failed. Status: " + status);
-                    if(status === 403){
-                        window.location = orgProps.clientOrigin + "/index.html?denied=true&message=" + jqXHR.responseJSON.errorMessage;
-                    }
-                    else if(status === 0){
-                        console.log("SERVER ERROR");
-                        showAlert("alert-danger", "Unable to contact server!");
-                    }
-                    else if(status === 401){
-                        //This comes up during a bad login or if the token has expired
-                        var loginUrl = orgProps.clientOrigin + "/login.html";
-                        if(window.location.href !== loginUrl){
-                            window.location = loginUrl;
-                        }
-                        console.log("Error Message: " + jqXHR.responseText);
-                    }
-                    else if(status >= 500){
-                        var error = jqXHR.responseJSON;
-                        console.log("Critical server error, please check server logs for details");
-                        console.log("Error Message: " + error.exceptionName + ": " + error.errorMessage);
-                        showAlert("alert-danger", "Server Error: " + error.exceptionName + ": " + error.errorMessage);
-                    }
-                    else{
-                        console.log("Error communicating with server. Status: " + status + " " + jqXHR.statusText);
-                        console.log("Error Message: " + jqXHR.responseText);
-                        showAlert("alert-danger", "Unknown critical server error!");
-                    }
-                });
-        }
-    };
+    // var api = {
+    //     send: function(uri, method, json){
+    //         console.log("Calling API: " + method + " " + uri);
+    //         return $.ajax({
+    //             url: orgProps.serverOrigin + ensurePrecedingSlash(uri),
+    //             type: method,
+    //             headers: (function(){
+    //                 var result = {
+    //                     /*"Access-Control-Request-Headers": [
+    //                         "X-Requested-With",
+    //                         "Authorization"
+    //                     ],
+    //                     "Access-Control-Request-Method": method*/
+    //                 };
+    //
+    //                 var token = jwt.getToken();
+    //                 if(token !== undefined && token !== null){
+    //                     result.Authorization = restoreBearerPrefix(token);
+    //                 }
+    //
+    //                 return result;
+    //             })(),
+    //             contentType: "application/json; charset=utf-8",
+    //             data: (function(){
+    //                 if(json !== undefined){
+    //                     return JSON.stringify(json);
+    //                 }
+    //                 return null;
+    //             })()
+    //         })
+    //             .done(function(data, status, jqXHR){
+    //                 var token = jqXHR.getResponseHeader("Authorization");
+    //                 jwt.storeToken(token);
+    //             })
+    //             .fail(function(jqXHR){
+    //                 var status = jqXHR.status;
+    //                 console.log("API Request Failed. Status: " + status);
+    //                 if(status === 403){
+    //                     window.location = orgProps.clientOrigin + "/index.html?denied=true&message=" + jqXHR.responseJSON.errorMessage;
+    //                 }
+    //                 else if(status === 0){
+    //                     console.log("SERVER ERROR");
+    //                     showAlert("alert-danger", "Unable to contact server!");
+    //                 }
+    //                 else if(status === 401){
+    //                     //This comes up during a bad login or if the token has expired
+    //                     var loginUrl = orgProps.clientOrigin + "/login.html";
+    //                     if(window.location.href !== loginUrl){
+    //                         window.location = loginUrl;
+    //                     }
+    //                     console.log("Error Message: " + jqXHR.responseText);
+    //                 }
+    //                 else if(status >= 500){
+    //                     var error = jqXHR.responseJSON;
+    //                     console.log("Critical server error, please check server logs for details");
+    //                     console.log("Error Message: " + error.exceptionName + ": " + error.errorMessage);
+    //                     showAlert("alert-danger", "Server Error: " + error.exceptionName + ": " + error.errorMessage);
+    //                 }
+    //                 else{
+    //                     console.log("Error communicating with server. Status: " + status + " " + jqXHR.statusText);
+    //                     console.log("Error Message: " + jqXHR.responseText);
+    //                     showAlert("alert-danger", "Unknown critical server error!");
+    //                 }
+    //             });
+    //     }
+    // };
 
     //A utility using a builder pattern to validate whether or not a user has access to a given part of the application
-    var validateAccess = (function(){
-        function Validator(){
-            this.valid = true;
-        }
-        Validator.prototype = {
-            constructor: Validator,
-            hasToken: function(){
-                //Only do this test if valid is still true
-                if(this.valid){
-                    //If there is no token, it's invalid
-                    if(!jwt.tokenExists()){
-                        this.valid = false;
-                    }
-                }
-
-                //Return this with the current state of valid
-                return this;
-            },
-            hasAllRoles: function(){
-                //Only do this test if valid is still true
-                if(this.valid){
-                    var hasAllRoles = true;
-                    //If arguments are provided, test each argument as a role to see if the token has that role
-                    if(arguments){
-                        $.each(arguments, function(index,role){
-                            if(!jwt.hasRole(role)){
-                                hasAllRoles = false;
-                                return false;
-                            }
-                        });
-                    }
-
-                    //If it doesn't have all roles, set valid to false
-                    if(!hasAllRoles){
-                        this.valid = false;
-                    }
-                }
-
-                //Return this with the current state of valid
-                return this;
-            },
-            hasAnyRole: function(){
-                //Only do this test if valid is still true
-                if(this.valid){
-                    var hasAnyRole = false;
-                    //If arguments are provided, test each argument as a role to see if the token has that role
-                    if(arguments){
-                        $.each(arguments, function(index,role){
-                            if(jwt.hasRole(role)){
-                                hasAnyRole = true;
-                                return false;
-                            }
-                        });
-                    }
-
-                    if(!hasAnyRole){
-                        this.valid = false;
-                    }
-                }
-
-                //Return this with the current state of valid
-                return this;
-            },
-            isUser: function(userid){
-                //Only do this test if valid is still true
-                if(this.valid){
-                    this.valid = jwt.getTokenPayload().uid == userid;
-                }
-
-                //Return this with the current state of valid
-                return this;
-            },
-            isOrg: function(orgid){
-                //Only do this test if valid is still true
-                if(this.valid){
-                    this.valid = jwt.getTokenPayload().oid == orgid;
-                }
-
-                //Return this with the current state of valid
-                return this;
-            },
-            isValid: function(){
-                return this.valid;
-            }
-        };
-
-        return function(){
-            return new Validator();
-        }
-    })();
+    // var validateAccess = (function(){
+    //     function Validator(){
+    //         this.valid = true;
+    //     }
+    //     Validator.prototype = {
+    //         constructor: Validator,
+    //         hasToken: function(){
+    //             //Only do this test if valid is still true
+    //             if(this.valid){
+    //                 //If there is no token, it's invalid
+    //                 if(!jwt.tokenExists()){
+    //                     this.valid = false;
+    //                 }
+    //             }
+    //
+    //             //Return this with the current state of valid
+    //             return this;
+    //         },
+    //         hasAllRoles: function(){
+    //             //Only do this test if valid is still true
+    //             if(this.valid){
+    //                 var hasAllRoles = true;
+    //                 //If arguments are provided, test each argument as a role to see if the token has that role
+    //                 if(arguments){
+    //                     $.each(arguments, function(index,role){
+    //                         if(!jwt.hasRole(role)){
+    //                             hasAllRoles = false;
+    //                             return false;
+    //                         }
+    //                     });
+    //                 }
+    //
+    //                 //If it doesn't have all roles, set valid to false
+    //                 if(!hasAllRoles){
+    //                     this.valid = false;
+    //                 }
+    //             }
+    //
+    //             //Return this with the current state of valid
+    //             return this;
+    //         },
+    //         hasAnyRole: function(){
+    //             //Only do this test if valid is still true
+    //             if(this.valid){
+    //                 var hasAnyRole = false;
+    //                 //If arguments are provided, test each argument as a role to see if the token has that role
+    //                 if(arguments){
+    //                     $.each(arguments, function(index,role){
+    //                         if(jwt.hasRole(role)){
+    //                             hasAnyRole = true;
+    //                             return false;
+    //                         }
+    //                     });
+    //                 }
+    //
+    //                 if(!hasAnyRole){
+    //                     this.valid = false;
+    //                 }
+    //             }
+    //
+    //             //Return this with the current state of valid
+    //             return this;
+    //         },
+    //         isUser: function(userid){
+    //             //Only do this test if valid is still true
+    //             if(this.valid){
+    //                 this.valid = jwt.getTokenPayload().uid == userid;
+    //             }
+    //
+    //             //Return this with the current state of valid
+    //             return this;
+    //         },
+    //         isOrg: function(orgid){
+    //             //Only do this test if valid is still true
+    //             if(this.valid){
+    //                 this.valid = jwt.getTokenPayload().oid == orgid;
+    //             }
+    //
+    //             //Return this with the current state of valid
+    //             return this;
+    //         },
+    //         isValid: function(){
+    //             return this.valid;
+    //         }
+    //     };
+    //
+    //     return function(){
+    //         return new Validator();
+    //     }
+    // })();
 
     //Utility methods for validating data returned by the API.
     var validateData = {
@@ -577,26 +577,26 @@ var orgbuilder = (function(){
         }
     };
 
-    function ensurePrecedingSlash(uri){
-        if(uri.startsWith("/")){
-            return uri;
-        }
-        return "/" + uri;
-    }
+    // function ensurePrecedingSlash(uri){
+    //     if(uri.startsWith("/")){
+    //         return uri;
+    //     }
+    //     return "/" + uri;
+    // }
 
-    function stripBearerPrefix (token){
-        if(typeof token === "string" && token.startsWith(BEARER_PREFIX)){
-            return token.substring(6).trim();
-        }
-        return token;
-    }
+    // function stripBearerPrefix (token){
+    //     if(typeof token === "string" && token.startsWith(BEARER_PREFIX)){
+    //         return token.substring(6).trim();
+    //     }
+    //     return token;
+    // }
 
-    function restoreBearerPrefix (token){
-        if(typeof token === "string" && !token.startsWith(BEARER_PREFIX)){
-            return BEARER_PREFIX + " " + token;
-        }
-        return token;
-    }
+    // function restoreBearerPrefix (token){
+    //     if(typeof token === "string" && !token.startsWith(BEARER_PREFIX)){
+    //         return BEARER_PREFIX + " " + token;
+    //     }
+    //     return token;
+    // }
 
     function cancelChangesCheck(event){
         if($(".panel.form-group[status = 'edit']").length > 0){

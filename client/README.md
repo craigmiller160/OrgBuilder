@@ -16,6 +16,9 @@ npm run build
 
 # install stylesheet loaders
 npm install css-loader style-loader --save-dev
+
+# install router
+npm install vue-router
 ```
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
