@@ -1,6 +1,6 @@
 import { orgbuilder } from './orgbuilder.js'
 
-orgbuilder.api = (function(){
+orgbuilder.api = (() => {
 
     function get(uri){
         return send(uri, 'GET');
@@ -23,7 +23,7 @@ orgbuilder.api = (function(){
         return $.ajax({
             url: '/orgapi' + ensurePrecedingSlash(uri), //TODO this is where the origin prop should go
             type: method,
-            headers: (function(){
+            headers: (() => {
                 var result = {};
 
                 var token = orgbuilder.jwt.getToken();
@@ -34,18 +34,18 @@ orgbuilder.api = (function(){
                 return result;
             })(),
             contentType: "application/json; charset=utf-8",
-            data: (function(){
+            data: (() => {
                 if(json !== undefined){
                     return JSON.stringify(json);
                 }
                 return null;
             })()
         })
-            .done(function(data, status, jqXHR){
+            .done((data, status, jqXHR) => {
                 var token = jqXHR.getResponseHeader('Authorization');
                 orgbuilder.jwt.storeToken(token);
             })
-            .fail(function(jqXHR){
+            .fail((jqXHR) => {
                 var status = jqXHR.status;
                 console.log('API Request Failed. Status: ' + status);
                 if(status === 403){

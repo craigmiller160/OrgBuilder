@@ -1,6 +1,6 @@
 import { orgbuilder } from './orgbuilder.js';
 
-orgbuilder.jwt = (function(){
+orgbuilder.jwt = (() => {
     const TOKEN_STORAGE_KEY = "orgapiToken";
     const BEARER_PREFIX = "Bearer";
 

@@ -1,6 +1,6 @@
 import { orgbuilder } from './orgbuilder.js';
 
-orgbuilder.access = (function(){
+orgbuilder.access = (() => {
 
     function Validator(){
         this.valid = true;
@@ -8,7 +8,7 @@ orgbuilder.access = (function(){
 
     Validator.prototype = {
         constructor: Validator,
-        hasToken: function () {
+        hasToken () {
             //Only do this test if valid is still true
             if (this.valid) {
                 //If there is no token, it's invalid
@@ -20,7 +20,7 @@ orgbuilder.access = (function(){
             //Return this with the current state of valid
             return this;
         },
-        hasAllRoles: function () {
+        hasAllRoles () {
             //Only do this test if valid is still true
             if (this.valid) {
                 var hasAllRoles = true;
@@ -43,7 +43,7 @@ orgbuilder.access = (function(){
             //Return this with the current state of valid
             return this;
         },
-        hasAnyRole: function () {
+        hasAnyRole() {
             //Only do this test if valid is still true
             if (this.valid) {
                 var hasAnyRole = false;
@@ -65,7 +65,7 @@ orgbuilder.access = (function(){
             //Return this with the current state of valid
             return this;
         },
-        isUser: function (userid) {
+        isUser(userid) {
             //Only do this test if valid is still true
             if (this.valid) {
                 this.valid = orgbuilder.jwt.getTokenPayload().uid == userid;
@@ -74,7 +74,7 @@ orgbuilder.access = (function(){
             //Return this with the current state of valid
             return this;
         },
-        isOrg: function (orgid) {
+        isOrg(orgid) {
             //Only do this test if valid is still true
             if (this.valid) {
                 this.valid = orgbuilder.jwt.getTokenPayload().oid == orgid;
@@ -83,7 +83,7 @@ orgbuilder.access = (function(){
             //Return this with the current state of valid
             return this;
         },
-        isValid: function () {
+        isValid() {
             return this.valid;
         }
     };

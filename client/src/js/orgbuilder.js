@@ -9,7 +9,7 @@ export var orgbuilder = (function(){
     $("body").click(() => {
         $(".alert").removeClass("in");
     });
-    $("[data-hide]").on("click",() => {
+    $("[data-hide]").on("click", () => {
         $("." + $(this).attr("data-hide")).removeClass("in");
     });
 
