@@ -22,7 +22,7 @@
                                 <td>{{ org.orgName }}</td>
                                 <td>{{ org.createdDate }}</td>
                                 <td>
-                                    <a class="btn btn-info" title="Edit Org">Edit</a>
+                                    <a :href="'/#/orgs/content?orgId=' + org.orgId" class="btn btn-info" title="Edit Org">Edit</a>
                                     <a class="btn btn-danger" title="Delete Org">Delete</a>
                                 </td>
                             </tr>
