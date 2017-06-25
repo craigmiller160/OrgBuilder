@@ -2,7 +2,7 @@
     <div id="sidebar">
         <ul class="sidebar-nav nav flex-column">
             <li>
-                <a href="#" @click="toggleSidebar">
+                <a :href="menuBtnUrl" @click="toggleSidebar">
                     <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
                 </a>
             </li>
@@ -80,6 +80,9 @@
                     return false;
                 }
                 return !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
+            },
+            menuBtnUrl(){
+                return window.location.hash;
             }
         }
     }
