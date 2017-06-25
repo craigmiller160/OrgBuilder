@@ -23,7 +23,7 @@
                                 <td>{{ org.createdDate }}</td>
                                 <td>
                                     <a :href="'/#/orgs/content?orgId=' + org.orgId" class="btn btn-info" title="Edit Org">Edit</a>
-                                    <a class="btn btn-danger" title="Delete Org">Delete</a>
+                                    <a class="btn btn-danger" title="Delete Org" @click="showModal">Delete</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -36,32 +36,70 @@
                 <a class="btn btn-primary" href="/#/orgs/content.html" title="Add new Org">Add</a>
             </div>
         </div>
+        <app-modal :type="modalType"
+                   v-on:result="modalResult($event)"
+                   :context="modalContext">
+        </app-modal>
     </div>
 </template>
 
 <script>
     import { orgbuilder } from './js/orgbuilder.js';
+    import ConfirmModal from './ConfirmModal.vue';
 
     export default {
         name: 'org_manage',
         data(){
             return {
-                orgList: []
+                orgList: [],
+                modalType: 'Delete',
+                modalContext: null
             }
+        },
+        components: {
+            'app-modal': ConfirmModal
         },
         beforeMount(){
             orgbuilder.access.hasMasterAccess(this);
         },
         mounted(){
-            orgbuilder.api.get('orgs')
-                .done((data,status,jqXHR) => {
-                    if(jqXHR.status === 204){
-                        console.log("No orgs found on server");
-                        return;
-                    }
+            this.loadOrgs();
+        },
+        methods: {
+            loadOrgs(){
+                orgbuilder.api.get('orgs')
+                    .done((data,status,jqXHR) => {
+                        if(jqXHR.status === 204){
+                            console.log("No orgs found on server");
+                            return;
+                        }
 
-                    this.orgList = data.orgList;
+                        this.orgList = data.orgList;
+                    });
+            },
+            showModal(event){
+                this.modalContext = $(event.target).parents('tr').attr('orgId');
+                $(".modal").modal({
+                    backdrop: 'static'
                 });
+            },
+            modalResult(arg){
+                if(arg.status){
+                    var app = this;
+
+                    orgbuilder.api.del('orgs/' + arg.context)
+                        .done(() => {
+                            console.log('Org successfully deleted');
+                            app.loadOrgs();
+                            app.$emit('showAlert', {
+                                show: true,
+                                msg: 'Org successfully deleted',
+                                clazz: 'alert-success'
+                            })
+                        })
+                        .fail(() => console.log("Org delete FAILED"));
+                }
+            }
         }
     }
 </script>
