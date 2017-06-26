@@ -131,8 +131,12 @@
         },
         computed: {
             canEdit(){
-                return this.$route.query.userId !== undefined && (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin)) ||
-                    (this.$route.query.userId == orgbuilder.jwt.getTokenPayload().uid); //TODO clean this up
+                if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin)){
+                    return true;
+                }
+                else{
+                    return this.$route.query.userId == orgbuilder.jwt.getTokenPayload().uid;
+                }
             }
         },
         beforeMount(){

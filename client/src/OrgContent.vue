@@ -200,8 +200,8 @@
         },
         computed: {
             canEdit(){
-                return this.$route.query.orgId !== undefined && (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) ||
-                    (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) && this.$route.query.orgId == orgbuilder.jwt.getTokenPayload().oid));
+                //The admin role needing the same orgId gets checked for during the access check
+                return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin);
             }
         }
     }
