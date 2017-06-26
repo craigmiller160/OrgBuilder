@@ -66,7 +66,9 @@
             'app-modal': ConfirmModal
         },
         beforeMount(){
-            orgbuilder.access.hasAdminOrHigherAccess(this);
+            orgbuilder.access.start(this)
+                .hasAnyRole(orgbuilder.jwt.roles.master, orgbuilder.jwt.roles.admin)
+                .validate();
         },
         mounted(){
             this.loadUsers();

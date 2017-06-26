@@ -17,7 +17,7 @@
             'orgName'
         ],
         beforeMount(){
-            orgbuilder.access.hasValidToken(this);
+            orgbuilder.access.start(this).validate();
         },
         mounted(){
             var denied = this.$route.query.denied;

@@ -47,7 +47,7 @@
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
                     <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
-                    <a v-show="showDelete" class="btn btn-danger pull-right" type="button" title="Delete Org" @click="showDeleteModal">Delete</a>
+                    <a v-show="canEdit" class="btn btn-danger pull-right" type="button" title="Delete Org" @click="showDeleteModal">Delete</a>
                     <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit Org" @click="startEdit">Edit</a>
                 </div>
             </div>
@@ -83,7 +83,12 @@
             'app-modal': ConfirmModal
         },
         beforeMount(){
-            orgbuilder.access.hasMasterAccessOrSameOrg(this, this.$route.query.orgId);
+            orgbuilder.access
+                .start(this)
+                .hasAnyRole(orgbuilder.jwt.roles.master)
+                .next()
+                .isOrg(this.$route.query.orgId)
+                .validate();
         },
         mounted(){
             if(this.$route.query.orgId !== undefined){
@@ -120,6 +125,7 @@
                 var doneFn = function(org){
                     app.edit = false;
                     app.title = org.orgName;
+                    app.org = org;
                     app.$emit('showAlert', {
                         show: true,
                         msg: 'Org saved',
@@ -171,7 +177,7 @@
                 var app = this;
                 if(arg.context.type === 'Delete' && arg.status){
                     orgbuilder.api.del('orgs/' + arg.context.id)
-                        .done(() => {
+                        .done((data) => {
                             console.log('Org successfully deleted');
                             window.location.href = '/#/orgs/manage';
                             app.$emit('showAlert', {
@@ -193,12 +199,9 @@
             }
         },
         computed: {
-            showDelete(){
-                return this.$route.query.orgId !== undefined;
-            },
             canEdit(){
-                return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) ||
-                    (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) && this.$route.query.orgId !== undefined && this.$route.query.orgId == orgbuilder.jwt.getTokenPayload().oid);
+                return this.$route.query.orgId !== undefined && (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) ||
+                    (orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) && this.$route.query.orgId == orgbuilder.jwt.getTokenPayload().oid));
             }
         }
     }
