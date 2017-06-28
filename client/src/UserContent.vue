@@ -80,8 +80,8 @@
                         </div>
                         <div id="accessCheckboxes" class="panel-body">
                             <div v-for="role in roles">
-                                <input :id="role" type="checkbox" name="role" v-model="user.roles" :value="role" :disabled="disableCheckbox(role)" />
-                                <label :for="role">{{ role }}</label>
+                                <input v-show="showCheckbox(role)" :id="role" type="checkbox" name="role" v-model="user.roles" :value="role" :disabled="disableCheckbox(role)" />
+                                <label v-show="showCheckbox(role)" :for="role">{{ role }}</label>
                             </div>
                         </div>
                     </div>
@@ -184,6 +184,13 @@
                 else{
                     return this.user.roles.indexOf('MASTER') >= 0;
                 }
+            },
+            showCheckbox(role){
+                if('MASTER' === role){
+                    return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
+                }
+
+                return true;
             }
         }
     }
