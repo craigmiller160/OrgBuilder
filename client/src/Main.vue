@@ -21,6 +21,7 @@
         },
         mounted(){
             var denied = this.$route.query.denied;
+            var bad = this.$route.query.bad;
             var errorMessage = this.$route.query.errorMessage;
 
             if(denied !== undefined && denied){
@@ -35,6 +36,13 @@
                 this.$emit('showAlert', {
                     show: true,
                     msg: msgTxt,
+                    clazz: 'alert-danger'
+                });
+            }
+            else if(bad !== undefined && bad){
+                this.$emit('showAlert', {
+                    show: true,
+                    msg: 'Bad request',
                     clazz: 'alert-danger'
                 });
             }

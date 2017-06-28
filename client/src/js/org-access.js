@@ -105,10 +105,10 @@ orgbuilder.access = (() => {
 
         next(){
             if(this.valid){
-                return new Validator(this.app, this.valid);
+                return new Validator(this.app, true);
             }
             else{
-                return new Validator(this.app, this.valid, this.denied);
+                return new Validator(this.app, true, this.denied);
             }
         }
 
