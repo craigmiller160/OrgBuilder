@@ -78,8 +78,11 @@
                         <div class="panel-heading clearfix">
                             <h4 class="pull-left">Access Roles</h4>
                         </div>
-                        <div class="panel-body">
-                            <!-- TODO checkboxes go here -->
+                        <div id="accessCheckboxes" class="panel-body">
+                            <div v-for="role in roles">
+                                <input :id="role" type="checkbox" name="role" v-model="user.roles" :value="role" :disabled="disableCheckbox(role)" />
+                                <label :for="role">{{ role }}</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -101,7 +104,7 @@
                     <a class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
                     <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
                     <a v-show="canEdit" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
-                    <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit User">Edit</a>
+                    <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit User" @click="startEdit">Edit</a>
                 </div>
             </div>
         </form>
@@ -126,7 +129,8 @@
                     lastName: '',
                     userId: 0
                 },
-                edit: false
+                edit: false,
+                roles: orgbuilder.jwt.roles
             }
         },
         computed: {
@@ -168,7 +172,19 @@
             }
         },
         methods: {
-
+            startEdit(){
+                this.edit = true;
+            },
+            disableCheckbox(role){
+                if('MASTER' === role){
+                    if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                        return this.user.roles.indexOf('MASTER') < 0 && this.user.roles.length > 0;
+                    }
+                }
+                else{
+                    return this.user.roles.indexOf('MASTER') >= 0;
+                }
+            }
         }
     }
 </script>
