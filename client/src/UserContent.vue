@@ -101,8 +101,8 @@
                                 <div class="col-sm-6">
                                     <!-- TODO this is where the org selector goes -->
                                     <p v-show="!edit">{{ user.orgName }}</p>
-                                    <select v-show="edit" name="orgName" class="form-control">
-                                        <option v-for="org in orgList" :value="org.orgName">{{ org.orgName }}</option>
+                                    <select v-show="edit" name="orgName" class="form-control" v-model="user.orgId">
+                                        <option v-for="org in orgList" :value="org.orgId">{{ org.orgName }}</option>
                                     </select>
                                     <!--TODO need some way to preserve the orgId too -->
                                 </div>
@@ -164,29 +164,38 @@
                 .validate();
         },
         mounted(){
-            var app = this;
-
-            console.log(this.orgList); //TODO delete this
-
-            if(this.$route.query.userId !== undefined){
-                orgbuilder.api.get('users/' + this.$route.query.userId)
-                    .done((user, status, jqXHR) => {
-                        if(jqXHR.status === 204){
-                            console.log('User not found on server');
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'User not found on server',
-                                clazz: 'alert-danger'
-                            });
-                        }
-
-                        app.user = user;
-                        this.title = user.userEmail;
-                    })
-                    .fail((jqXHR) => console.log('FAILED TO RETRIEVE USER DETAILS: ' + jqXHR.status));
+            if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                this.loadOrgListAndUser();
+            }
+            else{
+                this.loadUser();
             }
 
-            if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+            //TODO if not master role, then select box should never appear
+        },
+        methods: {
+            loadUser(){
+                if(this.$route.query.userId !== undefined){
+                    var app = this;
+                    orgbuilder.api.get('users/' + this.$route.query.userId)
+                        .done((user, status, jqXHR) => {
+                            if(jqXHR.status === 204){
+                                console.log('User not found on server');
+                                app.$emit('showAlert', {
+                                    show: true,
+                                    msg: 'User not found on server',
+                                    clazz: 'alert-danger'
+                                });
+                            }
+
+                            app.user = user;
+                            this.title = user.userEmail;
+                        })
+                        .fail((jqXHR) => console.log('FAILED TO RETRIEVE USER DETAILS: ' + jqXHR.status));
+                }
+            },
+            loadOrgListAndUser(){
+                var app = this;
                 orgbuilder.api.get('orgs')
                     .done((data, status, jqXHR) => {
                         if(jqXHR.status === 204){
@@ -199,13 +208,10 @@
                         }
 
                         app.orgList = data.orgList;
+                        this.loadUser();
                     })
                     .fail((jqXHR) => console.log('FAILED TO RETRIEVE ORG LIST: ' + jqXHR.status));
-            }
-
-            //TODO if not master role, then select box should never appear
-        },
-        methods: {
+            },
             startEdit(){
                 this.edit = true;
             },
