@@ -176,6 +176,10 @@
                 this.edit = true;
             },
             disableCheckbox(role){
+                if(!this.edit){
+                    return true;
+                }
+
                 if('MASTER' === role){
                     if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
                         return this.user.roles.indexOf('MASTER') < 0 && this.user.roles.length > 0;
