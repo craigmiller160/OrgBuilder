@@ -101,7 +101,7 @@
                                 <div class="col-sm-6">
                                     <!-- TODO this is where the org selector goes -->
                                     <p v-show="!edit">{{ user.orgName }}</p>
-                                    <select v-show="edit" name="orgName" class="form-control" v-model="user.orgId">
+                                    <select v-show="showOrgSelectBox && edit" name="orgName" class="form-control" v-model="user.orgId">
                                         <option v-for="org in orgList" :value="org.orgId">{{ org.orgName }}</option>
                                     </select>
                                     <!--TODO need some way to preserve the orgId too -->
@@ -154,6 +154,9 @@
                 else{
                     return this.$route.query.userId == orgbuilder.jwt.getTokenPayload().uid;
                 }
+            },
+            showOrgSelectBox(){
+                return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) && this.user.roles.indexOf(orgbuilder.jwt.roles.master) === -1;
             }
         },
         beforeMount(){
@@ -170,8 +173,6 @@
             else{
                 this.loadUser();
             }
-
-            //TODO if not master role, then select box should never appear
         },
         methods: {
             loadUser(){
