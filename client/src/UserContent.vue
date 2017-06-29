@@ -94,7 +94,19 @@
                             <h4 class="pull-left">Org</h4>
                         </div>
                         <div class="panel-body">
-                            <!-- TODO this is where the org selector goes -->
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="content-name">Org:</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- TODO this is where the org selector goes -->
+                                    <p v-show="!edit">{{ user.orgName }}</p>
+                                    <select v-show="edit" name="orgName" class="form-control">
+                                        <option v-for="org in orgList" :value="org.orgName">{{ org.orgName }}</option>
+                                    </select>
+                                    <!--TODO need some way to preserve the orgId too -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,6 +141,7 @@
                     lastName: '',
                     userId: 0
                 },
+                orgList: [],
                 edit: false,
                 roles: orgbuilder.jwt.roles
             }
@@ -149,11 +162,13 @@
                 .next()
                 .isUser(this.$route.query.userId)
                 .validate();
-
         },
         mounted(){
+            var app = this;
+
+            console.log(this.orgList); //TODO delete this
+
             if(this.$route.query.userId !== undefined){
-                var app = this;
                 orgbuilder.api.get('users/' + this.$route.query.userId)
                     .done((user, status, jqXHR) => {
                         if(jqXHR.status === 204){
@@ -170,6 +185,25 @@
                     })
                     .fail((jqXHR) => console.log('FAILED TO RETRIEVE USER DETAILS: ' + jqXHR.status));
             }
+
+            if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                orgbuilder.api.get('orgs')
+                    .done((data, status, jqXHR) => {
+                        if(jqXHR.status === 204){
+                            console.log('No orgs found on server');
+                            app.$emit('showAlert', {
+                                show: true,
+                                msg: 'No orgs found on server',
+                                clazz: 'alert-danger'
+                            });
+                        }
+
+                        app.orgList = data.orgList;
+                    })
+                    .fail((jqXHR) => console.log('FAILED TO RETRIEVE ORG LIST: ' + jqXHR.status));
+            }
+
+            //TODO if not master role, then select box should never appear
         },
         methods: {
             startEdit(){
