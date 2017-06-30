@@ -162,7 +162,7 @@
             handleCancel(){
                 if(this.edit){
                     this.modalContext.type = 'Cancel';
-                    $(".modal").modal({
+                    $('.modal').modal({
                         backdrop: 'static'
                     });
                 }

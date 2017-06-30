@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <p v-show="!edit">************</p>
-                                    <input v-show="edit" name="password" class="form-control" type="password" required v-model="user.password" /> <!-- TODO make sure this doesn't risk compromising the password somehow... -->
+                                    <input v-show="edit" name="password" class="form-control" type="password" required v-model="user.password" />
                                 </div>
                             </div>
                             <div class="row">
@@ -99,12 +99,10 @@
                                     <p class="content-name">Org:</p>
                                 </div>
                                 <div class="col-sm-6">
-                                    <!-- TODO this is where the org selector goes -->
                                     <p v-show="!edit">{{ user.orgName }}</p>
                                     <select v-show="showOrgSelectBox && edit" name="orgName" class="form-control" v-model="user.orgId">
                                         <option v-for="org in orgList" :value="org.orgId">{{ org.orgName }}</option>
                                     </select>
-                                    <!--TODO need some way to preserve the orgId too -->
                                 </div>
                             </div>
                         </div>
@@ -113,17 +111,21 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                    <a class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
-                    <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
+                    <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
+                    <button v-show="edit" class="btn btn-success" type="submit" title="Save changes" @click="saveChanges">Save</button>
                     <a v-show="canEdit" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
                     <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit User" @click="startEdit">Edit</a>
                 </div>
             </div>
         </form>
+        <app-modal :context="modalContext"
+                   v-on:result="modalResult($event)">
+        </app-modal>
     </div>
 </template>
 
 <script>
+    import ConfirmModal from './ConfirmModal.vue';
     import { orgbuilder } from './js/orgbuilder.js';
 
     export default {
@@ -143,8 +145,15 @@
                 },
                 orgList: [],
                 edit: false,
-                roles: orgbuilder.jwt.roles
+                roles: orgbuilder.jwt.roles,
+                modalContext: {
+                    id: 0,
+                    type: ''
+                }
             }
+        },
+        components: {
+            'app-modal': ConfirmModal
         },
         computed: {
             canEdit(){
@@ -173,11 +182,15 @@
             else{
                 this.loadUser();
             }
+
+            if(this.$route.query.userId === undefined){
+                this.edit = true;
+            }
         },
         methods: {
             loadUser(){
                 if(this.$route.query.userId !== undefined){
-                    var app = this;
+                    const app = this;
                     orgbuilder.api.get('users/' + this.$route.query.userId)
                         .done((user, status, jqXHR) => {
                             if(jqXHR.status === 204){
@@ -196,7 +209,7 @@
                 }
             },
             loadOrgListAndUser(){
-                var app = this;
+                const app = this;
                 orgbuilder.api.get('orgs')
                     .done((data, status, jqXHR) => {
                         if(jqXHR.status === 204){
@@ -236,6 +249,67 @@
                 }
 
                 return true;
+            },
+            handleCancel(){
+                if(this.edit){
+                    this.modalContext.type = 'Cancel';
+                    $('.modal').modal({
+                        backdrop: 'static'
+                    });
+                }
+                else if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                    window.location.href = '/#/users/manage';
+                }
+                else{
+                    window.location.href = '/#/';
+                }
+            },
+            modalResult(arg){
+                const app = this;
+                if(arg.context.type === 'Delete' && arg.status){
+                    //TODO add delete behavior here
+                }
+                else if(arg.context.type === 'Cancel' && arg.status){
+                    if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
+                        window.location.href = '/#/users/manage';
+                    }
+                    else{
+                        window.location.href = '/#/';
+                    }
+                }
+            },
+            saveChanges(){
+                const app = this;
+
+                const doneFn = function(user) {
+                    app.edit = false;
+                    app.title = user.userEmail;
+                    app.user = user;
+                    app.$emit('showAlert', {
+                        show: true,
+                        msg: 'User saved',
+                        clazz: 'alert-success'
+                    });
+                };
+
+                const failFn = function(message){
+                    app.$emit('showAlert', {
+                        show: true,
+                        msg: 'Save failed. Message: ' + message,
+                        clazz: 'alert-danger'
+                    });
+                };
+
+                if(this.$route.query.userId !== undefined){
+                    orgbuilder.api.put('users/' + this.$route.query.userId, this.user)
+                        .done(doneFn)
+                        .fail(failFn);
+                }
+                else{
+                    orgbuilder.api.post('users', this.user)
+                        .done(doneFn)
+                        .fail(failFn);
+                }
             }
         }
     }
