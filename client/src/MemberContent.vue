@@ -66,6 +66,42 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading clearfix">
+                            <h4 class="pull-left">Addresses</h4>
+                        </div>
+                        <div class="panel-body">
+                            <!-- TODO addresses will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading clearfix">
+                            <h4 class="pull-left">Phones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <!-- TODO phones will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading clearfix">
+                            <h4 class="pull-left">Emails</h4>
+                        </div>
+                        <div class="panel-body">
+                            <!-- TODO emails will go here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary" type="button" title="Cancel Changes" @click="handleCancel">Cancel</a>
                     <a v-show="edit" class="btn btn-success" type="submit" title="Save Changes">Save</a>
                     <a v-show="canEdit && showDeleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Member">Delete</a>
