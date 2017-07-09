@@ -215,6 +215,12 @@
                 this.loadOrgListAndUser();
             }
             else{
+                this.orgList = [
+                    {
+                        orgId: orgbuilder.jwt.getTokenPayload().oid,
+                        orgName: orgbuilder.jwt.getTokenPayload().onm
+                    }
+                ];
                 this.loadUser();
             }
 
@@ -270,6 +276,10 @@
                             this.title = user.userEmail;
                         })
                         .fail((jqXHR) => console.log('FAILED TO RETRIEVE USER DETAILS: ' + jqXHR.status));
+                }
+                else{
+                    this.user.orgId = orgbuilder.jwt.getTokenPayload().oid;
+                    this.user.orgName = orgbuilder.jwt.getTokenPayload().onm;
                 }
             },
             loadOrgListAndUser(){
@@ -356,10 +366,10 @@
                     });
                 };
 
-                const failFn = function(message){
+                const failFn = function(jqXHR){
                     app.$emit('showAlert', {
                         show: true,
-                        msg: 'Save failed. Message: ' + message,
+                        msg: 'Save failed. Message: ' + jqXHR.responseJSON.errorMessage,
                         clazz: 'alert-danger'
                     });
                 };
