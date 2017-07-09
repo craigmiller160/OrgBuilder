@@ -28,8 +28,25 @@ export var orgbuilder = (function(){
         return varExists(value) && value !== '';
     }
 
+    function calculateAge(dateOfBirth){
+        let date = createDate(dateOfBirth);
+        let ageDiff = Date.now() - date.getTime();
+        return Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+    }
+
+    //Creates date object out of format MM-dd-yyyy
+    function createDate(dateString){
+        let split = dateString.split('-');
+        if(split.length !== 3){
+            throw 'Date string does not have three parts: ' + dateString;
+        }
+
+        return new Date(split[2], split[0] - 1, split[1]);
+    }
+
     return {
         varExists: varExists,
-        varExistsString: varExistsString
+        varExistsString: varExistsString,
+        calculateAge: calculateAge
     }
 })();

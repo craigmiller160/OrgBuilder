@@ -139,10 +139,10 @@ var orgbuilder = (function(){
 
     })();
 
-    function calculateAge(dateOfBirth){
-        var ageDiff = Date.now() - new Date(dateOfBirth).getTime();
-        return Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
-    }
+    // function calculateAge(dateOfBirth){
+    //     var ageDiff = Date.now() - new Date(dateOfBirth).getTime();
+    //     return Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+    // }
 
     function reformatDate(dateString){
         var parts = dateString.split("-");

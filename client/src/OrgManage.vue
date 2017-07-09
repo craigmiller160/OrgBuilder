@@ -82,7 +82,7 @@
             showModal(event){
                 this.modalContext.id = $(event.target).parents('tr').attr('orgId');
                 this.modalContext.type = 'Delete';
-                $(".modal").modal({
+                $('.modal').modal({
                     backdrop: 'static'
                 });
             },
