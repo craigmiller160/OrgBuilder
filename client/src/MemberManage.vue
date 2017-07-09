@@ -26,7 +26,7 @@
                                 <td>{{ parseField('state', member.addresses) }}</td>
                                 <td>
                                     <a :href="'/#/members/content?memberId=' + member.memberId" class="btn btn-info" title="Edit Member">Edit</a>
-                                    <a v-show="edit" class="btn btn-danger" title="Delete Member" @click="showModal">Delete</a>
+                                    <a v-show="canEdit" class="btn btn-danger" title="Delete Member" @click="showModal">Delete</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -36,7 +36,7 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <a class="btn btn-primary" href="/#/members/content" title="Add Member">Add</a>
+                <a v-show="canEdit" class="btn btn-primary" href="/#/members/content" title="Add Member">Add</a>
             </div>
         </div>
         <app-modal :context="modalContext"
@@ -58,7 +58,7 @@
                     type: '',
                     id: 0
                 },
-                edit: false
+                canEdit: false
             }
         },
         components: {
@@ -70,7 +70,7 @@
                 .validate();
         },
         mounted(){
-            this.edit = orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.write);
+            this.canEdit = orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.write);
             this.loadMembers();
         },
         methods: {

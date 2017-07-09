@@ -17,6 +17,7 @@ import OrgContent from './OrgContent.vue';
 import UserManage from './UserManage.vue';
 import UserContent from './UserContent.vue';
 import MemberManage from './MemberManage.vue';
+import MemberContent from './MemberContent.vue';
 
 Vue.use(VueRouter);
 
@@ -48,6 +49,10 @@ const routes = [
     {
         path: '/members/manage',
         component: MemberManage
+    },
+    {
+        path: '/members/content',
+        component: MemberContent
     }
 ];
 
