@@ -105,7 +105,7 @@
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
                     <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
-                    <a v-show="canEdit" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
+                    <a v-show="canEdit && showDeleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User" @click="showDeleteModal">Delete</a>
                     <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit User" @click="startEdit">Edit</a>
                 </div>
             </div>
@@ -195,6 +195,9 @@
                 else{
                     return this.$route.query.userId == orgbuilder.jwt.getTokenPayload().uid;
                 }
+            },
+            showDeleteBtn(){
+                return this.$route.query.userId !== undefined;
             },
             showOrgSelectBox(){
                 return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) && this.user.roles.indexOf(orgbuilder.jwt.roles.master) === -1;
@@ -338,10 +341,39 @@
                     window.location.href = '/#/';
                 }
             },
+            showDeleteModal(){
+                this.modalContext.id = this.$route.query.userId;
+                if(this.$route.query.userId == orgbuilder.jwt.getTokenPayload().uid){
+                    this.modalContext.type = 'Delete Your Account';
+                }
+                else{
+                    this.modalContext.type = 'Delete';
+                }
+
+                $('#confirmModal').modal({
+                    backdrop: 'static'
+                });
+            },
             modalResult(arg){
                 const app = this;
-                if(arg.context.type === 'Delete' && arg.status){
-                    //TODO add delete behavior here
+                if((arg.context.type === 'Delete' || arg.context.type === 'Delete Your Account') && arg.status){
+                    orgbuilder.api.del('users/' + arg.context.id)
+                        .done((data) => {
+                            console.log('User successfully deleted');
+                            if(arg.context.type === 'Delete'){
+                                window.location.href = '/#/users/manage';
+                                app.$emit('showAlert', {
+                                    show: true,
+                                    msg: 'User successfully deleted',
+                                    clazz: 'alert-success'
+                                });
+                            }
+                            else{
+                                orgbuilder.jwt.clearToken();
+                                window.location.href = '/#/login';
+                            }
+                        })
+                        .fail(() => console.log('User delete FAILED'));
                 }
                 else if(arg.context.type === 'Cancel' && arg.status){
                     if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
@@ -359,6 +391,9 @@
                     app.edit = false;
                     app.title = user.userEmail;
                     app.user = user;
+                    if(app.$route.query.userId === undefined){
+                        window.location.href = window.location.href + '?userId=' + user.userId;
+                    }
                     app.$emit('showAlert', {
                         show: true,
                         msg: 'User saved',

@@ -92,7 +92,7 @@
         },
         mounted(){
             if(this.$route.query.orgId !== undefined){
-                var app = this;
+                const app = this;
 
                 orgbuilder.api.get('orgs/' + this.$route.query.orgId)
                     .done((org, status, jqXHR) => {
@@ -120,9 +120,9 @@
                 this.edit = true;
             },
             saveChanges(){
-                var app = this;
+                const app = this;
 
-                var doneFn = function(org){
+                const doneFn = function(org){
                     app.edit = false;
                     app.title = org.orgName;
                     app.org = org;
@@ -136,7 +136,7 @@
                     });
                 };
 
-                var failFn = function(message){
+                const failFn = function(message){
                     app.$emit('showAlert', {
                         show: true,
                         msg: 'Save failed. Message: ' + message,
@@ -177,7 +177,7 @@
                 }
             },
             modalResult(arg){
-                var app = this;
+                const app = this;
                 if(arg.context.type === 'Delete' && arg.status){
                     orgbuilder.api.del('orgs/' + arg.context.id)
                         .done((data) => {
