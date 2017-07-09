@@ -71,7 +71,7 @@
                             <h4 class="pull-left">Addresses</h4>
                         </div>
                         <div class="panel-body">
-                            <div v-for="address in member.addresses" class="row" :addressId="address.addressId">
+                            <div v-for="(address, index) in member.addresses" class="row" :addressId="address.addressId">
                                 <div class="col-sm-1">
                                     <p>{{ address.preferred ? '*' : '' }}</p>
                                 </div>
@@ -82,8 +82,13 @@
                                     <p>{{ parseAddress(address) }}</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Address">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Address" @click="(event) => editContactInfo('address', index)">Edit</button>
                                     <button v-show="edit" type="button" class="btn btn-danger" title="Delete Address">Delete</button>
+                                </div>
+                            </div>
+                            <div v-show="edit" class="row">
+                                <div class="col-sm-6">
+                                    <button type="button" class="btn btn-primary" title="Add Address" @click="(event) => editContactInfo('address')">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -154,12 +159,94 @@
         <app-modal :context="modalContext"
                    v-on:result="modalResult($event)">
         </app-modal>
+        <div id="addressModal" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Address</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Address Type:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <select name="addressType" class="form-control" v-model="selectedAddress.addressType">
+                                    <option v-for="type in info.contactTypes.addressTypes" :value="type">{{ type }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Address Line 1:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="address1" class="form-control" type="text" v-model="selectedAddress.address1" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Address Line 2:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="address2" class="form-control" type="text" v-model="selectedAddress.address2" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">City:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="city" class="form-control" type="text" v-model="selectedAddress.city" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">State:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <select name="state" class="form-control" v-model="selectedAddress.state">
+                                    <option v-for="state in info.states" :value="state">{{ state }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Zip Code:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="zipCode" class="form-control" type="text" v-model="selectedAddress.zipCode" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input id="preferredAddress" name="preferred" type="checkbox" v-model="selectedAddress.preferred" />
+                                <label for="preferredAddress">Preferred</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import { orgbuilder } from './js/orgbuilder.js';
     import ConfirmModal from './ConfirmModal.vue';
+
+    const emptyAddr = {
+        addressId: null,
+        secondaryId: null,
+        addressType: null,
+        address1: null,
+        address2: null,
+        city: null,
+        state: null,
+        zipCode: null,
+        preferred: false
+    };
 
     export default {
         name: 'member_content',
@@ -180,12 +267,15 @@
                     emails: [],
                     addresses: []
                 },
+                selectedAddress: {},
+                selectedPhone: {},
+                selectedEmail: {},
                 info: {
                     appInfo: {},
                     sexes: [],
                     states: [],
                     roles: [],
-                    contentTypes: {
+                    contactTypes: {
                         addressTypes: [],
                         phoneTypes: [],
                         emailTypes: []
@@ -284,12 +374,12 @@
             },
             parseAddress(address){
                 let text = '';
-                text = address.address1 !== null ? address.address1 : '';
-                text = (text !== '' ? text + ' ' : '') + (address.address2 !== null ? address.address2 : '');
+                text = orgbuilder.varExistsString(address.address1) ? address.address1 : '';
+                text = (text !== '' ? text + ' ' : '') + (orgbuilder.varExistsString(address.address2) ? address.address2 : '');
                 text = text !== '' ? text + ',' : '';
-                text = (text !== '' ? text + ' ' : '') + (address.city !== null ? address.city + ',' : '');
-                text = (text !== '' ? text + ' ' : '') + (address.state !== null ? address.state : '');
-                text = (text !== '' ? text + ' ' : '') + (address.zipCode !== null ? address.zipCode : '');
+                text = (text !== '' ? text + ' ' : '') + (orgbuilder.varExistsString(address.city) ? address.city + ',' : '');
+                text = (text !== '' ? text + ' ' : '') + (orgbuilder.varExistsString(address.state) ? address.state : '');
+                text = (text !== '' ? text + ' ' : '') + (orgbuilder.varExistsString(address.zipCode) ? address.zipCode : '');
 
                 return text;
             },
@@ -302,6 +392,27 @@
                 text = text + (phone.extension !== null ? ' x' + phone.extension : '');
 
                 return text;
+            },
+            editContactInfo(type, index){
+                if('address' === type){
+                    if(index !== undefined){
+                        this.selectedAddress = this.member.addresses[index];
+                    }
+                    else{
+                        this.selectedAddress = $.extend({}, emptyAddr);
+                        this.member.addresses.push(this.selectedAddress);
+                    }
+
+                    $('#addressModal').modal({
+                        background: 'static'
+                    });
+                }
+                else if('phone' === type){
+                    //TODO finish this
+                }
+                else if('email' === type){
+                    //TODO finish this
+                }
             }
         }
     }
