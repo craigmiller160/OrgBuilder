@@ -20,7 +20,16 @@ export var orgbuilder = (function(){
         }
     });
 
+    function varExists(value){
+        return value !== undefined && value !== null;
+    }
+
+    function varExistsString(value){
+        return varExists(value) && value !== '';
+    }
+
     return {
-        foo: 'bar'
+        varExists: varExists,
+        varExistsString: varExistsString
     }
 })();

@@ -57,15 +57,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <p v-show="!edit">************</p>
-                                    <input v-show="edit" name="password" class="form-control" type="password" required v-model="user.password" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <p class="content-name">Repeat Password:</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <input v-show="edit" name="repeatPassword" class="form-control" type="password" required v-model="user.repeatPassword" /> <!-- TODO make sure this doesn't cause problems -->
+                                    <button v-show="edit" type="button" class="btn btn-info" @click="showChangePassword">Change Password</button>
                                 </div>
                             </div>
                         </div>
@@ -121,6 +113,46 @@
         <app-modal :context="modalContext"
                    v-on:result="modalResult($event)">
         </app-modal>
+        <div id="passwordModal" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" @click="(event) => { handlePassword(event, false) }">&times;</button>
+                        <h2 class="modal-title">Change Password</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="passwordModalAlert" class="alert alert-danger hidden">
+                                    <a :href="passwordModalAlertClose" class="close" data-hide="alert" aria-label="close">&times;</a>
+                                    <p>Password fields do not match, cannot save changes.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Password:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="password" class="form-control" type="password" required v-model="user.password" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Repeat Password:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="repeatPassword" class="form-control" type="password" required v-model="user.repeatPassword" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="modal-yes btn btn-success" @click="(event) => { handlePassword(event, true) }">Save</button>
+                        <button type="button" class="modal-no btn btn-danger" @click="(event) => { handlePassword(event, false) }">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -166,6 +198,9 @@
             },
             showOrgSelectBox(){
                 return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) && this.user.roles.indexOf(orgbuilder.jwt.roles.master) === -1;
+            },
+            passwordModalAlertClose(){
+                return '/#' + this.$route.fullPath;
             }
         },
         beforeMount(){
@@ -188,6 +223,35 @@
             }
         },
         methods: {
+            showChangePassword(){
+                $('#passwordModalAlert').addClass('hidden');
+                $('#passwordModal').modal({
+                    backdrop: 'static'
+                });
+            },
+            handlePassword(event, isSave){
+                if(!isSave){
+                    //If closing without saving, delete the property values
+                    delete this.user.password;
+                    delete this.user.repeatPassword;
+                    $('#passwordModal').modal('hide');
+                }
+                else{
+                    event.preventDefault();
+                    if(orgbuilder.varExistsString(this.user.password) && orgbuilder.varExistsString(this.user.repeatPassword) &&
+                        this.user.password === this.user.repeatPassword){
+                        //If saving and the password and repeat password are the same, delete the repeat password, everything else is good
+                        delete this.user.repeatPassword;
+                        $('#passwordModal').modal('hide');
+                    }
+                    else{
+                        //If they're not the same, delete both values and show the error alert
+                        delete this.user.password;
+                        delete this.user.repeatPassword;
+                        $('#passwordModalAlert').removeClass('hidden');
+                    }
+                }
+            },
             loadUser(){
                 if(this.$route.query.userId !== undefined){
                     const app = this;
@@ -253,7 +317,7 @@
             handleCancel(){
                 if(this.edit){
                     this.modalContext.type = 'Cancel';
-                    $('.modal').modal({
+                    $('#confirmModal').modal({
                         backdrop: 'static'
                     });
                 }
