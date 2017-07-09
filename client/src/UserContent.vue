@@ -273,6 +273,7 @@
                                     msg: 'User not found on server',
                                     clazz: 'alert-danger'
                                 });
+                                return;
                             }
 
                             app.user = user;

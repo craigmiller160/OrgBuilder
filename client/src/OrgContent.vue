@@ -107,7 +107,7 @@
                         }
 
                         app.org = org;
-                        this.title = org.orgName;
+                        app.title = org.orgName;
                     })
                     .fail((jqXHR) => console.log('FAILED TO RETRIEVE ORG DETAILS: ' + jqXHR.status));
             }

@@ -55,8 +55,8 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <p v-show="!edit">{{ member.sex }}</p>
-                                    <select v-show="edit" name="sex" class="form-control">
-                                        <!-- TODO finish binding this -->
+                                    <select v-show="edit" name="sex" class="form-control" v-model="member.sex">
+                                        <option v-for="sex in info.sexes" :value="sex">{{ sex }}</option>
                                     </select>
                                 </div>
                             </div>
@@ -90,7 +90,6 @@
         },
         data(){
             return {
-                title: 'New Member',
                 edit: false,
                 member: {
                     memberId: 0,
@@ -102,6 +101,17 @@
                     phones: [],
                     emails: [],
                     addresses: []
+                },
+                info: {
+                    appInfo: {},
+                    sexes: [],
+                    states: [],
+                    roles: [],
+                    contentTypes: {
+                        addressTypes: [],
+                        phoneTypes: [],
+                        emailTypes: []
+                    }
                 },
                 modalContext: {
                     type: '',
@@ -127,19 +137,61 @@
             showDeleteBtn(){
                 return this.$route.query.memberId !== undefined;
             },
+            title(){
+                let title = '';
+                if(orgbuilder.varExistsString(this.member.firstName)){
+                    title = this.member.firstName;
+                }
+
+                if(orgbuilder.varExistsString(this.member.lastName)){
+                    title = (title.length > 0 ? title + ' ' : '') + this.member.lastName;
+                }
+
+                if(orgbuilder.varExistsString(title)){
+                    return title;
+                }
+                else{
+                    return 'New Member';
+                }
+            }
         },
         methods: {
             startEdit(){
                 this.edit = true;
             },
             loadData(){
+                if(this.info.sexes.length === 0){
+                    this.loadInfoAndMember();
+                }
+                else{
+                    this.loadMember();
+                }
+            },
+            loadInfoAndMember(){
+                const app = this;
+                orgbuilder.api.get('info')
+                    .done((data) => {
+                        app.info = data;
+                        app.loadMember();
+                    });
+            },
+            loadMember(){
+                const app = this;
+                orgbuilder.api.get('members/' + app.$route.query.memberId)
+                    .done((data, status, jqXHR) => {
+                        if(jqXHR.status === 204){
+                            console.log('Member not found on server');
+                            app.$emit('showAlert', {
+                                show: true,
+                                msg: 'Member not found on server',
+                                clazz: 'alert-danger'
+                            });
+                            return;
+                        }
 
-            },
-            loadInfo(){
-                //TODO finish this
-            },
-            loadMembers(){
-                //TODO finish this
+                        app.member = data;
+                    })
+                    .fail(() => console.log('Load member FAILED'));
             },
             modalResult(event){
                 //TODO handle modal result

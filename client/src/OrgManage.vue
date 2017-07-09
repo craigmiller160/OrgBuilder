@@ -98,7 +98,7 @@
                                 show: true,
                                 msg: 'Org successfully deleted',
                                 clazz: 'alert-success'
-                            })
+                            });
                         })
                         .fail(() => console.log("Org delete FAILED"));
                 }
