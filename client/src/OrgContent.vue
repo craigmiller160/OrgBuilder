@@ -47,7 +47,7 @@
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
                     <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
-                    <a v-show="canEdit" class="btn btn-danger pull-right" type="button" title="Delete Org" @click="showDeleteModal">Delete</a>
+                    <a v-show="canEdit && showDelete" class="btn btn-danger pull-right" type="button" title="Delete Org" @click="showDeleteModal">Delete</a>
                     <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit Org" @click="startEdit">Edit</a>
                 </div>
             </div>
@@ -126,6 +126,9 @@
                     app.edit = false;
                     app.title = org.orgName;
                     app.org = org;
+                    if(app.$route.query.orgId === undefined){
+                        window.location.href = window.location.href + '?orgId=' + org.orgId;
+                    }
                     app.$emit('showAlert', {
                         show: true,
                         msg: 'Org saved',
@@ -202,6 +205,9 @@
             canEdit(){
                 //The admin role needing the same orgId gets checked for during the access check
                 return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin);
+            },
+            showDelete(){
+                return this.$route.query.orgId !== undefined;
             }
         }
     }
