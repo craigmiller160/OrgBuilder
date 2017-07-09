@@ -47,7 +47,7 @@ orgbuilder.api = (() => {
             })
             .fail((jqXHR) => {
                 var status = jqXHR.status;
-                console.log('API Request Failed. Status: ' + status);
+                console.log('API Request Failed. Request: ' + method + ' ' + uri + ' Status: ' + status);
                 if(status === 403){
                     //TODO go back to index.html with denied message
                     console.log('Bad request');

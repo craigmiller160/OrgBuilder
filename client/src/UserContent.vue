@@ -5,7 +5,7 @@
                 <h2>{{ title }}</h2>
             </div>
         </div>
-        <form>
+        <form v-on:submit.prevent="saveChanges">
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-primary form-group">
@@ -104,7 +104,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary" type="button" title="Cancel changes" @click="handleCancel">Cancel</a>
-                    <button v-show="edit" class="btn btn-success" type="submit" title="Save changes" @click="saveChanges">Save</button>
+                    <button v-show="edit" class="btn btn-success" type="submit" title="Save changes">Save</button>
                     <a v-show="canEdit" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
                     <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit User" @click="startEdit">Edit</a>
                 </div>
@@ -366,10 +366,10 @@
                     });
                 };
 
-                const failFn = function(jqXHR){
+                const failFn = function(){
                     app.$emit('showAlert', {
                         show: true,
-                        msg: 'Save failed. Message: ' + jqXHR.responseJSON.errorMessage,
+                        msg: 'Save failed. Message: ',
                         clazz: 'alert-danger'
                     });
                 };
