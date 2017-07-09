@@ -71,7 +71,21 @@
                             <h4 class="pull-left">Addresses</h4>
                         </div>
                         <div class="panel-body">
-                            <!-- TODO addresses will go here -->
+                            <div v-for="address in member.addresses" class="row" :addressId="address.addressId">
+                                <div class="col-sm-1">
+                                    <p>{{ address.preferred ? '*' : '' }}</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <p>{{ address.addressType }}</p>
+                                </div>
+                                <div class="col-sm-5">
+                                    <p>{{ parseAddress(address) }}</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Address">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Address">Delete</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -83,7 +97,21 @@
                             <h4 class="pull-left">Phones</h4>
                         </div>
                         <div class="panel-body">
-                            <!-- TODO phones will go here -->
+                            <div v-for="phone in member.phones" class="row" :phoneId="phone.phoneId">
+                                <div class="col-sm-1">
+                                    <p>{{ phone.preferred ? '*' : '' }}</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <p>{{ phone.phoneType }}</p>
+                                </div>
+                                <div class="col-sm-5">
+                                    <p>{{ parsePhone(phone) }}</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Phone">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Phone">Delete</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -95,7 +123,21 @@
                             <h4 class="pull-left">Emails</h4>
                         </div>
                         <div class="panel-body">
-                            <!-- TODO emails will go here -->
+                            <div v-for="email in member.emails" class="row" :emailId="email.emailId">
+                                <div class="col-sm-1">
+                                    <p>{{ email.preferred ? '*' : '' }}</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <p>{{ email.emailType }}</p>
+                                </div>
+                                <div class="col-sm-5">
+                                    <p>{{ email.emailAddress }}</p>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Email">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Email">Delete</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -193,7 +235,9 @@
         },
         methods: {
             startEdit(){
-                this.edit = true;
+                if(this.canEdit){
+                    this.edit = true;
+                }
             },
             loadData(){
                 if(this.info.sexes.length === 0){
@@ -237,6 +281,27 @@
             },
             handleCancel(event){
                 //TODO handle cancel event
+            },
+            parseAddress(address){
+                let text = '';
+                text = address.address1 !== null ? address.address1 : '';
+                text = (text !== '' ? text + ' ' : '') + (address.address2 !== null ? address.address2 : '');
+                text = text !== '' ? text + ',' : '';
+                text = (text !== '' ? text + ' ' : '') + (address.city !== null ? address.city + ',' : '');
+                text = (text !== '' ? text + ' ' : '') + (address.state !== null ? address.state : '');
+                text = (text !== '' ? text + ' ' : '') + (address.zipCode !== null ? address.zipCode : '');
+
+                return text;
+            },
+            parsePhone(phone){
+                let text = '';
+                text = phone.areaCode !== null ? '(' + phone.areaCode + ')' : '';
+                text = (text !== '' ? text + ' ' : '') + (phone.prefix !== null ? phone.prefix : '');
+                text = text + '-';
+                text = text + (phone.lineNumber !== null ? phone.lineNumber : '');
+                text = text + (phone.extension !== null ? ' x' + phone.extension : '');
+
+                return text;
             }
         }
     }
