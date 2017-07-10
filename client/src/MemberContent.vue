@@ -172,7 +172,7 @@
                                 <p class="content-name">Address Type:</p>
                             </div>
                             <div class="col-sm-6">
-                                <select name="addressType" class="form-control" v-model="selectedAddress.addressType">
+                                <select v-if="member.addresses[selectedAddressIndex] !== undefined" name="addressType" class="form-control" v-model="member.addresses[selectedAddressIndex].addressType">
                                     <option v-for="type in info.contactTypes.addressTypes" :value="type">{{ type }}</option>
                                 </select>
                             </div>
@@ -182,7 +182,7 @@
                                 <p class="content-name">Address Line 1:</p>
                             </div>
                             <div class="col-sm-6">
-                                <input name="address1" class="form-control" type="text" v-model="selectedAddress.address1" />
+                                <input v-if="member.addresses[selectedAddressIndex] !== undefined" name="address1" class="form-control" type="text" v-model="member.addresses[selectedAddressIndex].address1" />
                             </div>
                         </div>
                         <div class="row">
@@ -190,7 +190,7 @@
                                 <p class="content-name">Address Line 2:</p>
                             </div>
                             <div class="col-sm-6">
-                                <input name="address2" class="form-control" type="text" v-model="selectedAddress.address2" />
+                                <input v-if="member.addresses[selectedAddressIndex] !== undefined" name="address2" class="form-control" type="text" v-model="member.addresses[selectedAddressIndex].address2" />
                             </div>
                         </div>
                         <div class="row">
@@ -198,7 +198,7 @@
                                 <p class="content-name">City:</p>
                             </div>
                             <div class="col-sm-6">
-                                <input name="city" class="form-control" type="text" v-model="selectedAddress.city" />
+                                <input v-if="member.addresses[selectedAddressIndex] !== undefined" name="city" class="form-control" type="text" v-model="member.addresses[selectedAddressIndex].city" />
                             </div>
                         </div>
                         <div class="row">
@@ -206,7 +206,7 @@
                                 <p class="content-name">State:</p>
                             </div>
                             <div class="col-sm-6">
-                                <select name="state" class="form-control" v-model="selectedAddress.state">
+                                <select v-if="member.addresses[selectedAddressIndex] !== undefined" name="state" class="form-control" v-model="member.addresses[selectedAddressIndex].state">
                                     <option v-for="state in info.states" :value="state">{{ state }}</option>
                                 </select>
                             </div>
@@ -216,12 +216,12 @@
                                 <p class="content-name">Zip Code:</p>
                             </div>
                             <div class="col-sm-6">
-                                <input name="zipCode" class="form-control" type="text" v-model="selectedAddress.zipCode" />
+                                <input v-if="member.addresses[selectedAddressIndex] !== undefined" name="zipCode" class="form-control" type="text" v-model="member.addresses[selectedAddressIndex].zipCode" />
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <input id="preferredAddress" name="preferred" type="checkbox" v-model="selectedAddress.preferred" />
+                                <input v-if="member.addresses[selectedAddressIndex] !== undefined" id="preferredAddress" name="preferred" type="checkbox" v-model="member.addresses[selectedAddressIndex].preferred" @click="preferredChange('address')" />
                                 <label for="preferredAddress">Preferred</label>
                             </div>
                         </div>
@@ -267,9 +267,9 @@
                     emails: [],
                     addresses: []
                 },
-                selectedAddress: {},
-                selectedPhone: {},
-                selectedEmail: {},
+                selectedAddressIndex: 0,
+                selectedPhoneIndex: 0,
+                selectedEmailIndex: 0,
                 info: {
                     appInfo: {},
                     sexes: [],
@@ -395,17 +395,39 @@
             },
             editContactInfo(type, index){
                 if('address' === type){
-                    if(index !== undefined){
-                        this.selectedAddress = this.member.addresses[index];
+                    if(index === undefined){
+                        this.selectedAddressIndex = this.member.addresses.length;
+                        this.member.addresses.push($.extend({}, emptyAddr));
                     }
                     else{
-                        this.selectedAddress = $.extend({}, emptyAddr);
-                        this.member.addresses.push(this.selectedAddress);
+                        this.selectedAddressIndex = index;
                     }
 
                     $('#addressModal').modal({
                         background: 'static'
                     });
+                }
+                else if('phone' === type){
+                    //TODO finish this
+                }
+                else if('email' === type){
+                    //TODO finish this
+                }
+            },
+            preferredChange(type){
+                if('address' === type){
+                    let oldVal = this.member.addresses[this.selectedAddressIndex].preferred;
+                    if(oldVal === false){
+                        //Because we get the old value here, we're looking to see if the value is false because it's about to become true
+                        let app = this;
+                        $.each(this.member.addresses, (index, addr) => {
+                            if(app.selectedAddressIndex === index){
+                                return true;
+                            }
+
+                            addr.preferred = false;
+                        });
+                    }
                 }
                 else if('phone' === type){
                     //TODO finish this
