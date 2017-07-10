@@ -102,7 +102,7 @@
                             <h4 class="pull-left">Phones</h4>
                         </div>
                         <div class="panel-body">
-                            <div v-for="phone in member.phones" class="row" :phoneId="phone.phoneId">
+                            <div v-for="(phone, index) in member.phones" class="row" :phoneId="phone.phoneId">
                                 <div class="col-sm-1">
                                     <p>{{ phone.preferred ? '*' : '' }}</p>
                                 </div>
@@ -113,8 +113,13 @@
                                     <p>{{ parsePhone(phone) }}</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Phone">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Phone" @click="(event) => editContactInfo('phone', index)">Edit</button>
                                     <button v-show="edit" type="button" class="btn btn-danger" title="Delete Phone">Delete</button>
+                                </div>
+                            </div>
+                            <div v-show="edit" class="row">
+                                <div class="col-sm-6">
+                                    <button type="button" class="btn btn-primary" title="Add Phone" @click="(event) => editContactInfo('phone')">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +133,7 @@
                             <h4 class="pull-left">Emails</h4>
                         </div>
                         <div class="panel-body">
-                            <div v-for="email in member.emails" class="row" :emailId="email.emailId">
+                            <div v-for="(email, index) in member.emails" class="row" :emailId="email.emailId">
                                 <div class="col-sm-1">
                                     <p>{{ email.preferred ? '*' : '' }}</p>
                                 </div>
@@ -139,8 +144,13 @@
                                     <p>{{ email.emailAddress }}</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Email">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Email" @click="(event) => editContactInfo('email', index)">Edit</button>
                                     <button v-show="edit" type="button" class="btn btn-danger" title="Delete Email">Delete</button>
+                                </div>
+                            </div>
+                            <div v-show="edit" class="row">
+                                <div class="col-sm-6">
+                                    <button type="button" class="btn btn-primary" title="Add Email" @click="(event) => editContactInfo('email')">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -220,11 +230,116 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-6 col-sm-offset-6">
                                 <input v-if="member.addresses[selectedAddressIndex] !== undefined" id="preferredAddress" name="preferred" type="checkbox" v-model="member.addresses[selectedAddressIndex].preferred" @click="preferredChange('address')" />
                                 <label for="preferredAddress">Preferred</label>
                             </div>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="phoneModal" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Phone</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Phone Type:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <select v-if="member.phones[selectedPhoneIndex] !== undefined" name="phoneType" class="form-control" v-model="member.phones[selectedPhoneIndex].phoneType">
+                                    <option v-for="type in info.contactTypes.phoneTypes" :value="type">{{ type }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Area Code:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input v-if="member.phones[selectedPhoneIndex] !== undefined" name="areaCode" class="form-control" type="text" v-model="member.phones[selectedPhoneIndex].areaCode" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Prefix:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input v-if="member.phones[selectedPhoneIndex] !== undefined" name="prefix" class="form-control" type="text" v-model="member.phones[selectedPhoneIndex].prefix" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Line Number:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input v-if="member.phones[selectedPhoneIndex] !== undefined" name="lineNumber" class="form-control" type="text" v-model="member.phones[selectedPhoneIndex].lineNumber" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Extension:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input v-if="member.phones[selectedPhoneIndex] !== undefined" name="extension" class="form-control" type="text" v-model="member.phones[selectedPhoneIndex].extension" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-6">
+                                <input id="preferredPhone" v-if="member.phones[selectedPhoneIndex] !== undefined" name="preferred" type="checkbox" v-model="member.phones[selectedPhoneIndex].preferred" @click="preferredChange('phone')" />
+                                <label for="preferredPhone">Preferred</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="emailModal" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Email</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Email Type:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <select v-if="member.emails[selectedEmailIndex] !== undefined" name="emailType" class="form-control" v-model="member.emails[selectedEmailIndex].emailType">
+                                    <option v-for="type in info.contactTypes.emailTypes" :value="type">{{ type }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p class="content-name">Email Address:</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <input v-if="member.emails[selectedEmailIndex] !== undefined" name="emailAddress" class="form-control" type="text" v-model="member.emails[selectedEmailIndex].emailAddress" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-6">
+                                <input id="preferredEmail" v-if="member.emails[selectedEmailIndex] !== undefined" name="preferred" type="checkbox" v-model="member.emails[selectedEmailIndex].preferred" @click="preferredChange('email')" />
+                                <label for="preferredEmail">Preferred</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -238,13 +353,29 @@
 
     const emptyAddr = {
         addressId: null,
-        secondaryId: null,
         addressType: null,
         address1: null,
         address2: null,
         city: null,
         state: null,
         zipCode: null,
+        preferred: false
+    };
+
+    const emptyPhone = {
+        phoneId: null,
+        phoneType: null,
+        areaCode: null,
+        prefix: null,
+        lineNumber: null,
+        extension: null,
+        preferred: false
+    };
+
+    const emptyEmail = {
+        emailId: null,
+        emailType: null,
+        emailAddress: null,
         preferred: false
     };
 
@@ -368,6 +499,7 @@
             },
             saveChanges(event){
                 //TODO save any changes to the member
+                //TODO don't save empty contact info things... or maybe do that... not sure...
             },
             handleCancel(event){
                 //TODO handle cancel event
@@ -408,32 +540,61 @@
                     });
                 }
                 else if('phone' === type){
-                    //TODO finish this
+                    if(index === undefined){
+                        this.selectedPhoneIndex = this.member.phones.length;
+                        this.member.phones.push($.extend({}, emptyPhone));
+                    }
+                    else{
+                        this.selectedPhoneIndex = index;
+                    }
+
+                    $('#phoneModal').modal({
+                        background: 'static'
+                    });
                 }
                 else if('email' === type){
-                    //TODO finish this
+                    if(index === undefined){
+                        this.selectedEmailIndex = this.member.emails.length;
+                        this.member.emails.push($.extend({}, emptyEmail));
+                    }
+                    else{
+                        this.selectedEmailIndex = index;
+                    }
+
+                    $('#emailModal').modal({
+                        background: 'static'
+                    });
                 }
             },
             preferredChange(type){
+                let oldVal;
+                let selectedIndex;
+                let array;
                 if('address' === type){
-                    let oldVal = this.member.addresses[this.selectedAddressIndex].preferred;
-                    if(oldVal === false){
-                        //Because we get the old value here, we're looking to see if the value is false because it's about to become true
-                        let app = this;
-                        $.each(this.member.addresses, (index, addr) => {
-                            if(app.selectedAddressIndex === index){
-                                return true;
-                            }
-
-                            addr.preferred = false;
-                        });
-                    }
+                    oldVal = this.member.addresses[this.selectedAddressIndex].preferred;
+                    array = this.member.addresses;
+                    selectedIndex = this.selectedAddressIndex;
                 }
                 else if('phone' === type){
-                    //TODO finish this
+                    oldVal = this.member.phones[this.selectedPhoneIndex].preferred;
+                    array = this.member.phones;
+                    selectedIndex = this.selectedPhoneIndex;
                 }
                 else if('email' === type){
-                    //TODO finish this
+                    oldVal = this.member.emails[this.selectedEmailIndex].preferred;
+                    array = this.member.emails;
+                    selectedIndex = this.selectedEmailIndex;
+                }
+
+                if(oldVal === false){
+                    //Because we get the old value here, we're looking to see if the value is false because it's about to become true
+                    $.each(array, (index, element) => {
+                        if(selectedIndex === index){
+                            return true;
+                        }
+
+                        element.preferred = false;
+                    });
                 }
             }
         }
