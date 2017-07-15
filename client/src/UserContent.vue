@@ -405,7 +405,7 @@
                 const failFn = function(){
                     app.$emit('showAlert', {
                         show: true,
-                        msg: 'Save failed. Message: ',
+                        msg: 'Save failed.',
                         clazz: 'alert-danger'
                     });
                 };

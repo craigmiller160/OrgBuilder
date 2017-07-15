@@ -75,7 +75,7 @@
         },
         methods: {
             parseField(field, value){
-                if('age' === field){
+                if('age' === field && value !== null && value !== undefined){
                     let result = orgbuilder.calculateAge(value);
                     return result;
                 }
