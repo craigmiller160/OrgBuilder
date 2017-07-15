@@ -117,7 +117,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" @click="(event) => { handlePassword(event, false) }">&times;</button>
+                        <button type="button" class="close" @click="handlePassword(false)">&times;</button>
                         <h2 class="modal-title">Change Password</h2>
                     </div>
                     <div class="modal-body">
@@ -147,8 +147,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="modal-yes btn btn-success" @click="(event) => { handlePassword(event, true) }">Save</button>
-                        <button type="button" class="modal-no btn btn-danger" @click="(event) => { handlePassword(event, false) }">Cancel</button>
+                        <button type="button" class="modal-yes btn btn-success" @click="handlePassword(true)">Save</button>
+                        <button type="button" class="modal-no btn btn-danger" @click="handlePassword(false)">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -238,7 +238,7 @@
                     backdrop: 'static'
                 });
             },
-            handlePassword(event, isSave){
+            handlePassword(isSave){
                 if(!isSave){
                     //If closing without saving, delete the property values
                     delete this.user.password;
@@ -246,7 +246,6 @@
                     $('#passwordModal').modal('hide');
                 }
                 else{
-                    event.preventDefault();
                     if(orgbuilder.varExistsString(this.user.password) && orgbuilder.varExistsString(this.user.repeatPassword) &&
                         this.user.password === this.user.repeatPassword){
                         //If saving and the password and repeat password are the same, delete the repeat password, everything else is good
