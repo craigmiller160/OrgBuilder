@@ -70,7 +70,10 @@ orgbuilder.api = (() => {
                 }
                 else{
                     console.log('Error communicating with server. Status: ' + status + ' ' + jqXHR.statusText);
-                    console.log('Error Message: ' + jqXHR.responseJSON.errorMessage);
+                    let response = jqXHR.responseJSON;
+                    if(response !== undefined){
+                        console.log('Error Message: ' + jqXHR.responseJSON.errorMessage);
+                    }
                     //TODO show alert in UI
                 }
             });

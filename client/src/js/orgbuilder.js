@@ -41,7 +41,7 @@ export var orgbuilder = (function(){
             throw 'Date string does not have three parts: ' + dateString;
         }
 
-        return new Date(split[2], split[0] - 1, split[1]);
+        return new Date(split[0], split[1] - 1, split[2]);
     }
 
     return {
