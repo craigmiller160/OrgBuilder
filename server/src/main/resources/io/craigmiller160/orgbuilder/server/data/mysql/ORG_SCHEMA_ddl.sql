@@ -14,13 +14,13 @@ ALTER TABLE members AUTO_INCREMENT = 1000;
 
 CREATE TABLE addresses (
   address_id BIGINT NOT NULL AUTO_INCREMENT,
-  address_type VARCHAR(20) NOT NULL DEFAULT 'HOME',
+  address_type VARCHAR(20) DEFAULT 'HOME',
   address1 VARCHAR(255),
   address2 VARCHAR(255),
   city VARCHAR(255),
   state CHAR(2),
   zip_code CHAR(6),
-  preferred_address BOOLEAN NOT NULL DEFAULT FALSE,
+  preferred_address BOOLEAN DEFAULT FALSE,
   address_member_id BIGINT NOT NULL,
   PRIMARY KEY (address_id),
   FOREIGN KEY (address_member_id) REFERENCES members (member_id)
@@ -28,12 +28,12 @@ CREATE TABLE addresses (
 
 CREATE TABLE phones (
   phone_id BIGINT NOT NULL AUTO_INCREMENT,
-  phone_type VARCHAR(20) NOT NULL DEFAULT 'HOME',
+  phone_type VARCHAR(20) DEFAULT 'HOME',
   area_code CHAR(3),
   prefix CHAR(3),
   line_number CHAR(4),
   extension VARCHAR(20),
-  preferred_phone BOOLEAN NOT NULL DEFAULT FALSE,
+  preferred_phone BOOLEAN DEFAULT FALSE,
   phone_member_id BIGINT NOT NULL,
   PRIMARY KEY (phone_id),
   FOREIGN KEY (phone_member_id) REFERENCES members (member_id)
@@ -41,9 +41,9 @@ CREATE TABLE phones (
 
 CREATE TABLE emails (
   email_id BIGINT NOT NULL AUTO_INCREMENT,
-  email_type VARCHAR(20) NOT NULL DEFAULT 'PERSONAL',
+  email_type VARCHAR(20) DEFAULT 'PERSONAL',
   email_address VARCHAR(255),
-  preferred_email BOOLEAN NOT NULL DEFAULT FALSE,
+  preferred_email BOOLEAN DEFAULT FALSE,
   email_member_id BIGINT NOT NULL,
   PRIMARY KEY (email_id),
   FOREIGN KEY (email_member_id) REFERENCES members (member_id)
