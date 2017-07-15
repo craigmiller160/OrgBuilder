@@ -45,11 +45,7 @@
                     .fail(() => {
                         app.credentials.password = '';
                         app.$emit('loggedIn', false);
-                        app.$emit('showAlert', {
-                            show: true,
-                            msg: 'Login failed',
-                            clazz: 'alert-danger'
-                        });
+                        orgbuilder.vue.alert.showError(app, 'Login failed');
                     });
             }
         }

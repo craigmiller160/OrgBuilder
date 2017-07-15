@@ -267,11 +267,7 @@
                         .done((user, status, jqXHR) => {
                             if(jqXHR.status === 204){
                                 console.log('User not found on server');
-                                app.$emit('showAlert', {
-                                    show: true,
-                                    msg: 'User not found on server',
-                                    clazz: 'alert-danger'
-                                });
+                                orgbuilder.vue.alert.showError(app, 'User not found on server');
                                 return;
                             }
 
@@ -291,11 +287,7 @@
                     .done((data, status, jqXHR) => {
                         if(jqXHR.status === 204){
                             console.log('No orgs found on server');
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'No orgs found on server',
-                                clazz: 'alert-danger'
-                            });
+                            orgbuilder.vue.alert.showError(app, 'No orgs found on server');
                         }
 
                         app.orgList = data.orgList;
@@ -362,11 +354,7 @@
                             console.log('User successfully deleted');
                             if(arg.context.type === 'Delete'){
                                 window.location.href = '/#/users/manage';
-                                app.$emit('showAlert', {
-                                    show: true,
-                                    msg: 'User successfully deleted',
-                                    clazz: 'alert-success'
-                                });
+                                orgbuilder.vue.alert.showSuccess(app, 'User successfully deleted');
                             }
                             else{
                                 orgbuilder.jwt.clearToken();
@@ -394,19 +382,11 @@
                     if(app.$route.query.userId === undefined){
                         window.location.href = window.location.href + '?userId=' + user.userId;
                     }
-                    app.$emit('showAlert', {
-                        show: true,
-                        msg: 'User saved',
-                        clazz: 'alert-success'
-                    });
+                    orgbuilder.vue.alert.showSuccess(app, 'User successfully saved');
                 };
 
                 const failFn = function(){
-                    app.$emit('showAlert', {
-                        show: true,
-                        msg: 'Save failed.',
-                        clazz: 'alert-danger'
-                    });
+                    orgbuilder.vue.alert.showError(app, 'Save failed');
                 };
 
                 if(this.$route.query.userId !== undefined){

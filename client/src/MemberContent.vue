@@ -486,11 +486,7 @@
                         .done((data, status, jqXHR) => {
                             if(jqXHR.status === 204){
                                 console.log('Member not found on server');
-                                app.$emit('showAlert', {
-                                    show: true,
-                                    msg: 'Member not found on server',
-                                    clazz: 'alert-danger'
-                                });
+                                orgbuilder.vue.alert.showError(app, 'Member not found on server');
                                 return;
                             }
 
@@ -509,11 +505,7 @@
                         .done((data) => {
                             console.log('Member deleted successfully');
                             window.location.href = '/#/members/manage';
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'Member successfully deleted',
-                                clazz: 'alert-success'
-                            });
+                            orgbuilder.vue.alert.showSuccess(app, 'Member successfully deleted');
                         })
                         .fail(() => console.log('Member delete FAILED'));
                 }
@@ -528,19 +520,11 @@
                         window.location.href = window.location.href + '?memberId=' + member.memberId;
                     }
 
-                    app.$emit('showAlert', {
-                        show: true,
-                        msg: 'Member saved',
-                        clazz: 'alert-success'
-                    });
+                    orgbuilder.vue.alert.showSuccess(app, 'Member saved');
                 };
 
                 const failFn = function(){
-                    app.$emit('showAlert', {
-                        show: true,
-                        msg: 'Save failed.',
-                        clazz: 'alert-danger'
-                    });
+                    orgbuilder.vue.alert.showError(app, 'Save failed');
                 };
 
                 if(this.$route.query.memberId !== undefined){

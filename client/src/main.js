@@ -6,6 +6,7 @@ import './js/orgbuilder.js';
 import './js/org-jwt.js';
 import './js/org-api.js';
 import './js/org-access';
+import './js/org-vue.js';
 
 import Vue from 'vue';
 import VueRouter from 'vue-router';

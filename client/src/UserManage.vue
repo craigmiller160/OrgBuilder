@@ -100,11 +100,7 @@
                         .done(() => {
                             console.log('User successfully deleted');
                             app.loadUsers();
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'User successfully deleted',
-                                clazz: 'alert-success'
-                            });
+                            orgbuilder.vue.alert.showSuccess(app, 'User successfully deleted');
                         })
                         .fail(() => console.log('Org delete FAILED'));
                 }

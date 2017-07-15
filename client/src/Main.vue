@@ -33,18 +33,10 @@
                     return text;
                 })();
 
-                this.$emit('showAlert', {
-                    show: true,
-                    msg: msgTxt,
-                    clazz: 'alert-danger'
-                });
+                orgbuilder.vue.alert.showError(this, msgTxt);
             }
             else if(bad !== undefined && bad){
-                this.$emit('showAlert', {
-                    show: true,
-                    msg: 'Bad request',
-                    clazz: 'alert-danger'
-                });
+                orgbuilder.vue.alert.showError(this, 'Bad request');
             }
         }
     }

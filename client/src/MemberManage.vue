@@ -114,11 +114,7 @@
                         .done(() => {
                             console.log('Member successfully deleted');
                             app.loadMembers();
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'Member successfully deleted',
-                                clazz: 'alert-success'
-                            });
+                            orgbuilder.vue.alert.showSuccess(app, 'Member successfully deleted');
                         })
                         .fail(() => console.log('Member delete FAILED'));
                 }

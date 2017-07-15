@@ -98,11 +98,7 @@
                     .done((org, status, jqXHR) => {
                         if(jqXHR.status === 204){
                             console.log("Org not found on server");
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'Org not found on server',
-                                clazz: 'alert-danger'
-                            });
+                            orgbuilder.vue.alert.showError(app, 'Org not found on server');
                             return;
                         }
 
@@ -129,19 +125,11 @@
                     if(app.$route.query.orgId === undefined){
                         window.location.href = window.location.href + '?orgId=' + org.orgId;
                     }
-                    app.$emit('showAlert', {
-                        show: true,
-                        msg: 'Org saved',
-                        clazz: 'alert-success'
-                    });
+                    orgbuilder.vue.alert.showSuccess(app, 'Org saved');
                 };
 
                 const failFn = function(message){
-                    app.$emit('showAlert', {
-                        show: true,
-                        msg: 'Save failed. Message: ' + message,
-                        clazz: 'alert-danger'
-                    });
+                    orgbuilder.vue.alert.showError(app, 'Save failed. Message: ' + message);
                 };
 
                 if(this.$route.query.orgId !== undefined){
@@ -183,11 +171,7 @@
                         .done((data) => {
                             console.log('Org successfully deleted');
                             window.location.href = '/#/orgs/manage';
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'Org successfully deleted',
-                                clazz: 'alert-success'
-                            })
+                            orgbuilder.vue.alert.showSuccess(app, 'Org successfully deleted');
                         })
                         .fail(() => console.log("Org delete FAILED"));
                 }

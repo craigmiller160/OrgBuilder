@@ -94,11 +94,7 @@
                         .done(() => {
                             console.log('Org successfully deleted');
                             app.loadOrgs();
-                            app.$emit('showAlert', {
-                                show: true,
-                                msg: 'Org successfully deleted',
-                                clazz: 'alert-success'
-                            });
+                            orgbuilder.vue.alert.showSuccess(app, 'Org successfully deleted');
                         })
                         .fail(() => console.log("Org delete FAILED"));
                 }
