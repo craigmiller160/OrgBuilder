@@ -3,6 +3,7 @@
     <property file="build.properties" />
     <property file="${src.server.props.path}" />
     <property name="server.war.filename" value="${project.server.name}-${io.craigmiller160.orgbuilder.server.apiVersion}.war" />
+    <property name="client.filename" value="${project.client.name}-${io.craigmiller160.orgbuilder.server.apiVersion}.zip" />
     <target name="project.resolve">
         <ant antfile="${dir.root}/ivy_build.xml" dir="${dir.root}" target="resolve" />
     </target>
@@ -39,11 +40,17 @@
         <antcall target="deploy.server.tomcat" />
         <antcall target="tomcat.start" />
     </target>
-    <!--<target name="client.resolve">-->
-    	<!--<ant antfile="build_client.xml" target="resolve">-->
-            <!--<property name="dir.client" value="${dir.client}" />-->
-        <!--</ant>-->
-    <!--</target>-->
+    <target name="client.clean">
+        <ant antfile="build_client.xml" target="clean">
+            <property name="dir.client" value="${dir.client}" />
+        </ant>
+    </target>
+    <target name="client.package">
+        <ant antfile="build_client.xml" target="package">
+            <property name="dir.client" value="${dir.client}" />
+        </ant>
+        <antcall target="copy.client" />
+    </target>
     <target name="resolve">
     	<antcall target="project.resolve" />
     	<antcall target="server.resolve" />
@@ -52,14 +59,17 @@
     <target name="clean">
         <antcall target="project.clean" />
         <antcall target="server.clean" />
+        <antcall target="client.clean" />
     </target>
     <target name="package" depends="project.prepare">
         <antcall target="project.resolve" />
         <antcall target="server.package" />
+        <antcall target="client.package" />
     </target>
     <target name="deploy" depends="package">
         <antcall target="tomcat.stop" />
         <antcall target="deploy.server.tomcat" />
+        <antcall target="deploy.client.tomcat" />
         <antcall target="tomcat.start" />
     </target>
     <target name="deploy.server.tomcat" depends="check.server.file">
@@ -68,6 +78,15 @@
             <arg value="${tomcat.local.webapps}" />
             <arg value="${server.war.filename}" />
             <arg value="${project.server.name}" />
+            <arg value="${dir.build.artifact}" />
+        </exec>
+    </target>
+    <target name="deploy.client.tomcat" depends="check.client.file">
+        <echo message="Deploying ${dir.build.artifact}/${server.war.filename} to Tomcat" />
+        <exec executable="./deploy-serer.sh">
+            <arg value="${tomcat.local.webapps}" />
+            <arg value="${client.filename}" />
+            <arg value="${project.client.name}" />
             <arg value="${dir.build.artifact}" />
         </exec>
     </target>
@@ -81,10 +100,27 @@
             </condition>
         </fail>
     </target>
+    <target name="check.client.file">
+        <echo message="Checking for file to deploy: ${dir.build.artifact}/${client.filename}" />
+        <fail message="File to deploy not found: ${dir.build.artifact}/${client.filename}">
+            <condition>
+                <not>
+                    <available file="${dir.build.artifact}/${client.filename}" />
+                </not>
+            </condition>
+        </fail>
+    </target>
     <target name="copy.server.war">
         <copy todir="${dir.build.artifact}">
             <fileset dir="${dir.server.build.artifact}">
                 <include name="*.war" />
+            </fileset>
+        </copy>
+    </target>
+    <target name="copy.client">
+        <copy todir="${dir.build.artifact}">
+            <fileset dir="${dir.client.build}">
+                <include name="*.zip" />
             </fileset>
         </copy>
     </target>

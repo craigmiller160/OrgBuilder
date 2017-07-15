@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="OrgBuilder-Client" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="OrgBuilder-Client" >
     <property file="build.properties" />
-    <!--<target name="resolve">-->
-    	<!--<ant antfile="${dir.client}/ivy_build.xml" dir="${dir.client}" target="resolve" />-->
-    <!--</target>-->
+    <property file="${src.server.props.path}" />
+    <property name="filename" value="${project.client.name}-${io.craigmiller160.orgbuilder.server.apiVersion}" />
+    <target name="clean">
+        <delete dir="${dir.client.build}" />
+    </target>
+    <target name="prepare" depends="clean">
+        <mkdir dir="${dir.client.build}" />
+        <mkdir dir="${dir.client.staging}" />
+    </target>
+    <target name="compile" depends="prepare">
+        <exec dir="${dir.client}" executable="npm">
+            <arg value="run" />
+            <arg value="build" />
+        </exec>
+        <copy todir="${dir.client.staging}">
+            <fileset dir="${dir.client.dist}">
+                <include name="*.js" />
+            </fileset>
+        </copy>
+        <copy todir="${dir.client.staging}" file="${dir.client}/index.html" />
+    </target>
+    <target name="package" depends="compile">
+        <zip basedir="${dir.client.staging}" destfile="${dir.client.build}/${filename}.zip" />
+    </target>
 </project>
