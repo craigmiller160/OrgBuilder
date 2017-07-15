@@ -74,8 +74,7 @@
     </target>
     <target name="deploy.server.tomcat" depends="check.server.file">
         <echo message="Deploying ${dir.build.artifact}/${server.war.filename} to Tomcat" />
-        <exec executable="./deploy-server.sh">
-            <arg value="${tomcat.local.webapps}" />
+        <exec executable="${dir.build}/deploy-server.sh">
             <arg value="${server.war.filename}" />
             <arg value="${project.server.name}" />
             <arg value="${dir.build.artifact}" />
@@ -83,8 +82,7 @@
     </target>
     <target name="deploy.client.tomcat" depends="check.client.file">
         <echo message="Deploying ${dir.build.artifact}/${server.war.filename} to Tomcat" />
-        <exec executable="./deploy-serer.sh">
-            <arg value="${tomcat.local.webapps}" />
+        <exec executable="${dir.build}/deploy-server.sh">
             <arg value="${client.filename}" />
             <arg value="${project.client.name}" />
             <arg value="${dir.build.artifact}" />

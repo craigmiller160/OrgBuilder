@@ -9,13 +9,14 @@
     <target name="prepare" depends="clean">
         <mkdir dir="${dir.client.build}" />
         <mkdir dir="${dir.client.staging}" />
+        <mkdir dir="${dir.client.staging}/dist" />
     </target>
     <target name="compile" depends="prepare">
         <exec dir="${dir.client}" executable="npm">
             <arg value="run" />
             <arg value="build" />
         </exec>
-        <copy todir="${dir.client.staging}">
+        <copy todir="${dir.client.staging}/dist">
             <fileset dir="${dir.client.dist}">
                 <include name="*.js" />
             </fileset>
