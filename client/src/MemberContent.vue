@@ -160,8 +160,8 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-8 col-sm-offset-2">
                     <a class="btn btn-primary" type="button" title="Cancel Changes" @click="handleCancel">Cancel</a>
-                    <a v-show="edit" class="btn btn-success" type="submit" title="Save Changes">Save</a>
-                    <a v-show="canEdit && showDeleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Member">Delete</a>
+                    <a v-show="edit" class="btn btn-success" type="submit" title="Save Changes" @click="saveChanges">Save</a>
+                    <a v-show="canEdit && showDeleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Member" @click="deleteMember">Delete</a>
                     <a v-show="canEdit && !edit" class="btn btn-info pull-right" type="button" title="Edit Member" @click="startEdit">Edit</a>
                 </div>
             </div>
@@ -353,30 +353,33 @@
 
     const emptyAddr = {
         addressId: null,
-        addressType: null,
+        addressType: 'HOME',
         address1: null,
         address2: null,
         city: null,
         state: null,
         zipCode: null,
-        preferred: false
+        preferred: false,
+        memberId: null
     };
 
     const emptyPhone = {
         phoneId: null,
-        phoneType: null,
+        phoneType: 'HOME',
         areaCode: null,
         prefix: null,
         lineNumber: null,
         extension: null,
-        preferred: false
+        preferred: false,
+        memberId: null
     };
 
     const emptyEmail = {
         emailId: null,
-        emailType: null,
+        emailType: 'PERSONAL',
         emailAddress: null,
-        preferred: false
+        preferred: false,
+        memberId: null
     };
 
     export default {
@@ -478,31 +481,97 @@
             },
             loadMember(){
                 const app = this;
-                orgbuilder.api.get('members/' + app.$route.query.memberId)
-                    .done((data, status, jqXHR) => {
-                        if(jqXHR.status === 204){
-                            console.log('Member not found on server');
+                if(app.$route.query.memberId !== undefined){
+                    orgbuilder.api.get('members/' + app.$route.query.memberId)
+                        .done((data, status, jqXHR) => {
+                            if(jqXHR.status === 204){
+                                console.log('Member not found on server');
+                                app.$emit('showAlert', {
+                                    show: true,
+                                    msg: 'Member not found on server',
+                                    clazz: 'alert-danger'
+                                });
+                                return;
+                            }
+
+                            app.member = data;
+                        })
+                        .fail(() => console.log('Load member FAILED'));
+                }
+            },
+            modalResult(arg){
+                const app = this;
+                if(arg.context.type === 'Cancel' && arg.status){
+                    window.location.href = '/#/members/manage';
+                }
+                else if(arg.context.type === 'Delete' && arg.status){
+                    orgbuilder.api.del('members/' + arg.context.id)
+                        .done((data) => {
+                            console.log('Member deleted successfully');
+                            window.location.href = '/#/members/manage';
                             app.$emit('showAlert', {
                                 show: true,
-                                msg: 'Member not found on server',
-                                clazz: 'alert-danger'
+                                msg: 'Member successfully deleted',
+                                clazz: 'alert-success'
                             });
-                            return;
-                        }
-
-                        app.member = data;
-                    })
-                    .fail(() => console.log('Load member FAILED'));
-            },
-            modalResult(event){
-                //TODO handle modal result
+                        })
+                        .fail(() => console.log('Member delete FAILED'));
+                }
             },
             saveChanges(event){
-                //TODO save any changes to the member
-                //TODO don't save empty contact info things... or maybe do that... not sure...
+                const app = this;
+
+                const doneFn = function(member){
+                    app.edit = false;
+                    app.member = member;
+                    if(app.$route.query.memberId === undefined){
+                        window.location.href = window.location.href + '?memberId=' + member.memberId;
+                    }
+
+                    app.$emit('showAlert', {
+                        show: true,
+                        msg: 'Member saved',
+                        clazz: 'alert-success'
+                    });
+                };
+
+                const failFn = function(){
+                    app.$emit('showAlert', {
+                        show: true,
+                        msg: 'Save failed.',
+                        clazz: 'alert-danger'
+                    });
+                };
+
+                if(this.$route.query.memberId !== undefined){
+                    orgbuilder.api.put('members/' + this.$route.query.memberId, this.member)
+                        .done(doneFn)
+                        .fail(failFn);
+                }
+                else{
+                    orgbuilder.api.post('members', this.member)
+                        .done(doneFn)
+                        .fail(failFn);
+                }
             },
             handleCancel(event){
-                //TODO handle cancel event
+                if(this.edit){
+                    this.modalContext.type = 'Cancel';
+                    $('#confirmModal').modal({
+                        backdrop: 'static'
+                    });
+                }
+                else{
+                    window.location.href = '/#/members/manage';
+                }
+            },
+            deleteMember(event){
+                this.modalContext.id = this.$route.query.memberId;
+                this.modalContext.type = 'Delete';
+
+                $('#confirmModal').modal({
+                    backdrop: 'static'
+                });
             },
             parseAddress(address){
                 let text = '';
