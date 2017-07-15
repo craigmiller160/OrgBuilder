@@ -82,13 +82,13 @@
                                     <p>{{ parseAddress(address) }}</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Address" @click="(event) => editContactInfo('address', index)">Edit</button>
-                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Address">Delete</button>
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Address" @click="editContactInfo('address', index)">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Address" @click="deleteContactInfo('address',index)">Delete</button>
                                 </div>
                             </div>
                             <div v-show="edit" class="row">
                                 <div class="col-sm-6">
-                                    <button type="button" class="btn btn-primary" title="Add Address" @click="(event) => editContactInfo('address')">Add</button>
+                                    <button type="button" class="btn btn-primary" title="Add Address" @click="editContactInfo('address')">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -113,13 +113,13 @@
                                     <p>{{ parsePhone(phone) }}</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Phone" @click="(event) => editContactInfo('phone', index)">Edit</button>
-                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Phone">Delete</button>
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Phone" @click="editContactInfo('phone', index)">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Phone" @click="deleteContactInfo('phone',index)">Delete</button>
                                 </div>
                             </div>
                             <div v-show="edit" class="row">
                                 <div class="col-sm-6">
-                                    <button type="button" class="btn btn-primary" title="Add Phone" @click="(event) => editContactInfo('phone')">Add</button>
+                                    <button type="button" class="btn btn-primary" title="Add Phone" @click="editContactInfo('phone')">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -144,13 +144,13 @@
                                     <p>{{ email.emailAddress }}</p>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Email" @click="(event) => editContactInfo('email', index)">Edit</button>
-                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Email">Delete</button>
+                                    <button v-show="edit" type="button" class="btn btn-info" title="Edit Email" @click="editContactInfo('email', index)">Edit</button>
+                                    <button v-show="edit" type="button" class="btn btn-danger" title="Delete Email" @click="deleteContactInfo('email',index)">Delete</button>
                                 </div>
                             </div>
                             <div v-show="edit" class="row">
                                 <div class="col-sm-6">
-                                    <button type="button" class="btn btn-primary" title="Add Email" @click="(event) => editContactInfo('email')">Add</button>
+                                    <button type="button" class="btn btn-primary" title="Add Email" @click="editContactInfo('email')">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -633,6 +633,17 @@
                     $('#emailModal').modal({
                         background: 'static'
                     });
+                }
+            },
+            deleteContactInfo(type, index){
+                if('address' === type){
+                    this.member.addresses.splice(index, 1);
+                }
+                else if('phone' === type){
+                    this.member.phones.splice(index, 1);
+                }
+                else if('email' === type){
+                    this.member.emails.splice(index, 1);
                 }
             },
             preferredChange(type){

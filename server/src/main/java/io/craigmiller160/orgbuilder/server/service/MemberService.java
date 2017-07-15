@@ -25,6 +25,12 @@ public class MemberService {
         Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
         Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
+        //First, delete any existing elements for this member
+        addressDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId);
+        phoneDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId);
+        emailDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId);
+
+        //Then, do insert/update operations on all contact info DTOs
         List<AddressDTO> addresses = member.getAddresses();
         List<PhoneDTO> phones = member.getPhones();
         List<EmailDTO> emails = member.getEmails();
