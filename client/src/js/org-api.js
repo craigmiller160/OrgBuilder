@@ -51,7 +51,7 @@ orgbuilder.api = (() => {
                 if(status === 403){
                     //TODO go back to index.html with denied message
                     console.log('Bad request');
-                    window.location.href = '/#/?bad=true';
+                    window.location.href = orgbuilder.createUri('#/?bad=true');
                 }
                 else if(status === 0){
                     console.log('SERVER ERROR!');

@@ -25,7 +25,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/#/login" @click="logout">
+                                <a :href="createUri('#/login')" @click="logout">
                                     <i class="glyphicon glyphicon-off"></i> Logout
                                 </a>
                             </li>
@@ -45,8 +45,8 @@
 <script>
     import { orgbuilder } from './js/orgbuilder.js';
 
-    var mainLink = "/#/";
-    var loginLink = "/#/login";
+    var mainLink = orgbuilder.createUri('#/');
+    var loginLink = orgbuilder.createUri('#/login');
 
     export default {
         name: 'navbar',
@@ -75,13 +75,13 @@
                 return 'User';
             },
             noChangeUrl(){
-                return '/#' + this.$route.fullPath;
+                return orgbuilder.createUri('#' + this.$route.fullPath);
             },
             showOrgProfile(){
                 return this.loggedIn && !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
             },
             currentUserProfileLink(){
-                var url = '/#/users/content';
+                var url = orgbuilder.createUri('#/users/content');
                 if(this.loggedIn){
                     url = url + '?userId=' + orgbuilder.jwt.getTokenPayload().uid;
                 }
@@ -89,7 +89,7 @@
                 return url;
             },
             currentOrgProfileLink(){
-                var url = '/#/orgs/content';
+                var url = orgbuilder.createUri('#/orgs/content');
                 if(this.loggedIn){
                     url = url + '?orgId=' + orgbuilder.jwt.getTokenPayload().oid;
                 }
@@ -98,6 +98,9 @@
             }
         },
         methods: {
+            createUri(uri){
+                return orgbuilder.createUri(uri);
+            },
             logout(){
                 orgbuilder.jwt.clearToken();
                 this.$emit('loggedIn', false);

@@ -12,7 +12,7 @@
         <mkdir dir="${dir.client.staging}/dist" />
     </target>
     <target name="compile" depends="prepare">
-        <exec dir="${dir.client}" executable="npm">
+        <exec dir="${dir.client}" executable="npm" failonerror="true">
             <arg value="run" />
             <arg value="build" />
         </exec>

@@ -7,7 +7,7 @@
                 </a>
             </li>
             <li>
-                <a href="/#/" :class="{active : homeActive}">
+                <a :href="createUri('#/')" :class="{active : homeActive}">
                     <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
                 </a>
             </li>
@@ -17,7 +17,7 @@
                 </a>
                 <ul id="orgs-collapse" class="collapse menu-collapse">
                     <li>
-                        <a href="/#/orgs/manage">Manage</a>
+                        <a :href="createUri('#/orgs/manage')">Manage</a>
                     </li>
                 </ul>
             </li>
@@ -27,7 +27,7 @@
                 </a>
                 <ul id="users-collapse" class="collapse menu-collapse">
                     <li>
-                        <a href="/#/users/manage">Manage</a>
+                        <a :href="createUri('#/users/manage')">Manage</a>
                     </li>
                 </ul>
             </li>
@@ -37,7 +37,7 @@
                 </a>
                 <ul id="members-collapse" class="collapse menu-collapse">
                     <li>
-                        <a href="/#/members/manage">Manage</a>
+                        <a :href="createUri('#/members/manage')">Manage</a>
                     </li>
                 </ul>
             </li>
@@ -55,6 +55,9 @@
             'loggedIn'
         ],
         methods: {
+            createUri(uri){
+                return orgbuilder.createUri(uri);
+            },
             toggleSidebar(){
                 if(this.expandSidebar){ //Test for true here because it hasn't been changed to false yet
                     $(".menu-collapse").collapse("hide");
@@ -86,7 +89,8 @@
                 return !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
             },
             noChangeUrl(){
-                return '/#' + this.$route.fullPath;
+                console.log('NoChange: ' + this.$route.fullPath);
+                return orgbuilder.createUri('#' + this.$route.fullPath);
             },
             homeActive(){
                 return this.$route.path === '/';

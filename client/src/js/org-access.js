@@ -8,7 +8,7 @@ orgbuilder.access = (() => {
             if(app !== undefined){
                 app.$emit('loggedIn', false);
             }
-            window.location.href = '/#/login';
+            window.location.href = orgbuilder.createUri('#/login');
             return false;
         }
 
@@ -23,14 +23,14 @@ orgbuilder.access = (() => {
                 }
 
                 if(denied){
-                    window.location.href = '/#/?denied=true';
+                    window.location.href = orgbuilder.createUri('#/?denied=true');
                 }
             })
             .fail(() => {
                 if(app !== undefined){
                     app.$emit('loggedIn', false);
                 }
-                window.location.href = '/#/login';
+                window.location.href = orgbuilder.createUri('#/login');
             });
     }
 

@@ -27,7 +27,7 @@
                                 <td>{{ user.orgName }}</td>
                                 <td>{{ user.roles }}</td>
                                 <td>
-                                    <a :href="'/#/users/content?userId=' + user.userId" class="btn btn-info" title="Edit User">Edit</a>
+                                    <a :href="createUri('#/users/content?userId=' + user.userId)" class="btn btn-info" title="Edit User">Edit</a>
                                     <a class="btn btn-danger" title="Delete User" @click="showModal">Delete</a>
                                 </td>
                             </tr>
@@ -38,7 +38,7 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <a class="btn btn-primary" href="/#/users/content" title="Add new User">Add</a>
+                <a class="btn btn-primary" :href="createUri('#/users/content')" title="Add new User">Add</a>
             </div>
         </div>
         <app-modal :context="modalContext"
@@ -74,6 +74,9 @@
             this.loadUsers();
         },
         methods: {
+            createUri(uri){
+                return orgbuilder.createUri(uri);
+            },
             loadUsers(){
                 orgbuilder.api.get('users')
                     .done((data,status,jqXHR) => {

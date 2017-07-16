@@ -21,7 +21,7 @@
                                 <td>{{ org.orgName }}</td>
                                 <td>{{ org.createdDate }}</td>
                                 <td>
-                                    <a :href="'/#/orgs/content?orgId=' + org.orgId" class="btn btn-info" title="Edit Org">Edit</a>
+                                    <a :href="createUri('#/orgs/content?orgId=' + org.orgId)" class="btn btn-info" title="Edit Org">Edit</a>
                                     <a class="btn btn-danger" title="Delete Org" @click="showModal">Delete</a>
                                 </td>
                             </tr>
@@ -32,7 +32,7 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <a class="btn btn-primary" href="/#/orgs/content" title="Add new Org">Add</a>
+                <a class="btn btn-primary" :href="createUri('#/orgs/content')" title="Add new Org">Add</a>
             </div>
         </div>
         <app-modal :context="modalContext"
@@ -68,6 +68,9 @@
             this.loadOrgs();
         },
         methods: {
+            createUri(uri){
+                return orgbuilder.createUri(uri);
+            },
             loadOrgs(){
                 orgbuilder.api.get('orgs')
                     .done((data,status,jqXHR) => {

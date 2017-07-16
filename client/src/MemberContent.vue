@@ -498,13 +498,13 @@
             modalResult(arg){
                 const app = this;
                 if(arg.context.type === 'Cancel' && arg.status){
-                    window.location.href = '/#/members/manage';
+                    window.location.href = orgbuilder.createUri('#/members/manage');
                 }
                 else if(arg.context.type === 'Delete' && arg.status){
                     orgbuilder.api.del('members/' + arg.context.id)
                         .done((data) => {
                             console.log('Member deleted successfully');
-                            window.location.href = '/#/members/manage';
+                            window.location.href = orgbuilder.createUri('#/members/manage');
                             orgbuilder.vue.alert.showSuccess(app, 'Member successfully deleted');
                         })
                         .fail(() => console.log('Member delete FAILED'));
@@ -546,7 +546,7 @@
                     });
                 }
                 else{
-                    window.location.href = '/#/members/manage';
+                    window.location.href = orgbuilder.createUri('#/members/manage');
                 }
             },
             deleteMember(event){

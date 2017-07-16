@@ -12,6 +12,8 @@
 </template>
 
 <script>
+    import { orgbuilder } from './js/orgbuilder.js';
+
     export default {
         name: 'alert',
         props: [
@@ -24,7 +26,7 @@
         },
         computed: {
             closeLink(){
-                return '/#' + this.$route.fullPath;
+                return orgbuilder.createUri('#' + this.$route.fullPath);
             }
         },
         watch: {

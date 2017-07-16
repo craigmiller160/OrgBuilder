@@ -1,4 +1,7 @@
 export var orgbuilder = (function(){
+
+    const pathRoot = 'orgclient';
+
     //Global error handling method
     window.onerror = (message, source, lineno, colno, error) => {
         alert("Error on page! Cause: " + message);
@@ -44,9 +47,14 @@ export var orgbuilder = (function(){
         return new Date(split[0], split[1] - 1, split[2]);
     }
 
+    function createUri(uri){
+        return '/' + pathRoot + '/' + uri;
+    }
+
     return {
         varExists: varExists,
         varExistsString: varExistsString,
-        calculateAge: calculateAge
+        calculateAge: calculateAge,
+        createUri: createUri
     }
 })();

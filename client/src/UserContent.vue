@@ -203,7 +203,7 @@
                 return orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master) && this.user.roles.indexOf(orgbuilder.jwt.roles.master) === -1;
             },
             passwordModalAlertClose(){
-                return '/#' + this.$route.fullPath;
+                return orgbuilder.createUri('#' + this.$route.fullPath);
             }
         },
         beforeMount(){
@@ -327,10 +327,10 @@
                     });
                 }
                 else if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
-                    window.location.href = '/#/users/manage';
+                    window.location.href = orgbuilder.createUri('#/users/manage');
                 }
                 else{
-                    window.location.href = '/#/';
+                    window.location.href = orgbuilder.createUri('#/');
                 }
             },
             showDeleteModal(){
@@ -353,22 +353,22 @@
                         .done((data) => {
                             console.log('User successfully deleted');
                             if(arg.context.type === 'Delete'){
-                                window.location.href = '/#/users/manage';
+                                window.location.href = orgbuilder.createUri('#/users/manage');
                                 orgbuilder.vue.alert.showSuccess(app, 'User successfully deleted');
                             }
                             else{
                                 orgbuilder.jwt.clearToken();
-                                window.location.href = '/#/login';
+                                window.location.href = orgbuilder.createUri('#/login');
                             }
                         })
                         .fail(() => console.log('User delete FAILED'));
                 }
                 else if(arg.context.type === 'Cancel' && arg.status){
                     if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.admin) || orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
-                        window.location.href = '/#/users/manage';
+                        window.location.href = orgbuilder.createUri('#/users/manage');
                     }
                     else{
-                        window.location.href = '/#/';
+                        window.location.href = orgbuilder.createUri('#/');
                     }
                 }
             },

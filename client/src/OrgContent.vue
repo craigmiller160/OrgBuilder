@@ -158,10 +158,10 @@
                     });
                 }
                 else if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
-                    window.location.href = '/#/orgs/manage';
+                    window.location.href = orgbuilder.createUri('#/orgs/manage');
                 }
                 else{
-                    window.location.href = '/#/';
+                    window.location.href = orgbuilder.createUri('#/');
                 }
             },
             modalResult(arg){
@@ -170,17 +170,17 @@
                     orgbuilder.api.del('orgs/' + arg.context.id)
                         .done((data) => {
                             console.log('Org successfully deleted');
-                            window.location.href = '/#/orgs/manage';
+                            window.location.href = orgbuilder.createUri('#/orgs/manage');
                             orgbuilder.vue.alert.showSuccess(app, 'Org successfully deleted');
                         })
                         .fail(() => console.log("Org delete FAILED"));
                 }
                 else if(arg.context.type === 'Cancel' && arg.status){
                     if(orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master)){
-                        window.location.href = '/#/orgs/manage';
+                        window.location.href = orgbuilder.createUri('#/orgs/manage');
                     }
                     else{
-                        window.location.href = '/#/';
+                        window.location.href = orgbuilder.createUri('#/');
                     }
                 }
             }

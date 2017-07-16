@@ -25,7 +25,7 @@
                                 <td>{{ parseField('city', member.addresses) }}</td>
                                 <td>{{ parseField('state', member.addresses) }}</td>
                                 <td>
-                                    <a :href="'/#/members/content?memberId=' + member.memberId" class="btn btn-info" title="Edit Member">Edit</a>
+                                    <a :href="createUri('#/members/content?memberId=' + member.memberId)" class="btn btn-info" title="Edit Member">Edit</a>
                                     <a v-show="canEdit" class="btn btn-danger" title="Delete Member" @click="showModal">Delete</a>
                                 </td>
                             </tr>
@@ -36,7 +36,7 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2">
-                <a v-show="canEdit" class="btn btn-primary" href="/#/members/content" title="Add Member">Add</a>
+                <a v-show="canEdit" class="btn btn-primary" :href="createUri('#/members/content')" title="Add Member">Add</a>
             </div>
         </div>
         <app-modal :context="modalContext"
@@ -74,6 +74,9 @@
             this.loadMembers();
         },
         methods: {
+            createUri(uri){
+                return orgbuilder.createUri(uri);
+            },
             parseField(field, value){
                 if('age' === field && value !== null && value !== undefined){
                     let result = orgbuilder.calculateAge(value);
