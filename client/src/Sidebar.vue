@@ -89,7 +89,6 @@
                 return !orgbuilder.jwt.hasRole(orgbuilder.jwt.roles.master);
             },
             noChangeUrl(){
-                console.log('NoChange: ' + this.$route.fullPath);
                 return orgbuilder.createUri('#' + this.$route.fullPath);
             },
             homeActive(){
