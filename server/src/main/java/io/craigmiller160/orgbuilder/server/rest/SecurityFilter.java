@@ -33,8 +33,9 @@ public class SecurityFilter implements ContainerRequestFilter{
     private static final String POST_METHOD = "POST";
     private static final String GET_METHOD = "GET";
     private static final String OPTIONS_METHOD = "OPTIONS";
-    private static final String LOGIN_URI = "/orgapi/auth";
-    private static final String USER_EXISTS_URI = "/orgapi/auth/exists";
+    private static final String LOGIN_URI = "/orgapi/api/auth";
+    private static final String USER_EXISTS_URI = "/orgapi/api/auth/exists";
+    private static final String SWAGGER_URI = "/orgapi/api/swagger.json";
     private static final ServiceFactory factory = ServiceFactory.newInstance();
 
     @Context
@@ -46,6 +47,7 @@ public class SecurityFilter implements ContainerRequestFilter{
 
         String method = requestContext.getMethod();
         String uri = request.getRequestURI();
+
         if((POST_METHOD.equals(method) && LOGIN_URI.equals(uri)) ||
                 (GET_METHOD.equals(method) && USER_EXISTS_URI.equals(uri))){
             //Allow call to proceed to AuthResource to authenticate credentials
@@ -53,6 +55,10 @@ public class SecurityFilter implements ContainerRequestFilter{
             principal = createAuthPrincipal();
         }
         else if(OPTIONS_METHOD.equals(method)){
+            //Do nothing and return
+            return;
+        }
+        else if(GET_METHOD.equals(method) && SWAGGER_URI.equals(uri)){
             //Do nothing and return
             return;
         }
