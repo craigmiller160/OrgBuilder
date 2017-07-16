@@ -21,6 +21,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
+ * RESTful API for handling the Orgs resource.
+ *
  * Created by craig on 8/23/16.
  */
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +38,23 @@ public class OrgResource {
     @Context
     private UriInfo uriInfo;
 
+    /**
+     * RESOURCE: GET /orgs
+     *
+     * PURPOSE: Retrieve all Orgs.
+     *
+     * ACCESS: Only users with the MASTER role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     *
+     * @param resourceFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the Orgs retrieved by the request.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed(Role.MASTER)
     public Response getAllOrgs(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -53,6 +72,21 @@ public class OrgResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: POST /orgs
+     *
+     * PURPOSE: Add a new Org.
+     *
+     * ACCESS: Only users with the MASTER role.
+     *
+     * BODY: A JSON payload with the Org to be added.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param org the Org to be added.
+     * @return the Response, containing the created Org.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
     @RolesAllowed(Role.MASTER)
     public Response addOrg(OrgDTO org) throws OrgApiException{
@@ -65,6 +99,25 @@ public class OrgResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: PUT /orgs/{orgId}
+     *
+     * PURPOSE: Update an existing Org.
+     *
+     * ACCESS: Only users with the MASTER role, or users
+     *          with the ADMIN role who are a part of the
+     *          Org being updated.
+     *
+     * BODY: A JSON payload with the Org to be updated.
+     *
+     * QUERY PARAMS: None
+     *
+     * @param orgId the Org ID of the resource to update.
+     * @param org the Org to update.
+     * @return the Response, containing the updated Org,
+     *          or nothing if no Org existed with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @PUT
     @Path("/{orgId}")
     @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
@@ -83,6 +136,24 @@ public class OrgResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /orgs/{orgId}
+     *
+     * PURPOSE: Delete an existing Org.
+     *
+     * ACCESS: Only users with the MASTER role, or users
+     *          with the ADMIN role who are a part of the
+     *          Org being updated.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param orgId the Org ID of the resource to delete.
+     * @return the Response, containing the Org that was deleted,
+     *          or nothing if no Org existed with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{orgId}")
     @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
@@ -100,6 +171,24 @@ public class OrgResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /orgs/{orgId}
+     *
+     * PURPOSE: Retrieve a single Org and all its details.
+     *
+     * ACCESS: Only users with the MASTER role, or users
+     *          with the ADMIN role who are a part of the
+     *          Org being updated.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param orgId the Org ID of the resource to retrieve.
+     * @return the Response, containing the Org that was retrieved,
+     *          or nothing if no Org existed with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{orgId}")
     @ThisOrgAllowed(outOfOrgRolesAllowed = Role.MASTER)

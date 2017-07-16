@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Manage Members</title>
+    <link rel="stylesheet" type="text/old.css" href="../css/org-styles.css" />
+</head>
+<body>
+    <h1>Manage Members</h1>
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+
+    <h3 id="membersHeader">Members</h3>
+
+    <div>
+        <table id="membersTable" border="1">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button id="addMemberBtn" type="button" title="Add new Member">A</button>
+    </div>
+
+<script src="../jquery-3.1.1.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var tableBody = $("#membersTable");
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //Access is invalid if there is no valid token or if the user role has MASTER access
+        if(!orgbuilder.validateAccess().hasToken().isValid() || orgbuilder.validateAccess().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access member manager");
+            window.location = "../access-denied.html";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $("#addMemberBtn").click(function(){
+            window.location = "content.html";
+        });
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function setHeader(){
+            $("#membersHeader").text(orgbuilder.jwt.getTokenPayload().onm + " Members");
+        }
+
+        function loadMemberList(){
+            //TODO FC-7
+            orgbuilder.api.send("members", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("No members found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.memberList(data)){
+                        console.log("Error! Data returned from server for memberList does not contain the memberList");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    var now = Date.now();
+
+                    $.each(data.memberList, function(index, member){
+                        var newRow = $("<tr></tr>").attr("index",index).attr("memberid", member.memberId);
+
+                        newRow.append($("<td></td>").attr("field","firstName").text(member.firstName));
+                        newRow.append($("<td></td>").attr("field","lastName").text(member.lastName));
+
+                        var ageDiff = now - new Date(member.dateOfBirth).getTime();
+                        var age = Math.abs(new Date(ageDiff).getUTCFullYear() - 1970);
+                        newRow.append($("<td></td>").attr("field","age").text(age));
+
+                        var city = $("<td></td>").attr("field","city");
+                        var state = $("<td></td>").attr("field","state");
+                        if(member.addresses.length > 0){
+                            $(city).text(member.addresses[0].city);
+                            $(state).text(member.addresses[0].state);
+                        }
+                        newRow.append(city);
+                        newRow.append(state);
+
+                        var options = $("<td></td>").attr("field","options");
+                        options.append($("<button class='editMemberBtn' type='button' title='Edit Member'></button>").text("E"));
+                        options.append($("<button class='deleteMemberBtn' type='button' title='Delete Member'></button>").text("D"));
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+
+                    $(".editMemberBtn").click(function(event){
+                        var memberId = getMemberId(event);
+                        window.location = "content.html?memberid=" + memberId;
+                    });
+
+                    $(".deleteMemberBtn").click(function(event){
+                        //TODO finish delete functionality
+                    });
+                })
+                .fail(function(jqXHR){
+                    //TODO FC-3
+                    console.log("LOADING MEMBER LIST FAILED");
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function getMemberId(event){
+            return $(event.target).parents("tr[memberId]").attr("memberId");
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        setHeader();
+        loadMemberList();
+
+    });
+</script>
+</body>
+</html>

@@ -2,20 +2,22 @@
   "phoneList": [
     {
       "areaCode": "732",
-      "elementId": 1,
+      "phoneId": 1,
       "lineNumber": "7826",
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": false,
+      "extension": null,
       "prefix": "619"
     },
     {
       "areaCode": "908",
-      "elementId": 2,
+      "phoneId": 2,
       "lineNumber": "4040",
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": true,
+      "extension": null,
       "prefix": "619"
     }
   ]

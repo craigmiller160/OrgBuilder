@@ -3,6 +3,8 @@ package io.craigmiller160.orgbuilder.server.dto;
 import io.craigmiller160.orgbuilder.server.rest.LocalDateAdapter;
 import io.craigmiller160.orgbuilder.server.rest.LocalDateTimeAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
  * Created by craig on 9/27/16.
  */
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RefreshTokenDTO implements DTO<Long>, Comparable<RefreshTokenDTO>{
 
     private long tokenId;

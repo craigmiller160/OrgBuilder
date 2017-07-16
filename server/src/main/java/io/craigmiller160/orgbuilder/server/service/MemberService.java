@@ -1,12 +1,7 @@
 package io.craigmiller160.orgbuilder.server.service;
 
 import io.craigmiller160.orgbuilder.server.data.*;
-import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
-import io.craigmiller160.orgbuilder.server.dto.DTO;
-import io.craigmiller160.orgbuilder.server.dto.EmailDTO;
-import io.craigmiller160.orgbuilder.server.dto.MemberDTO;
-import io.craigmiller160.orgbuilder.server.dto.MemberListDTO;
-import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
+import io.craigmiller160.orgbuilder.server.dto.*;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.rest.MemberFilterBean;
 
@@ -25,23 +20,29 @@ public class MemberService {
         this.serviceCommons = new ServiceCommons(securityContext, false);
     }
 
-    private void insertOrUpdateJoinedEntities(MemberDTO member, MemberDTO result, DataConnection connection) throws OrgApiDataException{
+    private void insertOrUpdateJoinedEntities(MemberDTO member, MemberDTO result, DataConnection connection, long memberId) throws OrgApiDataException{
         Dao<AddressDTO,Long> addressDao = connection.newDao(AddressDTO.class);
         Dao<PhoneDTO,Long> phoneDao = connection.newDao(PhoneDTO.class);
         Dao<EmailDTO,Long> emailDao = connection.newDao(EmailDTO.class);
 
+        //First, delete any existing elements for this member
+        addressDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId);
+        phoneDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId);
+        emailDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId);
+
+        //Then, do insert/update operations on all contact info DTOs
         List<AddressDTO> addresses = member.getAddresses();
         List<PhoneDTO> phones = member.getPhones();
         List<EmailDTO> emails = member.getEmails();
 
         result.setAddresses(new ArrayList<>());
-        performInsertOrUpdate(result.getAddresses(), addresses, addressDao);
+        performInsertOrUpdate(result.getAddresses(), addresses, addressDao, memberId);
 
         result.setPhones(new ArrayList<>());
-        performInsertOrUpdate(result.getPhones(), phones, phoneDao);
+        performInsertOrUpdate(result.getPhones(), phones, phoneDao, memberId);
 
         result.setEmails(new ArrayList<>());
-        performInsertOrUpdate(result.getEmails(), emails, emailDao);
+        performInsertOrUpdate(result.getEmails(), emails, emailDao, memberId);
     }
 
     private void deleteJoinedEntities(long memberId, MemberDTO tempResult, DataConnection connection) throws OrgApiDataException{
@@ -54,8 +55,11 @@ public class MemberService {
         tempResult.setEmails((List<EmailDTO>) emailDao.query(AdditionalQueries.DELETE_BY_MEMBER, memberId));
     }
 
-    private <E extends DTO<I>,I> void performInsertOrUpdate(List<E> results, List<E> elements, Dao<E,I> dao) throws OrgApiDataException{
+    private <E extends DTO<I>,I> void performInsertOrUpdate(List<E> results, List<E> elements, Dao<E,I> dao, long memberId) throws OrgApiDataException{
         for(E e : elements){
+            if(e instanceof JoinedWithMemberDTO){
+                ((JoinedWithMemberDTO) e).setMemberId(memberId);
+            }
             e = dao.insertOrUpdate(e);
             results.add(e);
         }
@@ -73,7 +77,7 @@ public class MemberService {
 
             result = memberDao.update(member, id);
 
-            insertOrUpdateJoinedEntities(member, result, connection);
+            insertOrUpdateJoinedEntities(member, result, connection, result.getElementId());
 
             connection.commit();
         }
@@ -97,7 +101,7 @@ public class MemberService {
             Dao<MemberDTO,Long> memberDao = connection.newDao(MemberDTO.class);
             result = memberDao.insert(member);
 
-            insertOrUpdateJoinedEntities(member, result, connection);
+            insertOrUpdateJoinedEntities(member, result, connection, result.getElementId());
 
             connection.commit();
         }

@@ -46,7 +46,7 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         String insertQuery = queries.get(Query.INSERT);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Insert Query:\n" + insertQuery);
         try{
-            return executeInsert(element, insertQuery);
+            return executeInsert(element, insertQuery, false);
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to insert " + getElementName() + ": " + element.toString(), ex);
@@ -54,23 +54,36 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
     }
 
     //This method can be used for insert or insertOrUpdate
-    private E executeInsert(E element, String query) throws SQLException, OrgApiDataException{
+    private E executeInsert(E element, String query, boolean orUpdate) throws SQLException, OrgApiDataException{
         I id = null;
         try(PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)){
             converter.parameterizeElement(stmt, element);
-            stmt.executeUpdate();
+            int result = stmt.executeUpdate();
+            //If result is 0, nothing was changed, return null
+            if(result == 0){
+                return null;
+            }
+
             try(ResultSet resultSet = stmt.getGeneratedKeys()){
-                if(!resultSet.next()){
-                    throw new SQLException("Unable to retrieve ID from inserted " + getElementName() + ": " + element.toString());
+                if(resultSet.next()){
+                    //Get only the first ID, if this is an InsertOrUpdate that did an Update, there will be two values, the first is what is needed
+                    //noinspection unchecked
+                    id = (I) resultSet.getObject(1);
                 }
-                //noinspection unchecked
-                id = (I) resultSet.getObject(1);
+                else if(orUpdate){
+                    //If InsertOrUpdate and ResultSet had nothing, try getting the ID from the element that was passed in to be updated
+                    //This is because if the updated element didn't change, no value will be returned here
+                    id = element.getElementId();
+                }
             }
         }
 
-        element = get(id);
+        if(id == null){
+            //If the ID is null, then it wasn't able to be retrieved and an exception should be thrown
+            throw new SQLException("Unable to retrieve ID from inserted " + getElementName() + ": " + element.toString());
+        }
 
-        return element;
+        return get(id);
     }
 
     @Override
@@ -78,7 +91,7 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         String insertOrUpdateQuery = queries.get(Query.INSERT_OR_UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Insert or Update Query:\n" + insertOrUpdateQuery);
         try{
-            return executeInsert(element, insertOrUpdateQuery);
+            return executeInsert(element, insertOrUpdateQuery, true);
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to insert or update " + getElementName() + ": " + element.toString(), ex);
@@ -88,22 +101,23 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
 
     @Override
     public E update(E element, I id) throws OrgApiDataException {
-        E result = get(id);
-        if(result == null){
-            return null;
-        }
         String updateQuery = queries.get(Query.UPDATE);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Update Query:\n" + updateQuery);
         try(PreparedStatement stmt = connection.prepareStatement(updateQuery)){
             converter.parameterizeElement(stmt, element);
             stmt.setObject(converter.getUpdateKeyParamIndex(), id);
-            stmt.executeUpdate();
+            int result = stmt.executeUpdate();
+            //If the update returned 0, that means nothing was updated, and nothing should be returned
+            if(result == 0){
+                return null;
+            }
         }
         catch(SQLException ex){
             throw new OrgApiDataException("Unable to update " + getElementName() + ":" + element.toString(), ex);
         }
 
-        return element;
+        //Otherwise, get the fully updated value from the database and return it
+        return get(id);
     }
 
     @Override
@@ -114,7 +128,11 @@ public abstract class AbstractJdbcDao<E extends DTO<I>,I> extends AbstractDao<E,
         try{
             try(PreparedStatement stmt = connection.prepareStatement(deleteQuery)){
                 stmt.setObject(1, id);
-                stmt.executeUpdate();
+                int result = stmt.executeUpdate();
+                //If result is 0, nothing was changed, return null
+                if(result == 0){
+                    return null;
+                }
             }
         }
         catch(SQLException ex){

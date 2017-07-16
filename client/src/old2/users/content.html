@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrgBuilder - User Content</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../org-styles.css" />
+</head>
+<body>
+<!-- Navbar -->
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2 name=""></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <form id="userContentForm" class="no-enter-form">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="userInfoSection" class="panel panel-primary form-group" status="view">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">User Info</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Email:</p>
+                                            </div>
+                                            <div id="userEmailField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="userEmail" class="content-field form-control" type="email" required disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">First Name:</p>
+                                            </div>
+                                            <div id="firstNameField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="firstName" class="content-field form-control" type="text" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Last Name:</p>
+                                            </div>
+                                            <div id="lastNameField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="lastName" class="content-field form-control" type="text" disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="passwordSection" class="panel panel-primary form-group" status="view">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Password</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Password:</p>
+                                            </div>
+                                            <div id="passwordField" class="content col-sm-6">
+                                                <p class="content-label password">************</p>
+                                                <input name="password" class="content-field form-control" type="password" required disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row content-field">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Repeat Password:</p>
+                                            </div>
+                                            <div id="repeatPasswordField" class="content col-sm-6">
+                                                <input class="form-control content-field" type="password" required disabled />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="accessSection" class="panel panel-primary form-group" status="view">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Access Roles</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                        </div>
+                                    </div>
+                                    <div name="roles" class="panel-body content-checkbox-group">
+                                        <div class="row">
+                                            <div id="accessCheckboxes" class="col-sm-6 col-sm-offset-6">
+                                                <!-- The access role checkboxes go here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="orgSection" class="panel panel-primary form-group" status="view">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Org</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Org:</p>
+                                            </div>
+                                            <div id="userOrgField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <select id="orgSelectBox" name="orgName" class="content-field form-control"></select>
+                                                <input id="orgIdField" name="orgId" class="default-field" type="hidden" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a id="cancelBtn" class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
+                                <button id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</button>
+                                <a id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete User">Delete</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-wrapper">
+        <!-- Modals go here -->
+    </div>
+</div>
+
+<!-- TODO FC-4 -->
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="../../js/URI.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../org-props.js"></script>
+<script src="../orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var currentUrl = URI(window.location.href);
+        var userId = (function(){
+            if(currentUrl.hasQuery("userId")){
+                return currentUrl.search(true).userId;
+            }
+        })();
+        var saved = (function(){
+            if(currentUrl.hasQuery("saved")){
+                return true;
+            }
+        })();
+
+        //If the tokenExists() check below fails, then it won't matter that this would be null
+        var payload = orgbuilder.jwt.getTokenPayload();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //Deliberately using != here
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid() &&
+            !orgbuilder.validateAccess().hasToken().isUser(userId).isValid()){
+            console.log("Invalid credentials to access user content editor");
+            window.location = "../index.html";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
+        $(".section-edit").click(toggleEdit);
+        $("#deleteBtn").click(deleteUser);
+        $("#userContentForm").on("submit", submitAction);
+        $("#orgSelectBox").change(setOrgIdFromSelect);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function toggleEdit(event){
+            orgbuilder.content.toggleEdit(event,disableCheckboxesForMaster);
+        }
+
+        function deleteUser(event){
+            if(event){
+                event.preventDefault();
+            }
+
+            var item = (userId == payload.uid ? "your" : "this") + " User: " + $(".page-header > h2").attr("name");
+            orgbuilder.modal.showDelete(item, function(){
+                orgbuilder.api.send("users/" + userId, orgbuilder.methods.delete)
+                    .done(function(){
+                        if(userId == payload.uid){
+                            orgbuilder.jwt.clearToken();
+                            window.location = "../login.html";
+                        }
+                        else{
+                            window.location = "manage.html";
+                        }
+                    })
+                    .fail(function(){
+                        console.log("DELETE FAILED");
+                    });
+            });
+        }
+
+        function loadUser(){
+            orgbuilder.api.send("users/" + userId, orgbuilder.methods.get)
+                .done(function(userData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("User not found on server");
+                        orgbuilder.showAlert("alert-danger", "User not found on server");
+                        return;
+                    }
+
+                    updateFields(userData);
+                    if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                        loadOrgList();
+                        disableOrgSelectionForMaster();
+                    }
+                });
+        }
+
+        function loadOrgList(){
+            orgbuilder.api.send("orgs", orgbuilder.methods.get)
+                .done(function(orgData,status,jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("Could not load org list");
+                        orgbuilder.showAlert("alert-danger", "Could not load list of Orgs");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.orgList(orgData)){
+                        console.log("Error! Data returned from server for OrgList does not contain the OrgList.");
+                        orgbuilder.showAlert("alert-danger", "Data returned from server does not contain a valid list of Orgs");
+                        return;
+                    }
+
+                    var orgSelectBox = $("#userOrgField > select");
+                    $.each(orgData.orgList, function(index, org){
+                        var option = $("<option></option>").attr("value", org.orgId).attr("name", org.orgName).text(org.orgName);
+                        $(orgSelectBox).append(option);
+                    });
+
+                    if(orgbuilder.data.hasFullData()){
+                        $("#orgSelectBox").val(orgbuilder.data.getFullData().orgId);
+                    }
+
+                    setOrgIdFromSelect();
+                })
+                .fail(function(){
+                    console.log("FAILED TO RETRIEVE LIST OF ORGS");
+                });
+        }
+
+        function submitAction(event){
+            function preValidationFn(){
+                if($("#passwordSection").attr("status") === "edit"){
+                    var firstPassword = $("#passwordField > input").val();
+                    var secondPassword = $("#repeatPasswordField > input").val();
+                    if(firstPassword !== secondPassword){
+                        console.log("Passwords don't match, can't save password change");
+                        orgbuilder.showAlert("alert-warning", "Cannot save changes, passwords don't match");
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            orgbuilder.content.userSubmitAction(event, userId, preValidationFn);
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function updateFields(userData){
+            if(!orgbuilder.validateData.user(userData)){
+                console.log("Error! Data returned from server for User does not contain the User.");
+                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for User.");
+                return;
+            }
+
+            orgbuilder.data.storeFullData(userData);
+
+            $(".page-header > h2").text("User: " + userData.userEmail);
+            $(".page-header > h2").attr("name", userData.userEmail);
+
+            $("#userEmailField > .content-label").text(userData.userEmail);
+            $("#userEmailField > .content-field").val(userData.userEmail);
+
+            $("#firstNameField > .content-label").text(userData.firstName);
+            $("#firstNameField > .content-field").val(userData.firstName);
+
+            $("#lastNameField > .content-label").text(userData.lastName);
+            $("#lastNameField > .content-field").val(userData.lastName);
+
+            addAccessCheckboxes(userData);
+
+            if(userData.orgName !== null){
+                $("#userOrgField > .content-label").text(userData.orgName);
+            }
+            else{
+                $("#userOrgField > .content-label").text("NONE");
+            }
+
+            $("#orgIdField").val(userData.orgId);
+        }
+
+        function addAccessCheckboxes(userData){
+            var accessPanel = $("#accessCheckboxes");
+
+            $.each(orgbuilder.roles, function(index, role){
+                var inputCheckbox;
+                if(role === orgbuilder.roles.master){
+                    //Only add master checkbox if the current user principal has master access
+                    if(payload.rol.includes(orgbuilder.roles.master)){
+                        inputCheckbox = appendCheckbox(accessPanel, orgbuilder.roles.master);
+                        $(inputCheckbox).click(disableOrgSelectionForMaster);
+                    }
+                }
+                else{
+                    inputCheckbox = appendCheckbox(accessPanel, role);
+                }
+
+                if(inputCheckbox && userData && userData.roles.includes(role)){
+                    $(inputCheckbox).prop("checked", true);
+                }
+            });
+        }
+
+        function appendCheckbox(accessPanel, role){
+            var id = "select" + role;
+            var disabled = userId ? true : false;
+
+            var inputCheckbox = $("<input />").attr("id", id).attr("name", role).attr("type", "checkbox").addClass("content-checkbox").prop("disabled", disabled);
+            var checkboxLabel = $("<label></label>");
+
+            var checkboxWrapper = $("<div></div>").addClass("checkbox");
+
+            $(checkboxWrapper).append(checkboxLabel);
+            $(checkboxLabel).append(inputCheckbox);
+            $(checkboxLabel).append(role);
+            $(accessPanel).append(checkboxWrapper);
+
+            $(inputCheckbox).click(disableCheckboxesForMaster);
+
+            return inputCheckbox;
+        }
+
+        //Disable checkboxes for the master role, not relying on a click
+        function disableCheckboxesForMaster(){
+            if($("#accessCheckboxes input[type='checkbox']:not(:disabled)").length > 0){
+                var allCheckboxes = $("#accessCheckboxes input[type='checkbox']");
+                var masterCheckbox = $(allCheckboxes).filter("[name='" + orgbuilder.roles.master + "']");
+                var otherCheckboxes = $(allCheckboxes).filter("[name!='" + orgbuilder.roles.master + "']");
+                var otherCheckedCheckboxes = $(otherCheckboxes).filter(":checked");
+                if($(masterCheckbox).is(":checked")){
+                    $(otherCheckboxes).prop("checked", false);
+                    $(otherCheckboxes).prop("disabled", true);
+                }
+                else if(otherCheckedCheckboxes.length > 0){
+                    $(masterCheckbox).prop("checked", false);
+                    $(masterCheckbox).prop("disabled", true);
+                }
+                else{
+                    $(allCheckboxes).prop("disabled", false);
+                }
+            }
+        }
+
+        //Toggle enabling/disabling the OrgId selection box and setting the OrgId value based on if the master checkbox is checked
+        function disableOrgSelectionForMaster(){
+            var masterCheckbox = $("#accessCheckboxes input[type='checkbox'][name='" + orgbuilder.roles.master + "']");
+            if($(masterCheckbox).is(":checked")){
+                $("#orgSection").attr("status", "view");
+                $("#orgSection .section-toggle").addClass("hidden");
+                $("#userOrgField > .content-label").text("NONE");
+                $("#orgIdField").val(0);
+            }
+            else{
+                if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                    $("#orgSection .section-toggle").removeClass("hidden");
+                }
+                $("#userOrgField > .content-label").text($("#orgSelectBox :selected").attr("name"));
+
+                setOrgIdFromSelect();
+            }
+        }
+
+        function setOrgIdFromSelect(){
+            var selected = $("#orgSelectBox :selected");
+            $("#orgIdField").val($(selected).val());
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-users-btn");
+
+        if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            $("#orgSection .section-toggle").addClass("hidden");
+        }
+
+        if(!orgbuilder.jwt.hasRole(orgbuilder.roles.master, orgbuilder.roles.admin)){
+            $("#accessSection .section-toggle").addClass("hidden");
+        }
+
+        if(userId){
+            //Configure for an edit user page
+            loadUser();
+        }
+        else{
+            //Configure for an add user page
+            $(".page-header > h2").text("New User");
+            $(".panel.form-group:not(#orgSection)").attr("status", "edit");
+            $(".section-toggle").addClass("hidden");
+            $(".content-field").removeAttr("disabled");
+            $("#deleteBtn").addClass("hidden");
+            addAccessCheckboxes();
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                loadOrgList();
+                $("#orgSection").attr("status", "edit");
+            }
+            else{
+                $("#userOrgField > p.content-label").text(payload.onm);
+            }
+        }
+
+        if(saved){
+            orgbuilder.showAlert("alert-success", "User saved successfully");
+        }
+
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master) || orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+            $("#cancelBtn").attr("href", "manage.html");
+        }
+        else{
+            $("#cancelBtn").attr("href", "../index.html");
+        }
+
+    });
+</script>
+</body>
+</html>

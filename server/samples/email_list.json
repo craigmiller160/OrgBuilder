@@ -1,14 +1,14 @@
 {
   "emailList": [
     {
-      "elementId": 1,
+      "emailId": 1,
       "emailAddress": "craigmiller160@gmail.com",
       "emailType": "PERSONAL",
       "memberId": 1000,
       "preferred": false
     },
     {
-      "elementId": 2,
+      "emailId": 2,
       "emailAddress": "cmiller@gmail.com",
       "emailType": "OTHER",
       "memberId": 1000,

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Main Menu</title>
+    <link rel="stylesheet" type="text/old.css" href="css/org-styles.css" />
+</head>
+<body>
+    <h1>Welcome to OrgBuilder</h1>
+    <p>
+        <a id="logoutButton" href="index.html">Logout</a>
+    </p>
+    <p>
+        <a id="myAccountButton" href="#content">My Account</a>
+    </p>
+    <h3>Main Menu</h3>
+    <div id="linksDiv">
+        <div id="orgsDiv" class="linkGroupDiv hidden">
+            <p class="parentLink">
+                <a href="#">Orgs</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a href="orgs/manage.html">Manage</a>
+                </p>
+            </div>
+        </div>
+        <div id="currentOrgDiv" class="linkGroupDiv hidden">
+            <p class="parentLink">
+                <a href="#">Org</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a id="currentOrgContent" href="#content">Org Content</a>
+                </p>
+            </div>
+        </div>
+        <div id="usersDiv" class="linkGroupDiv hidden">
+            <p class="parentLink">
+                <a href="#">Users</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a href="users/manage.html">Manage</a>
+                </p>
+            </div>
+        </div>
+        <div id="membersDiv" class="linkGroupDiv hidden">
+            <p class="parentLink">
+                <a href="#">Members</a>
+            </p>
+            <div class="innerLinksDiv hidden">
+                <p class="innerLink">
+                    <a href="members/manage.html">Manage</a>
+                </p>
+            </div>
+        </div>
+    </div>
+<script src="../../lib/jquery-3.1.1.js"></script>
+<script src="../old2/org-props.js"></script>
+<script src="../old2/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        //If the tokenExists() check below fails, it won't matter that this would be null
+        var payload = orgbuilder.jwt.getTokenPayload();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        if(!orgbuilder.validateAccess().hasToken().isValid()){
+            console.log("Invalid credentials to access main menu!");
+            window.location = "access-denied.html";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        $(".parentLink a").click((function(){
+            var allLinks = $("#linksDiv");
+            function showHideLinks (event){
+                var linkGroup = $(event.target).parents(".linkGroupDiv")[0];
+                var innerLinks = $(linkGroup).children(".innerLinksDiv")[0];
+
+                //Determine if contents of this div are currently visible
+                var isVisible = $(innerLinks).hasClass("visible");
+
+                //Hide all inner links
+                $(allLinks).find(".innerLinksDiv").removeClass("visible");
+                $(allLinks).find(".innerLinksDiv").addClass("hidden");
+
+                if(!isVisible){
+                    $(innerLinks).removeClass("hidden");
+                    $(innerLinks).addClass("visible");
+                }
+            }
+
+            return showHideLinks;
+        })());
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
+
+        $("#myAccountButton").attr("href", "users/content.html?userid=" + payload.uid);
+
+        //Determine which links are visible based on access level
+        if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+            $("#orgsDiv").removeClass("hidden");
+            $("#usersDiv").removeClass("hidden");
+        }
+        else{
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.admin)){
+                $("#usersDiv").removeClass("hidden");
+            }
+
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.read)){
+                $("#membersDiv").removeClass("hidden");
+            }
+
+            $("#currentOrgDiv").removeClass("hidden");
+            $("#currentOrgContent").attr("href", "orgs/content.html?orgid=" + payload.oid);
+        }
+    });
+</script>
+</body>
+</html>

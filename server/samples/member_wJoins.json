@@ -1,38 +1,40 @@
 {
-  "dateOfBirth": "1958-04-29",
+  "dateOfBirth": "04-29-1958",
   "addresses": [
     {
-      "address": "123 Hart Ct",
+      "address1": "123 Hart Ct",
+      "address2": null,
       "addressType": "HOME",
       "city": "Hometown",
-      "elementId": 1,
+      "addressId": 1,
       "memberId": 1000,
       "preferred": false,
       "state": "NJ",
       "zipCode": "08895"
     },
     {
-      "address": "10509 Casa Wallo Dr",
+      "address1": "10509 Casa Wallo Dr",
+      "address2": null,
       "addressType": "HOME",
       "city": "Tampa",
-      "elementId": 2,
+      "addressId": 2,
       "memberId": 1000,
       "preferred": true,
       "state": "FL",
       "zipCode": "33578"
     }
   ],
-  "elementId": 1000,
+  "memberId": 1000,
   "emails": [
     {
-      "elementId": 1,
+      "emailId": 1,
       "emailAddress": "craigmiller160@gmail.com",
       "emailType": "PERSONAL",
       "memberId": 1000,
       "preferred": false
     },
     {
-      "elementId": 2,
+      "emailId": 2,
       "emailAddress": "cmiller@gmail.com",
       "emailType": "OTHER",
       "memberId": 1000,
@@ -40,35 +42,38 @@
     }
   ],
   "firstName": "Gary",
-  "gender": "MALE",
+  "sex": "MALE",
   "lastName": "Miller",
   "middleName": "Jules",
   "phones": [
     {
       "areaCode": "732",
-      "elementId": 1,
+      "phoneId": 1,
       "lineNumber": "7826",
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": false,
+      "extension": null,
       "prefix": "619"
     },
     {
       "areaCode": "908",
-      "elementId": 2,
+      "phoneId": 2,
       "lineNumber": "4040",
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": true,
+      "extension": null,
       "prefix": "619"
     },
     {
       "areaCode": "908",
-      "elementId": 3,
+      "phoneId": 3,
       "lineNumber": "5555",
       "memberId": 1000,
       "phoneType": "HOME",
       "preferred": false,
+      "extension": null,
       "prefix": "619"
     }
   ]

@@ -44,17 +44,17 @@ public class KeyManagerTest {
         assertEquals("PrivateKey algorithm incorrect", "RSA", privateKey.getAlgorithm());
     }
 
-    @Test
-    public void testSecretKey() throws Exception{
-        SecretKey secretKey = ServerCore.getKeyManager().getDataSecretKey();
-        assertNotNull("SecretKey not found", secretKey);
-        assertEquals("SecretKey algorithm incorrect", "AES", secretKey.getAlgorithm());
-    }
+//    @Test
+//    public void testSecretKey() throws Exception{
+//        SecretKey secretKey = ServerCore.getKeyManager().getDataSecretKey();
+//        assertNotNull("SecretKey not found", secretKey);
+//        assertEquals("SecretKey algorithm incorrect", "AES", secretKey.getAlgorithm());
+//    }
 
-    @Test
-    public void testCACertificate() throws Exception{
-        Certificate certificate = ServerCore.getKeyManager().getCACertificate();
-        assertNotNull("CA Certificate not found", certificate);
-    }
+//    @Test
+//    public void testCACertificate() throws Exception{
+//        Certificate certificate = ServerCore.getKeyManager().getCACertificate();
+//        assertNotNull("CA Certificate not found", certificate);
+//    }
 
 }

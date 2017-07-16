@@ -1,23 +1,24 @@
 {
   "memberList": [
     {
-      "dateOfBirth": "1958-04-29",
+      "dateOfBirth": "04-29-1958",
       "addresses": [
         {
-          "address": "10509 Casa Wallo Dr",
+          "address1": "10509 Casa Wallo Dr",
+          "address2": null,
           "addressType": "HOME",
           "city": "Tampa",
-          "elementId": 2,
+          "addressId": 2,
           "memberId": 1000,
           "preferred": true,
           "state": "FL",
           "zipCode": "33578"
         }
       ],
-      "elementId": 1000,
+      "memberId": 1000,
       "emails": [
         {
-          "elementId": 2,
+          "emailId": 2,
           "emailAddress": "cmiller@gmail.com",
           "emailType": "OTHER",
           "memberId": 1000,
@@ -25,28 +26,29 @@
         }
       ],
       "firstName": "Gary",
-      "gender": "MALE",
+      "sex": "MALE",
       "lastName": "Miller",
       "middleName": "Jules",
       "phones": [
         {
           "areaCode": "908",
-          "elementId": 2,
+          "phoneId": 2,
           "lineNumber": "4040",
           "memberId": 1000,
           "phoneType": "HOME",
           "preferred": true,
+          "extension": null,
           "prefix": "619"
         }
       ]
     },
     {
-      "dateOfBirth": "1970-05-17",
+      "dateOfBirth": "05-17-1970",
       "addresses": [],
-      "elementId": 1002,
+      "memberId": 1002,
       "emails": [],
       "firstName": "Bob",
-      "gender": "MALE",
+      "sex": "MALE",
       "lastName": "Saget",
       "middleName": "Brian",
       "phones": []

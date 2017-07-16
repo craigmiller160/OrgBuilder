@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrgBuilder</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="org-styles.css" />
+</head>
+<body>
+<!-- Navbar -->
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div class="page-header">
+                        <h2>Welcome to <span class="org-brand">OrgBuilder</span></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-sm-offset-3">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TODO FC-4 -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="../js/URI.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="org-props.js"></script>
+<script src="orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var currentUrl = URI(window.location.href);
+        var denied = (function(){
+            if(currentUrl.hasQuery("denied")){
+                return currentUrl.search(true).denied;
+            }
+        })();
+        var errorMessage = (function(){
+            if(currentUrl.hasQuery("message")){
+                return currentUrl.search(true).message;
+            }
+        })();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //If no token exists, simply re-direct to the login page
+        if(!orgbuilder.validateAccess().hasToken().isValid()){
+            console.log("User needs to log in");
+            window.location = "login.html";
+            return;
+        }
+        else{
+            //Otherwise, attempt to validate that the token hasn't expired
+            orgbuilder.api.send("/auth/check", orgbuilder.methods.get);
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-home-btn");
+
+        if(denied){
+            var messageText = (function(){
+                var text = "Access denied!";
+                if(errorMessage){
+                    return text + " Message: " + errorMessage;
+                }
+                return text;
+            })();
+            orgbuilder.showAlert("alert-danger", messageText);
+        }
+    });
+</script>
+</body>
+</html>

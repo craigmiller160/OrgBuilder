@@ -35,7 +35,7 @@ public class UserDao extends AbstractJdbcDao<UserDTO,Long> {
         return DTOSQLConverterFactory.newInstance().getDTOSQLConverter(UserDTO.class);
     }
 
-    //TODO modify this to return a list
+    //TODO FC-12
     public UserDTO getWithName(String name) throws OrgApiDataException{
         String getWithNameQuery = queries.get(JdbcManager.Query.GET_WITH_NAME);
         OrgApiLogger.getDataLogger().trace(getElementName() + " Get With Name Query:\n" + getWithNameQuery);

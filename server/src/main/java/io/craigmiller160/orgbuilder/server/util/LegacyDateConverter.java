@@ -13,6 +13,8 @@ import java.util.Date;
  */
 public class LegacyDateConverter {
 
+    //TODO FC-15
+
     public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime){
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }

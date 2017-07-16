@@ -6,6 +6,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Base64;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -187,6 +188,16 @@ public class JWTUtilTest {
         String[] sub5Split = JWTUtil.splitUserNameOrgName(subject5);
         assertEquals("Subject5 split user invalid", "", sub5Split[0]);
         assertEquals("Subject5 split org invalid", org, sub5Split[1]);
+    }
+
+    //TODO delete this
+    public static void main(String[] args){
+        String s = "eyJzdWIiOiJjcmFpZ0BnbWFpbC5jb206Ok5PTkUiLCJ1aWQiOjEsInVubSI6ImNyYWlnQGdtYWlsLmNvbSIsInNtYSI6Im9yZ19hcHAiLCJpc3MiOiJPcmdCdWlsZGVyIEFQSSIsIm9pZCI6MCwiZXhwIjoxNDkwMjA0NTk2LCJpYXQiOjE0OTAyMDMzOTYsImp0aSI6IjI2Iiwicm9sIjpbIk1BU1RFUiJdLCJvbm0iOiIifQ";
+        String s2 = "eyJhbGciOiJSUzI1NiJ9";
+        String s3 = "h8RtRKL51FU3IE8hO2YYkwhFfk8mPLRFWonjzeMBPHs4mLfIDZSaHt0XxRVshpZtNPiZfm1xOZA6v0pI4aFFz3WMb_7qyGV6BsWF5DIXBuAjtAySclRqvKVuee7bWdJS8snZulw604KP06uVWN3MgeK3EYYnuPnPnxqRIzA-ItZJb2uBc--EKhYilYRZ1GfcMwRH5AwfdIqTVfku7GOi5HNr6zQry617VYaayNUWmALlVdXq4VegtBSDTKyTt8_yjyrLP47YGyNXOFBTaJ0rereZGgQikwd8YA4-b1rj-RpfUdI3p8U8LeN1M53k1A2tkoEGog8pEtOso2Sk_-PLIT-HIMny-JpcGpBgq19kWYmFWtcy_IzLBO0BM5mjRgJ4CGCePju5upO1FKnNxooDGpILVgfjpFnB7nqHGQz7DKXohrGus2oWtQTausyHL56KtKLMua7vU1gsy1MX5IKLsQFI4YR4sIk_eUIHmq5IY2Ao8Oilo2zzTuuHNjJuWJ1NRyK4-Ryj2EeLmAlo3ICcG8SzEi3jfMZvWOsiZdfFsUGQBWVcMa71qpmCn3uKNvNDLp9xKpBEjExOgTqcFQzTpzsdPN3YOEU7WqiicnYmLRT3f8tFgOyXWUpMH9CSO2II6zhKpLYQFTT228uFW4nhUqM4WABiNq3zCdCM26MF2FE";
+        byte[] bytes = Base64.getDecoder().decode(s3.getBytes());
+        System.out.println(new String(bytes));
+
     }
 
 }

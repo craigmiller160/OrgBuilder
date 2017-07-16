@@ -1,10 +1,10 @@
 {
-  "dateOfBirth": "1970-05-17",
+  "dateOfBirth": "05-17-1970",
   "addresses": [],
-  "elementId": 1002,
+  "memberId": 1002,
   "emails": [],
   "firstName": "Bob",
-  "gender": "MALE",
+  "sex": "MALE",
   "lastName": "Saget",
   "middleName": "Brian",
   "phones": []

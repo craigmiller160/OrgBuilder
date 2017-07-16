@@ -7,6 +7,7 @@ import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 
 import javax.ws.rs.core.SecurityContext;
+import java.util.Arrays;
 
 /**
  * Created by craig on 9/18/16.
@@ -17,6 +18,11 @@ public class InfoService {
 
     InfoService(SecurityContext securityContext){
         this.serviceCommons = new ServiceCommons(securityContext, false);
+    }
+
+    public AllInfoDTO getAll(){
+        OrgApiLogger.getServiceLogger().debug("Getting list of all info resource values");
+        return new AllInfoDTO(createAppInfoDTO(), Sex.values(), State.values(), Role.ALL, getContactTypes());
     }
 
     public SexListDTO getSexes(){
@@ -36,7 +42,19 @@ public class InfoService {
 
     public AppInfoDTO getAppInfo(){
         OrgApiLogger.getServiceLogger().debug("Getting application info");
+        return createAppInfoDTO();
+    }
+
+    private AppInfoDTO createAppInfoDTO(){
         return new AppInfoDTO(ServerCore.getProperty(ServerProps.API_NAME), ServerCore.getProperty(ServerProps.API_VERSION));
+    }
+
+    public ContactTypesDTO getContactTypes(){
+        OrgApiLogger.getServiceLogger().debug("Getting list of all contact type values");
+        AddressDTO.AddressType[] addressTypes = AddressDTO.AddressType.values();
+        PhoneDTO.PhoneType[] phoneTypes = PhoneDTO.PhoneType.values();
+        EmailDTO.EmailType[] emailTypes = EmailDTO.EmailType.values();
+        return new ContactTypesDTO(Arrays.asList(addressTypes), Arrays.asList(phoneTypes), Arrays.asList(emailTypes));
     }
 
 }

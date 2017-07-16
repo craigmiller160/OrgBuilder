@@ -1,0 +1,29 @@
+.visible {
+    visibility: visible;
+    display: block;
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+
+.innerLink {
+    padding-left: 1em;
+}
+
+.error {
+    color: red;
+}
+
+.buttonDiv {
+    padding-top: 1em;
+}
+
+.right-text {
+    text-align: right;
+}
+
+.close-text {
+    line-height: 0;
+}

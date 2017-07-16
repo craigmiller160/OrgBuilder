@@ -47,12 +47,14 @@ public class OrgDataSource {
             dataSource.setMaxIdle(max);
         }
 
-        dataSource.addConnectionProperty(MYSQL_USE_SSL_PROP, "true");
-        dataSource.addConnectionProperty(MYSQL_REQUIRE_SSL_PROP, "true");
-        URL keyStoreUrl = OrgDataSource.class.getClassLoader().getResource(serverProps.getProperty(ServerProps.KEYSTORE_PATH));
-        dataSource.addConnectionProperty(MYSQL_TRUST_STORE_URL_PROP, keyStoreUrl.toString());
-        dataSource.addConnectionProperty(MYSQL_TRUST_STORE_TYPE_PROP, serverProps.getProperty(ServerProps.KEYSTORE_TYPE));
-        dataSource.addConnectionProperty(MYSQL_TRUST_STORE_PASS_PROP, serverProps.getProperty(ServerProps.KEYSTORE_PASS));
+        if(Boolean.parseBoolean(serverProps.getProperty(ServerProps.USE_SSL_PROP))){
+            dataSource.addConnectionProperty(MYSQL_USE_SSL_PROP, "true");
+            dataSource.addConnectionProperty(MYSQL_REQUIRE_SSL_PROP, "true");
+            URL keyStoreUrl = OrgDataSource.class.getClassLoader().getResource(serverProps.getProperty(ServerProps.KEYSTORE_PATH));
+            dataSource.addConnectionProperty(MYSQL_TRUST_STORE_URL_PROP, keyStoreUrl.toString());
+            dataSource.addConnectionProperty(MYSQL_TRUST_STORE_TYPE_PROP, serverProps.getProperty(ServerProps.KEYSTORE_TYPE));
+            dataSource.addConnectionProperty(MYSQL_TRUST_STORE_PASS_PROP, serverProps.getProperty(ServerProps.KEYSTORE_PASS));
+        }
     }
 
     public synchronized Connection getConnection() throws SQLException {

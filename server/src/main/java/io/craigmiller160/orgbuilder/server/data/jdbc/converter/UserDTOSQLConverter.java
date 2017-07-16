@@ -74,6 +74,8 @@ public class UserDTOSQLConverter implements DTOSQLConverter<UserDTO> {
         userDTO.setElementId(resultSet.getLong("user_id"));
         userDTO.setUserEmail(resultSet.getString("user_email"));
         userDTO.setPassword(resultSet.getString("passwd"));
+        userDTO.setFirstName(resultSet.getString("first_name"));
+        userDTO.setLastName(resultSet.getString("last_name"));
         String roles = resultSet.getString("role");
         if(!StringUtils.isEmpty(roles)){
             userDTO.convertStringToRoles(roles);

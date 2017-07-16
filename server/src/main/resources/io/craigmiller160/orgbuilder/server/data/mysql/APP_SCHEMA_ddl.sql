@@ -3,6 +3,7 @@
 CREATE TABLE IF NOT EXISTS orgs (
   org_id BIGINT NOT NULL AUTO_INCREMENT,
   org_name VARCHAR(255) NOT NULL,
+  org_description VARCHAR(255),
   created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   org_schema_name VARCHAR(50) NOT NULL,
   PRIMARY KEY (org_id)
@@ -14,7 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
   passwd VARCHAR(255) NOT NULL,
   first_name VARCHAR(255),
   last_name VARCHAR(255),
-  role VARCHAR(255) NOT NULL,
+  role VARCHAR(255),
   org_id BIGINT,
   PRIMARY KEY (user_id),
   FOREIGN KEY (org_id) REFERENCES orgs (org_id)
@@ -43,12 +44,12 @@ CREATE TRIGGER orgs_before_schema_name_trigger
 BEFORE INSERT ON orgs FOR EACH ROW
   BEGIN
     DECLARE next_index INT;
-    DECLARE temp_schema_name VARCHAR(6);
+    DECLARE temp_schema_name VARCHAR(255);
 
     SET next_index =
     (SELECT auto_increment
      FROM information_schema.tables
-     WHERE table_schema = 'org_app'
+     WHERE table_schema = DATABASE()
            AND table_name = 'orgs');
 
     IF next_index IS NULL THEN

@@ -26,6 +26,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
 /**
+ * RESTful API for accessing the Members resource.
+ *
  * Created by craig on 8/23/16.
  */
 @Produces(MediaType.APPLICATION_JSON)
@@ -41,6 +43,24 @@ public class MemberResource {
     @Context
     private UriInfo uriInfo;
 
+    /**
+     * RESOURCE: GET /members
+     *
+     * PURPOSE: Retrieve all members.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     * {search}: a number of other params for performing a search for a specific member.
+     *
+     * @param membersFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the members retrieved by the request.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllMembers(@BeanParam MemberFilterBean membersFilterBean) throws OrgApiException{
@@ -58,8 +78,23 @@ public class MemberResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: POST /members
+     *
+     * PURPOSE: Create a new member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: The member to create.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param member the member to create.
+     * @return the Response, containing the member that was created.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response addMember(MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         member = memberService.addMember(member);
@@ -70,9 +105,26 @@ public class MemberResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: PUT /members/{memberId}
+     *
+     * PURPOSE: Update an existing member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: The member to update.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param memberId the ID of the member to update.
+     * @param member the updated member.
+     * @return the Response, containing the member that was updated,
+     *          or nothing if there was no member with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @PUT
     @Path("/{memberId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response updateMember(@PathParam("memberId") long memberId, MemberDTO member) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO result = memberService.updateMember(member, memberId);
@@ -88,9 +140,25 @@ public class MemberResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /members/{memberId}
+     *
+     * PURPOSE: Delete an existing member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param memberId the ID of the member to delete.
+     * @return the Response, containing the member that was deleted,
+     *          or nothing if no member matching the ID existed.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{memberId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response deleteMember(@PathParam("memberId") long memberId) throws OrgApiException{
         MemberService memberService = factory.newMemberService(securityContext);
         MemberDTO member = memberService.deleteMember(memberId);
@@ -104,6 +172,22 @@ public class MemberResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /members/{memberId}
+     *
+     * PURPOSE: Retrieve a single member and all its details.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param memberId the ID of the member to retrieve.
+     * @return the Response, containing the member retrieved,
+     *          or nothing if there's no member matching the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{memberId}")
     @RolesAllowed(Role.READ)

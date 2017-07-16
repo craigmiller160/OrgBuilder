@@ -26,6 +26,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
     private LocalDate dateOfBirth;
     private Sex sex;
 
+    //Contact info DTOs
     private List<AddressDTO> addresses = new ArrayList<>();
     private List<PhoneDTO> phones = new ArrayList<>();
     private List<EmailDTO> emails = new ArrayList<>();

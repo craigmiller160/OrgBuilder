@@ -19,6 +19,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
 /**
+ * RESTful API for handling the Email resource.
+ *
  * Created by craig on 8/23/16.
  */
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,6 +39,23 @@ public class EmailResource {
     @PathParam("memberId")
     private long memberId;
 
+    /**
+     * RESOURCE: GET /members/{memberId}/emails
+     *
+     * PURPOSE: Retrieve all emails for a specific member.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     *
+     * @param resourceFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the Emails retrieved by the request.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllEmails(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -54,8 +73,23 @@ public class EmailResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: POST /members/{memberId}/emails
+     *
+     * PURPOSE: Create new email for a member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: The email to be created.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param email the email to be created.
+     * @return the Response, containing the email that was created.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response addEmail(EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         email = emailService.addEmail(email, memberId);
@@ -66,9 +100,27 @@ public class EmailResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: PUT /members/{memberId}/emails/{emailId}
+     *
+     * PURPOSE: Update an existing email for a member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: The email to be updated.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param emailId the ID of the email to update.
+     * @param email the updated email.
+     * @return the Response, containing the updated email,
+     *          or nothing if no email with the specified ID
+     *          existed.
+     * @throws OrgApiException if an error occurs.
+     */
     @PUT
     @Path("/{emailId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response updateEmail(@PathParam("emailId") long emailId, EmailDTO email) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO result = emailService.updateEmail(email, emailId, memberId);
@@ -84,9 +136,25 @@ public class EmailResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /members/{memberId}/emails/{emailId}
+     *
+     * PURPOSE: Delete an existing email for a member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param emailId the ID of the email to delete.
+     * @return the Response, containing the email that was deleted,
+     *          or nothing if there was no email to delete.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{emailId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response deleteEmail(@PathParam("emailId") long emailId) throws OrgApiException{
         EmailService emailService = factory.newEmailService(securityContext);
         EmailDTO email = emailService.deleteEmail(emailId);
@@ -101,6 +169,23 @@ public class EmailResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /members/{memberId}/emails/{emailId}
+     *
+     * PURPOSE: To retrieve a single email for a member.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     *
+     * @param emailId the ID of the email to retrieve.
+     * @return a Response containing the email that was retrieved,
+     *          or nothing if there was no email with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{emailId}")
     @RolesAllowed(Role.READ)

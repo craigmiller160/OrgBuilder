@@ -3,11 +3,18 @@ package io.craigmiller160.orgbuilder.server.data.jdbc;
 import io.craigmiller160.orgbuilder.server.data.Dao;
 import io.craigmiller160.orgbuilder.server.dto.DTO;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by craig on 9/4/16.
@@ -74,6 +81,9 @@ public class DaoTestMethods<E extends DTO<I>,I,D extends Dao<E,I>> {
         elementToUpdate.setElementId(updateExpectedId);
         dao.insertOrUpdate(elementToUpdate);
 
+        long count = dao.getCount();
+        assertTrue(elementName + " has wrong record count, should only be one record in database", count == 1);
+
         E result = dao.get(updateExpectedId);
         assertNotNull(elementName + " update result is null", result);
         assertEquals(elementName + " insertOrUpdate did not update existing record", elementToUpdate, result);
@@ -81,6 +91,10 @@ public class DaoTestMethods<E extends DTO<I>,I,D extends Dao<E,I>> {
         dao.insertOrUpdate(elementToInsert);
         elementToInsert.setElementId(insertExpectedId);
         result = dao.get(insertExpectedId);
+
+        count = dao.getCount();
+        assertTrue(elementName + " has wrong record count, should be two records in database", count == 2);
+
         assertNotNull(elementName + " insert result is null", result);
         assertEquals(elementName + " insertOrUpdate did not insert new record", elementToInsert, result);
     }

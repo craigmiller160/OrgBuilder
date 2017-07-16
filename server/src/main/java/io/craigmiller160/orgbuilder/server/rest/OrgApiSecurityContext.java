@@ -34,13 +34,13 @@ public class OrgApiSecurityContext implements SecurityContext {
 
     @Override
     public boolean isSecure() {
-        //TODO figure out how to finish this
+        //TODO FC-14
         return false;
     }
 
     @Override
     public String getAuthenticationScheme() {
-        //TODO figure out how to finish this
+        //TODO FC-14
         return null;
     }
 }

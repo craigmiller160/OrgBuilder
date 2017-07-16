@@ -1,0 +1,17 @@
+{
+  "exp": 1483215364,
+  "iat": 1483214164,
+  "iss": "OrgBuilder API",
+  "jti": 99,
+  "oid": 1,
+  "onm": "TestOrg",
+  "rol": [
+    "ADMIN",
+    "WRITE",
+    "READ"
+  ],
+  "sma": "org_app",
+  "sub": "craig@gmail.com::TestOrg",
+  "uid": 1,
+  "unm": "craig@gmail.com"
+}

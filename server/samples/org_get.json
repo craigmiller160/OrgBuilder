@@ -1,5 +1,7 @@
 {
   "createdDate": "2016-09-09",
-  "elementId": 1,
-  "orgName": "TestOrg"
+  "orgId": 1,
+  "orgName": "TestOrg",
+  "orgDescription": "A test Org",
+  "schemaName": "1TestO"
 }

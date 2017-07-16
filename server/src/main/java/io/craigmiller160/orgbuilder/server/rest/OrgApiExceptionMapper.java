@@ -45,7 +45,7 @@ public class OrgApiExceptionMapper implements ExceptionMapper<Throwable> {
 
     private int getStatusCodeForExceptionType(Throwable t){
         if(t instanceof OrgApiSecurityException){
-            return Response.Status.UNAUTHORIZED.getStatusCode();
+            return Response.Status.FORBIDDEN.getStatusCode();
         }
         else if(t instanceof OrgApiInvalidRequestException | t instanceof BadRequestException){
             return Response.Status.BAD_REQUEST.getStatusCode();

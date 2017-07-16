@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrgBuilder - Member Content</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../org-styles.css" />
+</head>
+<body>
+<!-- Navbar -->
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2 name=""></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <form id="memberContentForm" class="no-enter-form">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberInfoSection" class="panel panel-primary form-group" status="view">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Personal Info</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>
+                                            <button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">First Name:</p>
+                                            </div>
+                                            <div id="firstNameField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="firstName" class="content-field form-control" type="text" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Middle Name:</p>
+                                            </div>
+                                            <div id="middleNameField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="middleName" class="content-field form-control" type="text" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Last Name:</p>
+                                            </div>
+                                            <div id="lastNameField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="lastName" class="content-field form-control" type="text" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Date of Birth:</p>
+                                            </div>
+                                            <div id="birthDateField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <input name="dateOfBirth" class="content-field form-control" type="date" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <p class="content-name">Sex:</p>
+                                            </div>
+                                            <div id="sexField" class="content col-sm-6">
+                                                <p class="content-label"></p>
+                                                <select id="sexSelectBox" name="sex" class="content-field form-control"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberAddressSection" class="panel panel-primary form-group" status="sub-edit">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Addresses</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <!--<button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>-->
+                                            <!--<button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>-->
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="addressContainer" class="contact-container">
+                                            <!-- Addresses will go here -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button id="addAddressBtn" class="content-btn btn btn-primary modal-btn" type="button" title="Add Address" data-target="#address-modal">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberPhoneSection" class="panel panel-primary form-group" status="sub-edit">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Phones</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <!--<button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>-->
+                                            <!--<button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>-->
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="phoneContainer" class="contact-container">
+                                            <!-- Phones will go here -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button id="addPhoneBtn" class="content-btn btn btn-primary modal-btn" type="button" title="Add Phone" data-target="#phone-modal">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="memberEmailSection" class="panel panel-primary form-group" status="sub-edit">
+                                    <div class="panel-heading clearfix">
+                                        <h4 class="pull-left">Emails</h4>
+                                        <div class="btn-group pull-right section-toggle">
+                                            <!--<button class="section-edit btn btn-info" type="button" title="Edit Section">Edit</button>-->
+                                            <!--<button class="section-save btn btn-primary" type="submit" title="Save Section">Save</button>-->
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div id="emailContainer" class="contact-container">
+                                            <!-- Emails will go here -->
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button id="addEmailBtn" class="content-btn btn btn-primary modal-btn" type="button" title="Add Email" data-target="#email-modal">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a id="cancelBtn" href="manage.html" class="btn btn-primary" type="button" title="Cancel changes">Cancel</a>
+                                <button id="saveBtn" class="btn btn-success" type="submit" title="Save changes">Save</button>
+                                <a id="deleteBtn" class="btn btn-danger pull-right" type="button" title="Delete Member">Delete</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div id="modal-wrapper">
+        <!-- Modals go here -->
+    </div>
+    <div id="address-modal" class="modal org-modal contact-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span class="title-type"></span> Address</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Address Type:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="addressTypeSelect" name="addressType" class="form-control content-field"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Address Line 1:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="address1Field" name="address1" class="form-control content-field" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Address Line 2:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="address2Field" name="address2" class="form-control content-field" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">City:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="cityField" name="city" class="form-control content-field" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">State:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="stateField" name="state" class="form-control content-field"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-name">Zip Code:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="zipCodeField" class="form-control content-field" name="zipCode" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-6">
+                            <label for="primaryAddressField">
+                                <input id="primaryAddressField" name="preferred" class="content-field" type="checkbox">
+                                Preferred
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="section-save modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="phone-modal" class="modal org-modal contact-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span class="title-type"></span> Phone</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Phone Type:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="phoneTypeSelect" name="phoneType" class="content-field form-control"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Area Code:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="areaCodeField" name="areaCode" class="content-field form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Prefix:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="prefixField" name="prefix" class="content-field form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Line Number:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="lineNumberField" name="lineNumber" class="content-field form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Extension:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="extensionField" name="extension" class="content-field form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-6">
+                            <label for="primaryPhoneField">
+                                <input id="primaryPhoneField" name="preferred" class="content-field" type="checkbox">
+                                Preferred
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="section-save modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="email-modal" class="modal org-modal contact-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"><span class="title-type"></span> Email</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Email Type:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <select id="emailTypeSelect" name="emailType" class="content-field form-control"></select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p class="content-label">Email:</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <input id="emailField" name="emailAddress" class="content-field form-control" type="text" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-6">
+                            <label for="primaryEmailField">
+                                <input id="primaryEmailField" name="preferred" class="content-field" type="checkbox">
+                                Preferred
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-no btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="section-save modal-yes btn btn-success" data-dismiss="modal">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TODO FC-4 -->
+<script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="../../js/URI.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="../org-props.js"></script>
+<script src="../orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var currentUrl = URI(window.location.href);
+        var memberId = (function(){
+            if(currentUrl.hasQuery("memberId")){
+                return currentUrl.search(true).memberId;
+            }
+        })();
+        var saved = (function(){
+            if(currentUrl.hasQuery("saved")){
+                return true;
+            }
+        })();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //TODO going to need something here...
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $(".section-edit").click(toggleEdit);
+        $("#memberContentForm").on("submit", submitAction);
+        $("#deleteBtn").click(deleteMember);
+        $("#cancelBtn").click(orgbuilder.cancelChangesCheck);
+        $(".modal-btn").click(showContactModal);
+        $(".modal-yes").click(modalButtonAction);
+        $(".modal-no").click(modalButtonAction);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function modalButtonAction(event){
+            if($(event.target).hasClass("modal-yes")){
+                submitAction(event);
+            }
+            orgbuilder.data.clearSelectedData();
+        }
+
+        function toggleEdit(event){
+            $("#sexSelectBox").val(orgbuilder.data.getFullData().sex);
+            orgbuilder.content.toggleEdit(event);
+        }
+
+        function submitAction(event){
+            orgbuilder.content.memberSubmitAction(event, memberId);
+        }
+
+        function loadMember(){
+            orgbuilder.api.send("members/" + memberId, orgbuilder.methods.get)
+                .done(function(memberData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("Member not found on server");
+                        orgbuilder.showAlert("alert-danger", "Member not found on server");
+                        return;
+                    }
+
+                    updateFields(memberData);
+                });
+        }
+
+        function loadInfo(){
+            orgbuilder.api.send("info", orgbuilder.methods.get)
+                .done(function(infoData, status, jqXHR){
+                    if(!orgbuilder.validateData.infoAll(infoData)){
+                        console.log("Error! Data returned from server for Info does not contain the Info.");
+                        orgbuilder.showAlert("alert-danger", "Invalid data returned from server for General Info.");
+                        return;
+                    }
+
+                    var sexSelectBox = $("#sexSelectBox");
+                    $.each(infoData.sexes, function(index, sex){
+                        var option = $("<option></option>").attr("value", sex).attr("name", sex).text(sex);
+                        $(sexSelectBox).append(option);
+                    });
+
+                    var addressTypeSelect = $("#addressTypeSelect");
+                    var phoneTypeSelect = $("#phoneTypeSelect");
+                    var emailTypeSelect = $("#emailTypeSelect");
+                    var stateSelect = $("#stateField");
+
+                    $.each(infoData.contactTypes.addressTypes, function(index, type){
+                        var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
+                        $(addressTypeSelect).append(option);
+                    });
+
+                    $.each(infoData.contactTypes.phoneTypes, function(index, type){
+                        var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
+                        $(phoneTypeSelect).append(option);
+                    });
+
+                    $.each(infoData.contactTypes.emailTypes, function(index, type){
+                        var option = $("<option></option>").attr("value", type).attr("name", type).text(type);
+                        $(emailTypeSelect).append(option);
+                    });
+
+                    $.each(infoData.states, function(index, state){
+                        var option = $("<option></option>").attr("value", state).attr("name", state).text(state);
+                        $(stateSelect).append(option);
+                    });
+                });
+        }
+
+        function deleteMember(event){
+            if(event){
+                event.preventDefault();
+            }
+
+            var item = $(".page-header > h2").attr("name");
+            orgbuilder.modal.showDelete(item, function(){
+                orgbuilder.api.send("members/" + memberId, orgbuilder.methods.delete)
+                    .done(function(){
+                        window.location = "manage.html";
+                    });
+            });
+        }
+
+        function showContactModal(event){
+            var target = $(event.target).attr("data-target");
+            if($(event.target).parents(".contact-row").length > 0){
+                var id = $(event.target).parents(".contact-row").attr("id");
+                var type = $(event.target).parents(".contact-row").attr("type");
+
+                var data = orgbuilder.data.getFullData()[type];
+            }
+
+            //The second through fourth arguments are ignored if this is not an edit operation
+            if("#address-modal" === target){
+                updateModalFields($("#address-modal"), data, id, "addressId");
+            }
+            else if("#phone-modal" === target){
+                updateModalFields($("#phone-modal"), data, id, "phoneId");
+            }
+            else if("#email-modal" === target){
+                updateModalFields($("#email-modal"), data, id, "emailId");
+            }
+
+            $(target).modal({
+                backdrop: "static"
+            });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function updateFields(memberData){
+            if(!orgbuilder.validateData.member(memberData)){
+                console.log("Error! Data returned from server for Member does not contain the Member.");
+                orgbuilder.showAlert("alert-danger", "Invalid data returned from server for Member.");
+                return;
+            }
+
+            orgbuilder.data.storeFullData(memberData);
+
+            var firstLastName = memberData.firstName + " " + memberData.lastName;
+
+            $(".page-header > h2").text("Member: " + firstLastName);
+            $(".page-header > h2").attr("name", firstLastName);
+
+            $("#firstNameField > .content-label").text(memberData.firstName);
+            $("#firstNameField > .content-field").val(memberData.firstName);
+
+            $("#middleNameField > .content-label").text(memberData.middleName);
+            $("#middleNameField > .content-field").val(memberData.middleName);
+
+            $("#lastNameField > .content-label").text(memberData.lastName);
+            $("#lastNameField > .content-field").val(memberData.lastName);
+
+            //TODO need to make sure age is recalculated after editing birth date value
+            var age = (function(){
+                if(memberData.dateOfBirth){
+                    return " (" + orgbuilder.calculateAge(memberData.dateOfBirth) + ")";
+                }
+                return ""
+            })();
+
+            $("#birthDateField > .content-label").text(memberData.dateOfBirth + age);
+            $("#birthDateField > .content-field").val(new Date(memberData.dateOfBirth).toISOString().substr(0,10));
+
+            $("#sexField > .content-label").text(memberData.sex);
+
+            if(memberData.addresses !== null && memberData.addresses.length > 0){
+                var addressContainer = $("#addressContainer");
+                $.each(memberData.addresses, function(index, address){
+                    var row = $("<div></div>").addClass("row").addClass("contact-row").attr("type", "addresses");
+                    var preferredCol = $("<div></div>").addClass("col-sm-1");
+                    var typeCol = $("<div></div>").addClass("col-sm-2");
+                    var addrCol = $("<div></div>").addClass("col-sm-3");
+                    var cityCol = $("<div></div>").addClass("col-sm-2");
+                    var stateCol = $("<div></div>").addClass("col-sm-1");
+                    var zipCol = $("<div></div>").addClass("col-sm-1");
+                    var options = $("<div></div>").addClass("col-sm-2");
+
+                    $(row).attr("id", address.addressId);
+
+                    $(preferredCol).append($("<p></p>").text(address.preferred ? "*" : ""));
+                    $(typeCol).append($("<p></p>").text(address.addressType));
+
+                    var addrText = address.address1 !== null ? address.address1 + " " : "";
+                    addrText = addrText + (address.address2 !== null ? address.address2 : "");
+                    $(addrCol).append($("<p></p>").text(addrText));
+
+                    $(cityCol).append($("<p></p>").text(address.city !== null ? address.city : ""));
+                    $(stateCol).append($("<p></p>").text(address.state !== null ? address.state : ""));
+                    $(zipCol).append($("<p></p>").text(address.zipCode !== null ? address.zipCode : ""));
+
+                    var editBtn = $("<button></button>").addClass("btn").addClass("content-btn").addClass("btn-info").addClass("modal-btn").attr("type", "button").attr("data-target", "#address-modal").text("Edit");
+
+                    $(options).append(editBtn);
+
+                    $(row).append(preferredCol);
+                    $(row).append(typeCol);
+                    $(row).append(addrCol);
+                    $(row).append(cityCol);
+                    $(row).append(stateCol);
+                    $(row).append(zipCol);
+                    $(row).append(options);
+
+                    $(addressContainer).append(row);
+                });
+            }
+
+            if(memberData.phones !== null && memberData.phones.length > 0){
+                var phoneContainer = $("#phoneContainer");
+                $.each(memberData.phones, function(index, phone){
+                    var row = $("<div></div>").addClass("row").addClass("contact-row").attr("type", "phones");
+                    var preferredCol = $("<div></div>").addClass("col-sm-1");
+                    var typeCol = $("<div></div>").addClass("col-sm-2");
+                    var phoneCol = $("<div></div>").addClass("col-sm-7");
+                    var optionsCol = $("<div></div>").addClass("col-sm-2");
+
+                    $(row).attr("id", phone.phoneId);
+
+                    var phoneText = phone.areaCode !== null ? "(" + phone.areaCode + ") " : "";
+                    phoneText = phoneText + (phone.prefix !== null ? phone.prefix + "-" : "-");
+                    phoneText = phoneText + (phone.lineNumber !== null ? phone.lineNumber + " " : " ");
+                    phoneText = phoneText + (phone.extension !== null ? "x" + phone.extension : "");
+
+                    $(preferredCol).append($("<p></p>").text(phone.preferred ? "*" : ""));
+                    $(typeCol).append($("<p></p>").text(phone.phoneType));
+                    $(phoneCol).append($("<p></p>").text(phoneText));
+
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("content-btn").addClass("modal-btn").attr("type", "button").attr("data-target", "#phone-modal").text("Edit");
+                    $(optionsCol).append(editBtn);
+
+                    $(row).append(preferredCol);
+                    $(row).append(typeCol);
+                    $(row).append(phoneCol);
+                    $(row).append(optionsCol);
+
+                    $(phoneContainer).append(row);
+                });
+            }
+
+            if(memberData.emails !== null && memberData.emails.length > 0){
+                var emailContainer = $("#emailContainer");
+                $.each(memberData.emails, function(index, email){
+                    var row = $("<div></div>").addClass("row").addClass("contact-row").attr("type", "emails");
+                    var preferredCol = $("<div></div>").addClass("col-sm-1");
+                    var typeCol = $("<div></div>").addClass("col-sm-2");
+                    var emailCol = $("<div></div>").addClass("col-sm-7");
+                    var optionsCol = $("<div></div>").addClass("col-sm-2");
+
+                    $(row).attr("id", email.emailId);
+
+                    $(preferredCol).append($("<p></p>").text(email.preferred ? "*" : ""));
+                    $(typeCol).append($("<p></p>").text(email.emailType));
+                    $(emailCol).append($("<p></p>").text(email.emailAddress));
+
+                    var editBtn = $("<button></button>").addClass("btn").addClass("btn-info").addClass("content-btn").addClass("modal-btn").attr("type", "button").attr("data-target", "#email-modal").text("Edit");
+                    $(optionsCol).append(editBtn);
+
+                    $(row).append(preferredCol);
+                    $(row).append(typeCol);
+                    $(row).append(emailCol);
+                    $(row).append(optionsCol);
+
+                    $(emailContainer).append(row);
+                });
+            }
+
+            $(".modal-btn").click(showContactModal);
+        }
+
+        function updateModalFields(modal, data, id, idName){
+            if(data !== undefined && data !== null){
+                //Populate fields
+                var record = data.filter(function(obj){
+                    return obj[idName] == id;
+                });
+
+                if(record.length === 0){
+                    alert("Error! Unable to find matching record for modal");
+                    return;
+                }
+                record = record[0];
+
+                //Store the selected record so that it is preserved for saving the data later on
+                orgbuilder.data.storeSelectedData(record);
+
+                $.each($(modal).find(".content-field"), function(index, field){
+                    var name = $(field).attr("name");
+                    if($(field).attr("type") === "checkbox"){
+                        $(field).prop("checked", record[name]);
+                    }
+                    else{
+                        $(field).val(record[name]);
+                    }
+                });
+            }
+            else{
+                //Clear fields
+                $.each($(modal).find(".content-field"), function(index, field){
+                    $(field).val(null);
+                });
+            }
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-members-btn");
+        loadInfo();
+
+        if(memberId){
+            //Configure for edit member page
+            loadMember();
+        }
+        else{
+            //Configure for new member page
+            $(".page-header > h2").text("New Member");
+            $(".panel.form-group").attr("status", "edit");
+            $(".section-toggle").addClass("hidden");
+            $(".content-field").removeAttr("disabled");
+            $("#deleteBtn").addClass("hidden");
+        }
+
+    });
+</script>
+</body>
+</html>

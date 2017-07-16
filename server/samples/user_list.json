@@ -1,0 +1,16 @@
+{
+  "userList": [
+    {
+      "userId": 1,
+      "userEmail": "craig@gmail.com",
+      "password": null,
+      "roles": [
+        "MASTER"
+      ],
+      "orgId": 0,
+      "orgName": null,
+      "firstName": "Craig",
+      "lastName": "Smith"
+    }
+  ]
+}

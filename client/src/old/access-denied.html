@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+    <link rel="stylesheet" type="text/old.css" href="css/org-styles.css" />
+</head>
+<body>
+    <h1 class="error">Access Denied!</h1>
+    <h4 class="error">You do not have access to this page, or your access has expired.</h4>
+
+    <p>
+        <a id="backToLogin" href="index.html">Back to Login</a>
+    </p>
+<script src="../../lib/jquery-3.1.1.js"></script>
+<script src="../old2/org-props.js"></script>
+<script src="../old2/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#backToLogin").click(orgbuilder.jwt.clearToken);
+    });
+</script>
+</body>
+</html>

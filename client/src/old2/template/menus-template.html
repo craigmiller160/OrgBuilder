@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../org-styles.css" />
+</head>
+<body>
+<!-- TODO rename this file to simply "template" -->
+<div id="navbar-template">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Navbar Header -->
+            <div class="navbar-header">
+                <a class="navbar-brand org-brand home-link" href="#">OrgBuilder</a>
+            </div>
+
+            <!-- Navbar Items -->
+            <div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="navbar-user-menu" class="dropdown">
+                        <a href="#" class="dropdown-toggle expandable" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i> <span id="userName">User</span> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li id="user-profile-btn">
+                                <a class="template-link" href="/users/content.html">
+                                    <i class="glyphicon glyphicon-user"></i> User Profile
+                                </a>
+                            </li>
+                            <li id="org-profile-btn">
+                                <a class="template-link" href="/orgs/content.html">
+                                    <i class="glyphicon glyphicon-globe"></i> Org Profile
+                                </a>
+                            </li>
+                            <li id="logoutBtn">
+                                <a class="" href="/login.html">
+                                    <i class="glyphicon glyphicon-off"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sidebar-menu-btn">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-menu-hamburger"></i> Menu
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<div id="sidebar-template">
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav nav flex-column">
+            <li class="sidebar-menu-btn">
+                <a href="#">
+                    <i class="glyphicon glyphicon-menu-hamburger"></i><span class="sidebar-text"> Menu</span>
+                </a>
+            </li>
+            <li id="sidebar-home-btn">
+                <a class="template-link home-link" href="/index.html">
+                    <i class="glyphicon glyphicon-home"></i><span class="sidebar-text"> Home</span>
+                </a>
+            </li>
+            <li id="sidebar-orgs-btn" class="hidden">
+                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#orgs-collapse">
+                    <i class="glyphicon glyphicon-globe"></i><span class="sidebar-text"> Orgs <span class="caret"></span></span>
+                </a>
+                <ul id="orgs-collapse" class="collapse menu-collapse">
+                    <li>
+                        <a class="template-link" href="/orgs/manage.html">Manage</a>
+                    </li>
+                </ul>
+            </li>
+            <li id="sidebar-users-btn" class="hidden">
+                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#users-collapse">
+                    <i class="glyphicon glyphicon-user"></i><span class="sidebar-text"> Users <span class="caret"></span></span>
+                </a>
+                <ul id="users-collapse" class="collapse menu-collapse">
+                    <li>
+                        <a class="template-link" href="/users/manage.html">Manage</a>
+                    </li>
+                </ul>
+            </li>
+            <li id="sidebar-members-btn" class="hidden">
+                <a href="#" class="sidebar-parent-item expandable" data-toggle="collapse" data-target="#members-collapse">
+                    <i class="glyphicon glyphicon-th-list"></i><span class="sidebar-text"> Members <span class="caret"></span></span>
+                </a>
+                <ul id="members-collapse" class="collapse menu-collapse">
+                    <li>
+                        <a class="template-link" href="/members/manage.html">Manage</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="modal-template">
+    <div id="cancel-modal-template">
+        <div id="cancelWarningModal" class="modal org-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Confirm Cancel Changes</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to cancel all changes?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Yes</button>
+                        <button type="button" class="modal-no btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="delete-modal-template">
+        <div id="deleteWarningModal" class="modal org-modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Confirm Delete</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete <span class="type"></span>?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="modal-yes btn btn-success" data-dismiss="modal">Yes</button>
+                        <button type="button" class="modal-no btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OrgBuilder - Manage Orgs</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../org-styles.css" />
+</head>
+<body>
+<!-- Navbar -->
+<div id="navbar-container">
+    <!-- Placeholder container for the navbar from the template -->
+</div>
+<!-- Wrapper around sidebar and page content -->
+<div id="wrapper">
+    <!-- Sidebar -->
+    <div id="sidebar-container">
+        <!-- Placeholder container for the sidebar from the template -->
+    </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h2>Orgs</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div id="actionAlert" class="alert fade">
+                        <a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+                    <div class="row">
+                        <div class="col-xs-12 table-responsive">
+                            <div class="panel panel-primary">
+                                <table id="orgsTable" class="table table-primary table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Org Name</th>
+                                        <th>Created Date</th>
+                                        <th>Options</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <a id="addOrgBtn" class="btn btn-primary" href="content.html" title="Add new Org">Add</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="modal-wrapper">
+        <!-- The modal templates get stored here -->
+    </div>
+
+<!-- TODO FC-4 -->
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script src="../../js/URI.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="../org-props.js"></script>
+    <script src="../orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var tableBody = $("#orgsTable tbody");
+        var currentUrl = URI(window.location.href);
+        var deleted = currentUrl.hasQuery("deleted");
+
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        if(!orgbuilder.validateAccess().hasToken().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access org manager!");
+            window.location = "../index.html";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function loadOrgList(){
+            //TODO FC-7
+            orgbuilder.api.send("orgs", orgbuilder.methods.get)
+                .done(function(data,status,jqXHR){
+                    if(jqXHR.status === 204){
+                        console.log("No orgs found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.orgList(data)){
+                        console.log("Error! Data returned from server for orgList does not contain the orgList.");
+                        orgbuilder.showAlert("alert-danger", "Data returned from server is not a valid list of Orgs");
+                        return;
+                    }
+                    $.each(data.orgList, function(index, org){
+                        var newRow = $("<tr></tr>").attr("index", index).attr("orgid",org.orgId);
+                        newRow.append($("<td></td>").attr("field","orgName").text(org.orgName));
+                        newRow.append($("<td></td>").attr("field","createdDate").text(org.createdDate));
+
+                        var options = $("<td></td>").attr("field","options");
+                        var editUri = "content.html?orgId=" + org.orgId;
+
+                        options.append($("<a class='editOrgBtn btn btn-info' title='Edit Org'></a>").attr("href",editUri).text("Edit"));
+                        options.append($("<a class='deleteOrgBtn btn btn-danger' href='#' title='Delete Org'></a>").text("Delete"));
+
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+
+                    $(".deleteOrgBtn").click(function(event){
+                        event.preventDefault();
+
+                        var item = "this Org: " + getOrgName(event);
+                        var orgId = getOrgId(event);
+                        orgbuilder.modal.showDelete(item, function(){
+                            orgbuilder.api.send("orgs/" + orgId, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("Org successfully deleted");
+                                    window.location = window.location.href + "?deleted=true";
+                                })
+                                .fail(function(){
+                                    console.log("Org delete FAILED");
+                                });
+                        });
+                    });
+
+                    //TODO FC-8
+                })
+                .fail(function(jqXHR){
+                    console.log("Get Orgs Request Failed: " + jqXHR.status + " " + jqXHR.statusText);
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function getOrgId(event){
+            return $(event.target).parents("tr[orgid]").attr("orgid");
+        }
+
+        function getOrgName(event){
+            return $(event.target).parents("tr").children("td[field = 'orgName']").text();
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        orgbuilder.menus.loadMainTemplate("sidebar-orgs-btn");
+        loadOrgList();
+
+        if(deleted){
+            orgbuilder.showAlert("alert-success", "Org successfully deleted");
+        }
+
+    });
+</script>
+</div>
+
+</body>
+</html>

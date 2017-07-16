@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Manage Users</title>
+    <link rel="stylesheet" type="text/old.css" href="../css/org-styles.css" />
+</head>
+<body>
+    <h1>Manage Orgs</h1>
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+
+    <h2 id="usersHeader"></h2>
+
+    <div>
+        <!-- TODO FC-6 -->
+        <table id="usersTable" border="1">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Org</th>
+                    <th>Roles</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button id="addUserBtn" type="button" title="Add new User">A</button>
+    </div>
+
+<script src="../jquery-3.1.1.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var tableBody = $("#usersTable tbody");
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        if(!orgbuilder.validateAccess().hasToken().hasAnyRole(orgbuilder.roles.master, orgbuilder.roles.admin).isValid()){
+            console.log("Invalid credentials to access user manager!");
+            window.location = "../access-denied.html";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+
+        $("#addUserBtn").click(function(){
+            window.location = "content.html";
+        });
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function loadUserList(){
+            //TODO FC-7
+            orgbuilder.api.send("users", orgbuilder.methods.get)
+                .done(function(data, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        //TODO FC-3
+                        console.log("No users found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.userList(data)){
+                        console.log("Error! Data returned from server for userList does not contain the userList");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    $.each(data.userList, function(index, user){
+                        var newRow = $("<tr></tr>").attr("index", index).attr("userid", user.userId);
+
+                        newRow.append($("<td></td>").attr("field", "email").text(user.userEmail));
+                        newRow.append($("<td></td>").attr("field", "firstName").text(user.firstName));
+                        newRow.append($("<td></td>").attr("field", "lastName").text(user.lastName));
+                        newRow.append($("<td></td>").attr("field", "org").text(user.orgName));
+                        newRow.append($("<td></td>").attr("field", "roles").text(user.roles.toString()));
+
+                        var options = $("<td></td>").attr("field","options");
+                        options.append($("<button class='editUserBtn' type='button' title='Edit User'></button>").text("E"));
+                        options.append($("<button class='deleteUserBtn' type='button' title='Delete User'></button>").text("D"));
+
+
+                        newRow.append(options);
+                        tableBody.append(newRow);
+                    });
+
+                    $(".editUserBtn").click(function(event){
+                        var userId = getUserId(event);
+                        window.location = "content.html?userid=" + userId;
+                    });
+
+                    $(".deleteUserBtn").click(function(event){
+                        var choice = confirm("This will delete the User " + getUserEmail(event) + ". Do you want to proceed?");
+                        if(choice){
+                            var userid = getUserId(event);
+                            orgbuilder.api.send("users/" + userid, orgbuilder.methods.delete)
+                                .done(function(){
+                                    console.log("User successfully deleted");
+                                    location.reload(true);
+                                })
+                                .fail(function(){
+                                    //TODO FC-3
+                                    console.log("User delete FAILED");
+                                });
+                        }
+                    });
+                })
+                .fail(function(){
+                    //TODO FC-3
+                    console.log("LOADING USER LIST FAILED!!!");
+                });
+        }
+
+        function setHeader(){
+            if(orgbuilder.jwt.hasRole(orgbuilder.roles.master)){
+                $("#usersHeader").text("All Users");
+            }
+            else{
+                $("#usersHeader").text(orgbuilder.jwt.getTokenPayload().onm + " Users");
+            }
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        function getUserId(event){
+            return $(event.target).parents("tr[userId]").attr("userId");
+        }
+
+        function getUserEmail(event){
+            return $(event.target).parents("tr").children("td[field = 'email']").text();
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        setHeader();
+        loadUserList();
+    });
+</script>
+</body>
+</html>

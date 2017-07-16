@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder - Member Content</title>
+    <link rel="stylesheet" type="text/old.css" href="../css/org-styles.css" />
+</head>
+<body>
+    <h1>Org Content</h1>
+
+    <p>
+        <a id="logoutButton" href="../index.html">Logout</a>
+    </p>
+    <p>
+        <a id="mainMenuButton" href="../main.html">Main Menu</a>
+    </p>
+    <p>
+        <a id="manageMembersButton" href="manage.html">Manage Members</a>
+    </p>
+
+    <h2 id="memberNameHeader">Content</h2>
+
+    <form id="memberDetailsForm" action="javascript:void(0)">
+        <table>
+            <tbody id="personalInfoSection" status="view" class="formSection">
+                <tr>
+                    <td colspan="2">
+                        <h4>Personal Info</h4>
+                    </td>
+                    <td class="right-text">
+                        <a class="editFieldsLink" href="#">Edit</a>
+                        <a class="saveFieldsLink hidden" href="#">Save</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td field="label" colspan="2">First Name</td>
+                    <td field="input">
+                        <input id="firstNameField" name="firstName" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label" colspan="2">Middle Name</td>
+                    <td field="input">
+                        <input id="middleNameField" name="middleName" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label" colspan="2">Last Name</td>
+                    <td field="input">
+                        <input id="lastNameField" name="lastName" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr> <!-- TODO FC-9 -->
+                    <td field="label" colspan="2">Date of Birth:</td>
+                    <td field="input">
+                        <input id="dobField" name="dateOfBirth" type="date" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+                <tr>
+                    <td field="label" colspan="2">Sex</td>
+                    <td field="input">
+                        <!-- TODO FC-9 -->
+                        <input id="sexField" name="sex" type="text" required />
+                    </td>
+                    <td>*</td>
+                </tr>
+            </tbody>
+            <tbody id="addressSection" status="view" class="formSection">
+                <tr>
+                    <td colspan="2">
+                        <h4>Addresses</h4>
+                    </td>
+                </tr>
+                <tr id="addressFields"></tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" id="addAddressLink">Add</a>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody id="phoneSection" status="view" class="formSection">
+                <tr>
+                    <td colspan="2">
+                        <h4>Phones</h4>
+                    </td>
+                </tr>
+                <tr id="phoneFields"></tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" id="addPhoneLink">Add</a>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody id="emailSection" status="view" class="formSection">
+                <tr>
+                    <td colspan="2">
+                        <h4>Emails</h4>
+                    </td>
+                </tr>
+                <tr id="emailFields"></tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <a href="#" id="addEmailLink">Add</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="buttonDiv">
+            <table>
+                <tr> <!-- TODO FC-10 -->
+                    <td>
+                        <button id="cancelBtn" type="button" title="Cancel changes">Cancel</button>
+                    </td>
+                    <td>
+                        <button id="saveBtn" type="button" title="Save changes">Save</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button id="deleteBtn" type="button" title="Delete Member">Delete Member</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+<script src="../jquery-3.1.1.js"></script>
+<script src="../URI.js"></script>
+<script src="../js/org-props.js"></script>
+<script src="../js/orgbuilder.js"></script>
+<script>
+    $(document).ready(function(){
+
+        //TODO individual save options are disabled for add member page, only available for edit member page
+        //TODO for add member page, a single edit address/phone/email slot is available
+        //TODO need to handle the addresses/phones/emails specially, with view/edit changes
+        //TODO need warning for cancelling changes, and that warning will probably need special handling for addresses/phones/emails
+        //TODO disable edit links if user accessing this page only has read rights.
+        //TODO test that nothing breaks if a user without addresses/phones/emails is loaded
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        var memberid = (function(){
+            var url = URI(window.location.href);
+            if(url.hasQuery("memberid")){
+                return url.search(true).memberid;
+            }
+        })();
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        //Access is invalid if there is no valid token or if the user role has MASTER access
+        if(!orgbuilder.validateAccess().hasToken() || orgbuilder.validateAccess().hasAllRoles(orgbuilder.roles.master).isValid()){
+            console.log("Invalid credentials to access member manager");
+            window.location = "../access-denied.html";
+            return;
+        }
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#logoutButton").click(orgbuilder.jwt.clearToken);
+        $(".editFieldsLink").click(toggleEditAndSave);
+        $(".saveFieldsLink").click(toggleEditAndSave);
+        $("#addAddressLink").click(showAddressFields);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function showAddressFields(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            $("#addAddressLink").addClass("hidden");
+            $(".editAddressLink").addClass("hidden");
+            $("#addressFields").load("fields/address-fields.html", function(){
+                $("#saveAddressBtn").click(function(event){
+                    event.preventDefault();
+                    //TODO save the address here
+                    hideAddressFields(event);
+                });
+
+                $("#cancelAddressBtn").click(function(event){
+                    event.preventDefault();
+                    //TODO need cancellation warning
+                    hideAddressFields(event);
+                });
+            });
+        }
+
+        function hideAddressFields(event){
+            if(event !== null){
+                event.preventDefault();
+            }
+
+            $("#addressFields").empty();
+            $("#addAddressLink").removeClass("hidden");
+            $(".editAddressLink").removeClass("hidden");
+        }
+
+        function toggleEditAndSave(event){
+            var sectionId = $(event.target).parents(".formSection").attr("id");
+            sectionId = sectionId.startsWith("#") ? sectionId : "#" + sectionId;
+            var inputs = $(sectionId + " input, " + sectionId + " textarea");
+            if($(event.target).hasClass("editFieldsLink")){
+                $(inputs).prop("disabled", false);
+
+                $(sectionId + " .editFieldsLink").addClass("hidden");
+                $(sectionId + " .saveFieldsLink").removeClass("hidden");
+                $(sectionId).attr("status", "edit");
+            }
+            else{
+//                if(saveFn()){
+                    $(inputs).prop("disabled", true);
+
+                    $(sectionId + " .editFieldsLink").removeClass("hidden");
+                    $(sectionId + " .saveFieldsLink").addClass("hidden");
+                    $(sectionId).attr("status", "view");
+//                }
+            }
+        }
+
+        function buildAddressesList(addresses){
+            $.each(addresses, function(index, address){
+                var addressRow = $("<tr></tr>").attr("addressId", address.addressId);
+
+                var preferredCell = $("<td></td>");
+                if(address.preferred){
+                    $(preferredCell).text("*");
+                }
+
+                $(addressRow).append(preferredCell);
+
+                $(addressRow).append($("<td></td>").text(address.addressType));
+
+                var addressLine1 = address.address1 + (address.address2 !== null ? " " + address.address2 : "");
+                var addressLine2 = address.city + " " + address.state + " " + address.zipCode;
+
+                var addressCell = $("<td></td>").addClass("close-text");
+                addressCell.append($("<p></p>").text(addressLine1));
+                addressCell.append($("<p></p>").text(addressLine2));
+
+                $(addressRow).append(addressCell);
+
+                var editAddressLink = $("<a></a>").attr("href", "#").attr("addressId", address.addressId).addClass("editAddressLink").text("Edit");
+                $(editAddressLink).click(showAddressFields);
+                var editCell = $("<td></td>");
+                $(editCell).append(editAddressLink);
+                $(addressRow).append(editCell);
+
+                $("#addressFields").before(addressRow);
+            });
+        }
+
+        function buildPhonesList(phones){
+            $.each(phones, function(index, phone){
+                var phoneRow = $("<tr></tr>").attr("phoneId", phone.phoneId);
+
+                var preferredCell = $("<td></td>");
+                if(phone.preferred){
+                    $(preferredCell).text("*");
+                }
+                $(phoneRow).append(preferredCell);
+
+                $(phoneRow).append($("<td></td>").text(phone.phoneType));
+
+                var phoneNumber = "(" + phone.areaCode + ") " + phone.prefix + "-" + phone.lineNumber +
+                    (phone.extension !== null ? " x" + phone.extension : "");
+                $(phoneRow).append($("<td></td>").text(phoneNumber));
+
+                var editPhoneLink = $("<a></a>").attr("href", "#").attr("phoneId", phone.phoneId).addClass("editPhoneLink").text("Edit");
+                var editCell = $("<td></td>");
+                $(editCell).append(editPhoneLink);
+                $(phoneRow).append(editCell);
+
+                $("#phoneFields").before(phoneRow);
+            });
+        }
+
+        function buildEmailsList(emails){
+            $.each(emails, function(index, email){
+                var emailRow = $("<tr></tr>").attr("emailId", email.emailId);
+
+                var preferredCell = $("<td></td>");
+                if(email.preferred){
+                    $(preferredCell).text("*");
+                }
+                $(emailRow).append(preferredCell);
+
+                $(emailRow).append($("<td></td>").text(email.emailType));
+
+                $(emailRow).append($("<td></td>").text(email.emailAddress));
+
+                var editEmailLink = $("<a></a>").attr("href", "#").attr("emailId", email.emailId).addClass("editEmailLink").text("Edit");
+                var editCell = $("<td></td>");
+                $(editCell).append(editEmailLink);
+                $(emailRow).append(editCell);
+
+                $("#emailFields").before(emailRow);
+            });
+        }
+
+        function loadMemberData(){
+            orgbuilder.api.send("members/" + memberid, orgbuilder.methods.get)
+                .done(function(memberData, status, jqXHR){
+                    if(jqXHR.status === 204){
+                        //TODO FC-3
+                        console.log("Member not found on server");
+                        return;
+                    }
+
+                    if(!orgbuilder.validateData.member(memberData)){
+                        console.log("Error! Data returned from server for Member does not contain the Member.");
+                        window.location = "../server-error.html";
+                        return;
+                    }
+
+                    $("#memberNameHeader").text("Member: " + memberData.firstName + " " + memberData.lastName);
+                    $("#firstNameField").val(memberData.firstName);
+                    $("#middleNameField").val(memberData.middleName);
+                    $("#lastNameField").val(memberData.lastName);
+                    $("#dobField").val(convertResponseToDateString(memberData.dateOfBirth));
+                    $("#sexField").val(memberData.sex);
+
+                    buildAddressesList(memberData.addresses);
+                    buildPhonesList(memberData.phones);
+                    buildEmailsList(memberData.emails);
+                })
+                .fail(function(){
+                    //TODO FC-3
+                    console.log("FAILED TO LOAD MEMBER");
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        //Convert the date format in the JSON response (MM-dd-yyyy) to the format needed for the date input field (yyyy-MM-dd)
+        function convertResponseToDateString(responseDate){
+            var date = new Date(Date.parse(responseDate));
+            var month = date.getMonth() + 1;
+            month = ("" + month).length === 1 ? "0" + month : month;
+            var day = ("" + date.getDate()).length === 1 ? "0" + date.getDate() : date.getDate();
+            return date.getFullYear() + "-" + month + "-" + day;
+        }
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+
+        if(memberid){
+            loadMemberData();
+            $("input").prop("disabled", true);
+        }
+        else{
+            $("#memberNameHeader").text("New Member");
+            $("#deleteBtn").addClass("hidden");
+            $(".editFieldsLink").addClass("hidden");
+        }
+
+    });
+</script>
+</body>
+</html>

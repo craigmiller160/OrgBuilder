@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrgBuilder</title>
+    <link rel="stylesheet" type="text/old.css" href="css/org-styles.css" />
+    <script>
+        //IMPORTANT: This JavaScript doesn't use any of the application API so that it can be super-lightweight and run before page load. This means changes to the client API will not affect this
+        //Send the user to the main.html page if the access token already exists.
+        if(localStorage.getItem("orgapiToken") !== undefined && localStorage.getItem("orgapiToken") !== null){
+            window.location = "main.html";
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to OrgBuilder</h1>
+    <div id="errorDiv" class="hidden">
+        <h5 class="error">Error! Invalid login credentials.</h5>
+        <h5 id="errorDetails" class="error hidden"></h5>
+    </div>
+    <div>
+        <form id="loginForm" action="javascript:void(0)">
+            <table>
+                <tr>
+                    <td>Username:</td>
+                    <td>
+                        <input id="username" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Password:</td>
+                    <td>
+                        <input id="password" type="password" />
+                    </td>
+                </tr>
+                <tr>
+                    <td />
+                    <td>
+                        <input id="loginButton" type="submit" value="Login" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!-- TODO FC-4 -->
+<script src="../../lib/jquery-3.1.1.js"></script>
+<script src="../old2/org-props.js"></script>
+<script src="../old2/orgbuilder.js"></script>
+<script>
+    $(document).ready(function () {
+
+        /*************************
+         * 1) Top Scope Variables
+         *************************/
+
+        /*******************************
+         * 2) Access to Page Validation
+         *******************************/
+
+        /****************
+         * 3) UI Actions
+         ****************/
+
+        $("#loginForm input").keypress(function(event){
+            if(event.which && event.which === 13){
+                loginFn(event);
+                event.stopPropagation();
+            }
+        });
+
+        $("#loginButton").click(loginFn);
+
+        /***********************************
+         * 4) Core Business Logic Functions
+         ***********************************/
+
+        function loginFn(event){
+            event.preventDefault();
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var jsonMsg = {
+                "userEmail": username,
+                "password": password
+            };
+
+            orgbuilder.api.send("auth", orgbuilder.methods.post, jsonMsg)
+                .done(function () {
+                    console.log("Login Success");
+                    window.location = "main.html";
+                })
+                .fail(function (jqXHR) {
+                    console.log("Login Failed: " + jqXHR.status + " " + jqXHR.statusText);
+                    var errorJson = jqXHR.responseJSON;
+                    $("#errorDiv").removeClass("hidden");
+                    if(errorJson && errorJson.errorMessage){
+                        $("#errorDetails").removeClass("hidden");
+                        $("#errorDetails").text("Details: " + errorJson.errorMessage);
+                    }
+                    else{
+                        $("#errorDetails").addClass("hidden");
+                        $("#errorDetails").text("");
+                    }
+                })
+                .always(function () {
+                    $("#password").val("");
+                });
+        }
+
+        /***********************
+         * 5) Utility Functions
+         ***********************/
+
+        /*************************
+         * 6) Page Initialization
+         *************************/
+    });
+</script>
+</body>
+</html>

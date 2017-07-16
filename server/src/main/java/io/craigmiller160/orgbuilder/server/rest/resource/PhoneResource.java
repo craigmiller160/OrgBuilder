@@ -19,6 +19,8 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
 /**
+ * RESTful API for handling the Phones resource.
+ *
  * Created by craig on 8/23/16.
  */
 @Produces(MediaType.APPLICATION_JSON)
@@ -34,12 +36,26 @@ public class PhoneResource {
     @Context
     private UriInfo uriInfo;
 
-    @PathParam("orgId")
-    private long orgId;
-
     @PathParam("memberId")
     private long memberId;
 
+    /**
+     * RESOURCE: GET /members/{memberId}/phones
+     *
+     * PURPOSE: Retrieve all phones for a member.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS:
+     * offset: the number of records to skip over before starting retrieval.
+     * size: the total number of records to retrieve.
+     *
+     * @param resourceFilterBean the filter bean with the Query Params.
+     * @return the Response, containing all the Phones retrieved by the request.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllPhones(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -57,8 +73,23 @@ public class PhoneResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: POST /members/{memberId}/phones
+     *
+     * PURPOSE: Create a new phone for a member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: The phone to create.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param phone the phone to create.
+     * @return the Response, containing the phone that was created.
+     * @throws OrgApiException if an error occurs.
+     */
     @POST
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response addPhone(PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         phone = phoneService.addPhone(phone, memberId);
@@ -69,9 +100,26 @@ public class PhoneResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: PUT /members/{memberId}/phones/{phoneId}
+     *
+     * PURPOSE: Update an existing phone for a member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: The phone to update.
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param phoneId the ID of the phone to update.
+     * @param phone the updated phone.
+     * @return a Response, containing the updated phone,
+     *          or nothing if no phone existed with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @PUT
     @Path("/{phoneId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO result = phoneService.updatePhone(phone, phoneId, memberId);
@@ -87,9 +135,25 @@ public class PhoneResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: DELETE /members/{memberId}/phones/{phoneId}
+     *
+     * PURPOSE: Delete an existing phone for a member.
+     *
+     * ACCESS: Users with the WRITE role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param phoneId the ID of the phone to delete.
+     * @return the Response, containing the phone that was deleted,
+     *          or nothing if there was no phone with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @DELETE
     @Path("/{phoneId}")
-    @RolesAllowed({Role.READ, Role.WRITE})
+    @RolesAllowed(Role.WRITE)
     public Response deletePhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO phone = phoneService.deletePhone(phoneId);
@@ -104,6 +168,22 @@ public class PhoneResource {
                 .build();
     }
 
+    /**
+     * RESOURCE: GET /members/{memberId}/phones/{phoneId}
+     *
+     * PURPOSE: Retrieve a single phone for a member.
+     *
+     * ACCESS: Users with the READ role.
+     *
+     * BODY: NONE
+     *
+     * QUERY PARAMS: NONE
+     *
+     * @param phoneId the ID of the phone to retrieve.
+     * @return the Response, containing the phone that was retrieved,
+     *          or nothing if there was no phone with the specified ID.
+     * @throws OrgApiException if an error occurs.
+     */
     @GET
     @Path("/{phoneId}")
     @RolesAllowed(Role.READ)

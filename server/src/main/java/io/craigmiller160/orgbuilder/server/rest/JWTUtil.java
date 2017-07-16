@@ -51,10 +51,26 @@ public class JWTUtil {
 
     private JWTUtil(){}
 
+    /**
+     * Combine the userName and orgName together to form the
+     * subject field of the JWT. This is in the format userName::orgName.
+     * If no orgName, then NONE is used instead.
+     *
+     * @param userName the user name.
+     * @param orgName the org name.
+     * @return the subject field of the JWT.
+     */
     public static String combineUserNameOrgName(String userName, String orgName){
         return userName + "::" + (!StringUtils.isEmpty(orgName) ? orgName : "NONE");
     }
 
+    /**
+     * Split the subject field into separate userName/orgName Strings.
+     * They are returned in the order [userName, orgName].
+     *
+     * @param subject the token subject field.
+     * @return an array containing the individual userName and orgName.
+     */
     public static String[] splitUserNameOrgName(String subject){
         String[] split = subject.split("::");
         if(split.length == 0){
@@ -319,6 +335,18 @@ public class JWTUtil {
         }
 
         return result;
+    }
+
+    //Generates an expired token for testing purposes
+    public static void main(String[] args) throws Exception{
+        ServerCore core = new ServerCore();
+        core.contextInitialized(null);
+        Set<String> roles = new HashSet<>();
+        roles.add(Role.MASTER);
+        LocalDateTime exp = LocalDateTime.of(2017, 2, 6, 0, 0, 0);
+        String token = generateNewToken(1L, "craig@gmail.com", "", 1L, 0L,
+                "APP_SCHEMA", roles, LegacyDateConverter.convertLocalDateTimeToDate(exp));
+        System.out.println(token);
     }
 
 }

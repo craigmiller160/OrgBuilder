@@ -87,7 +87,7 @@ public class SecurityFilter implements ContainerRequestFilter{
 
             if(JWTUtil.isTokenExpired(jwt)){
                 if(!isRefreshAllowed(requestContext, jwt)){
-                    FilterUtils.handleAccessRejected(requestContext, OrgApiSecurityException.class, "Token is expired");
+                    FilterUtils.handleAccessExpired(requestContext, OrgApiSecurityException.class, "Token is expired");
                     return null;
                 }
 
@@ -104,7 +104,7 @@ public class SecurityFilter implements ContainerRequestFilter{
             return principal;
         }
         catch(OrgApiException ex){
-            FilterUtils.handleAccessRejected(requestContext, ex.getClass(), ex.getMessage());
+            FilterUtils.handleAccessRejected(requestContext, ex.getClass(), "Access Denied: " + ex.getMessage());
         }
 
         return null;
@@ -124,7 +124,7 @@ public class SecurityFilter implements ContainerRequestFilter{
         return refreshToken != null &&
                 RefreshTokenUtil.isValidRefreshToken(jwt, userAgent, refreshToken.getTokenHash()) &&
                 refreshToken.getExpiration().compareTo(now) >= 0 &&
-                cantRefreshAfter.compareTo(now) <= 0;
+                cantRefreshAfter.compareTo(now) >= 0;
     }
 
     private void refreshToken(ContainerRequestContext requestContext, SignedJWT jwt) throws OrgApiException{
