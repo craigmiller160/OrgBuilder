@@ -24,6 +24,21 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
+    <!-- TODO some of these things really, REALLY need to be variables -->
+    <servlet>
+        <servlet-name>OrgApiSwaggerConfig</servlet-name>
+        <servlet-class>io.swagger.jersey.config.JerseyJaxrsConfig</servlet-class>
+        <init-param>
+            <param-name>api.version</param-name>
+            <param-value>1.1.0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>swagger.api.basepath</param-name>
+            <param-value>http://localhost:8080/api</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
     <listener>
         <listener-class>io.craigmiller160.orgbuilder.server.ServerCore</listener-class>
     </listener>

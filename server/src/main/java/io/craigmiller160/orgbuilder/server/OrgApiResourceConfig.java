@@ -14,6 +14,7 @@ public class OrgApiResourceConfig extends ResourceConfig {
 
     public OrgApiResourceConfig() {
         packages(true, "io.craigmiller160.orgbuilder.server.rest");
+        packages(true, "io.swagger.jaxrs.listing");
         register(RolesAllowedDynamicFeature.class);
         register(AccessAnnotationFilterBindingFeature.class);
     }

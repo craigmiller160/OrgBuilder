@@ -30,6 +30,10 @@
 
         <dependency org="com.nimbusds" name="nimbus-jose-jwt" rev="4.26.1"/>
         <dependency org="org.mindrot" name="jbcrypt" rev="0.3m"/>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-core -->
+        <dependency org="io.swagger" name="swagger-core" rev="1.5.15"/>
+        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-jersey2-jaxrs -->
+        <dependency org="io.swagger" name="swagger-jersey2-jaxrs" rev="1.5.15"/>
 
     </dependencies>
 </ivy-module>
