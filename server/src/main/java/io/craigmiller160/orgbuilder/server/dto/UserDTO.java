@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.text.StrBuilder;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,11 +16,10 @@ import java.util.TreeSet;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
+@ApiModel(value = "UserDTO")
+public class UserDTO extends LoginDTO implements Comparable<UserDTO>, DTO<Long>{
 
     private long userId;
-    private String userEmail;
-    private String password;
     private Set<String> roles = new TreeSet<>();
     private long orgId;
     private String orgName;
@@ -26,6 +27,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     private String lastName;
 
     @Override
+    @ApiModelProperty(name = "userId")
     public Long getElementId() {
         return userId;
     }
@@ -33,14 +35,6 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     @Override
     public void setElementId(Long id) {
         this.userId = id;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
     }
 
     public Set<String> getRoles() {
@@ -77,13 +71,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
         this.orgId = orgId;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getOrgName() {
         return orgName;
@@ -113,13 +101,12 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
         UserDTO userDTO = (UserDTO) o;
 
         if (userId != userDTO.userId) return false;
         if (orgId != userDTO.orgId) return false;
-        if (userEmail != null ? !userEmail.equals(userDTO.userEmail) : userDTO.userEmail != null) return false;
-        if (password != null ? !password.equals(userDTO.password) : userDTO.password != null) return false;
         if (roles != null ? !roles.equals(userDTO.roles) : userDTO.roles != null) return false;
         if (orgName != null ? !orgName.equals(userDTO.orgName) : userDTO.orgName != null) return false;
         if (firstName != null ? !firstName.equals(userDTO.firstName) : userDTO.firstName != null) return false;
@@ -128,9 +115,8 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     @Override
     public int hashCode() {
-        int result = (int) (userId ^ (userId >>> 32));
-        result = 31 * result + (userEmail != null ? userEmail.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
+        int result = super.hashCode();
+        result = 31 * result + (int) (userId ^ (userId >>> 32));
         result = 31 * result + (roles != null ? roles.hashCode() : 0);
         result = 31 * result + (int) (orgId ^ (orgId >>> 32));
         result = 31 * result + (orgName != null ? orgName.hashCode() : 0);
@@ -141,7 +127,7 @@ public class UserDTO implements Comparable<UserDTO>, DTO<Long>{
 
     @Override
     public String toString(){
-        return "User: " + userEmail;
+        return "User: " + getUserEmail();
     }
 
     @Override

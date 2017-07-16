@@ -16,6 +16,12 @@ import io.craigmiller160.orgbuilder.server.service.TokenService;
 import io.craigmiller160.orgbuilder.server.service.UserService;
 import io.craigmiller160.orgbuilder.server.util.HashingUtils;
 import io.swagger.annotations.*;
+import io.swagger.core.filter.SwaggerSpecFilter;
+import io.swagger.model.ApiDescription;
+import io.swagger.models.Model;
+import io.swagger.models.Operation;
+import io.swagger.models.parameters.Parameter;
+import io.swagger.models.properties.Property;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.PermitAll;
@@ -32,6 +38,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 /**
  * RESTful API for handling the authentication of users.
@@ -54,6 +62,14 @@ import java.time.LocalDateTime;
                         )
                 }
         )
+)
+@ApiResponses(
+        value = {
+                @ApiResponse(
+                        code = 403,
+                        message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level"
+                )
+        }
 )
 @Api (
         tags = "auth",
@@ -107,7 +123,7 @@ public class AuthResource {
     @PermitAll
     public Response authenticate(
             @ApiParam(value = "User-Agent value is used in providing a unique token key for logins from different devices") @HeaderParam("user-agent") String userAgent,
-            @ApiParam(value = "The user information for the login, in this case only username/password are required", required = true) UserDTO user)
+            @ApiParam(value = "The user information for the login, in this case only username/password are required", required = true) LoginDTO user)
             throws OrgApiException{
         if(user == null || StringUtils.isEmpty(user.getUserEmail()) || StringUtils.isEmpty(user.getPassword())){
             throw new OrgApiInvalidRequestException("Authentication request has incomplete credentials");
