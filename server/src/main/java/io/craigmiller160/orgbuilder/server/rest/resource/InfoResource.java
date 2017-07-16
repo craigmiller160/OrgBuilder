@@ -30,6 +30,11 @@ import javax.ws.rs.core.SecurityContext;
  * Created by craig on 9/18/16.
  */
 @SwaggerDefinition(
+        info = @Info(
+                title = "OrgBuilder API",
+                version = "1.1-ALPHA",
+                description = "The API for the data managed by the OrgBuilder application"
+        ),
         securityDefinition = @SecurityDefinition(
                 apiKeyAuthDefinitions = {
                         @ApiKeyAuthDefinition(

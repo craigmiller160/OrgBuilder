@@ -38,6 +38,23 @@ import java.time.LocalDateTime;
  *
  * Created by craig on 9/27/16.
  */
+@SwaggerDefinition(
+        info = @Info(
+                title = "OrgBuilder API",
+                version = "1.1-ALPHA",
+                description = "The API for the data managed by the OrgBuilder application"
+        ),
+        securityDefinition = @SecurityDefinition(
+                apiKeyAuthDefinitions = {
+                        @ApiKeyAuthDefinition(
+                                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                                key = "orgapiToken",
+                                name= "Authorization",
+                                description = "The JSON Web Token needed to access the API"
+                        )
+                }
+        )
+)
 @Api (
         tags = "auth",
         authorizations = {
@@ -88,7 +105,10 @@ public class AuthResource {
     )
     @POST
     @PermitAll
-    public Response authenticate(@HeaderParam("user-agent") String userAgent, UserDTO user) throws OrgApiException{
+    public Response authenticate(
+            @ApiParam(value = "User-Agent value is used in providing a unique token key for logins from different devices") @HeaderParam("user-agent") String userAgent,
+            @ApiParam(value = "The user information for the login, in this case only username/password are required", required = true) UserDTO user)
+            throws OrgApiException{
         if(user == null || StringUtils.isEmpty(user.getUserEmail()) || StringUtils.isEmpty(user.getPassword())){
             throw new OrgApiInvalidRequestException("Authentication request has incomplete credentials");
         }
@@ -178,7 +198,8 @@ public class AuthResource {
     @GET
     @Path("/exists")
     @PermitAll
-    public Response userExists(@QueryParam("userName") String userName) throws OrgApiException{
+    public Response userExists(
+            @ApiParam(value = "The username to check for", required = true) @QueryParam("userName") String userName) throws OrgApiException{
         UserService userService = factory.newUserService(securityContext);
         UserDTO result = userService.getUserByName(userName);
 
