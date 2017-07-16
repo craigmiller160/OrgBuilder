@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,6 +36,7 @@ public class AddressDTO implements Comparable<AddressDTO>, JoinedWithMemberDTO<L
         this.zipCode = zipCode;
     }
 
+    @ApiModelProperty(name = "addressId")
     @Override
     public Long getElementId(){
         return addressId;

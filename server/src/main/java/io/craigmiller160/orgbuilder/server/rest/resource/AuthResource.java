@@ -67,7 +67,8 @@ import java.util.Map;
         value = {
                 @ApiResponse(
                         code = 403,
-                        message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level"
+                        message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level",
+                        response = ErrorDTO.class
                 )
         }
 )
@@ -115,7 +116,8 @@ public class AuthResource {
                     ),
                     @ApiResponse(
                             code = 401,
-                            message = "The login attempt was unsuccessful"
+                            message = "The login attempt was unsuccessful",
+                            response = ErrorDTO.class
                     )
             }
     )

@@ -1,6 +1,5 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.text.StrBuilder;
 
@@ -16,7 +15,6 @@ import java.util.TreeSet;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@ApiModel(value = "UserDTO")
 public class UserDTO extends LoginDTO implements Comparable<UserDTO>, DTO<Long>{
 
     private long userId;

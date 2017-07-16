@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
 import io.craigmiller160.orgbuilder.server.rest.LocalDateAdapter;
+import io.swagger.annotations.ApiModelProperty;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,6 +42,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         this.sex = sex;
     }
 
+    @ApiModelProperty(name = "memberId")
     @Override
     public Long getElementId() {
         return memberId;

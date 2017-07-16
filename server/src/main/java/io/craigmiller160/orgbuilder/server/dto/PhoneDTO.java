@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,6 +32,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>, JoinedWithMemberDTO<Long>
         this.extension = extension;
     }
 
+    @ApiModelProperty(name = "phoneId")
     @Override
     public Long getElementId() {
         return phoneId;

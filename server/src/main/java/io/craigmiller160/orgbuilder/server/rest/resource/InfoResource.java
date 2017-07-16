@@ -1,12 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
-import io.craigmiller160.orgbuilder.server.dto.AllInfoDTO;
-import io.craigmiller160.orgbuilder.server.dto.AppInfoDTO;
-import io.craigmiller160.orgbuilder.server.dto.ContactTypesDTO;
-import io.craigmiller160.orgbuilder.server.dto.SexListDTO;
-import io.craigmiller160.orgbuilder.server.dto.RoleListDTO;
-import io.craigmiller160.orgbuilder.server.dto.StateListDTO;
+import io.craigmiller160.orgbuilder.server.dto.*;
 import io.craigmiller160.orgbuilder.server.service.InfoService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.swagger.annotations.*;
@@ -45,6 +40,15 @@ import javax.ws.rs.core.SecurityContext;
                         )
                 }
         )
+)
+@ApiResponses(
+        value = {
+                @ApiResponse(
+                        code = 403,
+                        message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level",
+                        response = ErrorDTO.class
+                )
+        }
 )
 @Api(
         tags = "info",
