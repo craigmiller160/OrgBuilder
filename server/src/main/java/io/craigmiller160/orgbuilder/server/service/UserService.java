@@ -182,9 +182,6 @@ public class UserService {
             Dao<UserDTO,Long> userDao = connection.newDao(UserDTO.class);
 
             result = (UserDTO) userDao.query(AdditionalQueries.GET_WITH_NAME, name);
-            if(result != null){
-                result.setPassword(null);
-            }
 
             connection.commit();
         }
