@@ -9,8 +9,7 @@ import io.craigmiller160.orgbuilder.server.dto.RoleListDTO;
 import io.craigmiller160.orgbuilder.server.dto.StateListDTO;
 import io.craigmiller160.orgbuilder.server.service.InfoService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -30,31 +29,34 @@ import javax.ws.rs.core.SecurityContext;
  *
  * Created by craig on 9/18/16.
  */
-@Api(tags = "info")
+@SwaggerDefinition(
+        securityDefinition = @SecurityDefinition(
+                apiKeyAuthDefinitions = {
+                        @ApiKeyAuthDefinition(
+                                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                                key = "orgapiToken",
+                                name= "Authorization",
+                                description = "The JSON Web Token needed to access the API"
+                        )
+                }
+        )
+)
+@Api(
+        tags = "info",
+        authorizations = {
+                @Authorization(value = "orgapiToken")
+        }
+)
 @Path("/info")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class InfoResource {
+public class InfoResource implements ApiDefinition{
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
 
     @Context
     private SecurityContext securityContext;
 
-    /**
-     * RESOURCE: GET /info
-     *
-     * PURPOSE: Get all the accepted values for all the info resources.
-     *
-     * ACCESS: Everyone.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @return a Response containing the values of the info resources.
-     * @throws OrgApiException if an error occurs.
-     */
     @ApiOperation(
             value = "Get all general information data in a single payload",
             notes = "This returns a combination of everything that all the other operations in this resource return",
@@ -71,20 +73,6 @@ public class InfoResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /info/sexes
-     *
-     * PURPOSE: Get all the accepted values for sexes for this application.
-     *
-     * ACCESS: Everyone.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @return a Response containing the list of the sexes.
-     * @throws OrgApiException if an error occurs.
-     */
     @ApiOperation(
             value = "Get the accepted values for 'sex' fields.",
             notes = "This returns a collection of values that are the only acceptable choices for fields that define a person's sex.",
@@ -102,20 +90,6 @@ public class InfoResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /info/states
-     *
-     * PURPOSE: Get a list of all the values for US states for this application.
-     *
-     * ACCESS: Everyone.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @return a Response containing the list of the states.
-     * @throws OrgApiException if an error occurs.
-     */
     @ApiOperation(
             value = "Get the accepted values for 'state' fields.",
             notes = "This returns a collection of the values for all US states.",
@@ -132,20 +106,7 @@ public class InfoResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /info/roles
-     *
-     * PURPOSE: Get a list of all supported roles for the application.
-     *
-     * ACCESS: Everyone.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @return a Response containing the list of the roles.
-     * @throws OrgApiException if an error occurs.
-     */
+
     @ApiOperation(
             value = "Get the accepted values for user roles.",
             notes = "This returns a collection of values that are the only acceptable choices for working with user access roles.",
@@ -162,20 +123,6 @@ public class InfoResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /info/app
-     *
-     * PURPOSE: Get basic info about this application.
-     *
-     * ACCESS: Everyone
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @return
-     * @throws OrgApiException
-     */
     @ApiOperation(
             value = "Get the basic information about this application.",
             notes = "This returns some very basic meta information about this application.",

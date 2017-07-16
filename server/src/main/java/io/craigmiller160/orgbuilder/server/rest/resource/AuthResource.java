@@ -4,10 +4,7 @@ import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.ServerCore;
 import io.craigmiller160.orgbuilder.server.ServerProps;
 import io.craigmiller160.orgbuilder.server.data.jdbc.SchemaManager;
-import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
-import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
-import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
-import io.craigmiller160.orgbuilder.server.dto.UserDTO;
+import io.craigmiller160.orgbuilder.server.dto.*;
 import io.craigmiller160.orgbuilder.server.logging.OrgApiLogger;
 import io.craigmiller160.orgbuilder.server.rest.JWTUtil;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
@@ -18,6 +15,7 @@ import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.TokenService;
 import io.craigmiller160.orgbuilder.server.service.UserService;
 import io.craigmiller160.orgbuilder.server.util.HashingUtils;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.PermitAll;
@@ -40,6 +38,12 @@ import java.time.LocalDateTime;
  *
  * Created by craig on 9/27/16.
  */
+@Api (
+        tags = "auth",
+        authorizations = {
+                @Authorization(value = "orgapiToken")
+        }
+)
 @Path("/auth")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -66,24 +70,22 @@ public class AuthResource {
         return handleInvalidLogin(null);
     }
 
-    /**
-     * RESOURCE: POST /auth
-     *
-     * PURPOSE: Authenticate user credentials and return an
-     *          access token if they are accepted.
-     *
-     * ACCESS: All Users.
-     *
-     * BODY: The user name and password to use for authentication.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param userAgent the user agent header from the request.
-     * @param user the user credentials.
-     * @return a Response containing no body and the access token
-     *          as a header if the authentication was successful.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(
+            value = "Login to API",
+            notes = "Send a payload with username/password and receive back an access token for the API."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            code = 200,
+                            message = "The login attempt was successful, the token will be in the Authorization header"
+                    ),
+                    @ApiResponse(
+                            code = 401,
+                            message = "The login attempt was unsuccessful"
+                    )
+            }
+    )
     @POST
     @PermitAll
     public Response authenticate(@HeaderParam("user-agent") String userAgent, UserDTO user) throws OrgApiException{
@@ -134,15 +136,18 @@ public class AuthResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /auth/check
-     *
-     * PURPOSE: Access the API without retrieving specific data
-     *          so the token is tested for its validity.
-     *
-     * @return the Response.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(
+            value = "Validate the access token",
+            notes = "This just validates that the token is still valid, and refreshes it where appropriate. If it's not valid, the SecurityFilter will reject it automatically"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            code = 200,
+                            message = "The token is still valid, it has been refreshed if necessary, and is returned in the Authorization header."
+                    )
+            }
+    )
     @GET
     @Path("/check")
     @PermitAll
@@ -152,24 +157,24 @@ public class AuthResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /auth/exists
-     *
-     * PURPOSE: Check if the provided user name already exists
-     *          in the system.
-     *
-     * ACCESS: All Users.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS:
-     * userName: the user name to check the existence of.
-     *
-     * @param userName the user name to check the existence of.
-     * @return a Response that either indicates the user name is OK
-     *          or in CONFLICT.
-     * @throws OrgApiException if an error occurs.
-     */
+
+    @ApiOperation(
+            value = "Check if user name exists",
+            notes = "This checks whether or not a given user name already exists in the system."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            code = 200,
+                            message = "A user with that name does not exist"
+                    ),
+                    @ApiResponse(
+                            code = 409,
+                            message = "A user with that name already exists",
+                            response = UserDTO.class
+                    )
+            }
+    )
     @GET
     @Path("/exists")
     @PermitAll
