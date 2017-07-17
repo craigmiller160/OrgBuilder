@@ -124,6 +124,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         return emails;
     }
 
+    @ApiModelProperty(hidden = true)
     public AddressDTO getPreferredAddress() {
         for(AddressDTO address : addresses){
             if(address != null && address.isPreferred()){
@@ -133,6 +134,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         return null;
     }
 
+    @ApiModelProperty(hidden = true)
     public PhoneDTO getPreferredPhone() {
         for(PhoneDTO phone : phones){
             if(phone != null && phone.isPreferred()){
@@ -142,6 +144,7 @@ public class MemberDTO implements Comparable<MemberDTO>, DTO<Long>{
         return null;
     }
 
+    @ApiModelProperty(hidden = true)
     public EmailDTO getPreferredEmail() {
         for(EmailDTO email : emails){
             if(email != null && email.isPreferred()){

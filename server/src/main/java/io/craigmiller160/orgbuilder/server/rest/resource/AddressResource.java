@@ -35,8 +35,11 @@ import java.net.URI;
                 )
         )
 )
-@ApiResponses(value = @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class))
-@Api (tags = "addresses", authorizations = @Authorization(value = "orgapiToken"))
+@ApiResponses(value = {
+        @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server error while processing request", response = ErrorDTO.class)
+})
+@Api (tags = "member/addresses", authorizations = @Authorization(value = "orgapiToken"))
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/members/{memberId}/addresses")

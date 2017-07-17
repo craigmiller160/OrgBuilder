@@ -56,7 +56,10 @@ import java.util.Map;
                 )
         )
 )
-@ApiResponses(value = @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class))
+@ApiResponses(value = {
+        @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server error while processing request", response = ErrorDTO.class)
+})
 @Api (tags = "auth", authorizations = @Authorization(value = "orgapiToken"))
 @Path("/auth")
 @Consumes(MediaType.APPLICATION_JSON)

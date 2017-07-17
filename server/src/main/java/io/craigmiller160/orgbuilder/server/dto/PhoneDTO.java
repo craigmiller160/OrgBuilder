@@ -83,6 +83,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>, JoinedWithMemberDTO<Long>
         this.extension = extension;
     }
 
+    @ApiModelProperty(hidden = true)
     public String getRawNumber(){
         return (areaCode != null ? areaCode : "") +
                 (prefix != null ? prefix : "") +
@@ -90,6 +91,7 @@ public class PhoneDTO implements Comparable<PhoneDTO>, JoinedWithMemberDTO<Long>
                 (extension != null ? extension : "");
     }
 
+    @ApiModelProperty(hidden = true)
     public String getFormattedNumber(){
         StringBuilder builder = new StringBuilder();
         if(!StringUtils.isEmpty(areaCode)){

@@ -1,52 +1,64 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
-import java.util.Map;
 
 /**
  * Created by craig on 9/17/16.
  */
 public class MemberFilterBean extends ResourceFilterBean{
 
+    @ApiParam(value = "Optional search criteria for a member's first name.")
     @QueryParam(QueryParamName.FIRST_NAME)
     private String firstName;
 
+    @ApiParam(value = "Optional search criteria for a member's middle name.")
     @QueryParam(QueryParamName.MIDDLE_NAME)
     private String middleName;
 
+    @ApiParam(value = "Optional search criteria for a member's last name.")
     @QueryParam(QueryParamName.LAST_NAME)
     private String lastName;
 
-    @QueryParam(QueryParamName.GENDER)
-    private String gender;
+    @ApiParam(value = "Optional search criteria for a member's sex.")
+    @QueryParam(QueryParamName.SEX)
+    private String sex;
 
+    @ApiParam(value = "Optional search criteria for a member's address.")
     @QueryParam(QueryParamName.ADDRESS)
     private String address;
 
+    @ApiParam(value = "Optional search criteria for a member's address unit (ie, apartment number)")
     @QueryParam(QueryParamName.UNIT)
     private String unit;
 
+    @ApiParam(value = "Optional search criteria for a member's address city.")
     @QueryParam(QueryParamName.CITY)
     private String city;
 
+    @ApiParam(value = "Optional search criteria for a member's address state.")
     @QueryParam(QueryParamName.STATE)
     private String state;
 
+    @ApiParam(value = "Optional search criteria for a member's address zip code.")
     @QueryParam(QueryParamName.ZIP_CODE)
     private String zipCode;
 
+    @ApiParam(value = "Optional search criteria for a member's phone area code.")
     @QueryParam(QueryParamName.AREA_CODE)
     private String areaCode;
 
+    @ApiParam(value = "Optional search criteria for a member's phone prefix.")
     @QueryParam(QueryParamName.PREFIX)
     private String prefix;
 
+    @ApiParam(value = "Optional search criteria for a member's phone line number")
     @QueryParam(QueryParamName.LINE_NUMBER)
     private String lineNumber;
 
+    @ApiParam(value = "Optional search criteria for a member's email address.")
     @QueryParam(QueryParamName.EMAIL_ADDRESS)
     private String emailAddress;
 
@@ -74,12 +86,12 @@ public class MemberFilterBean extends ResourceFilterBean{
         this.lastName = lastName;
     }
 
-    public String getGender() {
-        return gender;
+    public String getSex() {
+        return sex;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public String getAddress() {
@@ -156,7 +168,7 @@ public class MemberFilterBean extends ResourceFilterBean{
 
     public boolean isSearch(){
         return !StringUtils.isEmpty(firstName) || !StringUtils.isEmpty(middleName) || !StringUtils.isEmpty(lastName) ||
-                !StringUtils.isEmpty(gender) || !StringUtils.isEmpty(address) || !StringUtils.isEmpty(unit) ||
+                !StringUtils.isEmpty(sex) || !StringUtils.isEmpty(address) || !StringUtils.isEmpty(unit) ||
                 !StringUtils.isEmpty(city) || !StringUtils.isEmpty(state) || !StringUtils.isEmpty(zipCode) ||
                 !StringUtils.isEmpty(areaCode) || !StringUtils.isEmpty(prefix) || !StringUtils.isEmpty(lineNumber) ||
                 !StringUtils.isEmpty(emailAddress);

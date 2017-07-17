@@ -10,7 +10,7 @@ public class QueryParamName {
     public static final String FIRST_NAME = "firstName";
     public static final String MIDDLE_NAME = "middleName";
     public static final String LAST_NAME = "lastName";
-    public static final String GENDER = "gender";
+    public static final String SEX = "sex";
     public static final String ADDRESS = "address";
     public static final String UNIT = "unit";
     public static final String CITY = "city";

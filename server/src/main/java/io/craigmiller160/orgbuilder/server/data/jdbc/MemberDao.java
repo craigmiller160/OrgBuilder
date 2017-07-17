@@ -76,8 +76,8 @@ public class MemberDao extends AbstractJdbcDao<MemberDTO,Long> {
             builder.addParameter(MemberSearchColumns.LAST_NAME, memberFilterBean.getLastName(), SearchQuery.LIKE_OPERATOR);
         }
 
-        if(!StringUtils.isEmpty(memberFilterBean.getGender())){
-            builder.addParameter(MemberSearchColumns.GENDER, memberFilterBean.getGender(), SearchQuery.EQUALS_OPERATOR);
+        if(!StringUtils.isEmpty(memberFilterBean.getSex())){
+            builder.addParameter(MemberSearchColumns.SEX, memberFilterBean.getSex(), SearchQuery.EQUALS_OPERATOR);
         }
 
         if(!StringUtils.isEmpty(memberFilterBean.getAddress())){
