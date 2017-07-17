@@ -79,6 +79,12 @@
     <target name="package" depends="test">
         <war destfile="${dir.server.build.artifact}/${server.war.filename}"
              webxml="${dir.server.web}/WEB-INF/web.xml">
+            <fileset dir="${dir.server.web}">
+                <include name="*.html" />
+                <include name="*.js" />
+                <include name="*.css" />
+                <include name="*.png" />
+            </fileset>
             <classes dir="${dir.server.build.staging}" />
             <lib dir="${dir.server.lib}" />
             <manifest>
