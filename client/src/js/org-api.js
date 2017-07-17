@@ -21,7 +21,7 @@ orgbuilder.api = (() => {
     function send(uri, method, json){
         console.log('Calling API: ' + method + ' ' + uri);
         return $.ajax({
-            url: '/orgapi' + ensurePrecedingSlash(uri), //TODO this is where the origin prop should go
+            url: '/orgapi/api' + ensurePrecedingSlash(uri), //TODO this is where the origin prop should go
             type: method,
             headers: (() => {
                 var result = {};
