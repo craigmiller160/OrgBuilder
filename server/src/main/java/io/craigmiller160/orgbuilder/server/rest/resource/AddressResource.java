@@ -3,11 +3,13 @@ package io.craigmiller160.orgbuilder.server.rest.resource;
 import io.craigmiller160.orgbuilder.server.OrgApiException;
 import io.craigmiller160.orgbuilder.server.dto.AddressDTO;
 import io.craigmiller160.orgbuilder.server.dto.AddressListDTO;
+import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
 import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.AddressService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
+import io.swagger.annotations.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -23,6 +25,18 @@ import java.net.URI;
  *
  * Created by craig on 8/23/16.
  */
+@SwaggerDefinition(info = @Info(title = "OrgBuilder API", version = "1.1-ALPHA", description = "The API for the data managed by the OrgBuilder application"),
+        securityDefinition = @SecurityDefinition(
+                apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
+                        in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                        key = "orgapiToken",
+                        name= "Authorization",
+                        description = "The JSON Web Token needed to access the API"
+                )
+        )
+)
+@ApiResponses(value = @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class))
+@Api (tags = "addresses", authorizations = @Authorization(value = "orgapiToken"))
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/members/{memberId}/addresses")
@@ -36,26 +50,16 @@ public class AddressResource {
     @Context
     private UriInfo uriInfo;
 
+    @ApiParam(value = "The ID of the member that will own all the addresses being interacted with via this resource.", required = true)
     @PathParam("memberId")
     private long memberId;
 
-    /**
-     * RESOURCE: GET /members/{memberId}/addresses
-     *
-     * PURPOSE: Retrieve all addresses for a specific member.
-     *
-     * ACCESS: Users with the READ role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS:
-     * offset: the number of records to skip over before starting retrieval.
-     * size: the total number of records to retrieve.
-     *
-     * @param resourceFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the Addresses retrieved by the request.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get All Addresses",
+            notes = "Retrieve all addresses for the specified member.\n" +
+                    "ACCESS:\n" +
+                    "Role: READ",
+            response = AddressListDTO.class)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "No addresses were found to return."))
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllAddresses(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -73,24 +77,15 @@ public class AddressResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: POST /members/{memberId}/addresses
-     *
-     * PURPOSE: Create a new address for a member.
-     *
-     * ACCESS: Users with the WRITE role.
-     *
-     * BODY: The address to create.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param address the address to create.
-     * @return a Response with the newly created address.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Add New Address",
+            notes = "Add a new address for the specified member.\n" +
+                    "ACCESS:\n" +
+                    "Role: WRITE",
+            response = AddressDTO.class,
+            code = 201)
     @POST
     @RolesAllowed(Role.WRITE)
-    public Response addAddress(AddressDTO address) throws OrgApiException{
+    public Response addAddress(@ApiParam(value = "The address to add.", required = true) AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         address = addressService.addAddress(address, memberId);
 
@@ -100,27 +95,18 @@ public class AddressResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: PUT /members/{memberId}/addresses/{addressId}
-     *
-     * PURPOSE: To update an existing address for a member.
-     *
-     * ACCESS: Users with the WRITE role.
-     *
-     * BODY: The address to be updated.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param addressId the ID of the address to be updated.
-     * @param address the address to be updated.
-     * @return a Response containing the new state of the address that was updated,
-     *          or nothing if no address existed with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Update Address",
+            notes = "Update an existing address for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: WRITE",
+            response = AddressDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "If no address already exists to be updated."))
     @PUT
     @Path("/{addressId}")
     @RolesAllowed(Role.WRITE)
-    public Response updateAddress(@PathParam("addressId") long addressId, AddressDTO address) throws OrgApiException{
+    public Response updateAddress(@ApiParam(value = "The ID of the address to update", required = true) @PathParam("addressId") long addressId,
+                                  @ApiParam(value = "The updated address", required = true) AddressDTO address) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO result = addressService.updateAddress(address, addressId, memberId);
 
@@ -135,26 +121,17 @@ public class AddressResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: DELETE /members/{memberId}/addresses/{addressId}
-     *
-     * PURPOSE: Delete an existing address from a member.
-     *
-     * ACCESS: Users with the WRITE role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param addressId the ID of the address to be deleted.
-     * @return the Response, containing the address that was deleted,
-     *          or nothing if no address matching the ID existed.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Delete Address",
+            notes = "Delete an existing address for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: WRITE",
+            response = AddressDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "If the address to be deleted didn't exist."))
     @DELETE
     @Path("/{addressId}")
     @RolesAllowed(Role.WRITE)
-    public Response deleteAddress(@PathParam("addressId") long addressId) throws OrgApiException{
+    public Response deleteAddress(@ApiParam(value = "The ID of the address to delete", required = true) @PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO address = addressService.deleteAddress(addressId);
 
@@ -168,26 +145,17 @@ public class AddressResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /members/{memberId}/addresses/{addressId}
-     *
-     * PURPOSE: Retrieve a single address for a member.
-     *
-     * ACCESS: Any user with READ access
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param addressId the ID of the address to retrieve.
-     * @return the Response, containing the address that was retrieved,
-     *          or nothing if no address existed with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get Address",
+            notes = "Get an address for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: READ",
+            response = AddressDTO.class,
+            code = 200)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "No address with the specified ID existed to return."))
     @GET
     @Path("/{addressId}")
     @RolesAllowed(Role.READ)
-    public Response getAddress(@PathParam("addressId") long addressId) throws OrgApiException{
+    public Response getAddress(@ApiParam(value = "The ID of the address to retrieve", required = true) @PathParam("addressId") long addressId) throws OrgApiException{
         AddressService addressService = factory.newAddressService(securityContext);
         AddressDTO address = addressService.getAddressByMember(addressId, memberId);
 

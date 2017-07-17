@@ -35,7 +35,7 @@ import javax.ws.rs.core.SecurityContext;
         )
 )
 @ApiResponses(value = @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class))
-@Api (tags = "auth", authorizations = @Authorization(value = "orgapiToken"))
+@Api (tags = "info", authorizations = @Authorization(value = "orgapiToken"))
 @Path("/info")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)

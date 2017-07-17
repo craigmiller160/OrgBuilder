@@ -1,5 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
+import io.swagger.annotations.ApiParam;
+
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 
@@ -8,10 +10,12 @@ import javax.ws.rs.QueryParam;
  */
 public class ResourceFilterBean {
 
+    @ApiParam(value = "The optional offset value to use for pagination")
     @QueryParam(QueryParamName.OFFSET)
     @DefaultValue("-1")
     private long offset;
 
+    @ApiParam(value = "The optional size value to use for pagination")
     @QueryParam(QueryParamName.SIZE)
     @DefaultValue("-1")
     private long size;
