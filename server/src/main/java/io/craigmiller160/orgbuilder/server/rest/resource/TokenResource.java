@@ -1,12 +1,14 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenDTO;
 import io.craigmiller160.orgbuilder.server.dto.RefreshTokenListDTO;
 import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.TokenService;
+import io.swagger.annotations.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.BeanParam;
@@ -30,35 +32,20 @@ import javax.ws.rs.core.SecurityContext;
  *
  * Created by craig on 10/17/16.
  */
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
-@Path("/tokens")
+//@Produces(MediaType.APPLICATION_JSON)
+//@Consumes(MediaType.APPLICATION_JSON)
+//@Path("/tokens")
 public class TokenResource {
+
+    //TODO while the webmaster should totally be able to do this stuff, let's keep this resource on the DL for now until it can be reviewed to make sure it doesn't totally compromise security.
 
     private final ServiceFactory factory = ServiceFactory.newInstance();
 
     @Context
     private SecurityContext securityContext;
 
-    /**
-     * RESOURCE: GET /tokens
-     *
-     * PURPOSE: Retrieve all refresh tokens currently stored in the server.
-     *
-     * ACCESS: Users with the MASTER role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS:
-     * offset: the number of records to skip over before starting retrieval.
-     * size: the total number of records to retrieve.
-     *
-     * @param resourceFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the tokens retrieved by the request.
-     * @throws OrgApiException if an error occurs.
-     */
-    @GET
-    @RolesAllowed(Role.MASTER)
+//    @GET
+//    @RolesAllowed(Role.MASTER)
     public Response getAllTokens(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
         resourceFilterBean.validateFilterParams();
 
@@ -90,10 +77,10 @@ public class TokenResource {
      *          nothing if there's no token with the specified ID.
      * @throws OrgApiException if an error occurs.
      */
-    @GET
-    @Path("/{tokenId}")
-    @RolesAllowed(Role.MASTER)
-    public Response getToken(@PathParam("tokenId") long tokenId) throws OrgApiException{
+//    @GET
+//    @Path("/{tokenId}")
+//    @RolesAllowed(Role.MASTER)
+    public Response getToken(/*@PathParam("tokenId")*/ long tokenId) throws OrgApiException{
         TokenService tokenService = factory.newTokenService(securityContext);
         RefreshTokenDTO result = tokenService.getRefreshToken(tokenId);
 
@@ -123,10 +110,10 @@ public class TokenResource {
      *          nothing if there was no token with the specified ID.
      * @throws OrgApiException if an error occurs.
      */
-    @DELETE
-    @Path("/{tokenId}")
-    @RolesAllowed(Role.MASTER)
-    public Response deleteToken(@PathParam("tokenId") long tokenId) throws OrgApiException{
+//    @DELETE
+//    @Path("/{tokenId}")
+//    @RolesAllowed(Role.MASTER)
+    public Response deleteToken(/*@PathParam("tokenId")*/ long tokenId) throws OrgApiException{
         TokenService tokenService = factory.newTokenService(securityContext);
         RefreshTokenDTO result = tokenService.deleteRefreshToken(tokenId);
 
