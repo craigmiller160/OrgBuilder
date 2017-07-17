@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgDTO;
 import io.craigmiller160.orgbuilder.server.dto.OrgListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
@@ -9,6 +10,7 @@ import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.rest.annotation.ThisOrgAllowed;
 import io.craigmiller160.orgbuilder.server.service.OrgService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
+import io.swagger.annotations.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -25,6 +27,21 @@ import java.util.List;
  *
  * Created by craig on 8/23/16.
  */
+@SwaggerDefinition(info = @Info(title = "OrgBuilder API", version = "1.1-ALPHA", description = "The API for the data managed by the OrgBuilder application"),
+        securityDefinition = @SecurityDefinition(
+                apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
+                        in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                        key = "orgapiToken",
+                        name= "Authorization",
+                        description = "The JSON Web Token needed to access the API"
+                )
+        )
+)
+@ApiResponses(value = {
+        @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server error while processing request", response = ErrorDTO.class)
+})
+@Api (tags = "orgs", authorizations = @Authorization(value = "orgapiToken"))
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/orgs")
@@ -38,23 +55,12 @@ public class OrgResource {
     @Context
     private UriInfo uriInfo;
 
-    /**
-     * RESOURCE: GET /orgs
-     *
-     * PURPOSE: Retrieve all Orgs.
-     *
-     * ACCESS: Only users with the MASTER role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS:
-     * offset: the number of records to skip over before starting retrieval.
-     * size: the total number of records to retrieve.
-     *
-     * @param resourceFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the Orgs retrieved by the request.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get All Orgs",
+            notes = "Get all orgs in the application.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER",
+            response = OrgListDTO.class)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "No orgs existed to return."))
     @GET
     @RolesAllowed(Role.MASTER)
     public Response getAllOrgs(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
