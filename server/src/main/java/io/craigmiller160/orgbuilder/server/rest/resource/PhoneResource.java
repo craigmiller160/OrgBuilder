@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneDTO;
 import io.craigmiller160.orgbuilder.server.dto.PhoneListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
@@ -8,6 +9,7 @@ import io.craigmiller160.orgbuilder.server.rest.ResourceFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.Role;
 import io.craigmiller160.orgbuilder.server.service.PhoneService;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
+import io.swagger.annotations.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -23,6 +25,21 @@ import java.net.URI;
  *
  * Created by craig on 8/23/16.
  */
+@SwaggerDefinition(info = @Info(title = "OrgBuilder API", version = "1.1-ALPHA", description = "The API for the data managed by the OrgBuilder application"),
+        securityDefinition = @SecurityDefinition(
+                apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
+                        in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                        key = "orgapiToken",
+                        name= "Authorization",
+                        description = "The JSON Web Token needed to access the API"
+                )
+        )
+)
+@ApiResponses(value = {
+        @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server error while processing request", response = ErrorDTO.class)
+})
+@Api (tags = "member/phones", authorizations = @Authorization(value = "orgapiToken"))
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/members/{memberId}/phones")
@@ -36,26 +53,16 @@ public class PhoneResource {
     @Context
     private UriInfo uriInfo;
 
+    @ApiParam(value = "The ID of the member that will own all the phones being interacted with via this resource.", required = true)
     @PathParam("memberId")
     private long memberId;
 
-    /**
-     * RESOURCE: GET /members/{memberId}/phones
-     *
-     * PURPOSE: Retrieve all phones for a member.
-     *
-     * ACCESS: Users with the READ role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS:
-     * offset: the number of records to skip over before starting retrieval.
-     * size: the total number of records to retrieve.
-     *
-     * @param resourceFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the Phones retrieved by the request.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get All Phones",
+            notes = "Get all phones for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: READ",
+            response = PhoneListDTO.class)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "No phones existed to return."))
     @GET
     @RolesAllowed(Role.READ)
     public Response getAllPhones(@BeanParam ResourceFilterBean resourceFilterBean) throws OrgApiException{
@@ -73,24 +80,15 @@ public class PhoneResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: POST /members/{memberId}/phones
-     *
-     * PURPOSE: Create a new phone for a member.
-     *
-     * ACCESS: Users with the WRITE role.
-     *
-     * BODY: The phone to create.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param phone the phone to create.
-     * @return the Response, containing the phone that was created.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Add New Phone",
+            notes = "Add a new phone for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: WRITE",
+            response = PhoneDTO.class,
+            code = 201)
     @POST
     @RolesAllowed(Role.WRITE)
-    public Response addPhone(PhoneDTO phone) throws OrgApiException{
+    public Response addPhone(@ApiParam(value = "The phone to add", required = true) PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         phone = phoneService.addPhone(phone, memberId);
 
@@ -100,27 +98,18 @@ public class PhoneResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: PUT /members/{memberId}/phones/{phoneId}
-     *
-     * PURPOSE: Update an existing phone for a member.
-     *
-     * ACCESS: Users with the WRITE role.
-     *
-     * BODY: The phone to update.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param phoneId the ID of the phone to update.
-     * @param phone the updated phone.
-     * @return a Response, containing the updated phone,
-     *          or nothing if no phone existed with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Update Phone",
+            notes = "Update an existing phone for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: WRITE",
+            response = PhoneDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "Phone to update did not exist."))
     @PUT
     @Path("/{phoneId}")
     @RolesAllowed(Role.WRITE)
-    public Response updatePhone(@PathParam("phoneId") long phoneId, PhoneDTO phone) throws OrgApiException{
+    public Response updatePhone(@ApiParam(value = "The ID of the phone to update", required = true) @PathParam("phoneId") long phoneId,
+                                @ApiParam(value = "The updated phone", required = true) PhoneDTO phone) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO result = phoneService.updatePhone(phone, phoneId, memberId);
 
@@ -135,26 +124,17 @@ public class PhoneResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: DELETE /members/{memberId}/phones/{phoneId}
-     *
-     * PURPOSE: Delete an existing phone for a member.
-     *
-     * ACCESS: Users with the WRITE role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param phoneId the ID of the phone to delete.
-     * @return the Response, containing the phone that was deleted,
-     *          or nothing if there was no phone with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Delete Phone",
+            notes = "Delete a phone for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: WRITE",
+            response = PhoneDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "Phone to delete did not exist"))
     @DELETE
     @Path("/{phoneId}")
     @RolesAllowed(Role.WRITE)
-    public Response deletePhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
+    public Response deletePhone(@ApiParam(value = "The ID of the phone to delete", required = true) @PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO phone = phoneService.deletePhone(phoneId);
 
@@ -168,26 +148,16 @@ public class PhoneResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /members/{memberId}/phones/{phoneId}
-     *
-     * PURPOSE: Retrieve a single phone for a member.
-     *
-     * ACCESS: Users with the READ role.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param phoneId the ID of the phone to retrieve.
-     * @return the Response, containing the phone that was retrieved,
-     *          or nothing if there was no phone with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get Phone",
+            notes = "Get a phone for a member.\n" +
+                    "ACCESS:\n" +
+                    "Role: READ",
+            response = PhoneDTO.class)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "Phone to retrieve did not exist."))
     @GET
     @Path("/{phoneId}")
     @RolesAllowed(Role.READ)
-    public Response getPhone(@PathParam("phoneId") long phoneId) throws OrgApiException{
+    public Response getPhone(@ApiParam(value = "The ID of the phone to retrieve.", required = true) @PathParam("phoneId") long phoneId) throws OrgApiException{
         PhoneService phoneService = factory.newPhoneService(securityContext);
         PhoneDTO phone = phoneService.getPhoneByMember(phoneId, memberId);
 

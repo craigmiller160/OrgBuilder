@@ -78,24 +78,15 @@ public class OrgResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: POST /orgs
-     *
-     * PURPOSE: Add a new Org.
-     *
-     * ACCESS: Only users with the MASTER role.
-     *
-     * BODY: A JSON payload with the Org to be added.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param org the Org to be added.
-     * @return the Response, containing the created Org.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Add New Org",
+            notes = "Add a new org to the application.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER",
+            response = OrgDTO.class,
+            code = 201)
     @POST
     @RolesAllowed(Role.MASTER)
-    public Response addOrg(OrgDTO org) throws OrgApiException{
+    public Response addOrg(@ApiParam(value = "The org to add", required = true) OrgDTO org) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         org = orgService.addOrg(org);
 
@@ -105,29 +96,19 @@ public class OrgResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: PUT /orgs/{orgId}
-     *
-     * PURPOSE: Update an existing Org.
-     *
-     * ACCESS: Only users with the MASTER role, or users
-     *          with the ADMIN role who are a part of the
-     *          Org being updated.
-     *
-     * BODY: A JSON payload with the Org to be updated.
-     *
-     * QUERY PARAMS: None
-     *
-     * @param orgId the Org ID of the resource to update.
-     * @param org the Org to update.
-     * @return the Response, containing the updated Org,
-     *          or nothing if no Org existed with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Update Org",
+            notes = "Update an existing org in the application.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER\n" +
+                    "Extra: Users in Org with ADMIN role",
+            response = OrgDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "Org to update didn't already exist."))
     @PUT
     @Path("/{orgId}")
     @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
-    public Response updateOrg(@PathParam("orgId") long orgId, OrgDTO org) throws OrgApiException{
+    public Response updateOrg(@ApiParam(value = "The ID of the org to update", required = true) @PathParam("orgId") long orgId,
+                              @ApiParam(value = "The updated org", required = true) OrgDTO org) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.updateOrg(org, orgId);
 
@@ -142,28 +123,18 @@ public class OrgResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: DELETE /orgs/{orgId}
-     *
-     * PURPOSE: Delete an existing Org.
-     *
-     * ACCESS: Only users with the MASTER role, or users
-     *          with the ADMIN role who are a part of the
-     *          Org being updated.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param orgId the Org ID of the resource to delete.
-     * @return the Response, containing the Org that was deleted,
-     *          or nothing if no Org existed with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Delete Org",
+            notes = "Delete an existing org from the application.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER\n" +
+                    "Extra: Users in Org with ADMIN role",
+            response = OrgDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "Org to delete didn't already exist."))
     @DELETE
     @Path("/{orgId}")
     @ThisOrgAllowed(inOrgRolesAllowed = Role.ADMIN, outOfOrgRolesAllowed = Role.MASTER)
-    public Response deleteOrg(@PathParam("orgId") long orgId) throws OrgApiException{
+    public Response deleteOrg(@ApiParam(value = "The ID of the org to delete.", required = true) @PathParam("orgId") long orgId) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.deleteOrg(orgId);
 
@@ -177,28 +148,16 @@ public class OrgResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /orgs/{orgId}
-     *
-     * PURPOSE: Retrieve a single Org and all its details.
-     *
-     * ACCESS: Only users with the MASTER role, or users
-     *          with the ADMIN role who are a part of the
-     *          Org being updated.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param orgId the Org ID of the resource to retrieve.
-     * @return the Response, containing the Org that was retrieved,
-     *          or nothing if no Org existed with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get Org",
+            notes = "Get a single org from the application.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER\n" +
+                    "Extra: Users in Org")
+    @ApiResponses(value = @ApiResponse(code = 204, message = "Specified org does not exist to retrieve."))
     @GET
     @Path("/{orgId}")
     @ThisOrgAllowed(outOfOrgRolesAllowed = Role.MASTER)
-    public Response getOrg(@PathParam("orgId") long orgId) throws OrgApiException{
+    public Response getOrg(@ApiParam(value = "The ID of the org to retrieve", required = true) @PathParam("orgId") long orgId) throws OrgApiException{
         OrgService orgService = factory.newOrgService(securityContext);
         OrgDTO result = orgService.getOrg(orgId);
 
