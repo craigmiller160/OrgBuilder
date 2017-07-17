@@ -1,5 +1,6 @@
 package io.craigmiller160.orgbuilder.server.rest;
 
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ws.rs.QueryParam;
@@ -9,6 +10,7 @@ import javax.ws.rs.QueryParam;
  */
 public class UserFilterBean extends ResourceFilterBean {
 
+    @ApiParam(value = "Optional search parameter for the user name.")
     @QueryParam(QueryParamName.USER_NAME)
     private String userName;
 

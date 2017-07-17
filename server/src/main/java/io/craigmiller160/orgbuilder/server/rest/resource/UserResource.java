@@ -1,6 +1,7 @@
 package io.craigmiller160.orgbuilder.server.rest.resource;
 
 import io.craigmiller160.orgbuilder.server.OrgApiException;
+import io.craigmiller160.orgbuilder.server.dto.ErrorDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserDTO;
 import io.craigmiller160.orgbuilder.server.dto.UserListDTO;
 import io.craigmiller160.orgbuilder.server.rest.OrgApiInvalidRequestException;
@@ -10,6 +11,7 @@ import io.craigmiller160.orgbuilder.server.rest.UserFilterBean;
 import io.craigmiller160.orgbuilder.server.rest.annotation.ThisUserAllowed;
 import io.craigmiller160.orgbuilder.server.service.ServiceFactory;
 import io.craigmiller160.orgbuilder.server.service.UserService;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.security.RolesAllowed;
@@ -34,6 +36,21 @@ import java.net.URI;
  *
  * Created by craig on 9/15/16.
  */
+@SwaggerDefinition(info = @Info(title = "OrgBuilder API", version = "1.1-ALPHA", description = "The API for the data managed by the OrgBuilder application"),
+        securityDefinition = @SecurityDefinition(
+                apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
+                        in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                        key = "orgapiToken",
+                        name= "Authorization",
+                        description = "The JSON Web Token needed to access the API"
+                )
+        )
+)
+@ApiResponses(value = {
+        @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class),
+        @ApiResponse(code = 500, message = "Server error while processing request", response = ErrorDTO.class)
+})
+@Api (tags = "users", authorizations = @Authorization(value = "orgapiToken"))
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/users")
@@ -47,26 +64,13 @@ public class UserResource {
     @Context
     private UriInfo uriInfo;
 
-    /**
-     * RESOURCE: GET /users
-     *
-     * PURPOSE: Get all users in the system, restricted based on
-     *          their Org if a non-MASTER user calls this.
-     *
-     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS:
-     * offset: the number of records to skip over before starting retrieval.
-     * size: the total number of records to retrieve.
-     * {search}: additional params for performing a search function.
-     *
-     * @param userFilterBean the filter bean with the Query Params.
-     * @return the Response, containing all the users retrieved.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get All Users",
+            notes = "Get all users, either for a specific org or the entire application.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER, ADMIN\n" +
+                    "Extra: ADMIN users can only get users in their own org.",
+            response = UserListDTO.class)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "No users were found to return."))
     @GET
     @RolesAllowed({Role.MASTER, Role.ADMIN})
     public Response getAllUsers(@BeanParam UserFilterBean userFilterBean) throws OrgApiException {
@@ -89,26 +93,16 @@ public class UserResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: POST /users
-     *
-     * PURPOSE: Create a new user. If done by an ADMIN user, that user
-     *          will be restricted to the creating user's Org.
-     *
-     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
-     *
-     * BODY: The user to create.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param user the user to create.
-     * @return the Response, containing the created user.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Add New User",
+            notes = "Add a new user, either to the application or a specific org.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER, ADMIN\n" +
+                    "Extra: ADMIN users can only add to their own org.",
+            response = UserDTO.class,
+            code = 201)
     @POST
     @RolesAllowed({Role.MASTER, Role.ADMIN})
-    public Response addUser(UserDTO user) throws OrgApiException{
+    public Response addUser(@ApiParam(value = "The user to add", required = true) UserDTO user) throws OrgApiException{
         validateUser(user, true);
         ensureMasterCreationRestriction(user);
         ensureAdminAccessRestriction(user);
@@ -122,30 +116,19 @@ public class UserResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: PUT /users/{userId}
-     *
-     * PURPOSE: Update an existing user.
-     *
-     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
-     *          In addition, if the user calling this resource is
-     *          the same as the user being retrieved, they can access it.
-     *
-     * BODY: The updated user.
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param userId the ID of the user to update.
-     * @param user the updated user.
-     * @return the Response, containing the updated user, or
-     *          nothing if there was no user with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Update User",
+            notes = "Update an existing user, either for the application or a specific org.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER, ADMIN\n" +
+                    "Extra: ADMIN users can only update for their own org.",
+            response = UserDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "User to update did not exist."))
     @PUT
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN,Role.MASTER})
-    public Response updateUser(@PathParam("userId") long userId, UserDTO user) throws OrgApiException{
+    public Response updateUser(@ApiParam(value = "The ID of the user to update", required = true) @PathParam("userId") long userId,
+                               @ApiParam(value = "The updated user.", required = true)  UserDTO user) throws OrgApiException{
         validateUser(user, false);
         ensureMasterCreationRestriction(user);
         UserService service = factory.newUserService(securityContext);
@@ -166,29 +149,18 @@ public class UserResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: DELETE /users/{userId}
-     *
-     * PURPOSE: Delete an existing user.
-     *
-     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
-     *          In addition, if the user calling this resource is
-     *          the same as the user being retrieved, they can access it.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param userId the ID of the user to delete.
-     * @return the Response, containing the deleted user, or
-     *          nothing if there was no user with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Delete User",
+            notes = "Delete an existing user, either from the application or a specific org.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER, ADMIN\n" +
+                    "Extra: ADMIN users can only delete from their own org.",
+            response = UserDTO.class,
+            code = 202)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "User to delete didn't exist."))
     @DELETE
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
-    public Response deleteUser(@PathParam("userId") long userId) throws OrgApiException{
+    public Response deleteUser(@ApiParam(value = "The ID of the user to delete", required = true) @PathParam("userId") long userId) throws OrgApiException{
         UserService service = factory.newUserService(securityContext);
 
         UserDTO result = service.deleteUser(userId, this::ensureAdminAccessRestriction);
@@ -204,29 +176,17 @@ public class UserResource {
                 .build();
     }
 
-    /**
-     * RESOURCE: GET /users/{userId}
-     *
-     * PURPOSE: Retrieve the specified user.
-     *
-     * ACCESS: Users with the MASTER or ADMIN roles. The ADMIN role
-     *          users will only access users in their own Org.
-     *          In addition, if the user calling this resource is
-     *          the same as the user being retrieved, they can access it.
-     *
-     * BODY: NONE
-     *
-     * QUERY PARAMS: NONE
-     *
-     * @param userId the ID of the user to retrieve.
-     * @return the Response, containing the user that was retrieved, or
-     *          nothing if there was no user with the specified ID.
-     * @throws OrgApiException if an error occurs.
-     */
+    @ApiOperation(value = "Get User",
+            notes = "Retrieve a user, either from the application or a specific org.\n" +
+                    "ACCESS:\n" +
+                    "Role: MASTER, ADMIN\n" +
+                    "Extra: ADMIN users can only get users from their own org.",
+            response = UserDTO.class)
+    @ApiResponses(value = @ApiResponse(code = 204, message = "User to retrieve does not exist."))
     @GET
     @Path("/{userId}")
     @ThisUserAllowed(otherUserRolesAllowed = {Role.ADMIN, Role.MASTER})
-    public Response getUser(@PathParam("userId") long userId) throws OrgApiException{
+    public Response getUser(@ApiParam(value = "The ID of the user to retrieve", required = true) @PathParam("userId") long userId) throws OrgApiException{
         UserService service = factory.newUserService(securityContext);
         UserDTO result = service.getUser(userId);
         ensureAdminAccessRestriction(result);
