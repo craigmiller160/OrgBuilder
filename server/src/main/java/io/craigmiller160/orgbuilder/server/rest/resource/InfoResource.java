@@ -24,38 +24,18 @@ import javax.ws.rs.core.SecurityContext;
  *
  * Created by craig on 9/18/16.
  */
-@SwaggerDefinition(
-        info = @Info(
-                title = "OrgBuilder API",
-                version = "1.1-ALPHA",
-                description = "The API for the data managed by the OrgBuilder application"
-        ),
+@SwaggerDefinition(info = @Info(title = "OrgBuilder API", version = "1.1-ALPHA", description = "The API for the data managed by the OrgBuilder application"),
         securityDefinition = @SecurityDefinition(
-                apiKeyAuthDefinitions = {
-                        @ApiKeyAuthDefinition(
-                                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
-                                key = "orgapiToken",
-                                name= "Authorization",
-                                description = "The JSON Web Token needed to access the API"
-                        )
-                }
+                apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
+                        in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                        key = "orgapiToken",
+                        name= "Authorization",
+                        description = "The JSON Web Token needed to access the API"
+                )
         )
 )
-@ApiResponses(
-        value = {
-                @ApiResponse(
-                        code = 403,
-                        message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level",
-                        response = ErrorDTO.class
-                )
-        }
-)
-@Api(
-        tags = "info",
-        authorizations = {
-                @Authorization(value = "orgapiToken")
-        }
-)
+@ApiResponses(value = @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class))
+@Api (tags = "auth", authorizations = @Authorization(value = "orgapiToken"))
 @Path("/info")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -66,11 +46,11 @@ public class InfoResource implements ApiDefinition{
     @Context
     private SecurityContext securityContext;
 
-    @ApiOperation(
-            value = "Get all general information data in a single payload",
-            notes = "This returns a combination of everything that all the other operations in this resource return",
-            response = AllInfoDTO.class
-    )
+    @ApiOperation(value = "Get all general information data in a single payload",
+            notes = "This returns a combination of everything that all the other operations in this resource return\n" +
+                    "ACCESS:\n" +
+                    "All Users",
+            response = AllInfoDTO.class)
     @GET
     @PermitAll
     public Response getAll() throws OrgApiException{
@@ -82,11 +62,11 @@ public class InfoResource implements ApiDefinition{
                 .build();
     }
 
-    @ApiOperation(
-            value = "Get the accepted values for 'sex' fields.",
-            notes = "This returns a collection of values that are the only acceptable choices for fields that define a person's sex.",
-            response = SexListDTO.class
-    )
+    @ApiOperation(value = "Get the accepted values for 'sex' fields.",
+            notes = "This returns a collection of values that are the only acceptable choices for fields that define a person's sex.\n" +
+                    "ACCESS:\n" +
+                    "All Users",
+            response = SexListDTO.class)
     @GET
     @Path("/sexes")
     @PermitAll
@@ -99,11 +79,11 @@ public class InfoResource implements ApiDefinition{
                 .build();
     }
 
-    @ApiOperation(
-            value = "Get the accepted values for 'state' fields.",
-            notes = "This returns a collection of the values for all US states.",
-            response = StateListDTO.class
-    )
+    @ApiOperation(value = "Get the accepted values for 'state' fields.",
+            notes = "This returns a collection of the values for all US states.\n" +
+                    "ACCESS:\n" +
+                    "All Users",
+            response = StateListDTO.class)
     @GET
     @Path("/states")
     @PermitAll
@@ -116,11 +96,11 @@ public class InfoResource implements ApiDefinition{
     }
 
 
-    @ApiOperation(
-            value = "Get the accepted values for user roles.",
-            notes = "This returns a collection of values that are the only acceptable choices for working with user access roles.",
-            response = RoleListDTO.class
-    )
+    @ApiOperation(value = "Get the accepted values for user roles.",
+            notes = "This returns a collection of values that are the only acceptable choices for working with user access roles.\n" +
+                    "ACCESS:\n" +
+                    "All Users",
+            response = RoleListDTO.class)
     @GET
     @Path("/roles")
     @PermitAll
@@ -132,11 +112,11 @@ public class InfoResource implements ApiDefinition{
                 .build();
     }
 
-    @ApiOperation(
-            value = "Get the basic information about this application.",
-            notes = "This returns some very basic meta information about this application.",
-            response = AppInfoDTO.class
-    )
+    @ApiOperation(value = "Get the basic information about this application.",
+            notes = "This returns some very basic meta information about this application.\n" +
+                    "ACCESS:\n" +
+                    "All Users",
+            response = AppInfoDTO.class)
     @GET
     @Path("/app")
     @PermitAll
@@ -148,11 +128,11 @@ public class InfoResource implements ApiDefinition{
                 .build();
     }
 
-    @ApiOperation(
-            value = "Get the accepted values for contact info types.",
-            notes = "This returns the collections of values for the 'type' fields of various contact info resources.",
-            response = ContactTypesDTO.class
-    )
+    @ApiOperation(value = "Get the accepted values for contact info types.",
+            notes = "This returns the collections of values for the 'type' fields of various contact info resources.\n" +
+                    "ACCESS:\n" +
+                    "All Users",
+            response = ContactTypesDTO.class)
     @GET
     @Path("/contact")
     @PermitAll

@@ -46,38 +46,18 @@ import java.util.Map;
  *
  * Created by craig on 9/27/16.
  */
-@SwaggerDefinition(
-        info = @Info(
-                title = "OrgBuilder API",
-                version = "1.1-ALPHA",
-                description = "The API for the data managed by the OrgBuilder application"
-        ),
+@SwaggerDefinition(info = @Info(title = "OrgBuilder API", version = "1.1-ALPHA", description = "The API for the data managed by the OrgBuilder application"),
         securityDefinition = @SecurityDefinition(
-                apiKeyAuthDefinitions = {
-                        @ApiKeyAuthDefinition(
-                                in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
-                                key = "orgapiToken",
-                                name= "Authorization",
-                                description = "The JSON Web Token needed to access the API"
-                        )
-                }
+                apiKeyAuthDefinitions = @ApiKeyAuthDefinition(
+                        in = ApiKeyAuthDefinition.ApiKeyLocation.HEADER,
+                        key = "orgapiToken",
+                        name= "Authorization",
+                        description = "The JSON Web Token needed to access the API"
+                )
         )
 )
-@ApiResponses(
-        value = {
-                @ApiResponse(
-                        code = 403,
-                        message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level",
-                        response = ErrorDTO.class
-                )
-        }
-)
-@Api (
-        tags = "auth",
-        authorizations = {
-                @Authorization(value = "orgapiToken")
-        }
-)
+@ApiResponses(value = @ApiResponse(code = 403, message = "Access to resource is forbidden, you are either not logged in or don't have a high enough access level", response = ErrorDTO.class))
+@Api (tags = "auth", authorizations = @Authorization(value = "orgapiToken"))
 @Path("/auth")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -104,23 +84,14 @@ public class AuthResource {
         return handleInvalidLogin(null);
     }
 
-    @ApiOperation(
-            value = "Login to API",
-            notes = "Send a payload with username/password and receive back an access token for the API."
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            code = 200,
-                            message = "The login attempt was successful, the token will be in the Authorization header"
-                    ),
-                    @ApiResponse(
-                            code = 401,
-                            message = "The login attempt was unsuccessful",
-                            response = ErrorDTO.class
-                    )
-            }
-    )
+    @ApiOperation(value = "Login to API",
+            notes = "Send a payload with username/password and receive back an access token for the API.\n" +
+                    "ACCESS:\n" +
+                    "All Users")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The login attempt was successful, the token will be in the Authorization header"),
+            @ApiResponse(code = 401, message = "The login attempt was unsuccessful", response = ErrorDTO.class)
+    })
     @POST
     @PermitAll
     public Response authenticate(
@@ -174,18 +145,11 @@ public class AuthResource {
                 .build();
     }
 
-    @ApiOperation(
-            value = "Validate the access token",
-            notes = "This just validates that the token is still valid, and refreshes it where appropriate. If it's not valid, the SecurityFilter will reject it automatically"
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            code = 200,
-                            message = "The token is still valid, it has been refreshed if necessary, and is returned in the Authorization header."
-                    )
-            }
-    )
+    @ApiOperation(value = "Validate the access token",
+            notes = "This just validates that the token is still valid, and refreshes it where appropriate. If it's not valid, the SecurityFilter will reject it automatically.\n" +
+                    "ACCESS:\n" +
+                    "All Users")
+    @ApiResponses(value = @ApiResponse(code = 200, message = "The token is still valid, it has been refreshed if necessary, and is returned in the Authorization header."))
     @GET
     @Path("/check")
     @PermitAll
@@ -196,23 +160,14 @@ public class AuthResource {
     }
 
 
-    @ApiOperation(
-            value = "Check if user name exists",
-            notes = "This checks whether or not a given user name already exists in the system."
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            code = 200,
-                            message = "A user with that name does not exist"
-                    ),
-                    @ApiResponse(
-                            code = 409,
-                            message = "A user with that name already exists",
-                            response = UserDTO.class
-                    )
-            }
-    )
+    @ApiOperation(value = "Check if user name exists",
+            notes = "This checks whether or not a given user name already exists in the system.\n" +
+                    "ACCESS:\n" +
+                    "All Users")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "A user with that name does not exist"),
+            @ApiResponse(code = 409, message = "A user with that name already exists", response = UserDTO.class)
+    })
     @GET
     @Path("/exists")
     @PermitAll
